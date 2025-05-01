@@ -217,8 +217,11 @@ export default function QuestionDetail() {
   return (
     <div className="min-h-screen p-8 font-sans">
       <div className="mb-8">
-        <Link href="/" className="text-white hover:text-[#27F795]">
-          ← Back
+        <Link
+          href="/"
+          className="text-white hover:text-[#27F795] flex items-center gap-2"
+        >
+          <ArrowLeftIcon /> Back
         </Link>
       </div>
 
