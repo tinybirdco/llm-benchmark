@@ -1,0 +1,18 @@
+DESCRIPTION >
+    find top 10 repositories with "epic bugs", filter out by issue number
+
+NODE endpoint
+SQL >
+    SELECT
+        repo_name,
+        number,
+        count() AS comments
+    FROM github_events
+    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created') AND (number > 10)
+    GROUP BY
+        repo_name,
+        number
+    ORDER BY count() DESC
+    LIMIT 10
+
+TYPE endpoint

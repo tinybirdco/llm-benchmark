@@ -1,0 +1,8 @@
+DESCRIPTION >
+    Total number of users with at least one created PR
+
+NODE endpoint
+SQL >
+    SELECT uniq(actor_login) FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened'
+
+TYPE endpoint

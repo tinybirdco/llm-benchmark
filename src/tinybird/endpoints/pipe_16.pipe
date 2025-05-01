@@ -1,0 +1,8 @@
+DESCRIPTION >
+    What is the best day of the week to catch a star?
+
+NODE endpoint
+SQL >
+    SELECT toDayOfWeek(created_at) AS day, count() AS stars FROM github_events WHERE event_type = 'WatchEvent' GROUP BY day ORDER BY day
+
+TYPE endpoint

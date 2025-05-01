@@ -1,0 +1,8 @@
+DESCRIPTION >
+    How has the total number of stars changed over time?
+
+NODE endpoint
+SQL >
+    SELECT toYear(created_at) AS year, count() AS stars FROM github_events WHERE event_type = 'WatchEvent' GROUP BY year ORDER BY year
+
+TYPE endpoint

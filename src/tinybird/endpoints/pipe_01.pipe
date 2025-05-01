@@ -1,0 +1,9 @@
+DESCRIPTION >
+    Counting stars
+    The WatchEvent is the event when someone gives a star to a repo.
+
+NODE endpoint
+SQL >
+    SELECT count() FROM github_events WHERE event_type = 'WatchEvent'
+
+TYPE endpoint

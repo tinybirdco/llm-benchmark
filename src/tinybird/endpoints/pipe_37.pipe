@@ -1,0 +1,8 @@
+DESCRIPTION >
+    Total number of issues on GitHub
+
+NODE endpoint
+SQL >
+    SELECT count() FROM github_events WHERE event_type = 'IssueCommentEvent'
+
+TYPE endpoint

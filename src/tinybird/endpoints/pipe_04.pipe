@@ -1,0 +1,8 @@
+DESCRIPTION >
+    The total number of repositories on GitHub
+
+NODE endpoint
+SQL >
+    SELECT uniq(repo_name) FROM github_events
+
+TYPE endpoint

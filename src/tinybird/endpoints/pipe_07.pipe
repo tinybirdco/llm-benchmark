@@ -1,0 +1,8 @@
+DESCRIPTION >
+    Who are top 10 people giving stars?
+
+NODE endpoint
+SQL >
+    SELECT actor_login, count() AS stars FROM github_events WHERE event_type = 'WatchEvent' GROUP BY actor_login ORDER BY stars DESC LIMIT 10
+
+TYPE endpoint

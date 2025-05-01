@@ -1,0 +1,8 @@
+DESCRIPTION >
+    The total number of users on GitHub
+
+NODE endpoint
+SQL >
+    SELECT uniq(actor_login) FROM github_events
+
+TYPE endpoint

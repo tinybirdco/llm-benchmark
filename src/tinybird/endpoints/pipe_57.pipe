@@ -1,0 +1,8 @@
+DESCRIPTION >
+    top 10 longest repository names
+
+NODE endpoint
+SQL >
+    SELECT count(), repo_name FROM github_events WHERE event_type = 'WatchEvent' GROUP BY repo_name ORDER BY length(repo_name) DESC LIMIT 10
+
+TYPE endpoint

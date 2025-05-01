@@ -1,0 +1,8 @@
+DESCRIPTION >
+    Total number of users with at least one push
+
+NODE endpoint
+SQL >
+    SELECT uniq(actor_login) FROM github_events WHERE event_type = 'PushEvent'
+
+TYPE endpoint

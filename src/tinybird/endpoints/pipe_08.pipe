@@ -1,0 +1,20 @@
+DESCRIPTION >
+    what are the top 10 repositories sorted by the number of stars from people who starred the freecodecamp/freecodecamp repository?
+
+NODE endpoint
+SQL >
+    SELECT
+        repo_name,
+        count() AS stars
+    FROM github_events
+    WHERE (event_type = 'WatchEvent') AND (actor_login IN
+    (
+        SELECT actor_login
+        FROM github_events
+        WHERE (event_type = 'WatchEvent') AND (repo_name IN ('freecodecamp/freecodecamp'))
+    )) AND (repo_name NOT IN ('freecodecamp/freecodecamp'))
+    GROUP BY repo_name
+    ORDER BY stars DESC
+    LIMIT 10
+
+TYPE endpoint

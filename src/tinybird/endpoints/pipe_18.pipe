@@ -1,0 +1,8 @@
+DESCRIPTION >
+    Total number of users that gave at least one star
+
+NODE endpoint
+SQL >
+    SELECT uniq(actor_login) FROM github_events WHERE event_type = 'WatchEvent'
+
+TYPE endpoint

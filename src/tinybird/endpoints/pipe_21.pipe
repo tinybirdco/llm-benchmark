@@ -1,0 +1,20 @@
+DESCRIPTION >
+    What if we count top 10 starred repositories but only from those users who made at least one PR in at least one repo?
+
+NODE endpoint
+SQL >
+    SELECT
+        repo_name,
+        count()
+    FROM github_events
+    WHERE (event_type = 'WatchEvent') AND (actor_login IN
+    (
+        SELECT actor_login
+        FROM github_events
+        WHERE (event_type = 'PullRequestEvent') AND (action = 'opened')
+    ))
+    GROUP BY repo_name
+    ORDER BY count() DESC
+    LIMIT 10
+
+TYPE endpoint
