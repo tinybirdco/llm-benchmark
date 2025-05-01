@@ -1,7 +1,8 @@
-import { useState } from 'react';
+export const CodePreview = ({ sql, isExpanded, onExpandChange }: { sql: string; isExpanded: boolean; onExpandChange?: (expanded: boolean) => void }) => {
 
-export const CodePreview = ({ sql }: { sql: string }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const handleExpandToggle = (expanded: boolean) => {
+    onExpandChange?.(expanded);
+  };
 
   if (!sql) return null;
 
@@ -9,12 +10,12 @@ export const CodePreview = ({ sql }: { sql: string }) => {
     <div>
       {!isExpanded ? (
         <div className="flex items-center gap-2">
-          <code className="text-xs text-[#27F795] truncate">
+          <code className="text-sm text-[#C6C6C6] truncate">
             {sql}
           </code>
           <button
-            onClick={() => setIsExpanded(true)}
-            className="text-xs text-[#27F795] hover:text-[#1ac177] whitespace-nowrap flex items-center gap-1"
+            onClick={() => handleExpandToggle(true)}
+            className="text-sm text-[#27F795] hover:text-[#1ac177] whitespace-nowrap flex items-center gap-1"
           >
             show code
             <span className="text-lg leading-none">+</span>
@@ -22,16 +23,18 @@ export const CodePreview = ({ sql }: { sql: string }) => {
         </div>
       ) : (
         <div className="relative">
-          <pre className="p-4 bg-[#353535] rounded overflow-x-auto text-sm">
+          <div className="flex items-center gap-2 mb-2">
+            <button
+              onClick={() => handleExpandToggle(false)}
+              className="text-sm text-[#C6C6C6] hover:text-[#F4F4F4] flex items-center gap-1"
+            >
+              Hide code
+              <span className="text-lg leading-none">×</span>
+            </button>
+          </div>
+          <pre className="p-2 rounded overflow-x-auto text-sm">
             <code className="text-[#C6C6C6]">{sql}</code>
           </pre>
-          <button
-            onClick={() => setIsExpanded(false)}
-            className="absolute top-2 right-2 text-xs text-[#27F795] hover:text-[#1ac177] flex items-center gap-1"
-          >
-            Hide code
-            <span className="text-lg leading-none">×</span>
-          </button>
         </div>
       )}
     </div>

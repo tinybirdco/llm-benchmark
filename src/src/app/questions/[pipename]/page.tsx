@@ -1,12 +1,13 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import benchmarkResults from "../../../../benchmark/results.json";
 import { Table } from "../../components/table";
 import { Badge } from "../../components/badge";
 import { CodePreview } from "../../components/code-preview";
+import { ArrowLeftIcon } from "@/app/components/icons";
 
 type BenchmarkResult = (typeof benchmarkResults)[number];
 
@@ -42,9 +43,48 @@ function calculateModelMetrics(result: BenchmarkResult): ModelMetric {
   };
 }
 
+const ModelCell = ({
+  metric,
+  isExpanded,
+  setIsExpanded,
+}: {
+  metric: ModelMetric;
+  isExpanded: boolean;
+  setIsExpanded: (name: string) => void;
+}) => {
+  return (
+    <div
+      className={`max-w-[475px] -m-4 p-4 ${isExpanded ? "bg-[#353535]" : ""}`}
+    >
+      <Link
+        href={`/models/${encodeURIComponent(metric.model)}`}
+        className="hover:text-[#27F795] text-sm"
+      >
+        <div className="truncate">{metric.model}</div>
+      </Link>
+
+      <CodePreview
+        sql={metric.sql}
+        isExpanded={isExpanded}
+        onExpandChange={() => setIsExpanded(metric.model)}
+      />
+    </div>
+  );
+};
+
 export default function QuestionDetail() {
   const params = useParams();
   const pipeName = decodeURIComponent(params.pipename as string);
+
+  const [expandedQuestions, setExpandedQuestions] = useState<string[]>([]);
+
+  const handleExpandChange = (name: string) => {
+    if (expandedQuestions.includes(name)) {
+      setExpandedQuestions((prev) => prev.filter((q) => q !== name));
+    } else {
+      setExpandedQuestions((prev) => [...prev, name]);
+    }
+  };
 
   const modelResults = useMemo(() => {
     const questionResults = benchmarkResults.filter((r) => r.name === pipeName);
@@ -57,9 +97,10 @@ export default function QuestionDetail() {
         <div className="mb-8">
           <Link
             href="/"
-            className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200"
+            className="text-white hover:text-[#27F795] flex items-center gap-2"
           >
-            ← Back to Overview
+            <ArrowLeftIcon />
+            Back
           </Link>
         </div>
         <div className="text-center text-xl">
@@ -81,17 +122,11 @@ export default function QuestionDetail() {
       cell: (row: unknown) => {
         const metric = row as ModelMetric;
         return (
-          <div className="max-w-[475px]">
-            <Link
-              href={`/models/${encodeURIComponent(metric.model)}`}
-              className="hover:text-[#27F795]"
-            >
-              <div className="truncate">
-                {metric.model}
-              </div>
-            </Link>
-            <CodePreview sql={metric.sql} />
-          </div>
+          <ModelCell
+            metric={metric}
+            isExpanded={expandedQuestions.includes(metric.model)}
+            setIsExpanded={handleExpandChange}
+          />
         );
       },
     },
@@ -177,6 +212,8 @@ export default function QuestionDetail() {
     },
   ];
 
+  console.log(expandedQuestions);
+
   return (
     <div className="min-h-screen p-8 font-sans">
       <div className="mb-8">
@@ -197,7 +234,14 @@ export default function QuestionDetail() {
 
       <h2 className="text-2xl mb-4">Model Results</h2>
       <div className="overflow-x-auto shadow-lg rounded-lg">
-        <Table columns={columns} data={modelResults} />
+        <Table
+          columns={columns}
+          data={modelResults.map((metric) => ({
+            key: metric.model,
+            ...metric,
+          }))}
+          expandedRows={expandedQuestions}
+        />
       </div>
     </div>
   );

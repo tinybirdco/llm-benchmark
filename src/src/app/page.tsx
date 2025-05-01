@@ -7,6 +7,7 @@ import benchmarkResults from "../../benchmark/results.json";
 import humanResults from "../../benchmark/results-human.json";
 import { Table } from "./components/table";
 import { ProgressBar } from "./components/progress";
+import { CodePreview } from "./components/code-preview";
 
 type BenchmarkResults = typeof benchmarkResults;
 type ModelResult = BenchmarkResults[number];
@@ -85,6 +86,27 @@ function calculateModelMetrics(modelResults: typeof benchmarkResults) {
   };
 }
 
+const ModelCell = ({ model, sql }: { model: string; sql: string }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  
+  // Add the expanded state to the row data
+  const row = { model, sql, isExpanded };
+  
+  return (
+    <div className="max-w-[475px]">
+      <Link 
+        href={`/models/${encodeURIComponent(model)}`}
+        className="hover:text-[#27F795] text-sm"
+      >
+        <div className="truncate">
+          {model}
+        </div>
+      </Link>
+      <CodePreview sql={sql} onExpandChange={setIsExpanded} />
+    </div>
+  );
+};
+
 export default function Home() {
   const [showRelative, setShowRelative] = useState(false);
 
@@ -125,12 +147,7 @@ export default function Home() {
       name: "Model",
       accessorKey: "model",
       cell: (row: any) => row.provider === "human" ? row.model : (
-        <Link
-          href={`/models/${encodeURIComponent(row.model)}`}
-          className="hover:text-[#27F795]"
-        >
-          {row.model}
-        </Link>
+        <ModelCell model={row.model} sql={row.sql || ''} />
       ),
     },
     {
