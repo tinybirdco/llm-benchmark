@@ -62,6 +62,10 @@ export function calculateModelMetrics(
   const rowsM = totalRowsRead / 1_000_000; // convert to millions
   const bytesPerRowKB = (totalBytesRead / totalRowsRead) / 1024; // bytes per row in KB
 
+  // Count failed queries
+  const failedQueries = modelResults.filter(r => !r.sqlResult?.success).length;
+  const failurePenalty = Math.pow(2, failedQueries); // exponential penalty for each failure
+
   // penalty terms with different exponents
   const attemptsPenalty = Math.pow(avgAttempts, 2);           // brutal on retries
   const genTimePenalty = Math.pow(avgTotalDuration, 0.5);     // mild on llm gen time
@@ -71,7 +75,7 @@ export function calculateModelMetrics(
   const bytesPerRowPenalty = Math.pow(bytesPerRowKB, 2);     // very heavy if you pull fat columns
 
   const penalty = attemptsPenalty * genTimePenalty * execTimePenalty * 
-                 rowsPenalty * bytesPenalty * bytesPerRowPenalty;
+                 rowsPenalty * bytesPenalty * bytesPerRowPenalty * failurePenalty;
 
   const efficiencyScore = Math.sqrt(penalty / C); // inverted: lower is better
 

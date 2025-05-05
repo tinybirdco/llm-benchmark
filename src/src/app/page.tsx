@@ -282,7 +282,7 @@ export default function Home() {
       type: "right",
     },
     {
-      name: "Efficiency Score",
+      name: "Overall Score",
       accessorKey: "efficiencyScore",
       sortable: true,
       cell: (row: unknown) => {
