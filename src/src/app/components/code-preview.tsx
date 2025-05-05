@@ -34,7 +34,9 @@ export function PreviewModal({ metric }: { metric: ModelMetric }) {
           <DialogTitle className="text-lg font-medium font-mono">
             {metric.model}
           </DialogTitle>
-          <DialogDescription>“{result?.question?.question}”</DialogDescription>
+          <DialogDescription>
+            “{JSON.stringify(result?.question?.content ?? "")}”
+          </DialogDescription>
 
           <h3 className="text-lg font-medium mt-4">Generated SQL</h3>
           {result && (
@@ -80,7 +82,7 @@ export default function GenericTable({
     );
 
   return (
-    <table className="border-collapse bg-background-secondary !text-sm font-mono">
+    <table className="border-collapse !text-sm font-mono">
       <thead>
         <tr>
           {meta.map((col, idx) => (

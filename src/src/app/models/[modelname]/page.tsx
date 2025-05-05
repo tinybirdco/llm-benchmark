@@ -42,7 +42,7 @@ function calculateQuestionMetrics(result: BenchmarkResult): QuestionMetric {
     queryLength: result.sql?.length || 0,
     attempts: result.attempts?.length || 1,
     success: result.sqlResult?.success || false,
-    firstAttempt: result.attempts?.length === 1 && result.sqlResult?.success,
+    firstAttempt: result.model === "human" ? true : result.attempts?.length === 1 && result.sqlResult?.success,
     tokens: result.metrics?.tokens?.totalTokens || 0,
   };
 }
@@ -58,6 +58,7 @@ const QuestionCell = ({ metric }: { metric: QuestionMetric }) => {
           {metric.question}
         </div>
       </Link>
+
 
       <PreviewModal metric={metric as any} />
     </div>
@@ -147,6 +148,17 @@ export default function ModelDetail() {
       cell: (row: unknown) => (
         <span className="font-mono">
           {(row as QuestionMetric).rowsRead.toLocaleString()}
+        </span>
+      ),
+      type: "right" as const,
+    },
+    {
+      name: "Data Read",
+      accessorKey: "bytesRead",
+      sortable: true,
+      cell: (row: unknown) => (
+        <span className="font-mono">
+          {((row as QuestionMetric).bytesRead / (1024 * 1024)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MB
         </span>
       ),
       type: "right" as const,

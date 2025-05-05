@@ -111,16 +111,6 @@ export const Header = () => {
           about the data, and we have compared the results with a human
           baseline.
         </p>
-
-        <p className="text-sm max-w-[556px]">
-          <Link
-            className="text-[#27F795] inline-flex items-center gap-1"
-            href="https://tinybird.co/blog/ai-sql-generation-benchmark"
-            target="_blank"
-          >
-            How did we do this? <ArrowRightIcon className="w-3 h-3" />
-          </Link>
-        </p>
       </div>
 
       <div className="mb-6 flex items-center gap-4 max-w-[1400px]">

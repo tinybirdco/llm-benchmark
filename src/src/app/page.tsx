@@ -94,14 +94,19 @@ export default function Home() {
       name: "Success Rate",
       accessorKey: "successRate",
       sortable: true,
-      cell: (row: unknown) => (
-        <div className="flex items-center">
-          <ProgressBar progress={(row as any).successRate} />
-          <span className="font-mono">
-            {(row as any).successRate.toFixed(1)}
-          </span>
-        </div>
-      ),
+      cell: (row: unknown) => {
+        if ((row as any).provider === "human") {
+          return "--";
+        }
+        return (
+          <div className="flex items-center">
+            <ProgressBar progress={(row as any).successRate} />
+            <span className="font-mono">
+              {(row as any).successRate.toFixed(1)}
+            </span>
+          </div>
+        );
+      },
     },
     {
       name: "First Attempt Rate",
@@ -134,7 +139,16 @@ export default function Home() {
             (((row as any).avgExecutionTime * 1000) /
               (humanBaseline.avgExecutionTime * 1000)) *
             100;
-          return <span className="font-mono">{percentage.toFixed(1)}%</span>;
+          return (
+            <div className="space-x-2">
+              <span className="font-mono">
+                {((row as any).avgExecutionTime * 1000).toFixed(2)}
+              </span>
+              <span className="text-sm text-[#C6C6C6]">
+                {percentage.toFixed(0)}%
+              </span>
+            </div>
+          );
         }
         return (
           <span className="font-mono">
@@ -142,7 +156,7 @@ export default function Home() {
           </span>
         );
       },
-      type: "right" as const,
+      type: "right",
     },
     {
       name: "LLM Gen Time (s)",
@@ -163,23 +177,8 @@ export default function Home() {
       accessorKey: "avgAttempts",
       sortable: true,
       cell: (row: unknown) => {
-        const humanBaseline = humanMetrics.find((h) => h.provider === "human");
-        const showPercentage =
-          showRelative && (row as any).provider !== "human" && humanBaseline;
-
-        if (showPercentage) {
-          const percentage =
-            ((row as any).avgAttempts / humanBaseline.avgAttempts) * 100;
-          return (
-            <div className="space-x-2">
-              <span className="font-mono">
-                {(row as any).avgAttempts.toFixed(2)}
-              </span>
-              <span className="text-sm text-[#C6C6C6]">
-                {percentage.toFixed(0)}%
-              </span>
-            </div>
-          );
+        if ((row as any).provider === "human") {
+          return "--";
         }
         return (
           <span className="font-mono">
@@ -221,6 +220,37 @@ export default function Home() {
       type: "right",
     },
     {
+      name: "Avg Data Read",
+      accessorKey: "avgBytesRead",
+      sortable: true,
+      cell: (row: unknown) => {
+        const humanBaseline = humanMetrics.find((h) => h.provider === "human");
+        const showPercentage =
+          showRelative && (row as any).provider !== "human" && humanBaseline;
+
+        if (showPercentage) {
+          const percentage =
+            ((row as any).avgBytesRead / humanBaseline.avgBytesRead) * 100;
+          return (
+            <div className="space-x-2">
+              <span className="font-mono">
+                {((row as any).avgBytesRead / (1024 * 1024)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MB
+              </span>
+              <span className="text-sm text-[#C6C6C6]">
+                {percentage.toFixed(0)}%
+              </span>
+            </div>
+          );
+        }
+        return (
+          <span className="font-mono">
+            {((row as any).avgBytesRead / (1024 * 1024)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MB
+          </span>
+        );
+      },
+      type: "right",
+    },
+    {
       name: "Avg Query Length",
       accessorKey: "avgQueryLength",
       sortable: true,
@@ -256,10 +286,9 @@ export default function Home() {
       accessorKey: "efficiencyScore",
       sortable: true,
       cell: (row: unknown) => {
-        const humanBaseline = humanMetrics.find((h) => h.provider === "human");
-        const showPercentage =
-          showRelative && (row as any).provider !== "human" && humanBaseline;
-
+        if ((row as any).provider === "human") {
+          return "--";
+        }
         return (
           <div className="inline-flex items-center">
             <div
@@ -271,21 +300,9 @@ export default function Home() {
                   : "bg-[#F72727]"
               }`}
             />
-            <div className="space-x-2">
-              <span className="font-mono">
-                {(row as any).efficiencyScore.toFixed(2)}
-              </span>
-              {showPercentage && (
-                <span className="text-sm text-[#C6C6C6]">
-                  {(
-                    ((row as any).efficiencyScore /
-                      humanBaseline.efficiencyScore) *
-                    100
-                  ).toFixed(0)}
-                  %
-                </span>
-              )}
-            </div>
+            <span className="font-mono">
+              {(row as any).efficiencyScore.toFixed(2)}
+            </span>
           </div>
         );
       },

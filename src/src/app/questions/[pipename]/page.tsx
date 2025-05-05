@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import benchmarkResults from "../../../../benchmark/results.json";
+import humanResults from "../../../../benchmark/results-human.json";
 import { Table } from "../../components/table";
 import { Badge } from "../../components/badge";
 import { ArrowLeftIcon, ChevronDownIcon } from "@/app/components/icons";
@@ -11,6 +12,7 @@ import { Header } from "@/app/components/nav";
 import { PreviewModal } from "@/app/components/code-preview";
 
 type BenchmarkResult = (typeof benchmarkResults)[number];
+type HumanResult = (typeof humanResults)[number];
 
 export type ModelMetric = {
   model: string;
@@ -28,25 +30,33 @@ export type ModelMetric = {
   tokens: number;
 };
 
-function calculateModelMetrics(result: BenchmarkResult): ModelMetric {
+function calculateModelMetrics(result: BenchmarkResult | HumanResult): ModelMetric {
   return {
     model: result.model,
     name: result.question.name,
     sql: result.sql || "",
     executionTime: result.sqlResult?.executionTime || 0,
-    timeToFirstToken: result.metrics?.timeToFirstToken || 0,
-    totalDuration: result.metrics?.totalDuration || 0,
+    timeToFirstToken: 'metrics' in result ? result.metrics?.timeToFirstToken || 0 : 0,
+    totalDuration: 'metrics' in result ? result.metrics?.totalDuration || 0 : 0,
     bytesRead: result.sqlResult?.statistics?.bytes_read || 0,
     rowsRead: result.sqlResult?.statistics?.rows_read || 0,
     queryLength: result.sql?.length || 0,
     attempts: result.attempts?.length || 1,
     success: result.sqlResult?.success || false,
-    firstAttempt: result.attempts?.length === 1 && result.sqlResult?.success,
-    tokens: result.metrics?.tokens?.totalTokens || 0,
+    firstAttempt: result.model === "human" ? true : result.attempts?.length === 1 && result.sqlResult?.success,
+    tokens: 'metrics' in result ? result.metrics?.tokens?.totalTokens || 0 : 0,
   };
 }
 
 const ModelCell = ({ metric }: { metric: ModelMetric }) => {
+  if (metric.model === "human") {
+    return (
+      <div className={`text-sm text-secondary`}>
+        <div className="truncate">{metric.model}</div>
+      </div>
+    );
+  }
+
   return (
     <div className={`max-w-[475px] -m-4 p-4`}>
       <Link
@@ -65,7 +75,11 @@ export default function QuestionDetail() {
 
   const modelResults = useMemo(() => {
     const questionResults = benchmarkResults.filter((r) => r.name === pipeName);
-    return questionResults.map(calculateModelMetrics);
+    const humanQuestionResults = humanResults.filter((r) => r.name === pipeName);
+    return [
+      ...humanQuestionResults.map(calculateModelMetrics),
+      ...questionResults.map(calculateModelMetrics),
+    ];
   }, [pipeName]);
 
   const [isExpanded, setIsExpanded] = useState(false);
@@ -101,7 +115,6 @@ export default function QuestionDetail() {
       sortable: true,
       cell: (row: unknown) => {
         const metric = row as ModelMetric;
-
         return (
           <div>
             <ModelCell metric={metric} />
@@ -199,7 +212,6 @@ export default function QuestionDetail() {
       type: "right" as const,
     },
   ];
-
 
   return (
     <div className="min-h-screen p-8 font-sans">
