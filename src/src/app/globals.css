@@ -44,6 +44,15 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
+  --color-background-secondary: var(--background2);
+  --color-foreground-secondary: var(--foreground2);
+  --color-accent: var(--accent);
+  --color-hover-accent: var(--hover-accent);
+  --color-main-button-text: var(--background);
+  --color-secondary-button-text: var(--background);
+  --color-tertiary-button-text: var(--background);
+
   --font-sans: var(--font-family-base);
   --font-mono: var(--font-family-mono);
 }

@@ -213,6 +213,10 @@ export default function ModelDetail() {
             key: metric.name,
             ...metric,
           }))}
+          defaultSort={{
+            key: "question",
+            direction: "asc",
+          }}
         />
       </div>
     </div>

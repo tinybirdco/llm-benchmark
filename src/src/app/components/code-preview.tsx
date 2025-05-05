@@ -48,6 +48,7 @@ export function PreviewModal({ metric }: { metric: ModelMetric }) {
             <GenericTable
               data={result.sqlResult.data}
               meta={result.sqlResult.meta}
+              error={result.sqlResult.error}
             />
           )}
         </DialogContent>
@@ -59,10 +60,25 @@ export function PreviewModal({ metric }: { metric: ModelMetric }) {
 export default function GenericTable({
   data,
   meta,
+  error,
 }: {
   data: Record<string, unknown>[];
   meta: Record<string, unknown>[];
+  error?: string;
 }) {
+  if (!data || !meta)
+    return (
+      <div className="space-y-4 overflow-x-auto">
+        <p className="text-sm">No valid query generated, or query failed.</p>
+
+        {error && (
+          <pre className="p-4 bg-[#f00]/10 text-[#f00] text-sm w-full overflow-x-auto">
+            {error}
+          </pre>
+        )}
+      </div>
+    );
+
   return (
     <table className="border-collapse bg-background-secondary !text-sm font-mono">
       <thead>

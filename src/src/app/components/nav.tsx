@@ -4,7 +4,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { useParams, useRouter } from "next/navigation";
 import { ChevronDownIcon } from "./icons";
 import Link from "next/link";
-import { ArrowRightIcon } from "lucide-react";
+import { ArrowRightIcon, GithubIcon, HelpCircleIcon } from "lucide-react";
+import { Button } from "./button";
 
 export const QuestionSelect = () => {
   const router = useRouter();
@@ -71,7 +72,14 @@ export const Header = () => {
   return (
     <header>
       <div className="space-y-5 mb-8">
-        <h1 className="text-3xl">AI SQL Generation Benchmark Results</h1>
+        <div className="flex items-center justify-between flex-wrap gap-4 mb-5">
+          <h1 className="text-3xl">AI SQL Generation Benchmark Results</h1>
+
+          <div className="flex gap-2 items-center">
+            <Button variant="secondary" size="lg"><GithubIcon /> Code repo</Button>
+            <Button variant="default" size="lg"><HelpCircleIcon /> How did we do this?</Button>
+          </div>
+        </div>
 
         <p className="text-sm max-w-[556px]">
           We uploaded to{" "}
