@@ -1,21 +1,12 @@
+import { streamText } from "ai";
+import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { getConfig } from "./config";
 import { getDatasources, getEndpointQuestions } from "./resources";
+import { getSystemPrompt } from "./prompt";
 
-function getExplorationObject(): ExplorationObject {
-  const { tinybird } = getConfig();
-
-  return {
-    nodes: [],
-    id: tinybird.explorationId,
-    name: tinybird.explorationName,
-    description: null,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-    shared_with: [],
-    shared_by: null,
-    user_id: tinybird.userId,
-  };
-}
+const router = createOpenRouter({
+  apiKey: process.env.OPENROUTER_API_KEY,
+});
 
 export function getClient() {
   const { tinybird } = getConfig();
@@ -72,58 +63,114 @@ export function getClient() {
     }
   }
 
+  type RouterResponse = {
+    sql: string | null;
+    metrics: {
+      timeToFirstToken: number;
+      totalDuration: number;
+      tokens: {
+        promptTokens: number;
+        completionTokens: number;
+        totalTokens: number;
+      };
+    } | null;
+  };
+
+  async function callRouter(
+    provider: string,
+    model: string,
+    systemPromptContent: string,
+    messages: any[]
+  ): Promise<RouterResponse> {
+    let timeToFirstToken = 0;
+    let totalDuration = 0;
+    let sql = "";
+
+    const tokenStats = {
+      promptTokens: 0,
+      completionTokens: 0,
+      totalTokens: 0,
+    };
+
+    const overallStartTime = Date.now();
+    let firstTokenTime = 0;
+    let isFirstToken = true;
+
+    const { fullStream, usage } = streamText({
+      model: router(`${provider}/${model}`),
+      system: systemPromptContent,
+      messages,
+    });
+
+    for await (const delta of fullStream) {
+      // Record time to first token
+      if (isFirstToken) {
+        firstTokenTime = Date.now();
+        timeToFirstToken = (firstTokenTime - overallStartTime) / 1000; // in seconds
+        isFirstToken = false;
+      }
+
+      if (delta.type === "text-delta") {
+        const { textDelta } = delta;
+        if (textDelta) {
+          sql += textDelta;
+        }
+      } else if (delta.type === "error") {
+        throw new Error(`Error from model: ${JSON.stringify(delta.error)}`);
+      }
+    }
+
+    // Calculate total duration
+    totalDuration = (Date.now() - overallStartTime) / 1000; // in seconds
+
+    // Get token usage
+    try {
+      const usageData = await usage;
+      if (usageData) {
+        tokenStats.promptTokens = usageData.promptTokens || 0;
+        tokenStats.completionTokens = usageData.completionTokens || 0;
+        tokenStats.totalTokens = usageData.totalTokens || 0;
+      }
+    } catch (error) {
+      console.error("Error getting token usage:", error);
+    }
+
+    return {
+      sql,
+      metrics: {
+        timeToFirstToken,
+        totalDuration,
+        tokens: tokenStats,
+      },
+    };
+  }
+
   async function generateQuery(
     question: ReturnType<typeof getEndpointQuestions>[number],
     provider: string,
     model: string,
     shouldExecuteSql: boolean = true
   ): Promise<ChatResponse> {
-    const datasources = getDatasources();
+    let response: RouterResponse;
 
-    const explorationId = "default";
-    const messageId = crypto.randomUUID();
-    const timestamp = new Date().toISOString();
-
-    const payload: ChatPayload = {
-      id: explorationId,
-      message: {
-        id: messageId,
-        createdAt: timestamp,
-        role: "user",
-        content: question.question,
-        parts: [
+    try {
+      response = await callRouter(
+        provider,
+        model,
+        getSystemPrompt(getDatasources()),
+        [
           {
-            type: "text",
-            text: question.question,
+            role: "user",
+            content: question.question,
           },
-        ],
-      },
-      dataFiles: datasources,
-      modelName: model,
-      provider,
-      userToken: tinybird.userToken,
-      apiHost: tinybird.apiHost,
-      workspaceToken: tinybird.workspaceToken,
-      workspaceId: tinybird.workspaceId,
-      exploration: getExplorationObject(),
-    };
-
-    const response = await fetch(tinybird.chatApiEndpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-
+        ]
+      );
+    } catch (error) {
       return {
         sql: null,
         sqlResult: null,
         metrics: null,
-        error: error.error,
+        error: error instanceof Error ? error.message : "Unknown error",
         name: question.name,
         question: question,
         model,
@@ -131,23 +178,27 @@ export function getClient() {
       };
     }
 
-    const jsonResponse = await response.json();
+    const sql =
+      (response.sql || "")
+        .replaceAll("```sql", "")
+        .replaceAll("```", "")
+        .replaceAll(";", "") || null;
 
-    let sql: string | null = jsonResponse.sql || null;
+    const metrics = response.metrics || null;
+
     let sqlResult: SqlResult | null = null;
-    let metrics = jsonResponse.metrics || null;
     let error: string | null = null;
 
-    if (jsonResponse.sql && shouldExecuteSql) {
+    if (sql && shouldExecuteSql) {
       try {
         // Make a "warming" request first + small delay to ensure the warming request starts before the actual query
-        executeSqlQuery(jsonResponse.sql).catch(() => {});
+        executeSqlQuery(sql).catch(() => {});
         await new Promise((resolve) => setTimeout(resolve, 2_500));
 
         // Execute the actual query
-        sqlResult = await executeSqlQuery(jsonResponse.sql);
-      } catch (error) {
-        error = error instanceof Error ? error.message : "Unknown error";
+        sqlResult = await executeSqlQuery(sql);
+      } catch (e) {
+        error = e instanceof Error ? e.message : "Unknown error";
       }
     }
 
@@ -159,7 +210,7 @@ export function getClient() {
           JSON.stringify(sqlResult?.data)?.length > 1000000
             ? null
             : sqlResult?.data,
-        length: JSON.stringify(sqlResult?.data).length,
+        length: JSON.stringify(sqlResult?.data)?.length,
       },
       name: question.name,
       question: question,

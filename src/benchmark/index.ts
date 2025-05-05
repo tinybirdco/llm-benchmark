@@ -1,12 +1,42 @@
-import { writeFileSync } from "fs";
+import { writeFileSync, readFileSync, existsSync } from "fs";
 import { getClient } from "./client";
 import { getConfig } from "./config";
 import { getEndpointQuestions } from "./resources";
+import { ChatResponse } from "./types";
 
 const MAX_RETRIES = 2;
+const RESULTS_FILE = "benchmark/results.json";
+
+function readExistingResults(): ChatResponse[] {
+  if (!existsSync(RESULTS_FILE)) {
+    return [];
+  }
+  try {
+    return JSON.parse(readFileSync(RESULTS_FILE, "utf-8"));
+  } catch (error) {
+    console.error("Error reading results file:", error);
+    return [];
+  }
+}
+
+function writeResults(results: ChatResponse[]) {
+  writeFileSync(RESULTS_FILE, JSON.stringify(results, null, 2));
+}
+
+function getCompletedQuestionsForModel(
+  existingResults: ChatResponse[],
+  provider: string,
+  model: string
+): Set<string> {
+  return new Set(
+    existingResults
+      .filter((r) => r.provider === provider && r.model === model)
+      .map((r) => r.question.name)
+  );
+}
 
 async function main() {
-  await runHumanQueries();
+  // await runHumanQueries();
   await runBenchmark();
 }
 
@@ -52,8 +82,7 @@ async function runHumanQueries() {
 
 async function runBenchmark() {
   const { providers } = getConfig();
-
-  const allResults: ChatResponse[] = [];
+  let existingResults = readExistingResults();
 
   for (const provider in providers) {
     const models = providers[provider as keyof typeof providers].models;
@@ -64,29 +93,40 @@ async function runBenchmark() {
         `Benchmarking ${provider}/${model} (${index + 1}/${models.length})`
       );
 
-      const results = await runModelBenchmark(provider, model);
+      const completedQuestions = getCompletedQuestionsForModel(
+        existingResults,
+        provider,
+        model
+      );
+      const results = await runModelBenchmark(
+        provider,
+        model,
+        completedQuestions
+      );
 
-      allResults.push(...results);
+      // Update results file after each model run
+      // Remove only the results for this specific model/provider combination
+      existingResults = existingResults.filter(
+        (r) => !(r.provider === provider && r.model === model)
+      );
+      // Add the new results
+      existingResults.push(...results);
+      // Write the updated results
+      writeResults(existingResults);
+
       index++;
     }
   }
-
-  console.log("Final results =>");
-  console.log(allResults);
-
-  const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-  const fileName = `benchmark/results-${timestamp}.json`;
-  const staticFileName = `benchmark/results.json`;
-
-  writeFileSync(fileName, JSON.stringify(allResults, null, 2));
-  writeFileSync(staticFileName, JSON.stringify(allResults, null, 2));
 }
 
-async function runModelBenchmark(provider: string, model: string) {
+async function runModelBenchmark(
+  provider: string,
+  model: string,
+  completedQuestions: Set<string>
+) {
   const client = getClient();
-
   const questions = getEndpointQuestions();
-  const results = [];
+  const results: ChatResponse[] = [];
 
   async function generateQueryWithRetry(
     question: ReturnType<typeof getEndpointQuestions>[number],
@@ -97,7 +137,12 @@ async function runModelBenchmark(provider: string, model: string) {
 
     const currentAttempts = [...previousAttempts, result];
 
-    if (result.error && retryCount < MAX_RETRIES) {
+    if (
+      (result.error ||
+        result.sqlResult?.success === false ||
+        !!result.sqlResult?.error) &&
+      retryCount < MAX_RETRIES
+    ) {
       const errorFeedback = `I previously asked: "${question.question}"\n\nYou generated this SQL query:\n\`\`\`sql\n${result.sql}\n\`\`\`\n\nBut it resulted in this error:\n\`\`\`\n${result.error}\n\`\`\`\n\nPlease fix the SQL query to correctly answer my original question. Make sure the SQL is valid for Tinybird/ClickHouse.`;
 
       return generateQueryWithRetry(
@@ -119,7 +164,14 @@ async function runModelBenchmark(provider: string, model: string) {
     };
   }
 
-  for (const question of questions) {
+  for (const question of questions.slice(0, 10)) {
+    // Skip already completed questions
+    if (completedQuestions.has(question.name)) {
+      console.log(`Skipping already completed question: ${question.name}`);
+      continue;
+    }
+
+    console.log(`Running question: ${question.name}`);
     const result = await generateQueryWithRetry(question);
     results.push(result);
   }

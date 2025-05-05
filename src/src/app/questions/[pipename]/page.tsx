@@ -7,7 +7,8 @@ import benchmarkResults from "../../../../benchmark/results.json";
 import { Table } from "../../components/table";
 import { Badge } from "../../components/badge";
 import { CodePreview } from "../../components/code-preview";
-import { ArrowLeftIcon } from "@/app/components/icons";
+import { ArrowLeftIcon, ChevronDownIcon } from "@/app/components/icons";
+import { Header } from "@/app/components/nav";
 
 type BenchmarkResult = (typeof benchmarkResults)[number];
 
@@ -212,31 +213,33 @@ export default function QuestionDetail() {
     },
   ];
 
-  console.log(expandedQuestions);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   return (
     <div className="min-h-screen p-8 font-sans">
-      <div className="mb-8">
-        <Link
-          href="/"
-          className="text-white hover:text-[#27F795] flex items-center gap-2"
-        >
-          <ArrowLeftIcon /> Back
-        </Link>
-      </div>
+      <Header />
 
-      <h1 className="text-3xl mb-4">Question Details</h1>
-      <div className="mb-8 p-4 bg-[#0A0A0A] rounded-lg shadow">
-        <h2 className="text-xl font-semibold mb-2 text-[#F4F4F4]">
-          {questionDetails?.question}
-        </h2>
-        <pre className="p-4 bg-[#353535] rounded overflow-x-auto">
-          <code className="text-[#C6C6C6]">{questionDetails?.content}</code>
-        </pre>
+      <div className="mb-8 space-y-5">
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="text-sm text-[#27F795] hover:text-[#1ac177] whitespace-nowrap flex items-center gap-1"
+        >
+          Show human code
+          <ChevronDownIcon />
+        </button>
+
+        {isExpanded ? (
+          <div>
+            <pre className="p-4 bg-[#353535] rounded overflow-x-auto max-w-[1400px]">
+              <code className="text-white text-sm">{questionDetails?.content}</code>
+            </pre>
+          </div>
+        ) : null}
       </div>
 
       <h2 className="text-2xl mb-4">Model Results</h2>
-      <div className="overflow-x-auto shadow-lg rounded-lg">
+
+      <div className="overflow-x-auto">
         <Table
           columns={columns}
           data={modelResults.map((metric) => ({

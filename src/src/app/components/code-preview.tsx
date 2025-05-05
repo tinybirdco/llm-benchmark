@@ -1,5 +1,12 @@
-export const CodePreview = ({ sql, isExpanded, onExpandChange }: { sql: string; isExpanded: boolean; onExpandChange?: (expanded: boolean) => void }) => {
-
+export const CodePreview = ({
+  sql,
+  isExpanded,
+  onExpandChange,
+}: {
+  sql: string;
+  isExpanded: boolean;
+  onExpandChange?: (expanded: boolean) => void;
+}) => {
   const handleExpandToggle = (expanded: boolean) => {
     onExpandChange?.(expanded);
   };
@@ -10,9 +17,7 @@ export const CodePreview = ({ sql, isExpanded, onExpandChange }: { sql: string; 
     <div>
       {!isExpanded ? (
         <div className="flex items-center gap-2">
-          <code className="text-sm text-[#C6C6C6] truncate">
-            {sql}
-          </code>
+          <code className="text-sm text-[#C6C6C6] truncate">{sql}</code>
           <button
             onClick={() => handleExpandToggle(true)}
             className="text-sm text-[#27F795] hover:text-[#1ac177] whitespace-nowrap flex items-center gap-1"
@@ -39,4 +44,4 @@ export const CodePreview = ({ sql, isExpanded, onExpandChange }: { sql: string; 
       )}
     </div>
   );
-}; 
+};

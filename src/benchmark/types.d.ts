@@ -1,4 +1,4 @@
-interface ChatResponse {
+export interface ChatResponse {
   sql: string | null;
   sqlResult: any | null;
   metrics: any | null;
@@ -13,7 +13,7 @@ interface ChatResponse {
   attempts?: ChatResponse[];
 }
 
-interface Message {
+export interface Message {
   id: string;
   createdAt: string;
   role: string;
@@ -21,7 +21,7 @@ interface Message {
   parts: { type: string; text: string }[];
 }
 
-interface ChatPayload {
+export interface ChatPayload {
   id: string;
   message: Message;
   dataFiles: any[];
@@ -34,7 +34,7 @@ interface ChatPayload {
   exploration: ExplorationObject;
 }
 
-interface SqlResult {
+export interface SqlResult {
   success: boolean;
   data: any[];
   meta?: any;
@@ -46,7 +46,7 @@ interface SqlResult {
   error?: string;
 }
 
-interface ExplorationObject {
+export interface ExplorationObject {
   nodes: any[];
   id: string;
   name: string;

@@ -420,3 +420,60 @@ select::placeholder {
 .floating-notification-highlight {
   animation: pulse 2s infinite;
 }
+
+/* Custom Checkbox Styles */
+.custom-checkbox {
+  position: relative;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+}
+.custom-checkbox input[type="checkbox"] {
+  opacity: 0;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  cursor: pointer;
+}
+.custom-checkbox-box {
+  box-sizing: border-box;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #E6E6E6;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+.custom-checkbox input[type="checkbox"]:hover ~ .custom-checkbox-box {
+  border-color: #fff;
+  border-width: 2px;
+}
+.custom-checkbox input[type="checkbox"]:checked ~ .custom-checkbox-box {
+  background: #6CF9A6;
+  border-color: #6CF9A6;
+}
+.custom-checkbox input[type="checkbox"]:checked ~ .custom-checkbox-box .checkmark {
+  display: block;
+}
+.custom-checkbox-box .checkmark {
+  display: none;
+  width: 12px;
+  height: 12px;
+}
+.custom-checkbox input[type="checkbox"]:disabled ~ .custom-checkbox-box {
+  background: #3A3A3A;
+  border-color: #3A3A3A;
+}
+.custom-checkbox input[type="checkbox"]:disabled ~ .custom-checkbox-box .checkmark {
+  display: none;
+}
+.custom-checkbox.error .custom-checkbox-box {
+  border-color: #FF3B22 !important;
+}

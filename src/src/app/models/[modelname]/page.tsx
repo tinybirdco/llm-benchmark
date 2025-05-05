@@ -222,7 +222,7 @@ export default function ModelDetail() {
         Detailed Results for <span className="text-[#27F795]">{modelName}</span>
       </h1>
 
-      <div className="overflow-x-auto shadow-lg rounded-lg">
+      <div className="overflow-x-auto">
         <Table
           columns={columns}
           data={questionMetrics.map((metric) => ({
