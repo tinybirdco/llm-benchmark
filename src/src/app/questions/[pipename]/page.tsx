@@ -6,14 +6,15 @@ import Link from "next/link";
 import benchmarkResults from "../../../../benchmark/results.json";
 import { Table } from "../../components/table";
 import { Badge } from "../../components/badge";
-import { CodePreview } from "../../components/code-preview";
 import { ArrowLeftIcon, ChevronDownIcon } from "@/app/components/icons";
 import { Header } from "@/app/components/nav";
+import { PreviewModal } from "@/app/components/code-preview";
 
 type BenchmarkResult = (typeof benchmarkResults)[number];
 
-type ModelMetric = {
+export type ModelMetric = {
   model: string;
+  name: string;
   sql: string;
   executionTime: number;
   timeToFirstToken: number;
@@ -30,6 +31,7 @@ type ModelMetric = {
 function calculateModelMetrics(result: BenchmarkResult): ModelMetric {
   return {
     model: result.model,
+    name: result.question.name,
     sql: result.sql || "",
     executionTime: result.sqlResult?.executionTime || 0,
     timeToFirstToken: result.metrics?.timeToFirstToken || 0,
@@ -44,31 +46,15 @@ function calculateModelMetrics(result: BenchmarkResult): ModelMetric {
   };
 }
 
-const ModelCell = ({
-  metric,
-  isExpanded,
-  setIsExpanded,
-}: {
-  metric: ModelMetric;
-  isExpanded: boolean;
-  setIsExpanded: (name: string) => void;
-}) => {
+const ModelCell = ({ metric }: { metric: ModelMetric }) => {
   return (
-    <div
-      className={`max-w-[475px] -m-4 p-4 ${isExpanded ? "bg-[#353535]" : ""}`}
-    >
+    <div className={`max-w-[475px] -m-4 p-4`}>
       <Link
         href={`/models/${encodeURIComponent(metric.model)}`}
-        className="hover:text-[#27F795] text-sm"
+        className="text-[#27F795] text-sm"
       >
         <div className="truncate">{metric.model}</div>
       </Link>
-
-      <CodePreview
-        sql={metric.sql}
-        isExpanded={isExpanded}
-        onExpandChange={() => setIsExpanded(metric.model)}
-      />
     </div>
   );
 };
@@ -77,20 +63,12 @@ export default function QuestionDetail() {
   const params = useParams();
   const pipeName = decodeURIComponent(params.pipename as string);
 
-  const [expandedQuestions, setExpandedQuestions] = useState<string[]>([]);
-
-  const handleExpandChange = (name: string) => {
-    if (expandedQuestions.includes(name)) {
-      setExpandedQuestions((prev) => prev.filter((q) => q !== name));
-    } else {
-      setExpandedQuestions((prev) => [...prev, name]);
-    }
-  };
-
   const modelResults = useMemo(() => {
     const questionResults = benchmarkResults.filter((r) => r.name === pipeName);
     return questionResults.map(calculateModelMetrics);
   }, [pipeName]);
+
+  const [isExpanded, setIsExpanded] = useState(false);
 
   if (modelResults.length === 0) {
     return (
@@ -122,12 +100,12 @@ export default function QuestionDetail() {
       accessorKey: "model",
       cell: (row: unknown) => {
         const metric = row as ModelMetric;
+
         return (
-          <ModelCell
-            metric={metric}
-            isExpanded={expandedQuestions.includes(metric.model)}
-            setIsExpanded={handleExpandChange}
-          />
+          <div>
+            <ModelCell metric={metric} />
+            <PreviewModal metric={metric}  />
+          </div>
         );
       },
     },
@@ -213,7 +191,6 @@ export default function QuestionDetail() {
     },
   ];
 
-  const [isExpanded, setIsExpanded] = useState(false);
 
   return (
     <div className="min-h-screen p-8 font-sans">
@@ -231,7 +208,9 @@ export default function QuestionDetail() {
         {isExpanded ? (
           <div>
             <pre className="p-4 bg-[#353535] rounded overflow-x-auto max-w-[1400px]">
-              <code className="text-white text-sm">{questionDetails?.content}</code>
+              <code className="text-white text-sm">
+                {questionDetails?.content}
+              </code>
             </pre>
           </div>
         ) : null}
@@ -246,7 +225,6 @@ export default function QuestionDetail() {
             key: metric.model,
             ...metric,
           }))}
-          expandedRows={expandedQuestions}
         />
       </div>
     </div>

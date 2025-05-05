@@ -6,13 +6,14 @@ import Link from "next/link";
 import benchmarkResults from "../../../../benchmark/results.json";
 import { Table } from "../../components/table";
 import { Badge } from "../../components/badge";
-import { CodePreview } from "../../components/code-preview";
 import { ArrowLeftIcon } from "@/app/components/icons";
+import { PreviewModal } from "@/app/components/code-preview";
 
 type BenchmarkResult = (typeof benchmarkResults)[number];
 
 type QuestionMetric = {
   name: string;
+  model: string;
   question: string;
   sql: string;
   executionTime: number;
@@ -30,6 +31,7 @@ type QuestionMetric = {
 function calculateQuestionMetrics(result: BenchmarkResult): QuestionMetric {
   return {
     name: result.name,
+    model: result.model,
     question: result.question.question,
     sql: result.sql || "",
     executionTime: result.sqlResult?.executionTime || 0,
@@ -45,15 +47,7 @@ function calculateQuestionMetrics(result: BenchmarkResult): QuestionMetric {
   };
 }
 
-const QuestionCell = ({
-  metric,
-  isExpanded,
-  setIsExpanded,
-}: {
-  metric: QuestionMetric;
-  isExpanded: boolean;
-  setIsExpanded: (name: string) => void;
-}) => {
+const QuestionCell = ({ metric }: { metric: QuestionMetric }) => {
   return (
     <div className={`max-w-[475px] -m-4 p-4`}>
       <Link
@@ -64,11 +58,8 @@ const QuestionCell = ({
           {metric.question}
         </div>
       </Link>
-      <CodePreview
-        sql={metric.sql}
-        isExpanded={isExpanded}
-        onExpandChange={() => setIsExpanded(metric.name)}
-      />
+
+      <PreviewModal metric={metric as any} />
     </div>
   );
 };
@@ -82,29 +73,13 @@ export default function ModelDetail() {
     return modelResults.map(calculateQuestionMetrics);
   }, [modelName]);
 
-  const [expandedQuestions, setExpandedQuestions] = useState<string[]>([]);
-
-  const handleExpandChange = (name: string) => {
-    if (expandedQuestions.includes(name)) {
-      setExpandedQuestions((prev) => prev.filter((q) => q !== name));
-    } else {
-      setExpandedQuestions((prev) => [...prev, name]);
-    }
-  };
-
   const columns = [
     {
       name: "Question",
       accessorKey: "question",
       cell: (row: unknown) => {
         const metric = row as QuestionMetric;
-        return (
-          <QuestionCell
-            metric={metric}
-            isExpanded={expandedQuestions.includes(metric.name)}
-            setIsExpanded={handleExpandChange}
-          />
-        );
+        return <QuestionCell metric={metric} />;
       },
     },
     {
@@ -229,7 +204,6 @@ export default function ModelDetail() {
             key: metric.name,
             ...metric,
           }))}
-          expandedRows={expandedQuestions}
         />
       </div>
     </div>

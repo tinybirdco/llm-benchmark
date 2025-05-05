@@ -8,11 +8,9 @@ type ColumnDefinition = {
 export const Table = ({
   columns,
   data,
-  expandedRows,
 }: {
   columns: ColumnDefinition[];
   data: any[];
-  expandedRows?: string[];
 }) => {
   return (
     <div className="w-full bg-[#0A0A0A] overflow-auto table-auto">
@@ -30,14 +28,10 @@ export const Table = ({
       </div>
       <div className="table-row-group">
         {data.map((row) => {
-          const isExpanded = expandedRows?.includes(row.key);
-
           return (
             <div
               key={crypto.randomUUID()}
-              className={`table-row hover:bg-[#353535] ${
-                isExpanded ? "bg-[#353535]" : ""
-              }`}
+              className={`table-row hover:bg-[#353535]`}
             >
               {columns.map((column, idx) => (
                 <div

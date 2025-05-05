@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 
 import humanResults from "../../benchmark/results-human.json";
 import benchmarkResults from "../../benchmark/results.json";
-import { CodePreview } from "./components/code-preview";
+
 import { Header } from "./components/nav";
 import { ProgressBar } from "./components/progress";
 import { Table } from "./components/table";
@@ -88,7 +88,6 @@ function calculateModelMetrics(modelResults: typeof benchmarkResults) {
 }
 
 const ModelCell = ({ model, sql }: { model: string; sql: string }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
   return (
     <div className="max-w-[475px]">
       <Link
@@ -97,11 +96,6 @@ const ModelCell = ({ model, sql }: { model: string; sql: string }) => {
       >
         <div className="truncate">{model}</div>
       </Link>
-      <CodePreview
-        sql={sql}
-        isExpanded={isExpanded}
-        onExpandChange={setIsExpanded}
-      />
     </div>
   );
 };
