@@ -1,51 +1,118 @@
+import { cn } from "@/lib/utils";
+import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
+import React from "react";
+
 type ColumnDefinition = {
   name: string;
   accessorKey: string;
   cell: (row: unknown) => React.ReactNode;
   type?: "left" | "right";
+  sortable?: boolean;
+};
+
+type SortConfig = {
+  key: string;
+  direction: "asc" | "desc" | null;
 };
 
 export const Table = ({
   columns,
   data,
+  defaultSort,
 }: {
   columns: ColumnDefinition[];
-  data: any[];
+  data: Record<string, unknown>[];
+  defaultSort?: SortConfig;
 }) => {
+  const [sortConfig, setSortConfig] = React.useState<SortConfig | null>(
+    defaultSort || null
+  );
+
+  const handleSort = (column: ColumnDefinition) => {
+    if (!column.sortable) return;
+
+    setSortConfig((currentSort) => {
+      if (!currentSort || currentSort.key !== column.accessorKey) {
+        return { key: column.accessorKey, direction: "asc" };
+      }
+
+      if (currentSort.direction === "asc") {
+        return { key: column.accessorKey, direction: "desc" };
+      }
+
+      if (currentSort.direction === "desc") {
+        return null;
+      }
+
+      return currentSort;
+    });
+  };
+
+  const sortedData = React.useMemo(() => {
+    if (!sortConfig) return data;
+
+    return [...data].sort((a, b) => {
+      const aValue = a[sortConfig.key];
+      const bValue = b[sortConfig.key];
+
+      if (aValue === bValue) return 0;
+      if (aValue === null || aValue === undefined) return 1;
+      if (bValue === null || bValue === undefined) return -1;
+
+      const comparison = aValue < bValue ? -1 : 1;
+      return sortConfig.direction === "asc" ? comparison : -comparison;
+    });
+  }, [data, sortConfig]);
+
+  const getSortIcon = (column: ColumnDefinition) => {
+    if (!column.sortable) return null;
+    if (!sortConfig || sortConfig.key !== column.accessorKey) return null;
+    return sortConfig.direction === "asc" ? (
+      <ChevronUpIcon className="w-4 h-4" />
+    ) : (
+      <ChevronDownIcon className="w-4 h-4" />
+    );
+  };
+
   return (
     <div className="w-full bg-[#0A0A0A] overflow-auto table-auto">
       <div className="table-header-group">
         {columns.map((column) => (
           <div
             key={column.name}
-            className={`p-4 align-start text-sm table-cell text-nowrap whitespace-nowrap ${
-              column.type === "right" ? "text-right" : "text-left"
-            }`}
+            onClick={() => handleSort(column)}
+            className={cn(
+              "p-4 align-start text-sm table-cell text-nowrap whitespace-nowrap",
+              column.type === "right" ? "text-right" : "text-left",
+              column.sortable ? "cursor-pointer hover:bg-[#353535]" : "",
+              sortConfig?.key === column.accessorKey ? "font-bold" : ""
+            )}
           >
-            {column.name}
+            <div className="flex items-center gap-2">
+              {column.name}
+              {getSortIcon(column)}
+            </div>
           </div>
         ))}
       </div>
       <div className="table-row-group">
-        {data.map((row) => {
-          return (
-            <div
-              key={crypto.randomUUID()}
-              className={`table-row hover:bg-[#353535]`}
-            >
-              {columns.map((column, idx) => (
-                <div
-                  key={column.name}
-                  className={`p-4 align-start table-cell text-sm text-nowrap whitespace-nowrap ${
-                    column.type === "right" ? "text-right" : "text-left pr-6"
-                  }`}
-                >
-                  {column.cell(row)}
-                </div>
-              ))}
-            </div>
-          );
-        })}
+        {sortedData.map((row) => (
+          <div
+            key={crypto.randomUUID()}
+            className="table-row hover:bg-[#353535]"
+          >
+            {columns.map((column) => (
+              <div
+                key={column.name}
+                className={`p-4 align-start table-cell text-sm text-nowrap whitespace-nowrap ${
+                  column.type === "right" ? "text-right" : "text-left pr-6"
+                }`}
+              >
+                {column.cell(row)}
+              </div>
+            ))}
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { useParams, useRouter } from "next/navigation";
 import { ChevronDownIcon } from "./icons";
 import Link from "next/link";
+import { ArrowRightIcon } from "lucide-react";
 
 export const QuestionSelect = () => {
   const router = useRouter();
@@ -101,6 +102,16 @@ export const Header = () => {
           </Link>{" "}
           about the data, and we have compared the results with a human
           baseline.
+        </p>
+
+        <p className="text-sm max-w-[556px]">
+          <Link
+            className="text-[#27F795] inline-flex items-center gap-1"
+            href="https://tinybird.co/blog/ai-sql-generation-benchmark"
+            target="_blank"
+          >
+            How did we do this? <ArrowRightIcon className="w-3 h-3" />
+          </Link>
         </p>
       </div>
 

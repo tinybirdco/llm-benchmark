@@ -77,6 +77,7 @@ export default function ModelDetail() {
     {
       name: "Question",
       accessorKey: "question",
+      sortable: true,
       cell: (row: unknown) => {
         const metric = row as QuestionMetric;
         return <QuestionCell metric={metric} />;
@@ -85,6 +86,7 @@ export default function ModelDetail() {
     {
       name: "Success",
       accessorKey: "success",
+      sortable: true,
       cell: (row: unknown) => {
         const metric = row as QuestionMetric;
         return (
@@ -97,6 +99,7 @@ export default function ModelDetail() {
     {
       name: "First Attempt",
       accessorKey: "firstAttempt",
+      sortable: true,
       cell: (row: unknown) => {
         const metric = row as QuestionMetric;
         return (
@@ -109,6 +112,7 @@ export default function ModelDetail() {
     {
       name: "Execution (ms)",
       accessorKey: "executionTime",
+      sortable: true,
       cell: (row: unknown) => (
         <span className="font-mono">
           {((row as QuestionMetric).executionTime * 1000).toFixed(2)}
@@ -119,6 +123,7 @@ export default function ModelDetail() {
     {
       name: "LLM Gen (s)",
       accessorKey: "totalDuration",
+      sortable: true,
       cell: (row: unknown) => (
         <span className="font-mono">
           {(row as QuestionMetric).totalDuration.toFixed(3)}
@@ -129,6 +134,7 @@ export default function ModelDetail() {
     {
       name: "Attempts",
       accessorKey: "attempts",
+      sortable: true,
       cell: (row: unknown) => (
         <span className="font-mono">{(row as QuestionMetric).attempts}</span>
       ),
@@ -137,6 +143,7 @@ export default function ModelDetail() {
     {
       name: "Rows Read",
       accessorKey: "rowsRead",
+      sortable: true,
       cell: (row: unknown) => (
         <span className="font-mono">
           {(row as QuestionMetric).rowsRead.toLocaleString()}
@@ -147,6 +154,7 @@ export default function ModelDetail() {
     {
       name: "Query Length",
       accessorKey: "queryLength",
+      sortable: true,
       cell: (row: unknown) => (
         <span className="font-mono">{(row as QuestionMetric).queryLength}</span>
       ),
@@ -155,6 +163,7 @@ export default function ModelDetail() {
     {
       name: "Tokens",
       accessorKey: "tokens",
+      sortable: true,
       cell: (row: unknown) => (
         <span className="font-mono">
           {(row as QuestionMetric).tokens.toLocaleString()}

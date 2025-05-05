@@ -4,95 +4,22 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 
 import humanResults from "../../benchmark/results-human.json";
-import benchmarkResults from "../../benchmark/results.json";
 
 import { Header } from "./components/nav";
 import { ProgressBar } from "./components/progress";
 import { Table } from "./components/table";
+import { calculateModelMetrics, calculateRanks } from "@/lib/eval";
+import { useResults } from "@/lib/use-results";
 
-type BenchmarkResults = typeof benchmarkResults;
-type ModelResult = BenchmarkResults[number];
 type HumanResult = (typeof humanResults)[number];
+type ModelResult = ReturnType<typeof useResults>[number];
 
-function calculateModelMetrics(modelResults: typeof benchmarkResults) {
-  const totalQueries = modelResults.length;
-  const successfulQueries = modelResults.filter(
-    (r) => r.sqlResult?.success
-  ).length;
-  const firstAttemptSuccess = modelResults.filter(
-    (r) => r.sqlResult?.success && r.attempts.length === 1
-  ).length;
-
-  const avgExecutionTime =
-    modelResults.reduce(
-      (acc, r) => acc + (r.sqlResult?.executionTime || 0),
-      0
-    ) / totalQueries;
-  const avgTimeToFirstToken =
-    modelResults.reduce(
-      (acc, r) => acc + (r.metrics?.timeToFirstToken || 0),
-      0
-    ) / totalQueries;
-  const avgTotalDuration =
-    modelResults.reduce((acc, r) => acc + (r.metrics?.totalDuration || 0), 0) /
-    totalQueries;
-
-  const totalBytesRead = modelResults.reduce(
-    (acc, r) => acc + (r.sqlResult?.statistics?.bytes_read || 0),
-    0
-  );
-  const totalRowsRead = modelResults.reduce(
-    (acc, r) => acc + (r.sqlResult?.statistics?.rows_read || 0),
-    0
-  );
-  const avgRowsRead = totalRowsRead / totalQueries;
-
-  const avgQueryLength =
-    modelResults.reduce((acc, r) => acc + (r.sql?.length || 0), 0) /
-    totalQueries;
-  const avgTokens =
-    modelResults.reduce(
-      (acc, r) => acc + (r.metrics?.tokens?.totalTokens || 0),
-      0
-    ) / totalQueries;
-  const avgAttempts =
-    modelResults.reduce((acc, r) => acc + (r.attempts?.length || 1), 0) /
-    totalQueries;
-
-  const successRate = (successfulQueries / totalQueries) * 100;
-  const firstAttemptRate = (firstAttemptSuccess / totalQueries) * 100;
-
-  // Efficiency score (lower is better) - custom metric combining execution time, data read, and success rate
-  const efficiencyScore =
-    (avgExecutionTime * 1000 + totalBytesRead / 1000000) / (successRate + 1);
-
-  return {
-    model: modelResults[0].model,
-    provider: modelResults[0].provider,
-    totalQueries,
-    successfulQueries,
-    firstAttemptSuccess,
-    avgExecutionTime,
-    avgTimeToFirstToken,
-    avgTotalDuration,
-    totalBytesRead,
-    totalRowsRead,
-    avgRowsRead,
-    avgQueryLength,
-    avgTokens,
-    avgAttempts,
-    successRate,
-    firstAttemptRate,
-    efficiencyScore,
-  };
-}
-
-const ModelCell = ({ model, sql }: { model: string; sql: string }) => {
+const ModelCell = ({ model }: { model: string }) => {
   return (
     <div className="max-w-[475px]">
       <Link
         href={`/models/${encodeURIComponent(model)}`}
-        className="hover:text-[#27F795] text-sm"
+        className="text-[#27F795] text-sm"
       >
         <div className="truncate">{model}</div>
       </Link>
@@ -101,6 +28,7 @@ const ModelCell = ({ model, sql }: { model: string; sql: string }) => {
 };
 
 export default function Home() {
+  const results = useResults();
   const [showRelative, setShowRelative] = useState(false);
 
   const humanMetrics = useMemo(() => {
@@ -114,13 +42,13 @@ export default function Home() {
       {}
     );
 
-    return Object.values(modelGroups).map((group) =>
-      calculateModelMetrics(group as ModelResult[])
-    );
+    return calculateRanks(Object.values(modelGroups).map((group) =>
+      calculateModelMetrics(group)
+    ));
   }, []);
 
   const modelMetrics = useMemo(() => {
-    const modelGroups = benchmarkResults.reduce(
+    const modelGroups = results.reduce(
       (acc: Record<string, ModelResult[]>, result: ModelResult) => {
         const key = result.model;
         if (!acc[key]) acc[key] = [];
@@ -130,20 +58,31 @@ export default function Home() {
       {}
     );
 
-    return Object.values(modelGroups).map((group) =>
-      calculateModelMetrics(group as ModelResult[])
-    );
+    return calculateRanks(Object.values(modelGroups).map((group) =>
+      calculateModelMetrics(group)
+    ));
   }, []);
 
   const columns = [
     {
+      name: "Rank",
+      accessorKey: "rank",
+      sortable: true,
+      cell: (row: unknown) => row.provider === "human" ? "--" :  (
+        <span className="font-mono">#{(row as any).rank}</span>
+      ),
+      type: "right",
+    },
+    {
       name: "Provider",
       accessorKey: "provider",
+      sortable: true,
       cell: (row: unknown) => (row as any).provider,
     },
     {
       name: "Model",
       accessorKey: "model",
+      sortable: true,
       cell: (row: unknown) =>
         (row as any).provider === "human" ? (
           (row as any).model
@@ -154,6 +93,7 @@ export default function Home() {
     {
       name: "Success Rate",
       accessorKey: "successRate",
+      sortable: true,
       cell: (row: unknown) => (
         <div className="flex items-center">
           <ProgressBar progress={(row as any).successRate} />
@@ -166,6 +106,7 @@ export default function Home() {
     {
       name: "First Attempt Rate",
       accessorKey: "firstAttemptRate",
+      sortable: true,
       cell: (row: unknown) => {
         if ((row as any).provider === "human") {
           return "--";
@@ -183,6 +124,7 @@ export default function Home() {
     {
       name: "Avg Execution (ms)",
       accessorKey: "avgExecutionTime",
+      sortable: true,
       cell: (row: unknown) => {
         const humanBaseline = humanMetrics.find((h) => h.provider === "human");
         const showPercentage =
@@ -205,6 +147,7 @@ export default function Home() {
     {
       name: "LLM Gen Time (s)",
       accessorKey: "avgTotalDuration",
+      sortable: true,
       cell: (row: unknown) =>
         (row as any).provider === "human" ? (
           "--"
@@ -218,6 +161,7 @@ export default function Home() {
     {
       name: "Avg Attempts",
       accessorKey: "avgAttempts",
+      sortable: true,
       cell: (row: unknown) => {
         const humanBaseline = humanMetrics.find((h) => h.provider === "human");
         const showPercentage =
@@ -248,6 +192,7 @@ export default function Home() {
     {
       name: "Avg Rows Read",
       accessorKey: "avgRowsRead",
+      sortable: true,
       cell: (row: unknown) => {
         const humanBaseline = humanMetrics.find((h) => h.provider === "human");
         const showPercentage =
@@ -278,6 +223,7 @@ export default function Home() {
     {
       name: "Avg Query Length",
       accessorKey: "avgQueryLength",
+      sortable: true,
       cell: (row: unknown) => {
         const humanBaseline = humanMetrics.find((h) => h.provider === "human");
         const showPercentage =
@@ -308,6 +254,7 @@ export default function Home() {
     {
       name: "Efficiency Score",
       accessorKey: "efficiencyScore",
+      sortable: true,
       cell: (row: unknown) => {
         const humanBaseline = humanMetrics.find((h) => h.provider === "human");
         const showPercentage =
@@ -347,6 +294,7 @@ export default function Home() {
     {
       name: "Total Queries",
       accessorKey: "totalQueries",
+      sortable: true,
       cell: (row: unknown) => (
         <span className="font-mono">{(row as any).totalQueries}</span>
       ),
@@ -380,7 +328,11 @@ export default function Home() {
       </div>
 
       <div className="overflow-x-auto">
-        <Table columns={columns} data={[...humanMetrics, ...modelMetrics]} />
+        <Table
+          columns={columns}
+          data={[...humanMetrics, ...modelMetrics]}
+          defaultSort={{ key: "rank", direction: "asc" }}
+        />
       </div>
 
       <div className="mt-8 text-sm bg-[#353535] p-4">
