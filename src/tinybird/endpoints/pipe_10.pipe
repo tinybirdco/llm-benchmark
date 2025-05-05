@@ -1,5 +1,5 @@
 DESCRIPTION >
-    top 10 Authors that contributed to freecodecamp also contributed to what repositories?
+    top 10 Authors that contributed to tensorflow also contributed to what repositories?
 
 NODE endpoint
 SQL >
@@ -12,8 +12,8 @@ SQL >
     (
         SELECT actor_login
         FROM github_events
-        WHERE (event_type = 'PullRequestEvent') AND (action = 'opened') AND (repo_name IN ('yandex/ClickHouse', 'ClickHouse/ClickHouse'))
-    )) AND (repo_name NOT ILIKE '%ClickHouse%')
+        WHERE (event_type = 'PullRequestEvent') AND (action = 'opened') AND (repo_name IN ('tensorflow/tensorflow'))
+    )) AND (repo_name NOT ILIKE '%tensorflow%')
     GROUP BY repo_name
     ORDER BY authors DESC
     LIMIT 10
