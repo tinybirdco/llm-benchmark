@@ -1,17 +1,8 @@
 DESCRIPTION >
-    top 10 Repositories with tensorflow-related comments, sorted by stars
+    top 10 Most popular comments on GitHub
 
 NODE endpoint
 SQL >
-    SELECT
-        repo_name,
-        sum(event_type = 'WatchEvent') AS num_stars,
-        sum(body ILIKE '%tensorflow%') AS num_comments
-    FROM github_events
-    WHERE (body ILIKE '%tensorflow%') OR (event_type = 'WatchEvent')
-    GROUP BY repo_name
-    HAVING num_comments > 0
-    ORDER BY num_stars DESC
-    LIMIT 10
+    SELECT body, count() FROM github_events WHERE notEmpty(body) AND length(body) < 100 GROUP BY body ORDER BY count() DESC LIMIT 10
 
 TYPE endpoint

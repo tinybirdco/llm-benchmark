@@ -1,8 +1,8 @@
 DESCRIPTION >
-    Total number of issues on GitHub
+    The top 10 repositories by issue comments
 
 NODE endpoint
 SQL >
-    SELECT count() FROM github_events WHERE event_type = 'IssueCommentEvent'
+    SELECT repo_name, count() FROM github_events WHERE event_type = 'IssueCommentEvent' GROUP BY repo_name ORDER BY count() DESC LIMIT 10
 
 TYPE endpoint
