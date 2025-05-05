@@ -1,14 +1,14 @@
 DESCRIPTION >
-    top 10 Repositories by the number of pushes
+    top 10 Repositories by the number of issue comments
 
 NODE endpoint
 SQL >
     SELECT
         repo_name,
-        count() AS pushes,
+        count() AS comments,
         uniq(actor_login) AS authors
     FROM github_events
-    WHERE (event_type = 'PushEvent') AND (repo_name IN
+    WHERE (event_type = 'IssueCommentEvent') AND (repo_name IN
     (
         SELECT repo_name
         FROM github_events

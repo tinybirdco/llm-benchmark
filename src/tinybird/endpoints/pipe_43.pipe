@@ -34,7 +34,7 @@ SQL >
             FROM github_events
             WHERE event_type = 'WatchEvent'
             GROUP BY repo_name
-            HAVING stars > 10000
+            HAVING stars > 100
         ) AS t2 USING (repo_name)
     )
     GROUP BY repo_name
