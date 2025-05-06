@@ -9,7 +9,8 @@ import { Badge } from "../../components/badge";
 import { ArrowLeftIcon } from "@/app/components/icons";
 import { PreviewModal } from "@/app/components/code-preview";
 
-type BenchmarkResult = (typeof benchmarkResults)[number];
+const typedBenchmarkResults = benchmarkResults as any[];
+type BenchmarkResult = (typeof typedBenchmarkResults)[number];
 
 type QuestionMetric = {
   name: string;
@@ -40,7 +41,7 @@ function calculateQuestionMetrics(result: BenchmarkResult): QuestionMetric {
     bytesRead: result.sqlResult?.statistics?.bytes_read || 0,
     rowsRead: result.sqlResult?.statistics?.rows_read || 0,
     queryLength: result.sql?.length || 0,
-    attempts: result.attempts?.map((a) => ({
+    attempts: result.attempts?.map((a: any) => ({
       question: { question: a.question.question },
     })) || [{ question: { question: "" } }],
     success: result.sqlResult?.success || false,
@@ -54,7 +55,7 @@ function calculateQuestionMetrics(result: BenchmarkResult): QuestionMetric {
 
 const QuestionCell = ({ metric }: { metric: QuestionMetric }) => {
   const question = metric.attempts?.[0]?.question?.question || metric.question;
-  
+
   return (
     <div className={`max-w-[475px] -m-4 p-4`}>
       <div className="truncate" title={question}>
@@ -71,7 +72,7 @@ export default function ModelDetail() {
   const modelName = decodeURIComponent(params.modelname as string);
 
   const questionMetrics = useMemo(() => {
-    const modelResults = benchmarkResults.filter((r) => r.model === modelName);
+    const modelResults = typedBenchmarkResults.filter((r) => r.model === modelName);
     return modelResults.map(calculateQuestionMetrics);
   }, [modelName]);
 

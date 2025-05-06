@@ -34,7 +34,7 @@ export function PreviewModal({ metric }: { metric: ModelMetrics }) {
         {pathname.includes("models") ? (
           <button
             className={classNames}
-            onClick={() => router.push(`/questions/${encodeURIComponent(metric.model)}`)}
+            onClick={() => router.push(`/questions/${encodeURIComponent(metric.name)}`)}
           >
             compare models <ArrowRightIcon className="w-3 h-3" />
           </button>
