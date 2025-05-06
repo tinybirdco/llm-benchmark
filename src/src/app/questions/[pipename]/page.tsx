@@ -65,6 +65,7 @@ export default function QuestionDetail() {
   const pipeName = decodeURIComponent(params.pipename as string);
   const [selectedModels, setSelectedModels] = useState<string[]>([]);
   const [selectedProviders, setSelectedProviders] = useState<string[]>([]);
+  const [showRelative, setShowRelative] = useState(false);
 
   const modelResults = useMemo(() => {
     const questionResults = typedBenchmarkResults.filter((r) => r.name === pipeName);
@@ -82,6 +83,9 @@ export default function QuestionDetail() {
       return modelMatch && providerMatch;
     });
   }, [modelResults, selectedModels, selectedProviders]);
+
+  // Find the human baseline for this question
+  const humanBaseline = useMemo(() => modelResults.find((m) => m.provider === "human"), [modelResults]);
 
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -151,15 +155,23 @@ export default function QuestionDetail() {
       },
     },
     {
-      name: "Query Latency",
+      name: "Avg Query Latency",
       accessorKey: "avgExecutionTime",
       sortable: true,
-      description: "Time taken to execute the query in milliseconds",
-      cell: (row: ModelMetrics) => (
-        <span className="font-mono">
-          {(row.avgExecutionTime * 1000).toLocaleString()} ms
-        </span>
-      ),
+      description: "Average time taken to execute the query in milliseconds",
+      cell: (row: ModelMetrics) => {
+        const showPercentage = showRelative && row.provider !== "human" && humanBaseline;
+        if (showPercentage) {
+          const percentage = ((row.avgExecutionTime * 1000) / (humanBaseline.avgExecutionTime * 1000)) * 100;
+          return (
+            <div className="space-x-2">
+              <span className="font-mono">{(row.avgExecutionTime * 1000).toLocaleString()} ms</span>
+              <span className="text-sm text-[#C6C6C6]">{percentage.toFixed(0)}%</span>
+            </div>
+          );
+        }
+        return <span className="font-mono">{(row.avgExecutionTime * 1000).toLocaleString()} ms</span>;
+      },
       type: "right" as const,
     },
     {
@@ -185,15 +197,23 @@ export default function QuestionDetail() {
       type: "right" as const,
     },
     {
-      name: "Rows Read",
+      name: "Avg Rows Read",
       accessorKey: "avgRowsRead",
       sortable: true,
-      description: "Number of rows read by this query (lower is better)",
-      cell: (row: ModelMetrics) => (
-        <span className="font-mono">
-          {row.avgRowsRead.toLocaleString()}
-        </span>
-      ),
+      description: "Average number of rows read per query (lower is better)",
+      cell: (row: ModelMetrics) => {
+        const showPercentage = showRelative && row.provider !== "human" && humanBaseline;
+        if (showPercentage) {
+          const percentage = (row.avgRowsRead / humanBaseline.avgRowsRead) * 100;
+          return (
+            <div className="space-x-2">
+              <span className="font-mono">{Math.round(row.avgRowsRead).toLocaleString()}</span>
+              <span className="text-sm text-[#C6C6C6]">{percentage.toFixed(0)}%</span>
+            </div>
+          );
+        }
+        return <span className="font-mono">{Math.round(row.avgRowsRead).toLocaleString()}</span>;
+      },
       type: "right" as const,
     },
     {
@@ -218,6 +238,26 @@ export default function QuestionDetail() {
       ),
       type: "right" as const,
     },
+    {
+      name: "Avg Data Read",
+      accessorKey: "avgBytesRead",
+      sortable: true,
+      description: "Average amount of data read per query in MB",
+      cell: (row: ModelMetrics) => {
+        const showPercentage = showRelative && row.provider !== "human" && humanBaseline;
+        if (showPercentage) {
+          const percentage = (row.avgBytesRead / humanBaseline.avgBytesRead) * 100;
+          return (
+            <div className="space-x-2">
+              <span className="font-mono">{(row.avgBytesRead / (1024 * 1024)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MB</span>
+              <span className="text-sm text-[#C6C6C6]">{percentage.toFixed(0)}%</span>
+            </div>
+          );
+        }
+        return <span className="font-mono">{(row.avgBytesRead / (1024 * 1024)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MB</span>;
+      },
+      type: "right" as const,
+    },
   ];
 
   return (
@@ -228,6 +268,8 @@ export default function QuestionDetail() {
         selectedProviders={selectedProviders}
         onModelChange={setSelectedModels}
         onProviderChange={setSelectedProviders}
+        showRelative={showRelative}
+        onShowRelativeChange={setShowRelative}
       />
       <h2 className="text-xl mb-4">Model Results for &quot;{questionDetails?.question}&quot;</h2>
 
@@ -255,10 +297,7 @@ export default function QuestionDetail() {
         <Table
           columns={columns}
           data={filteredData}
-          defaultSort={{
-            key: "model",
-            direction: "asc",
-          }}
+          defaultSort={{ key: "rank", direction: "asc" }}
         />
       </div>
     </div>
