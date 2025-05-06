@@ -97,6 +97,35 @@ export default function Home() {
         ),
     },
     {
+      name: "Score",
+      accessorKey: "efficiencyScore",
+      sortable: true,
+      description:
+        "Aggregate metric that combines latency, scan size, and success rate.",
+      className: "bg-[#FFFFFF]/5",
+      cell: (row: unknown) => {
+        if ((row as any).provider === "human") {
+          return "--";
+        }
+        return (
+          <div className="inline-flex items-center">
+            <div
+              className={`w-2 h-2 rounded-full mr-2 ${(row as any).efficiencyScore > 75
+                ? "bg-[#27F795]"
+                : (row as any).efficiencyScore > 50
+                  ? "bg-[#F7D727]"
+                  : "bg-[#F72727]"
+                }`}
+            />
+            <span className="font-mono">
+              {(row as any).efficiencyScore.toFixed(2)}
+            </span>
+          </div>
+        );
+      },
+      type: "right" as const,
+    },
+    {
       name: "Success Rate",
       accessorKey: "successRate",
       sortable: true,
@@ -107,7 +136,9 @@ export default function Home() {
         }
         return (
           <div className="flex items-center">
-            <ProgressBar progress={(row as any).successRate} />
+            <ProgressBar
+              progress={(row as any).successRate}
+            />
             <span className="font-mono">
               {(row as any).successRate.toFixed(1)}
             </span>
@@ -306,35 +337,6 @@ export default function Home() {
       type: "right" as const,
     },
     {
-      name: "Score",
-      accessorKey: "efficiencyScore",
-      sortable: true,
-      description:
-        "Custom metric combining execution time, data read, and success rate (lower is better)",
-      cell: (row: unknown) => {
-        if ((row as any).provider === "human") {
-          return "--";
-        }
-        return (
-          <div className="inline-flex items-center">
-            <div
-              className={`w-2 h-2 rounded-full mr-2 ${
-                (row as any).efficiencyScore > 75
-                  ? "bg-[#27F795]"
-                  : (row as any).efficiencyScore > 50
-                  ? "bg-[#F7D727]"
-                  : "bg-[#F72727]"
-              }`}
-            />
-            <span className="font-mono">
-              {(row as any).efficiencyScore.toFixed(2)}
-            </span>
-          </div>
-        );
-      },
-      type: "right" as const,
-    },
-    {
       name: "Total Queries",
       accessorKey: "totalQueries",
       sortable: true,
@@ -357,7 +359,7 @@ export default function Home() {
               type="checkbox"
               checked={showRelative}
               onChange={(e) => setShowRelative(e.target.checked)}
-              // Add disabled or error props as needed
+            // Add disabled or error props as needed
             />
             <span className="custom-checkbox-box">
               <svg
