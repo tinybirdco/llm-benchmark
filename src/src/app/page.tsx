@@ -392,46 +392,6 @@ export default function Home() {
           defaultSort={{ key: "rank", direction: "asc" }}
         />
       </div>
-
-      <div className="mt-8 text-sm bg-[#353535] p-4">
-        <h2 className="text-sm mb-2 text-[#C6C6C6]">Metrics Explanation</h2>
-
-        <ul className="space-y-2 text-[#C6C6C6]">
-          <li>
-            <span className="text-[#F4F4F4]">Success Rate:</span> Percentage of
-            queries that executed successfully
-          </li>
-          <li>
-            <span className="text-[#F4F4F4]">First Attempt Rate:</span>{" "}
-            Percentage of queries that succeeded on the first try
-          </li>
-          <li>
-            <span className="text-[#F4F4F4]">Query Latency:</span> Average time
-            taken to execute the query in milliseconds
-          </li>
-          <li>
-            <span className="text-[#F4F4F4]">LLM Gen Time:</span> Average time
-            for the LLM to generate the SQL query in seconds
-          </li>
-          <li>
-            <span className="text-[#F4F4F4]">Avg Attempts:</span> Average number
-            of attempts needed per query
-          </li>
-          <li>
-            <span className="text-[#F4F4F4]">Avg Rows Read:</span> Average
-            number of rows read per query (lower is better)
-          </li>
-          <li>
-            <span className="text-[#F4F4F4]">Avg Query Length:</span> Average
-            length of generated SQL queries in characters
-          </li>
-          <li>
-            <span className="text-[#F4F4F4]">Score:</span> Custom metric
-            combining execution time, data read, and success rate (lower is
-            better)
-          </li>
-        </ul>
-      </div>
     </div>
   );
 }
