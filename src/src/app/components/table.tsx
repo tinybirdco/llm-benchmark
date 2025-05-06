@@ -20,6 +20,7 @@ type ColumnDefinition = {
   type?: "left" | "right";
   sortable?: boolean;
   description?: string;
+  className?: string;
 };
 
 type SortConfig = {
@@ -142,9 +143,11 @@ export const Table = ({
             {columns.map((column) => (
               <div
                 key={column.name}
-                className={`p-2.5 lg:p-4 align-middle table-cell text-sm text-nowrap whitespace-nowrap ${
-                  column.type === "right" ? "text-right" : "text-left pr-6"
-                }`}
+                className={cn(
+                  "p-2.5 lg:p-4 align-middle table-cell text-sm text-nowrap whitespace-nowrap",
+                  column.type === "right" ? "text-right" : "text-left pr-6",
+                  column.className
+                )}
               >
                 {column.cell(row)}
               </div>
