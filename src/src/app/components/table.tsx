@@ -96,7 +96,8 @@ export const Table = ({
           <div
             className={cn(
               "align-middle items-center text-sm table-cell text-nowrap whitespace-nowrap group",
-              column.sortable ? "cursor-pointer hover:bg-[#353535]" : ""
+              column.sortable ? "cursor-pointer hover:bg-[#353535]" : "",
+              column.type === "right" ? "text-right" : "text-left"
             )}
             key={column.name}
           >
