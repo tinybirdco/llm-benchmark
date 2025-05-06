@@ -6,6 +6,7 @@ import { ChevronDownIcon } from "./icons";
 import Link from "next/link";
 import { GithubIcon, ClipboardListIcon } from "lucide-react";
 import { Button } from "./button";
+import { cn } from "@/lib/utils";
 
 export const QuestionSelect = () => {
   const router = useRouter();
@@ -43,24 +44,29 @@ export const QuestionSelect = () => {
 
   return (
     <Popover>
-      <PopoverTrigger className="w-full">
-        <button className="bg-[#353535] w-full font-sans text-sm text-left hover:bg-[#454545] p-4 hover:text-white w-full flex items-center justify-between">
-          {selectedQuestionLabel || "All Questions"}
-
-          <ChevronDownIcon />
+      <PopoverTrigger asChild>
+        <button className={cn(
+          "bg-[#353535] w-full max-w-[33%] font-sans text-sm text-left hover:bg-[#454545] p-4 hover:text-white flex items-center justify-between"
+        )}>
+          <span className="truncate">{selectedQuestionLabel || "All Questions"}</span>
+          <ChevronDownIcon className="flex-shrink-0 ml-2" />
         </button>
       </PopoverTrigger>
       <PopoverContent
         align="start"
-        className="w-full block max-w-[1400px] bg-[#353535] font-sans text-sm max-h-[500px] overflow-y-auto border-none rounded-none p-0"
+        className={cn(
+          "w-full max-w-[33%] bg-[#353535] font-sans text-sm max-h-[500px] overflow-y-auto border-none rounded-none p-0"
+        )}
       >
         {questionOptions.map((opt) => (
           <button
             key={opt.value}
             onClick={() => handleQuestionChange(opt.value)}
-            className="block text-left hover:bg-[#454545] p-4 hover:text-white w-full"
+            className={cn(
+              "block text-left hover:bg-[#454545] p-4 hover:text-white w-full"
+            )}
           >
-            {opt.label}
+            <span className="whitespace-normal break-words">{opt.label}</span>
           </button>
         ))}
       </PopoverContent>
