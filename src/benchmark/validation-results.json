@@ -1,0 +1,505 @@
+{
+  "pipe_31.pipe": {
+    "models": {
+      "anthropic/claude-3.5-sonnet": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    COUNT(*) as accepted_invitations\nFROM github_events\nWHERE event_type = 'MemberEvent'\n    AND action = 'added'\nGROUP BY repo_name\nORDER BY accepted_invitations DESC\nLIMIT 10"
+      },
+      "anthropic/claude-3.7-sonnet": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    COUNT(*) AS accepted_invitations\nFROM github_events\nWHERE event_type = 'MemberEvent' \n    AND action = 'added'\nGROUP BY repo_name\nORDER BY accepted_invitations DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3-0324": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, count(*) as invitations_count\nFROM github_events\nWHERE event_type = 'MemberEvent'\nAND action = 'added'\nGROUP BY repo_name\nORDER BY invitations_count DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3-0324:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    count(*) as accepted_invitations_count\nFROM github_events\nWHERE event_type = 'MemberEvent' \nAND action = 'added'\nGROUP BY repo_name\nORDER BY accepted_invitations_count DESC\nLIMIT 10"
+      },
+      "google/gemini-2.0-flash-001": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    repo_name,\n    count() AS accepted_invitations\nFROM github_events\nWHERE event_type = 'MemberEvent' AND action = 'added'\nGROUP BY repo_name\nORDER BY accepted_invitations DESC\nLIMIT 10\n"
+      },
+      "google/gemini-2.5-flash-preview": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    count() AS accepted_invitations\nFROM github_events\nWHERE\n    event_type = 'MemberEvent' AND action = 'added'\nGROUP BY repo_name\nORDER BY accepted_invitations DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-03-25": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    count() AS invitations_accepted\nFROM github_events\nWHERE event_type = 'MemberEvent' AND action = 'added'\nGROUP BY repo_name\nORDER BY invitations_accepted DESC\nLIMIT 10"
+      },
+      "meta-llama/llama-4-maverick": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, COUNT(*) as num_invitations \nFROM github_events \nWHERE event_type = 'MemberEvent' AND action = 'added' \nGROUP BY repo_name \nORDER BY num_invitations DESC \nLIMIT 10"
+      },
+      "meta-llama/llama-4-scout": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n  repo_name, \n  COUNT(*) as num_invitations\nFROM \n  github_events\nWHERE \n  event_type = 'MemberEvent' AND \n  action = 'added'\nGROUP BY \n  repo_name\nORDER BY \n  num_invitations DESC\nLIMIT 10"
+      },
+      "meta-llama/llama-3.3-70b-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT \n  repo_name, \n  count() as num_invitations\nFROM \n  github_events\nWHERE \n  event_type = 'MemberEvent' \n  AND action = 'accepted'\nGROUP BY \n  repo_name\nORDER BY \n  num_invitations DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-8b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    repo_name,\n    COUNT(assignees) AS accepted_invitations\nFROM\n    github_events\nWHERE\n    event_type = 'MemberEvent'\n    AND action = 'added'\nGROUP BY\n    repo_name\nORDER BY\n    accepted_invitations DESC\nLIMIT 10\n"
+      },
+      "mistralai/mistral-small-3.1-24b-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  count() AS accepted_invitations\nFROM\n  github_events\nWHERE\n  event_type = 'MemberEvent'\n  AND action = 'added'\nGROUP BY\n  repo_name\nORDER BY\n  accepted_invitations DESC\nLIMIT 10"
+      },
+      "mistralai/mistral-nemo": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": " SELECT\n  repo_name,\n  COUNT(DISTINCT member_login) AS accepted_invitations\nFROM\n  github_events\nWHERE\n  event_type = 'MemberEvent' AND\n  action = 'added'\nGROUP BY\n  repo_name\nORDER BY\n  accepted_invitations DESC\nLIMIT 10"
+      },
+      "openai/gpt-4.1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, count() as accepted_invitations\nFROM github_events\nWHERE event_type = 'MemberEvent' AND action = 'added'\nGROUP BY repo_name\nORDER BY accepted_invitations DESC\nLIMIT 10"
+      },
+      "openai/gpt-4.1-nano": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "%  \nSELECT \n  repo_name, \n  SUM(CASE WHEN action = 'accepted' THEN 1 ELSE 0 END) AS accepted_invitations\nFROM github_events\nWHERE action = 'accepted'\nGROUP BY repo_name\nORDER BY accepted_invitations DESC\nLIMIT 10"
+      },
+      "openai/gpt-4o-mini": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, COUNT(*) AS accepted_invitations\nFROM github_events\nWHERE action = 'added'\nGROUP BY repo_name\nORDER BY accepted_invitations DESC\nLIMIT 10"
+      },
+      "openai/o3-mini": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  count(*) AS accepted_invitations\nFROM github_events\nWHERE event_type = 'MemberEvent'\n  AND action = 'added'\nGROUP BY repo_name\nORDER BY accepted_invitations DESC\nLIMIT 10"
+      },
+      "openai/o4-mini": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  count() AS accepted_invitations\nFROM github_events\nWHERE event_type = 'MemberEvent'\n  AND action = 'added'\nGROUP BY repo_name\nORDER BY accepted_invitations DESC\nLIMIT 10"
+      },
+      "openai/o4-mini-high": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  count() AS accepted_invitations_count\nFROM github_events\nWHERE event_type = 'MemberEvent'\n  AND action = 'added'\nGROUP BY repo_name\nORDER BY accepted_invitations_count DESC\nLIMIT 10"
+      }
+    },
+    "humanResults": {
+      "success": true,
+      "data": [
+        {
+          "repo_name": "githubschool/open-enrollment-classes-introduction-to-github",
+          "invitations": 10453,
+          "stars": 921
+        },
+        {
+          "repo_name": "gatsbyjs/gatsby",
+          "invitations": 3161,
+          "stars": 51589
+        },
+        {
+          "repo_name": "/",
+          "invitations": 3144,
+          "stars": 5496
+        },
+        {
+          "repo_name": "openjournals/joss-reviews",
+          "invitations": 1733,
+          "stars": 411
+        },
+        {
+          "repo_name": "InfiniteFlightAirportEditing/Airports",
+          "invitations": 684,
+          "stars": 192
+        },
+        {
+          "repo_name": "zulip/zulip",
+          "invitations": 644,
+          "stars": 14027
+        },
+        {
+          "repo_name": "tencentyun/qcloud-documents",
+          "invitations": 446,
+          "stars": 1032
+        },
+        {
+          "repo_name": "w3c/web-platform-tests",
+          "invitations": 343,
+          "stars": 1662
+        },
+        {
+          "repo_name": "llvm/llvm-project",
+          "invitations": 322,
+          "stars": 7228
+        },
+        {
+          "repo_name": "koppi/iso-country-flags-svg-collection",
+          "invitations": 318,
+          "stars": 408
+        }
+      ],
+      "meta": [
+        {
+          "name": "repo_name",
+          "type": "LowCardinality(String)"
+        },
+        {
+          "name": "invitations",
+          "type": "UInt64"
+        },
+        {
+          "name": "stars",
+          "type": "UInt64"
+        }
+      ],
+      "statistics": {
+        "elapsed": 2.531254992,
+        "rows_read": 246586238,
+        "bytes_read": 739323095
+      },
+      "executionTime": 2.583,
+      "requestId": "01JSXXSFC9SYJWHGJRXA2CVZ2J"
+    }
+  },
+  "_summary": {
+    "totalQuestions": 1,
+    "modelStats": {
+      "anthropic/claude-3.5-sonnet": {
+        "totalMatches": 0,
+        "exactMatches": 0,
+        "numericMatches": 0,
+        "avgExactDistance": 1,
+        "avgNumericDistance": 1,
+        "avgFScore": 0
+      },
+      "anthropic/claude-3.7-sonnet": {
+        "totalMatches": 0,
+        "exactMatches": 0,
+        "numericMatches": 0,
+        "avgExactDistance": 1,
+        "avgNumericDistance": 1,
+        "avgFScore": 0
+      },
+      "deepseek/deepseek-chat-v3-0324": {
+        "totalMatches": 0,
+        "exactMatches": 0,
+        "numericMatches": 0,
+        "avgExactDistance": 1,
+        "avgNumericDistance": 1,
+        "avgFScore": 0
+      },
+      "deepseek/deepseek-chat-v3-0324:free": {
+        "totalMatches": 0,
+        "exactMatches": 0,
+        "numericMatches": 0,
+        "avgExactDistance": 1,
+        "avgNumericDistance": 1,
+        "avgFScore": 0
+      },
+      "google/gemini-2.0-flash-001": {
+        "totalMatches": 0,
+        "exactMatches": 0,
+        "numericMatches": 0,
+        "avgExactDistance": 1,
+        "avgNumericDistance": 1,
+        "avgFScore": 0
+      },
+      "google/gemini-2.5-flash-preview": {
+        "totalMatches": 0,
+        "exactMatches": 0,
+        "numericMatches": 0,
+        "avgExactDistance": 1,
+        "avgNumericDistance": 1,
+        "avgFScore": 0
+      },
+      "google/gemini-2.5-pro-preview-03-25": {
+        "totalMatches": 0,
+        "exactMatches": 0,
+        "numericMatches": 0,
+        "avgExactDistance": 1,
+        "avgNumericDistance": 1,
+        "avgFScore": 0
+      },
+      "meta-llama/llama-4-maverick": {
+        "totalMatches": 0,
+        "exactMatches": 0,
+        "numericMatches": 0,
+        "avgExactDistance": 1,
+        "avgNumericDistance": 1,
+        "avgFScore": 0
+      },
+      "meta-llama/llama-4-scout": {
+        "totalMatches": 0,
+        "exactMatches": 0,
+        "numericMatches": 0,
+        "avgExactDistance": 1,
+        "avgNumericDistance": 1,
+        "avgFScore": 0
+      },
+      "meta-llama/llama-3.3-70b-instruct": {
+        "totalMatches": 0,
+        "exactMatches": 0,
+        "numericMatches": 0,
+        "avgExactDistance": 1,
+        "avgNumericDistance": 1,
+        "avgFScore": 0
+      },
+      "mistralai/ministral-8b": {
+        "totalMatches": 0,
+        "exactMatches": 0,
+        "numericMatches": 0,
+        "avgExactDistance": 1,
+        "avgNumericDistance": 1,
+        "avgFScore": 0
+      },
+      "mistralai/mistral-small-3.1-24b-instruct": {
+        "totalMatches": 0,
+        "exactMatches": 0,
+        "numericMatches": 0,
+        "avgExactDistance": 1,
+        "avgNumericDistance": 1,
+        "avgFScore": 0
+      },
+      "mistralai/mistral-nemo": {
+        "totalMatches": 0,
+        "exactMatches": 0,
+        "numericMatches": 0,
+        "avgExactDistance": 1,
+        "avgNumericDistance": 1,
+        "avgFScore": 0
+      },
+      "openai/gpt-4.1": {
+        "totalMatches": 0,
+        "exactMatches": 0,
+        "numericMatches": 0,
+        "avgExactDistance": 1,
+        "avgNumericDistance": 1,
+        "avgFScore": 0
+      },
+      "openai/gpt-4.1-nano": {
+        "totalMatches": 0,
+        "exactMatches": 0,
+        "numericMatches": 0,
+        "avgExactDistance": 1,
+        "avgNumericDistance": 1,
+        "avgFScore": 0
+      },
+      "openai/gpt-4o-mini": {
+        "totalMatches": 0,
+        "exactMatches": 0,
+        "numericMatches": 0,
+        "avgExactDistance": 1,
+        "avgNumericDistance": 1,
+        "avgFScore": 0
+      },
+      "openai/o3-mini": {
+        "totalMatches": 0,
+        "exactMatches": 0,
+        "numericMatches": 0,
+        "avgExactDistance": 1,
+        "avgNumericDistance": 1,
+        "avgFScore": 0
+      },
+      "openai/o4-mini": {
+        "totalMatches": 0,
+        "exactMatches": 0,
+        "numericMatches": 0,
+        "avgExactDistance": 1,
+        "avgNumericDistance": 1,
+        "avgFScore": 0
+      },
+      "openai/o4-mini-high": {
+        "totalMatches": 0,
+        "exactMatches": 0,
+        "numericMatches": 0,
+        "avgExactDistance": 1,
+        "avgNumericDistance": 1,
+        "avgFScore": 0
+      }
+    }
+  }
+}
