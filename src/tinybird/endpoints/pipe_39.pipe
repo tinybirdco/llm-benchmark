@@ -1,16 +1,17 @@
 DESCRIPTION >
-    top 10 repositories by ratio between issue comments and issues
+    find top 10 repositories by the most active issues
 
 NODE endpoint
 SQL >
     SELECT
         repo_name,
-        count() AS comments,
-        uniq(number) AS issues,
-        round(comments / issues, 2) AS ratio
+        number,
+        count() AS comments
     FROM github_events
-    WHERE event_type = 'IssueCommentEvent'
-    GROUP BY repo_name
+    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created')
+    GROUP BY
+        repo_name,
+        number
     ORDER BY count() DESC
     LIMIT 10
 

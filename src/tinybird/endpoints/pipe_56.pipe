@@ -1,15 +1,8 @@
 DESCRIPTION >
-    top 10 most popular labels for issues and pull requests? filter by bugs and features
+    top 10 longest repository names
 
 NODE endpoint
 SQL >
-    SELECT
-        arrayJoin(labels) AS label,
-        count() AS c
-    FROM github_events
-    WHERE (event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')) AND (action IN ('created', 'opened', 'labeled')) AND ((label ILIKE '%bug%') OR (label ILIKE '%feature%'))
-    GROUP BY label
-    ORDER BY c DESC
-    LIMIT 10
+    SELECT count(), repo_name FROM github_events WHERE event_type = 'WatchEvent' GROUP BY repo_name ORDER BY length(repo_name) DESC LIMIT 10
 
 TYPE endpoint

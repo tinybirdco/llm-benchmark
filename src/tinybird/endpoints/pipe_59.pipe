@@ -1,8 +1,17 @@
 DESCRIPTION >
-    top 10 Repositories with freecodecamp related comments
+    top 10 Repositories with tensorflow-related comments, sorted by stars
 
 NODE endpoint
 SQL >
-    SELECT repo_name, count() FROM github_events WHERE body ILIKE '%freecodecamp%' GROUP BY repo_name ORDER BY count() DESC LIMIT 10
+    SELECT
+        repo_name,
+        sum(event_type = 'WatchEvent') AS num_stars,
+        sum(body ILIKE '%tensorflow%') AS num_comments
+    FROM github_events
+    WHERE (body ILIKE '%tensorflow%') OR (event_type = 'WatchEvent')
+    GROUP BY repo_name
+    HAVING num_comments > 0
+    ORDER BY num_stars DESC
+    LIMIT 10
 
 TYPE endpoint

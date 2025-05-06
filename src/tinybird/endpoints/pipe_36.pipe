@@ -1,8 +1,8 @@
 DESCRIPTION >
-    overall proportion between stars and forks
+    Total number of issues on GitHub
 
 NODE endpoint
 SQL >
-    SELECT sum(event_type = 'ForkEvent') AS forks, sum(event_type = 'WatchEvent') AS stars, round(stars / forks, 2) AS ratio FROM github_events WHERE event_type IN ('ForkEvent', 'WatchEvent')
+    SELECT count() FROM github_events WHERE event_type = 'IssueCommentEvent'
 
 TYPE endpoint

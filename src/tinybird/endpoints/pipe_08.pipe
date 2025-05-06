@@ -1,5 +1,5 @@
 DESCRIPTION >
-    what are the top 10 repositories sorted by the number of stars from people who starred the freecodecamp/freecodecamp repository?
+    what are the top 10 repositories sorted by the number of stars from people who starred the tensorflow/tensorflow repository?
 
 NODE endpoint
 SQL >
@@ -11,8 +11,8 @@ SQL >
     (
         SELECT actor_login
         FROM github_events
-        WHERE (event_type = 'WatchEvent') AND (repo_name IN ('freecodecamp/freecodecamp'))
-    )) AND (repo_name NOT IN ('freecodecamp/freecodecamp'))
+        WHERE (event_type = 'WatchEvent') AND (repo_name IN ('tensorflow/tensorflow'))
+    )) AND (repo_name NOT IN ('tensorflow/tensorflow'))
     GROUP BY repo_name
     ORDER BY stars DESC
     LIMIT 10

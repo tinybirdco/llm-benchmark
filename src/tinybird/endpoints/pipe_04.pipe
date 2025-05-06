@@ -3,6 +3,6 @@ DESCRIPTION >
 
 NODE endpoint
 SQL >
-    SELECT uniq(repo_name) FROM github_events
+    SELECT uniqExact(repo_name) FROM github_events
 
 TYPE endpoint

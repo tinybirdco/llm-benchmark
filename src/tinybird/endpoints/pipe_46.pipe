@@ -1,17 +1,16 @@
 DESCRIPTION >
-    top 10 most tough code reviews
+    top 10 authors with the most pushes
 
 NODE endpoint
 SQL >
     SELECT
-        concat('https://github.com/', repo_name, '/pull/', toString(number)) AS URL,
-        uniq(actor_login) AS authors
+        actor_login,
+        count() AS c,
+        uniq(repo_name) AS repos
     FROM github_events
-    WHERE (event_type = 'PullRequestReviewCommentEvent') AND (action = 'created')
-    GROUP BY
-        repo_name,
-        number
-    ORDER BY authors DESC
+    WHERE event_type = 'PushEvent'
+    GROUP BY actor_login
+    ORDER BY c DESC
     LIMIT 10
 
 TYPE endpoint

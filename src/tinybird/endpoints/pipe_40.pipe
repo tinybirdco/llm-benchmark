@@ -1,5 +1,5 @@
 DESCRIPTION >
-    find top 10 repositories by the most active issues
+    find top 10 repositories with "epic bugs", filter out by issue number
 
 NODE endpoint
 SQL >
@@ -8,7 +8,7 @@ SQL >
         number,
         count() AS comments
     FROM github_events
-    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created')
+    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created') AND (number > 10)
     GROUP BY
         repo_name,
         number

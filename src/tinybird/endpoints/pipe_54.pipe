@@ -1,18 +1,15 @@
 DESCRIPTION >
-    top 10 Authors with the most code reviews
+    top 10 most popular labels for issues and pull requests
 
 NODE endpoint
 SQL >
     SELECT
-        actor_login,
-        count(),
-        uniq(repo_name) AS repos,
-        uniq(repo_name, number) AS prs,
-        replaceRegexpAll(substringUTF8(anyHeavy(body), 1, 100), '[\r\n]', ' ') AS comment
+        arrayJoin(labels) AS label,
+        count() AS c
     FROM github_events
-    WHERE (event_type = 'PullRequestReviewCommentEvent') AND (action = 'created')
-    GROUP BY actor_login
-    ORDER BY count() DESC
+    WHERE (event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')) AND (action IN ('created', 'opened', 'labeled'))
+    GROUP BY label
+    ORDER BY c DESC
     LIMIT 10
 
 TYPE endpoint
