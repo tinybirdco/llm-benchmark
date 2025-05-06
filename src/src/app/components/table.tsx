@@ -111,7 +111,8 @@ export const Table = ({
                     className={cn(
                       "p-2.5 lg:p-4 align-middle text-sm text-nowrap whitespace-nowrap",
                       column.type === "right" ? "text-right" : "text-left",
-                      sortConfig?.key === column.accessorKey ? "font-bold" : ""
+                      sortConfig?.key === column.accessorKey ? "font-bold" : "",
+                      column.sortable ? "cursor-pointer" : ""
                     )}
                   >
                     <div className="flex items-center gap-2">

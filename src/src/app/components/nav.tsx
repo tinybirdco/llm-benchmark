@@ -46,7 +46,7 @@ export const QuestionSelect = () => {
     <Popover>
       <PopoverTrigger asChild>
         <button className={cn(
-          "bg-[#353535] w-full max-w-[33%] font-sans text-sm text-left hover:bg-[#454545] p-4 hover:text-white flex items-center justify-between"
+          "bg-[#353535] w-full max-w-[33%] font-sans text-sm text-left hover:bg-[#454545] p-4 hover:text-white flex items-center justify-between cursor-pointer"
         )}>
           <span className="truncate">{selectedQuestionLabel || "All Questions"}</span>
           <ChevronDownIcon className="flex-shrink-0 ml-2" />
@@ -63,7 +63,7 @@ export const QuestionSelect = () => {
             key={opt.value}
             onClick={() => handleQuestionChange(opt.value)}
             className={cn(
-              "block text-left hover:bg-[#454545] p-4 hover:text-white w-full"
+              "block text-left hover:bg-[#454545] p-4 hover:text-white w-full cursor-pointer"
             )}
           >
             <span className="whitespace-normal break-words">{opt.label}</span>
@@ -82,8 +82,8 @@ export const Header = () => {
           <h1 className="text-3xl">AI SQL Generation Benchmark Results</h1>
 
           <div className="flex gap-2 items-center">
-            <Button variant="secondary" size="lg"><GithubIcon /> GitHub</Button>
-            <Button variant="default" size="lg"><ClipboardListIcon /> Methodology</Button>
+            <Button variant="secondary" size="lg" className="cursor-pointer"><GithubIcon /> GitHub</Button>
+            <Button variant="default" size="lg" className="cursor-pointer"><ClipboardListIcon /> Methodology</Button>
           </div>
         </div>
 
