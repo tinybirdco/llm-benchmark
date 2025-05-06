@@ -55,7 +55,11 @@ export function PreviewModal({ metric }: { metric: ModelMetrics }) {
             {metric.model}
           </DialogTitle>
           <DialogDescription>
-            "{metric.attempts?.[0]?.question?.question || JSON.stringify(result?.question?.content ?? "")}"
+            {Array.isArray(result?.attempts) && result.attempts[0]?.question?.question
+              ? result.attempts[0].question.question
+              : result?.question && 'question' in result.question
+                ? (result.question as any).question
+                : result?.question?.content ?? ""}
           </DialogDescription>
 
           <h3 className="text-lg font-medium mt-4">Generated SQL</h3>

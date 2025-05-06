@@ -28,6 +28,7 @@ export type ModelResult = {
   question: {
     name: string;
     content: string;
+    question?: string;
   };
   model: string;
   provider: string;
