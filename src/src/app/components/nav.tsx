@@ -82,15 +82,7 @@ export const Header = () => {
         </div>
 
         <p className="text-sm max-w-[556px]">
-          We uploaded to{" "}
-          <Link
-            className="text-[#27F795]"
-            href="https://tinybird.co/"
-            target="_blank"
-          >
-            Tinybird
-          </Link>{" "}
-          a 3.1 billion record dataset from the{" "}
+          We benchmarked the most popular LLMs on their ability to generate accurate and efficient SQL from natural language prompts. Using a 3.1 billion record dataset from the{" "}
           <Link
             className="text-[#27F795]"
             href="https://www.gharchive.org/"
@@ -98,18 +90,23 @@ export const Header = () => {
           >
             GH Archive
           </Link>{" "}
-          that contains all the events in all GitHub repositories since 2011 in
-          structured format. We benchmarked several LLMs to generate SQL queries
-          to answer{" "}
+          uploaded to{" "}
+          <Link
+            className="text-[#27F795]"
+            href="https://tinybird.co/"
+            target="_blank"
+          >
+            Tinybird
+          </Link>
+          , we ran{" "}
           <Link
             className="text-[#27F795]"
             href="https://ghe.clickhouse.tech/"
             target="_blank"
           >
-            these questions
+            61 prompts
           </Link>{" "}
-          about the data, and we have compared the results with a human
-          baseline.
+          and gathered results from each LLM, comparing them to a human baseline.
         </p>
       </div>
 
