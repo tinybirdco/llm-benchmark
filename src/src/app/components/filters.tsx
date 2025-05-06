@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { ModelMetrics } from "@/lib/eval";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { ChevronDownIcon } from "./icons";
-import { Checkbox } from "@/components/ui/checkbox";
+import { CustomCheckbox } from "./custom-checkbox";
 import { useMemo } from "react";
 
 type FilterProps = {
@@ -54,8 +54,15 @@ export function Filter({ label, options, selected, onChange }: FilterProps) {
                             selected.includes(option) && "bg-[#454545]"
                         )}
                     >
-                        <Checkbox
+                        <CustomCheckbox
                             checked={selected.includes(option)}
+                            onChange={() => {
+                                if (selected.includes(option)) {
+                                    onChange(selected.filter(s => s !== option));
+                                } else {
+                                    onChange([...selected, option]);
+                                }
+                            }}
                             className="border-[#FFFFFF] data-[state=checked]:bg-[#27F795] data-[state=checked]:border-[#27F795] data-[state=checked]:text-[#222]"
                         />
                         <span className="whitespace-normal break-words">{option}</span>

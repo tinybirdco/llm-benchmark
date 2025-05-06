@@ -9,6 +9,7 @@ import { Button } from "./button";
 import { cn } from "@/lib/utils";
 import { Filters } from "./filters";
 import { ModelMetrics } from "@/lib/eval";
+import { CustomCheckbox } from "./custom-checkbox";
 
 type HeaderProps = {
   data: ModelMetrics[];
@@ -157,30 +158,10 @@ export const Header = ({
         />
         <div className="flex items-center h-full">
           <label className="inline-flex items-center cursor-pointer">
-            <span className="custom-checkbox">
-              <input
-                type="checkbox"
-                checked={showRelative}
-                onChange={(e) => onShowRelativeChange(e.target.checked)}
-              />
-              <span className="custom-checkbox-box">
-                <svg
-                  className="checkmark"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  width="16"
-                  height="16"
-                >
-                  <path
-                    d="M4 8.5L7 11.5L12 5.5"
-                    stroke="#222"
-                    strokeWidth="2.2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </span>
-            </span>
+            <CustomCheckbox
+              checked={showRelative}
+              onChange={(e) => onShowRelativeChange(e.target.checked)}
+            />
             <span className="ml-2 text-sm text-[#F4F4F4]">
               Show metrics relative to human baseline
             </span>
