@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import benchmarkResults from "../../../../benchmark/results.json";
+import humanResults from "../../../../benchmark/results-human.json";
 import { Table } from "../../components/table";
 import { Badge } from "../../components/badge";
 import { ArrowLeftIcon } from "@/app/components/icons";
@@ -72,7 +73,12 @@ export default function ModelDetail() {
   const modelName = decodeURIComponent(params.modelname as string);
 
   const questionMetrics = useMemo(() => {
-    const modelResults = typedBenchmarkResults.filter((r) => r.model === modelName);
+    let modelResults;
+    if (modelName === "human") {
+      modelResults = (humanResults as any[]).filter((r) => r.model === "human");
+    } else {
+      modelResults = typedBenchmarkResults.filter((r) => r.model === modelName);
+    }
     return modelResults.map(calculateQuestionMetrics);
   }, [modelName]);
 
@@ -239,10 +245,7 @@ export default function ModelDetail() {
       <div className="overflow-x-auto">
         <Table
           columns={columns}
-          data={questionMetrics.map((metric) => ({
-            key: metric.name,
-            ...metric,
-          }))}
+          data={questionMetrics as any[]}
           defaultSort={{
             key: "question",
             direction: "asc",
