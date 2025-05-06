@@ -3,6 +3,6 @@ DESCRIPTION >
 
 NODE endpoint
 SQL >
-    SELECT repo_name, count() AS invitations FROM github_events WHERE event_type = 'MemberEvent' AND action = 'added' ORDER BY invitations DESC LIMIT 10
+    SELECT repo_name, count() AS invitations FROM github_events WHERE event_type = 'MemberEvent' AND action = 'added' GROUP BY repo_name ORDER BY invitations DESC LIMIT 10
 
 TYPE endpoint
