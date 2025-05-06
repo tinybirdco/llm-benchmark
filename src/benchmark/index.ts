@@ -302,29 +302,10 @@ async function runModelBenchmark(
     };
   }
 
-<<<<<<< HEAD
   // Filter out completed questions and take first 10
   const pendingQuestions = questions
     .filter(q => !completedQuestions.has(q.name))
     .slice(0, 10);
-  for (const question of questions.slice(0, 10)) {
-    // Skip already completed questions
-    if (completedQuestions.has(question.name)) {
-      console.log(`Skipping already completed question: ${question.name}`);
-      continue;
-    }
-||||||| parent of f5586a1 (Update)
-  for (const question of questions.slice(0, 10)) {
-    if (completedQuestions.has(question.name)) {
-      console.log(`Skipping already completed question: ${question.name}`);
-      continue;
-    }
-=======
-  // Filter out completed questions and take first 10
-  const pendingQuestions = questions
-    .filter(q => !completedQuestions.has(q.name))
-    .slice(0, 10);
->>>>>>> f5586a1 (Update)
 
   // Process questions in batches of 5
   for (let i = 0; i < pendingQuestions.length; i += 5) {
