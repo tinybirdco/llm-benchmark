@@ -135,7 +135,7 @@ export default function Home() {
       },
     },
     {
-      name: "Avg Query Latency (ms)",
+      name: "Avg Query Latency",
       accessorKey: "avgExecutionTime",
       sortable: true,
       description: "Average time taken to execute the query in milliseconds",
@@ -151,7 +151,7 @@ export default function Home() {
           return (
             <div className="space-x-2">
               <span className="font-mono">
-                {((row as any).avgExecutionTime * 1000).toFixed(2)}
+                {((row as any).avgExecutionTime * 1000).toLocaleString()} ms
               </span>
               <span className="text-sm text-[#C6C6C6]">
                 {percentage.toFixed(0)}%
@@ -159,9 +159,10 @@ export default function Home() {
             </div>
           );
         }
+
         return (
           <span className="font-mono">
-            {((row as any).avgExecutionTime * 1000).toFixed(2)}
+            {((row as any).avgExecutionTime * 1000).toLocaleString()} ms
           </span>
         );
       },
@@ -171,7 +172,8 @@ export default function Home() {
       name: "LLM Gen Time (s)",
       accessorKey: "avgTotalDuration",
       sortable: true,
-      description: "Average time for the LLM to generate the SQL query in seconds",
+      description:
+        "Average time for the LLM to generate the SQL query in seconds",
       cell: (row: unknown) =>
         (row as any).provider === "human" ? (
           "--"
@@ -307,7 +309,8 @@ export default function Home() {
       name: "Score",
       accessorKey: "efficiencyScore",
       sortable: true,
-      description: "Custom metric combining execution time, data read, and success rate (lower is better)",
+      description:
+        "Custom metric combining execution time, data read, and success rate (lower is better)",
       cell: (row: unknown) => {
         if ((row as any).provider === "human") {
           return "--";

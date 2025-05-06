@@ -153,25 +153,25 @@ export default function QuestionDetail() {
       },
     },
     {
-      name: "Execution (ms)",
+      name: "Query Latency",
       accessorKey: "executionTime",
       sortable: true,
       description: "Time taken to execute the query in milliseconds",
       cell: (row: unknown) => (
         <span className="font-mono">
-          {((row as ModelMetric).executionTime * 1000).toFixed(2)}
+          {((row as ModelMetric).executionTime * 1000).toLocaleString()} ms
         </span>
       ),
       type: "right" as const,
     },
     {
-      name: "LLM Gen (s)",
+      name: "LLM Gen",
       accessorKey: "totalDuration",
       sortable: true,
       description: "Time for the LLM to generate the SQL query in seconds",
       cell: (row: unknown) => (
         <span className="font-mono">
-          {(row as ModelMetric).totalDuration.toFixed(3)}
+          {(row as ModelMetric).totalDuration.toLocaleString()} s
         </span>
       ),
       type: "right" as const,

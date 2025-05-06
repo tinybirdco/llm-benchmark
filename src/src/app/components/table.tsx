@@ -80,7 +80,7 @@ export const Table = ({
     if (!column.sortable) return null;
     if (!sortConfig || sortConfig.key !== column.accessorKey)
       return (
-        <ChevronsUpDownIcon className="w-3 h-3 group-hover:opacity-50 opacity-0" />
+        <ChevronsUpDownIcon className="w-3 h-3 group-hover:opacity-100 opacity-50" />
       );
     return sortConfig.direction === "asc" ? (
       <ChevronUpIcon className="w-3 h-3" />
@@ -113,8 +113,10 @@ export const Table = ({
                   >
                     <div className="flex items-center gap-2">
                       {column.name}
-                      <HelpCircle className="w-3 h-3 group-hover:opacity-50 opacity-0" />
-                      {getSortIcon(column)}
+                      <div className="flex items-center gap-1.5 bg-transparent pl-2 group-hover:bg-background-secondary -ml-1.5">
+                        <HelpCircle className="w-3 h-3 group-hover:opacity-100 opacity-50" />
+                        {getSortIcon(column)}
+                      </div>
                     </div>
                   </div>
                 </TooltipTrigger>
