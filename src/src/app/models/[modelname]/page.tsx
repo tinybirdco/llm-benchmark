@@ -40,25 +40,26 @@ function calculateQuestionMetrics(result: BenchmarkResult): QuestionMetric {
     bytesRead: result.sqlResult?.statistics?.bytes_read || 0,
     rowsRead: result.sqlResult?.statistics?.rows_read || 0,
     queryLength: result.sql?.length || 0,
-    attempts: result.attempts?.map((a) => ({ question: { question: a.question.question } })) || [{ question: { question: "" } }],
+    attempts: result.attempts?.map((a) => ({
+      question: { question: a.question.question },
+    })) || [{ question: { question: "" } }],
     success: result.sqlResult?.success || false,
-    firstAttempt: result.model === "human" ? true : result.attempts?.length === 1 && result.sqlResult?.success,
+    firstAttempt:
+      result.model === "human"
+        ? true
+        : result.attempts?.length === 1 && result.sqlResult?.success,
     tokens: result.metrics?.tokens?.totalTokens || 0,
   };
 }
 
 const QuestionCell = ({ metric }: { metric: QuestionMetric }) => {
   const question = metric.attempts?.[0]?.question?.question || metric.question;
+  
   return (
     <div className={`max-w-[475px] -m-4 p-4`}>
-      <Link
-        href={`/questions/${encodeURIComponent(metric.name)}`}
-        className="hover:text-[#27F795] text-sm"
-      >
-        <div className="truncate" title={question}>
-          {question}
-        </div>
-      </Link>
+      <div className="truncate" title={question}>
+        {question}
+      </div>
 
       <PreviewModal metric={metric as any} />
     </div>
@@ -143,7 +144,9 @@ export default function ModelDetail() {
       sortable: true,
       description: "Number of attempts needed for this query",
       cell: (row: unknown) => (
-        <span className="font-mono">{(row as QuestionMetric).attempts.length}</span>
+        <span className="font-mono">
+          {(row as QuestionMetric).attempts.length}
+        </span>
       ),
       type: "right" as const,
     },
@@ -166,7 +169,11 @@ export default function ModelDetail() {
       description: "Amount of data read by this query in MB",
       cell: (row: unknown) => (
         <span className="font-mono">
-          {((row as QuestionMetric).bytesRead / (1024 * 1024)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MB
+          {((row as QuestionMetric).bytesRead / (1024 * 1024)).toLocaleString(
+            undefined,
+            { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+          )}{" "}
+          MB
         </span>
       ),
       type: "right" as const,

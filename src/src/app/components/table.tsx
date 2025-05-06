@@ -95,7 +95,7 @@ export const Table = ({
         {columns.map((column) => (
           <div
             className={cn(
-              "align-start items-center text-sm table-cell text-nowrap whitespace-nowrap group",
+              "align-middle items-center text-sm table-cell text-nowrap whitespace-nowrap group",
               column.sortable ? "cursor-pointer hover:bg-[#353535]" : ""
             )}
             key={column.name}
@@ -106,7 +106,7 @@ export const Table = ({
                   <div
                     onClick={() => handleSort(column)}
                     className={cn(
-                      "p-2.5 lg:p-4 align-start text-sm text-nowrap whitespace-nowrap",
+                      "p-2.5 lg:p-4 align-middle text-sm text-nowrap whitespace-nowrap",
                       column.type === "right" ? "text-right" : "text-left",
                       sortConfig?.key === column.accessorKey ? "font-bold" : ""
                     )}
@@ -141,7 +141,7 @@ export const Table = ({
             {columns.map((column) => (
               <div
                 key={column.name}
-                className={`p-2.5 lg:p-4 align-start table-cell text-sm text-nowrap whitespace-nowrap ${
+                className={`p-2.5 lg:p-4 align-middle table-cell text-sm text-nowrap whitespace-nowrap ${
                   column.type === "right" ? "text-right" : "text-left pr-6"
                 }`}
               >

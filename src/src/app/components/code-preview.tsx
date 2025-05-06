@@ -9,23 +9,43 @@ import {
 import { ModelMetric } from "../questions/[pipename]/page";
 import { useSingleResult } from "@/lib/use-single-result";
 import { cn } from "@/lib/utils";
+import { usePathname, useRouter } from "next/navigation";
+import { ArrowRightIcon, PlusIcon, ZoomInIcon } from "lucide-react";
 
 export function PreviewModal({ metric }: { metric: ModelMetric }) {
   const [isOpen, setIsOpen] = useState(false);
   const result = useSingleResult(metric.model, metric.name);
 
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const classNames = "text-sm text-[#c6c6c6] hover:text-[#27F795] inline-flex items-center gap-x-1";
+
   return (
     <>
-      <div className="flex gap-x-2.5 items-center">
-        <span className="text-sm font-mono text-[#C6C6C6] truncate max-w-[375px]">
-          {metric.sql}
-        </span>
+      <div className="flex gap-x-4 items-center">
         <button
-          className="text-sm text-[#27F795]"
+          className={classNames}
           onClick={() => setIsOpen(true)}
         >
-          show result +
+          <PlusIcon className="w-3 h-3" /> show result 
         </button>
+
+        {pathname.includes("models") ? (
+          <button
+            className={classNames}
+            onClick={() => router.push(`/questions/${encodeURIComponent(metric.name)}`)}
+          >
+            compare models <ArrowRightIcon className="w-3 h-3" />
+          </button>
+        ) : (
+          <button
+            className={classNames}
+            onClick={() => router.push(`/models/${encodeURIComponent(metric.model)}`)}
+          >
+            all questions <ArrowRightIcon className="w-3 h-3" />
+          </button>
+        )}
       </div>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>

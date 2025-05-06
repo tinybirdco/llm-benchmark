@@ -59,12 +59,7 @@ const ModelCell = ({ metric }: { metric: ModelMetric }) => {
 
   return (
     <div className={`max-w-[475px] -m-4 p-4`}>
-      <Link
-        href={`/models/${encodeURIComponent(metric.model)}`}
-        className="text-[#27F795] text-sm"
-      >
-        <div className="truncate">{metric.model}</div>
-      </Link>
+      <div className="truncate">{metric.model}</div>
     </div>
   );
 };
@@ -106,7 +101,7 @@ export default function QuestionDetail() {
   // Get the question details from any result (they're all the same)
   const questionDetails = benchmarkResults.find(
     (r) => r.name === pipeName
-  )?.question;
+  )?.attempts?.[0]?.question;
 
   const columns = [
     {
@@ -225,6 +220,8 @@ export default function QuestionDetail() {
   return (
     <div className="min-h-screen py-8 px-4 lg:px-8 font-sans">
       <Header />
+      <h2 className="text-xl mb-4">Model Results for &quot;{questionDetails?.question}&quot;</h2>
+
 
       <div className="mb-8 space-y-5">
         <button
@@ -245,8 +242,6 @@ export default function QuestionDetail() {
           </div>
         ) : null}
       </div>
-
-      <h2 className="text-2xl mb-4">Model Results</h2>
 
       <div className="overflow-x-auto">
         <Table
