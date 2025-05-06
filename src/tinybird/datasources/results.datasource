@@ -1,0 +1,23 @@
+SCHEMA >
+    `sql` String `json:$.sql`,
+    `sql_result_success` Bool `json:$.sqlResult.success`,
+    `sql_result_data` Array(String) `json:$.sqlResult.data[:]` DEFAULT [],
+    `sql_result_execution_time` Float32 `json:$.sqlResult.executionTime`,
+    `sql_result_error` String `json:$.sqlResult.error` DEFAULT '',
+    `sql_result_query_latency` Nullable(Float32) `json:$.sqlResult.statistics.elapsed`,
+    `sql_result_rows_read` Nullable(UInt64) `json:$.sqlResult.statistics.rows_read`,
+    `sql_result_bytes_read` Nullable(UInt64) `json:$.sqlResult.statistics.bytes_read`,
+    `name` String `json:$.name`,
+    `question` String `json:$.question.question`,
+    `model` String `json:$.model`,
+    `provider` String `json:$.provider`,
+    `llm_time_to_first_token` Float32 `json:$.metrics.timeToFirstToken`,
+    `llm_total_duration` Float32 `json:$.metrics.totalDuration`,
+    `llm_prompt_tokens` UInt32 `json:$.metrics.tokens.promptTokens`,
+    `llm_completion_tokens` UInt32 `json:$.metrics.tokens.completionTokens`,
+    `llm_total_tokens` UInt32 `json:$.metrics.tokens.totalTokens`,
+    `llm_error` String `json:$.error` DEFAULT '',
+    `attempts` Array(String) `json:$.attempts[:]` DEFAULT [],
+
+ENGINE "MergeTree"
+ENGINE_SORTING_KEY "model, provider, name" 
