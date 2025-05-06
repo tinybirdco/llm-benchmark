@@ -1,5 +1,5 @@
 DESCRIPTION >
-    How has the list of top repositories changed over the years from 2015 by year
+    How has the list of top repositories changed over the years from 2015
 
 NODE endpoint
 SQL >
@@ -15,6 +15,6 @@ SQL >
     ORDER BY
         year ASC,
         count() DESC
-    LIMIT 10 BY year
+    LIMIT 10
 
 TYPE endpoint
