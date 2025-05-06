@@ -79,6 +79,7 @@ export default function ModelDetail() {
       name: "Question",
       accessorKey: "question",
       sortable: true,
+      description: "The question that was asked to the model",
       cell: (row: unknown) => {
         const metric = row as QuestionMetric;
         return <QuestionCell metric={metric} />;
@@ -88,6 +89,7 @@ export default function ModelDetail() {
       name: "Success",
       accessorKey: "success",
       sortable: true,
+      description: "Whether the query executed successfully",
       cell: (row: unknown) => {
         const metric = row as QuestionMetric;
         return (
@@ -101,6 +103,7 @@ export default function ModelDetail() {
       name: "First Attempt",
       accessorKey: "firstAttempt",
       sortable: true,
+      description: "Whether the query succeeded on the first try",
       cell: (row: unknown) => {
         const metric = row as QuestionMetric;
         return (
@@ -114,6 +117,7 @@ export default function ModelDetail() {
       name: "Execution (ms)",
       accessorKey: "executionTime",
       sortable: true,
+      description: "Time taken to execute the query in milliseconds",
       cell: (row: unknown) => (
         <span className="font-mono">
           {((row as QuestionMetric).executionTime * 1000).toFixed(2)}
@@ -125,6 +129,7 @@ export default function ModelDetail() {
       name: "LLM Gen (s)",
       accessorKey: "totalDuration",
       sortable: true,
+      description: "Time for the LLM to generate the SQL query in seconds",
       cell: (row: unknown) => (
         <span className="font-mono">
           {(row as QuestionMetric).totalDuration.toFixed(3)}
@@ -136,6 +141,7 @@ export default function ModelDetail() {
       name: "Attempts",
       accessorKey: "attempts",
       sortable: true,
+      description: "Number of attempts needed for this query",
       cell: (row: unknown) => (
         <span className="font-mono">{(row as QuestionMetric).attempts}</span>
       ),
@@ -145,6 +151,7 @@ export default function ModelDetail() {
       name: "Rows Read",
       accessorKey: "rowsRead",
       sortable: true,
+      description: "Number of rows read by this query (lower is better)",
       cell: (row: unknown) => (
         <span className="font-mono">
           {(row as QuestionMetric).rowsRead.toLocaleString()}
@@ -156,6 +163,7 @@ export default function ModelDetail() {
       name: "Data Read",
       accessorKey: "bytesRead",
       sortable: true,
+      description: "Amount of data read by this query in MB",
       cell: (row: unknown) => (
         <span className="font-mono">
           {((row as QuestionMetric).bytesRead / (1024 * 1024)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MB
@@ -167,6 +175,7 @@ export default function ModelDetail() {
       name: "Query Length",
       accessorKey: "queryLength",
       sortable: true,
+      description: "Length of the generated SQL query in characters",
       cell: (row: unknown) => (
         <span className="font-mono">{(row as QuestionMetric).queryLength}</span>
       ),
@@ -176,6 +185,7 @@ export default function ModelDetail() {
       name: "Tokens",
       accessorKey: "tokens",
       sortable: true,
+      description: "Number of tokens used to generate the query",
       cell: (row: unknown) => (
         <span className="font-mono">
           {(row as QuestionMetric).tokens.toLocaleString()}

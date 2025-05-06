@@ -68,24 +68,27 @@ export default function Home() {
       name: "Rank",
       accessorKey: "rank",
       sortable: true,
+      description: "The ranking of the model based on overall performance",
       cell: (row: unknown) =>
         row.provider === "human" ? (
           "--"
         ) : (
           <span className="font-mono">#{(row as any).rank}</span>
         ),
-      type: "right",
+      type: "right" as const,
     },
     {
       name: "Provider",
       accessorKey: "provider",
       sortable: true,
+      description: "The provider of the model",
       cell: (row: unknown) => (row as any).provider,
     },
     {
       name: "Model",
       accessorKey: "model",
       sortable: true,
+      description: "The name of the model",
       cell: (row: unknown) =>
         (row as any).provider === "human" ? (
           (row as any).model
@@ -97,6 +100,7 @@ export default function Home() {
       name: "Success Rate",
       accessorKey: "successRate",
       sortable: true,
+      description: "Percentage of queries that executed successfully",
       cell: (row: unknown) => {
         if ((row as any).provider === "human") {
           return "--";
@@ -115,6 +119,7 @@ export default function Home() {
       name: "First Attempt Rate",
       accessorKey: "firstAttemptRate",
       sortable: true,
+      description: "Percentage of queries that succeeded on the first try",
       cell: (row: unknown) => {
         if ((row as any).provider === "human") {
           return "--";
@@ -133,6 +138,7 @@ export default function Home() {
       name: "Avg Query Latency (ms)",
       accessorKey: "avgExecutionTime",
       sortable: true,
+      description: "Average time taken to execute the query in milliseconds",
       cell: (row: unknown) => {
         const humanBaseline = humanMetrics.find((h) => h.provider === "human");
         const showPercentage =
@@ -159,12 +165,13 @@ export default function Home() {
           </span>
         );
       },
-      type: "right",
+      type: "right" as const,
     },
     {
       name: "LLM Gen Time (s)",
       accessorKey: "avgTotalDuration",
       sortable: true,
+      description: "Average time for the LLM to generate the SQL query in seconds",
       cell: (row: unknown) =>
         (row as any).provider === "human" ? (
           "--"
@@ -173,12 +180,13 @@ export default function Home() {
             {(row as any).avgTotalDuration.toFixed(3)}
           </span>
         ),
-      type: "right",
+      type: "right" as const,
     },
     {
       name: "Avg Attempts",
       accessorKey: "avgAttempts",
       sortable: true,
+      description: "Average number of attempts needed per query",
       cell: (row: unknown) => {
         if ((row as any).provider === "human") {
           return "--";
@@ -189,12 +197,13 @@ export default function Home() {
           </span>
         );
       },
-      type: "right",
+      type: "right" as const,
     },
     {
       name: "Avg Rows Read",
       accessorKey: "avgRowsRead",
       sortable: true,
+      description: "Average number of rows read per query (lower is better)",
       cell: (row: unknown) => {
         const humanBaseline = humanMetrics.find((h) => h.provider === "human");
         const showPercentage =
@@ -220,12 +229,13 @@ export default function Home() {
           </span>
         );
       },
-      type: "right",
+      type: "right" as const,
     },
     {
       name: "Avg Data Read",
       accessorKey: "avgBytesRead",
       sortable: true,
+      description: "Average amount of data read per query in MB",
       cell: (row: unknown) => {
         const humanBaseline = humanMetrics.find((h) => h.provider === "human");
         const showPercentage =
@@ -259,12 +269,13 @@ export default function Home() {
           </span>
         );
       },
-      type: "right",
+      type: "right" as const,
     },
     {
       name: "Avg Query Length",
       accessorKey: "avgQueryLength",
       sortable: true,
+      description: "Average length of generated SQL queries in characters",
       cell: (row: unknown) => {
         const humanBaseline = humanMetrics.find((h) => h.provider === "human");
         const showPercentage =
@@ -290,12 +301,13 @@ export default function Home() {
           </span>
         );
       },
-      type: "right",
+      type: "right" as const,
     },
     {
       name: "Score",
       accessorKey: "efficiencyScore",
       sortable: true,
+      description: "Custom metric combining execution time, data read, and success rate (lower is better)",
       cell: (row: unknown) => {
         if ((row as any).provider === "human") {
           return "--";
@@ -317,16 +329,17 @@ export default function Home() {
           </div>
         );
       },
-      type: "right",
+      type: "right" as const,
     },
     {
       name: "Total Queries",
       accessorKey: "totalQueries",
       sortable: true,
+      description: "Total number of queries executed for this model",
       cell: (row: unknown) => (
         <span className="font-mono">{(row as any).totalQueries}</span>
       ),
-      type: "right",
+      type: "right" as const,
     },
   ];
 

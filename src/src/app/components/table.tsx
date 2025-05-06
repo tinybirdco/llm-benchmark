@@ -1,6 +1,17 @@
 import { cn } from "@/lib/utils";
-import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
+import {
+  ChevronDownIcon,
+  ChevronsUpDownIcon,
+  ChevronUpIcon,
+  HelpCircle,
+} from "lucide-react";
 import React from "react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./tooltip";
 
 type ColumnDefinition = {
   name: string;
@@ -8,6 +19,7 @@ type ColumnDefinition = {
   cell: (row: unknown) => React.ReactNode;
   type?: "left" | "right";
   sortable?: boolean;
+  description?: string;
 };
 
 type SortConfig = {
@@ -66,11 +78,14 @@ export const Table = ({
 
   const getSortIcon = (column: ColumnDefinition) => {
     if (!column.sortable) return null;
-    if (!sortConfig || sortConfig.key !== column.accessorKey) return null;
+    if (!sortConfig || sortConfig.key !== column.accessorKey)
+      return (
+        <ChevronsUpDownIcon className="w-3 h-3 group-hover:opacity-50 opacity-0" />
+      );
     return sortConfig.direction === "asc" ? (
-      <ChevronUpIcon className="w-4 h-4" />
+      <ChevronUpIcon className="w-3 h-3" />
     ) : (
-      <ChevronDownIcon className="w-4 h-4" />
+      <ChevronDownIcon className="w-3 h-3" />
     );
   };
 
@@ -79,19 +94,33 @@ export const Table = ({
       <div className="table-header-group">
         {columns.map((column) => (
           <div
-            key={column.name}
-            onClick={() => handleSort(column)}
             className={cn(
-              "p-4 align-start text-sm table-cell text-nowrap whitespace-nowrap",
-              column.type === "right" ? "text-right" : "text-left",
-              column.sortable ? "cursor-pointer hover:bg-[#353535]" : "",
-              sortConfig?.key === column.accessorKey ? "font-bold" : ""
+              "align-start items-center text-sm table-cell text-nowrap whitespace-nowrap h-[52px] group",
+              column.sortable ? "cursor-pointer hover:bg-[#353535]" : ""
             )}
+            key={column.name}
           >
-            <div className="flex items-center gap-2">
-              {column.name}
-              {getSortIcon(column)}
-            </div>
+            <TooltipProvider key={column.name}>
+              <Tooltip>
+                <TooltipTrigger disabled={!column.description}>
+                  <div
+                    onClick={() => handleSort(column)}
+                    className={cn(
+                      "p-4 align-start text-sm text-nowrap whitespace-nowrap",
+                      column.type === "right" ? "text-right" : "text-left",
+                      sortConfig?.key === column.accessorKey ? "font-bold" : ""
+                    )}
+                  >
+                    <div className="flex items-center gap-2">
+                      {column.name}
+                      <HelpCircle className="w-3 h-3 group-hover:opacity-50 opacity-0" />
+                      {getSortIcon(column)}
+                    </div>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>{column.description}</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         ))}
       </div>
