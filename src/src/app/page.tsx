@@ -75,7 +75,7 @@ export default function Home() {
         ) : (
           <span className="font-mono">#{(row as any).rank}</span>
         ),
-      type: "right" as const,
+      type: "left" as const,
     },
     {
       name: "Provider",
