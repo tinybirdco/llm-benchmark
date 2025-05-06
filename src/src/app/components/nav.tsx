@@ -67,10 +67,8 @@ export const QuestionSelect = () => {
         side="bottom"
         sideOffset={0}
         className={cn(
-          "w-[415px] sm:w-[415px] w-full bg-[#353535] font-sans text-sm max-h-[500px] overflow-y-auto border-none rounded-none p-0",
-          "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
-          "sm:absolute sm:translate-y-0 sm:translate-x-0",
-          "relative translate-y-0 translate-x-0"
+          "w-full max-w-[415px] bg-[#353535] font-sans text-sm max-h-[500px] overflow-y-auto border-none rounded-none p-0",
+          "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2"
         )}
         style={{
           position: 'relative',
@@ -116,7 +114,7 @@ export const Header = ({
         </div>
 
         <p className="text-sm max-w-[556px]">
-          We benchmarked the most popular LLMs on their ability to generate accurate and efficient SQL from natural language prompts. Using a 3.1 billion record dataset from the{" "}
+          We assessed the ability of popular LLMs to generate accurate and efficient SQL from natural language prompts. Using a 3.1 billion record dataset from the{" "}
           <Link
             className="text-[#27F795]"
             href="https://www.gharchive.org/"
@@ -132,15 +130,15 @@ export const Header = ({
           >
             Tinybird
           </Link>
-          , we ran{" "}
+          , we asked the LLMs to generate SQL based on {" "}
           <Link
             className="text-[#27F795]"
             href="https://ghe.clickhouse.tech/"
             target="_blank"
           >
             61 prompts
-          </Link>{" "}
-          and gathered results from each LLM, comparing them to a human baseline.
+          </Link>.{" "}
+          The results are shown below and can be compared to a human baseline.
         </p>
       </div>
 

@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import * as PopoverPrimitive from "@radix-ui/react-popover"
-import { useMediaQuery } from "@/lib/useMediaQuery"
 
 import { cn } from "@/lib/utils"
 
@@ -16,7 +15,6 @@ const PopoverContent = React.forwardRef<
   React.ElementRef<typeof PopoverPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content>
 >(({ className, align = "center", sideOffset = 4, ...props }, ref) => {
-  const isMobile = useMediaQuery("(max-width: 640px)")
   const content = (
     <PopoverPrimitive.Content
       ref={ref}
@@ -29,7 +27,7 @@ const PopoverContent = React.forwardRef<
       {...props}
     />
   )
-  return isMobile ? content : <PopoverPrimitive.Portal>{content}</PopoverPrimitive.Portal>
+  return <PopoverPrimitive.Portal>{content}</PopoverPrimitive.Portal>
 })
 PopoverContent.displayName = PopoverPrimitive.Content.displayName
 

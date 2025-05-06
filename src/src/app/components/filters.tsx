@@ -33,18 +33,10 @@ export function Filter({ label, options, selected, onChange }: FilterProps) {
                 side="bottom"
                 sideOffset={0}
                 className={cn(
-                    "w-[300px] sm:w-[300px] w-full bg-[#353535] font-sans text-sm max-h-[500px] overflow-y-auto border-none rounded-none p-0",
-                    "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
-                    "sm:absolute sm:translate-y-0 sm:translate-x-0",
-                    "relative translate-y-0 translate-x-0"
+                    "max-w-[415px] bg-[#353535] font-sans text-sm max-h-[500px] overflow-y-auto border-none rounded-none p-0",
+                    "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2"
                 )}
-                style={{
-                    position: 'relative',
-                    width: '100%',
-                    marginTop: '0',
-                    marginLeft: '0',
-                    transform: 'none'
-                }}
+
             >
                 {options.map((option) => (
                     <button
