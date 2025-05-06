@@ -4,7 +4,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { useParams, useRouter } from "next/navigation";
 import { ChevronDownIcon } from "./icons";
 import Link from "next/link";
-import { ArrowRightIcon, GithubIcon, HelpCircleIcon } from "lucide-react";
+import { GithubIcon, ClipboardListIcon } from "lucide-react";
 import { Button } from "./button";
 
 export const QuestionSelect = () => {
@@ -76,8 +76,8 @@ export const Header = () => {
           <h1 className="text-3xl">AI SQL Generation Benchmark Results</h1>
 
           <div className="flex gap-2 items-center">
-            <Button variant="secondary" size="lg"><GithubIcon /> Code repo</Button>
-            <Button variant="default" size="lg"><HelpCircleIcon /> How did we do this?</Button>
+            <Button variant="secondary" size="lg"><GithubIcon /> GitHub</Button>
+            <Button variant="default" size="lg"><ClipboardListIcon /> Methodology</Button>
           </div>
         </div>
 
