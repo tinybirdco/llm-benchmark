@@ -69,11 +69,11 @@ export default function Home() {
       accessorKey: "rank",
       sortable: true,
       description: "The ranking of the model based on overall performance",
-      cell: (row: unknown) =>
+      cell: (row: ModelResult) =>
         row.provider === "human" ? (
           "--"
         ) : (
-          <span className="font-mono">#{(row as any).rank}</span>
+          <span className="font-mono">#{row.rank}</span>
         ),
       type: "left" as const,
     },
@@ -89,11 +89,11 @@ export default function Home() {
       accessorKey: "model",
       sortable: true,
       description: "The name of the model",
-      cell: (row: unknown) =>
-        (row as any).provider === "human" ? (
+      cell: (row: ModelResult) =>
+        row.provider === "human" ? (
           (row as any).model
         ) : (
-          <ModelCell model={(row as any).model} sql={(row as any).sql || ""} />
+          <ModelCell model={(row as any).model} />
         ),
     },
     {

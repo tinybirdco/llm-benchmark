@@ -13,7 +13,7 @@ export type SqlResult = {
 export type ModelResult = {
   sql: string;
   sqlResult: SqlResult | null;
-  metrics: {
+  metrics?: {
     timeToFirstToken: number;
     totalDuration: number;
     tokens: {
@@ -31,6 +31,7 @@ export type ModelResult = {
   model: string;
   provider: string;
   attempts: ModelResult[];
+  rank?: number;
 };
 
 export type BenchmarkResults = ModelResult[]; 

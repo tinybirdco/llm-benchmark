@@ -12,11 +12,12 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "./tooltip";
+import { ModelResult } from "@/app/types";
 
 type ColumnDefinition = {
   name: string;
   accessorKey: string;
-  cell: (row: unknown) => React.ReactNode;
+  cell: (row: ModelResult) => React.ReactNode;
   type?: "left" | "right";
   sortable?: boolean;
   description?: string;
@@ -149,7 +150,7 @@ export const Table = ({
                   column.className
                 )}
               >
-                {column.cell(row)}
+                {column.cell(row as ModelResult)}
               </div>
             ))}
           </div>
