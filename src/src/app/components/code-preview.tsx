@@ -55,7 +55,7 @@ export function PreviewModal({ metric }: { metric: ModelMetrics }) {
             {metric.model}
           </DialogTitle>
           <DialogDescription>
-            "{result?.question?.content ?? ""}"
+            "{metric.attempts?.[0]?.question?.question || JSON.stringify(result?.question?.content ?? "")}"
           </DialogDescription>
 
           <h3 className="text-lg font-medium mt-4">Generated SQL</h3>
