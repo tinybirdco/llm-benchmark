@@ -11,8 +11,11 @@ import { ArrowLeftIcon, ChevronDownIcon } from "@/app/components/icons";
 import { Header } from "@/app/components/nav";
 import { PreviewModal } from "@/app/components/code-preview";
 
-type BenchmarkResult = (typeof benchmarkResults)[number];
-type HumanResult = (typeof humanResults)[number];
+const typedBenchmarkResults = benchmarkResults as any[];
+const typedHumanResults = humanResults as any[];
+
+type BenchmarkResult = (typeof typedBenchmarkResults)[number];
+type HumanResult = (typeof typedHumanResults)[number];
 
 export type ModelMetric = {
   model: string;
@@ -69,8 +72,8 @@ export default function QuestionDetail() {
   const pipeName = decodeURIComponent(params.pipename as string);
 
   const modelResults = useMemo(() => {
-    const questionResults = benchmarkResults.filter((r) => r.name === pipeName);
-    const humanQuestionResults = humanResults.filter((r) => r.name === pipeName);
+    const questionResults = typedBenchmarkResults.filter((r) => r.name === pipeName);
+    const humanQuestionResults = typedHumanResults.filter((r) => r.name === pipeName);
     return [
       ...humanQuestionResults.map(calculateModelMetrics),
       ...questionResults.map(calculateModelMetrics),
@@ -99,7 +102,7 @@ export default function QuestionDetail() {
   }
 
   // Get the question details from any result (they're all the same)
-  const questionDetails = benchmarkResults.find(
+  const questionDetails = typedBenchmarkResults.find(
     (r) => r.name === pipeName
   )?.attempts?.[0]?.question;
 
@@ -114,7 +117,7 @@ export default function QuestionDetail() {
         return (
           <div>
             <ModelCell metric={metric} />
-            <PreviewModal metric={metric}  />
+            <PreviewModal metric={metric} />
           </div>
         );
       },
