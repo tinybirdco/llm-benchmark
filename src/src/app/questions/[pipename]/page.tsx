@@ -10,6 +10,7 @@ import { Badge } from "../../components/badge";
 import { ArrowLeftIcon, ChevronDownIcon } from "@/app/components/icons";
 import { Header } from "@/app/components/nav";
 import { PreviewModal } from "@/app/components/code-preview";
+import { ModelMetrics } from "@/lib/eval";
 
 const typedBenchmarkResults = benchmarkResults as any[];
 const typedHumanResults = humanResults as any[];
@@ -17,41 +18,33 @@ const typedHumanResults = humanResults as any[];
 type BenchmarkResult = (typeof typedBenchmarkResults)[number];
 type HumanResult = (typeof typedHumanResults)[number];
 
-export type ModelMetric = {
-  model: string;
-  name: string;
-  sql: string;
-  executionTime: number;
-  timeToFirstToken: number;
-  totalDuration: number;
-  bytesRead: number;
-  rowsRead: number;
-  queryLength: number;
-  attempts: number;
-  success: boolean;
-  firstAttempt: boolean;
-  tokens: number;
-};
-
-function calculateModelMetrics(result: BenchmarkResult | HumanResult): ModelMetric {
+function calculateModelMetrics(result: BenchmarkResult | HumanResult): ModelMetrics {
   return {
     model: result.model,
-    name: result.question.name,
-    sql: result.sql || "",
-    executionTime: result.sqlResult?.executionTime || 0,
-    timeToFirstToken: 'metrics' in result ? result.metrics?.timeToFirstToken || 0 : 0,
-    totalDuration: 'metrics' in result ? result.metrics?.totalDuration || 0 : 0,
-    bytesRead: result.sqlResult?.statistics?.bytes_read || 0,
-    rowsRead: result.sqlResult?.statistics?.rows_read || 0,
-    queryLength: result.sql?.length || 0,
-    attempts: result.attempts?.length || 1,
-    success: result.sqlResult?.success || false,
-    firstAttempt: result.model === "human" ? true : result.attempts?.length === 1 && result.sqlResult?.success,
-    tokens: 'metrics' in result ? result.metrics?.tokens?.totalTokens || 0 : 0,
+    provider: result.provider,
+    name: result.name,
+    totalQueries: 1,
+    successfulQueries: result.sqlResult?.success ? 1 : 0,
+    firstAttemptSuccess: result.model === "human" || (result.sqlResult?.success && result.attempts?.length === 1) ? 1 : 0,
+    avgExecutionTime: result.sqlResult?.executionTime || 0,
+    avgTimeToFirstToken: 'metrics' in result ? result.metrics?.timeToFirstToken || 0 : 0,
+    avgTotalDuration: 'metrics' in result ? result.metrics?.totalDuration || 0 : 0,
+    totalBytesRead: result.sqlResult?.statistics?.bytes_read || 0,
+    totalRowsRead: result.sqlResult?.statistics?.rows_read || 0,
+    avgRowsRead: result.sqlResult?.statistics?.rows_read || 0,
+    avgBytesRead: result.sqlResult?.statistics?.bytes_read || 0,
+    avgQueryLength: result.sql?.length || 0,
+    avgTokens: 'metrics' in result ? result.metrics?.tokens?.totalTokens || 0 : 0,
+    avgAttempts: result.attempts?.length || 1,
+    successRate: result.sqlResult?.success ? 100 : 0,
+    firstAttemptRate: result.model === "human" || (result.sqlResult?.success && result.attempts?.length === 1) ? 100 : 0,
+    efficiencyScore: 0,
+    rawEfficiencyScore: 0,
+    rank: 0
   };
 }
 
-const ModelCell = ({ metric }: { metric: ModelMetric }) => {
+const ModelCell = ({ metric }: { metric: ModelMetrics }) => {
   if (metric.model === "human") {
     return (
       <div className={`text-sm text-secondary`}>
@@ -70,6 +63,8 @@ const ModelCell = ({ metric }: { metric: ModelMetric }) => {
 export default function QuestionDetail() {
   const params = useParams();
   const pipeName = decodeURIComponent(params.pipename as string);
+  const [selectedModels, setSelectedModels] = useState<string[]>([]);
+  const [selectedProviders, setSelectedProviders] = useState<string[]>([]);
 
   const modelResults = useMemo(() => {
     const questionResults = typedBenchmarkResults.filter((r) => r.name === pipeName);
@@ -79,6 +74,14 @@ export default function QuestionDetail() {
       ...questionResults.map(calculateModelMetrics),
     ];
   }, [pipeName]);
+
+  const filteredData = useMemo(() => {
+    return modelResults.filter((result) => {
+      const modelMatch = selectedModels.length === 0 || selectedModels.includes(result.model);
+      const providerMatch = selectedProviders.length === 0 || selectedProviders.includes(result.provider);
+      return modelMatch && providerMatch;
+    });
+  }, [modelResults, selectedModels, selectedProviders]);
 
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -112,108 +115,105 @@ export default function QuestionDetail() {
       accessorKey: "model",
       sortable: true,
       description: "The name of the model that generated the query",
-      cell: (row: unknown) => {
-        const metric = row as ModelMetric;
+      cell: (row: ModelMetrics) => {
         return (
           <div>
-            <ModelCell metric={metric} />
-            <PreviewModal metric={metric} />
+            <ModelCell metric={row} />
+            <PreviewModal metric={row} />
           </div>
         );
       },
     },
     {
       name: "Success",
-      accessorKey: "success",
+      accessorKey: "successRate",
       sortable: true,
       description: "Whether the query executed successfully",
-      cell: (row: unknown) => {
-        const metric = row as ModelMetric;
+      cell: (row: ModelMetrics) => {
         return (
-          <Badge status={metric.success ? "success" : "error"}>
-            {metric.success ? "Success" : "Failed"}
+          <Badge status={row.successRate === 100 ? "success" : "error"}>
+            {row.successRate === 100 ? "Success" : "Failed"}
           </Badge>
         );
       },
     },
     {
       name: "First Attempt",
-      accessorKey: "firstAttempt",
+      accessorKey: "firstAttemptRate",
       sortable: true,
       description: "Whether the query succeeded on the first try",
-      cell: (row: unknown) => {
-        const metric = row as ModelMetric;
+      cell: (row: ModelMetrics) => {
         return (
-          <Badge status={metric.firstAttempt ? "success" : "warning"}>
-            {metric.firstAttempt ? "Yes" : "No"}
+          <Badge status={row.firstAttemptRate === 100 ? "success" : "warning"}>
+            {row.firstAttemptRate === 100 ? "Yes" : "No"}
           </Badge>
         );
       },
     },
     {
       name: "Query Latency",
-      accessorKey: "executionTime",
+      accessorKey: "avgExecutionTime",
       sortable: true,
       description: "Time taken to execute the query in milliseconds",
-      cell: (row: unknown) => (
+      cell: (row: ModelMetrics) => (
         <span className="font-mono">
-          {((row as ModelMetric).executionTime * 1000).toLocaleString()} ms
+          {(row.avgExecutionTime * 1000).toLocaleString()} ms
         </span>
       ),
       type: "right" as const,
     },
     {
       name: "LLM Gen",
-      accessorKey: "totalDuration",
+      accessorKey: "avgTotalDuration",
       sortable: true,
       description: "Time for the LLM to generate the SQL query in seconds",
-      cell: (row: unknown) => (
+      cell: (row: ModelMetrics) => (
         <span className="font-mono">
-          {(row as ModelMetric).totalDuration.toLocaleString()} s
+          {row.avgTotalDuration.toLocaleString()} s
         </span>
       ),
       type: "right" as const,
     },
     {
       name: "Attempts",
-      accessorKey: "attempts",
+      accessorKey: "avgAttempts",
       sortable: true,
       description: "Number of attempts needed for this query",
-      cell: (row: unknown) => (
-        <span className="font-mono">{(row as ModelMetric).attempts}</span>
+      cell: (row: ModelMetrics) => (
+        <span className="font-mono">{row.avgAttempts}</span>
       ),
       type: "right" as const,
     },
     {
       name: "Rows Read",
-      accessorKey: "rowsRead",
+      accessorKey: "avgRowsRead",
       sortable: true,
       description: "Number of rows read by this query (lower is better)",
-      cell: (row: unknown) => (
+      cell: (row: ModelMetrics) => (
         <span className="font-mono">
-          {(row as ModelMetric).rowsRead.toLocaleString()}
+          {row.avgRowsRead.toLocaleString()}
         </span>
       ),
       type: "right" as const,
     },
     {
       name: "Query Length",
-      accessorKey: "queryLength",
+      accessorKey: "avgQueryLength",
       sortable: true,
       description: "Length of the generated SQL query in characters",
-      cell: (row: unknown) => (
-        <span className="font-mono">{(row as ModelMetric).queryLength}</span>
+      cell: (row: ModelMetrics) => (
+        <span className="font-mono">{row.avgQueryLength}</span>
       ),
       type: "right" as const,
     },
     {
       name: "Tokens",
-      accessorKey: "tokens",
+      accessorKey: "avgTokens",
       sortable: true,
       description: "Number of tokens used to generate the query",
-      cell: (row: unknown) => (
+      cell: (row: ModelMetrics) => (
         <span className="font-mono">
-          {(row as ModelMetric).tokens.toLocaleString()}
+          {row.avgTokens.toLocaleString()}
         </span>
       ),
       type: "right" as const,
@@ -222,9 +222,14 @@ export default function QuestionDetail() {
 
   return (
     <div className="min-h-screen py-8 px-4 lg:px-8 font-sans">
-      <Header />
+      <Header
+        data={modelResults}
+        selectedModels={selectedModels}
+        selectedProviders={selectedProviders}
+        onModelChange={setSelectedModels}
+        onProviderChange={setSelectedProviders}
+      />
       <h2 className="text-xl mb-4">Model Results for &quot;{questionDetails?.question}&quot;</h2>
-
 
       <div className="mb-8 space-y-5">
         <button
@@ -246,13 +251,14 @@ export default function QuestionDetail() {
         ) : null}
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto w-full">
         <Table
           columns={columns}
-          data={modelResults.map((metric) => ({
-            key: metric.model,
-            ...metric,
-          }))}
+          data={filteredData}
+          defaultSort={{
+            key: "model",
+            direction: "asc",
+          }}
         />
       </div>
     </div>

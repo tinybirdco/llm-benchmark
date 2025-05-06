@@ -7,6 +7,16 @@ import Link from "next/link";
 import { GithubIcon, ClipboardListIcon } from "lucide-react";
 import { Button } from "./button";
 import { cn } from "@/lib/utils";
+import { Filters } from "./filters";
+import { ModelMetrics } from "@/lib/eval";
+
+type HeaderProps = {
+  data: ModelMetrics[];
+  selectedModels: string[];
+  selectedProviders: string[];
+  onModelChange: (models: string[]) => void;
+  onProviderChange: (providers: string[]) => void;
+};
 
 export const QuestionSelect = () => {
   const router = useRouter();
@@ -46,7 +56,7 @@ export const QuestionSelect = () => {
     <Popover>
       <PopoverTrigger asChild>
         <button className={cn(
-          "bg-[#353535] w-full max-w-[33%] font-sans text-sm text-left hover:bg-[#454545] p-4 hover:text-white flex items-center justify-between cursor-pointer"
+          "bg-[#353535] w-full sm:w-[200px] font-sans text-sm text-left hover:bg-[#454545] p-4 hover:text-white flex items-center justify-between cursor-pointer"
         )}>
           <span className="truncate">{selectedQuestionLabel || "All Questions"}</span>
           <ChevronDownIcon className="flex-shrink-0 ml-2" />
@@ -54,9 +64,21 @@ export const QuestionSelect = () => {
       </PopoverTrigger>
       <PopoverContent
         align="start"
+        side="bottom"
+        sideOffset={0}
         className={cn(
-          "w-full max-w-[33%] bg-[#353535] font-sans text-sm max-h-[500px] overflow-y-auto border-none rounded-none p-0"
+          "w-[415px] sm:w-[415px] w-full bg-[#353535] font-sans text-sm max-h-[500px] overflow-y-auto border-none rounded-none p-0",
+          "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+          "sm:absolute sm:translate-y-0 sm:translate-x-0",
+          "relative translate-y-0 translate-x-0"
         )}
+        style={{
+          position: 'relative',
+          width: '100%',
+          marginTop: '0',
+          marginLeft: '0',
+          transform: 'none'
+        }}
       >
         {questionOptions.map((opt) => (
           <button
@@ -74,7 +96,13 @@ export const QuestionSelect = () => {
   );
 };
 
-export const Header = () => {
+export const Header = ({
+  data,
+  selectedModels,
+  selectedProviders,
+  onModelChange,
+  onProviderChange,
+}: HeaderProps) => {
   return (
     <header>
       <div className="space-y-5 mb-8">
@@ -116,8 +144,15 @@ export const Header = () => {
         </p>
       </div>
 
-      <div className="mb-6 flex items-center gap-4 max-w-[1400px]">
+      <div className="mb-6 flex flex-col sm:flex-row items-stretch sm:items-center gap-4 max-w-[1400px]">
         <QuestionSelect />
+        <Filters
+          data={data}
+          selectedModels={selectedModels}
+          selectedProviders={selectedProviders}
+          onModelChange={onModelChange}
+          onProviderChange={onProviderChange}
+        />
       </div>
     </header>
   );

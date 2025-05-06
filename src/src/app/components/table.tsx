@@ -12,12 +12,12 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "./tooltip";
-import { ModelResult } from "@/app/types";
+import { ModelMetrics } from "@/lib/eval";
 
 type ColumnDefinition = {
   name: string;
   accessorKey: string;
-  cell: (row: ModelResult) => React.ReactNode;
+  cell: (row: ModelMetrics) => React.ReactNode;
   type?: "left" | "right";
   sortable?: boolean;
   description?: string;
@@ -35,7 +35,7 @@ export const Table = ({
   defaultSort,
 }: {
   columns: ColumnDefinition[];
-  data: Record<string, unknown>[];
+  data: ModelMetrics[];
   defaultSort?: SortConfig;
 }) => {
   const [sortConfig, setSortConfig] = React.useState<SortConfig | null>(
@@ -66,8 +66,8 @@ export const Table = ({
     if (!sortConfig) return data;
 
     return [...data].sort((a, b) => {
-      const aValue = a[sortConfig.key];
-      const bValue = b[sortConfig.key];
+      const aValue = a[sortConfig.key as keyof ModelMetrics];
+      const bValue = b[sortConfig.key as keyof ModelMetrics];
 
       if (aValue === bValue) return 0;
       if (aValue === null || aValue === undefined) return 1;
@@ -151,7 +151,7 @@ export const Table = ({
                   column.className
                 )}
               >
-                {column.cell(row as ModelResult)}
+                {column.cell(row)}
               </div>
             ))}
           </div>

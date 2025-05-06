@@ -1,6 +1,7 @@
 export type SqlResult = {
   success: boolean;
   data: Record<string, unknown>[];
+  meta?: { name: string; type: string; }[];
   executionTime?: number;
   error?: string;
   statistics?: {

@@ -6,20 +6,20 @@ import {
   DialogDescription,
   DialogTitle,
 } from "./dialog";
-import { ModelMetric } from "../questions/[pipename]/page";
+import { ModelMetrics } from "@/lib/eval";
 import { useSingleResult } from "@/lib/use-single-result";
 import { cn } from "@/lib/utils";
 import { usePathname, useRouter } from "next/navigation";
 import { ArrowRightIcon, PlusIcon, ZoomInIcon } from "lucide-react";
 
-export function PreviewModal({ metric }: { metric: ModelMetric }) {
+export function PreviewModal({ metric }: { metric: ModelMetrics }) {
   const [isOpen, setIsOpen] = useState(false);
   const result = useSingleResult(metric.model, metric.name);
 
   const router = useRouter();
   const pathname = usePathname();
 
-  const classNames = "text-sm text-[#c6c6c6] hover:text-[#27F795] inline-flex items-center gap-x-1";
+  const classNames = "text-sm text-[#c6c6c6] hover:text-[#27F795] inline-flex items-center gap-x-1 cursor-pointer";
 
   return (
     <>
@@ -28,13 +28,13 @@ export function PreviewModal({ metric }: { metric: ModelMetric }) {
           className={classNames}
           onClick={() => setIsOpen(true)}
         >
-          <PlusIcon className="w-3 h-3" /> show result 
+          <PlusIcon className="w-3 h-3" /> show result
         </button>
 
         {pathname.includes("models") ? (
           <button
             className={classNames}
-            onClick={() => router.push(`/questions/${encodeURIComponent(metric.name)}`)}
+            onClick={() => router.push(`/questions/${encodeURIComponent(metric.model)}`)}
           >
             compare models <ArrowRightIcon className="w-3 h-3" />
           </button>
@@ -55,7 +55,7 @@ export function PreviewModal({ metric }: { metric: ModelMetric }) {
             {metric.model}
           </DialogTitle>
           <DialogDescription>
-            "{metric.attempts?.[0]?.question?.question || JSON.stringify(result?.question?.content ?? "")}"
+            "{result?.question?.content ?? ""}"
           </DialogDescription>
 
           <h3 className="text-lg font-medium mt-4">Generated SQL</h3>
@@ -66,10 +66,10 @@ export function PreviewModal({ metric }: { metric: ModelMetric }) {
           )}
 
           <h3 className="text-lg font-medium mt-4">Results</h3>
-          {result && (
+          {result?.sqlResult && (
             <GenericTable
               data={result.sqlResult.data}
-              meta={result.sqlResult.meta}
+              meta={result.sqlResult.meta || []}
               error={result.sqlResult.error}
             />
           )}
@@ -79,13 +79,18 @@ export function PreviewModal({ metric }: { metric: ModelMetric }) {
   );
 }
 
+type ColumnMeta = {
+  name: string;
+  type: string;
+};
+
 export default function GenericTable({
   data,
   meta,
   error,
 }: {
   data: Record<string, unknown>[];
-  meta: Record<string, unknown>[];
+  meta: ColumnMeta[];
   error?: string;
 }) {
   if (!data || !meta)
@@ -105,7 +110,7 @@ export default function GenericTable({
     <table className="border-collapse !text-sm font-mono">
       <thead>
         <tr>
-          {meta.map((col, idx) => (
+          {meta.map((col) => (
             <th key={col.name} className={cn("px-2 py-1.5 text-left")}>
               {col.name}
             </th>
@@ -115,9 +120,9 @@ export default function GenericTable({
       <tbody>
         {data.map((row, rowIndex) => (
           <tr key={rowIndex}>
-            {meta.map((col, idx) => (
+            {meta.map((col) => (
               <td key={col.name} className={cn("px-2 py-1.5 text-left")}>
-                {row[col.name]?.toLocaleString?.() ?? row[col.name]}
+                {String(row[col.name] ?? '')}
               </td>
             ))}
           </tr>

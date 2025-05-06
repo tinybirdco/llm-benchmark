@@ -1,8 +1,33 @@
 import { type useResults } from "./use-results";
+import { ModelResult } from "@/app/types";
+
+export type ModelMetrics = {
+  model: string;
+  provider: string;
+  name: string;
+  totalQueries: number;
+  successfulQueries: number;
+  firstAttemptSuccess: number;
+  avgExecutionTime: number;
+  avgTimeToFirstToken: number;
+  avgTotalDuration: number;
+  totalBytesRead: number;
+  totalRowsRead: number;
+  avgRowsRead: number;
+  avgBytesRead: number;
+  avgQueryLength: number;
+  avgTokens: number;
+  avgAttempts: number;
+  successRate: number;
+  firstAttemptRate: number;
+  efficiencyScore: number;
+  rawEfficiencyScore: number;
+  rank: number;
+};
 
 export function calculateModelMetrics(
-  modelResults: ReturnType<typeof useResults>
-) {
+  modelResults: ModelResult[]
+): ModelMetrics {
   const totalQueries = modelResults.length;
   const successfulQueries = modelResults.filter(
     (r) => r.sqlResult?.success
@@ -60,7 +85,7 @@ export function calculateModelMetrics(
 
   const bytesMB = totalBytesRead / (1024 * 1024); // convert to MB
   const rowsM = totalRowsRead / 1_000_000; // convert to millions
-  const bytesPerRowKB = (totalBytesRead / totalRowsRead) / 1024; // bytes per row in KB
+  const bytesPerRowKB = (totalBytesRead / totalRowsRead) / 1024;
 
   // Count failed queries
   const failedQueries = modelResults.filter(r => !r.sqlResult?.success).length;
@@ -74,12 +99,12 @@ export function calculateModelMetrics(
   const bytesPenalty = bytesMB;                              // cost per scanned byte
   const bytesPerRowPenalty = Math.pow(bytesPerRowKB, 2);     // very heavy if you pull fat columns
 
-  const penalty = attemptsPenalty * genTimePenalty * execTimePenalty * 
-                 rowsPenalty * bytesPenalty * bytesPerRowPenalty * failurePenalty;
+  const penalty = attemptsPenalty * genTimePenalty * execTimePenalty *
+    rowsPenalty * bytesPenalty * bytesPerRowPenalty * failurePenalty;
 
   // Calculate raw efficiency score (lower is better)
   const rawEfficiencyScore = Math.sqrt(penalty / C);
-  
+
   // Find the maximum raw score across all models to use as reference
   // This will be done in calculateRanks function
   const efficiencyScore = 0; // Placeholder, will be set in calculateRanks
@@ -87,6 +112,7 @@ export function calculateModelMetrics(
   return {
     model: modelResults[0].model,
     provider: modelResults[0].provider,
+    name: modelResults[0].name,
     totalQueries,
     successfulQueries,
     firstAttemptSuccess,
@@ -103,18 +129,18 @@ export function calculateModelMetrics(
     successRate,
     firstAttemptRate,
     efficiencyScore,
-    rawEfficiencyScore, // Add this to store the raw score
+    rawEfficiencyScore,
     rank: 0, // This will be calculated after all metrics are computed
   };
 }
 
 // Function to calculate ranks for all models
 export function calculateRanks(
-  metrics: ReturnType<typeof calculateModelMetrics>[]
-) {
+  metrics: ModelMetrics[]
+): ModelMetrics[] {
   // Find the maximum raw efficiency score to use as reference
   const maxRawScore = Math.max(...metrics.map(m => m.rawEfficiencyScore));
-  
+
   // Calculate interpolated scores (0-10 scale, higher is better)
   const metricsWithScores = metrics.map(metric => ({
     ...metric,
@@ -124,7 +150,7 @@ export function calculateRanks(
   const sortedByEfficiency = [...metricsWithScores].sort(
     (a, b) => b.efficiencyScore - a.efficiencyScore // Sort by interpolated score, higher is better
   );
-  
+
   return metricsWithScores.map((metric) => ({
     ...metric,
     rank:

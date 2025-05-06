@@ -8,7 +8,7 @@ import humanResults from "../../benchmark/results-human.json";
 import { Header } from "./components/nav";
 import { ProgressBar } from "./components/progress";
 import { Table } from "./components/table";
-import { calculateModelMetrics, calculateRanks } from "@/lib/eval";
+import { calculateModelMetrics, calculateRanks, ModelMetrics } from "@/lib/eval";
 import { useResults } from "@/lib/use-results";
 
 type HumanResult = (typeof humanResults)[number];
@@ -30,22 +30,8 @@ const ModelCell = ({ model }: { model: string }) => {
 export default function Home() {
   const results = useResults();
   const [showRelative, setShowRelative] = useState(false);
-
-  const humanMetrics = useMemo(() => {
-    const modelGroups = humanResults.reduce(
-      (acc: Record<string, HumanResult[]>, result: HumanResult) => {
-        const key = result.model;
-        if (!acc[key]) acc[key] = [];
-        acc[key].push(result);
-        return acc;
-      },
-      {}
-    );
-
-    return calculateRanks(
-      Object.values(modelGroups).map((group) => calculateModelMetrics(group))
-    );
-  }, []);
+  const [selectedModels, setSelectedModels] = useState<string[]>([]);
+  const [selectedProviders, setSelectedProviders] = useState<string[]>([]);
 
   const modelMetrics = useMemo(() => {
     const modelGroups = results.reduce(
@@ -61,7 +47,30 @@ export default function Home() {
     return calculateRanks(
       Object.values(modelGroups).map((group) => calculateModelMetrics(group))
     );
+  }, [results]);
+
+  const humanMetrics = useMemo(() => {
+    const modelGroups = humanResults.reduce(
+      (acc: Record<string, HumanResult[]>, result: HumanResult) => {
+        const key = result.model;
+        if (!acc[key]) acc[key] = [];
+        acc[key].push(result);
+        return acc;
+      },
+      {}
+    );
+
+    return Object.values(modelGroups).map((group) => calculateModelMetrics(group));
   }, []);
+
+  const filteredData = useMemo(() => {
+    const allData = [...humanMetrics, ...modelMetrics];
+    return allData.filter((item) => {
+      const modelMatch = selectedModels.length === 0 || selectedModels.includes(item.model);
+      const providerMatch = selectedProviders.length === 0 || selectedProviders.includes(item.provider);
+      return modelMatch && providerMatch;
+    });
+  }, [humanMetrics, modelMetrics, selectedModels, selectedProviders]);
 
   const columns = [
     {
@@ -69,7 +78,7 @@ export default function Home() {
       accessorKey: "rank",
       sortable: true,
       description: "The ranking of the model based on overall performance",
-      cell: (row: ModelResult) =>
+      cell: (row: ModelMetrics) =>
         row.provider === "human" ? (
           "--"
         ) : (
@@ -82,18 +91,18 @@ export default function Home() {
       accessorKey: "provider",
       sortable: true,
       description: "The provider of the model",
-      cell: (row: unknown) => (row as any).provider,
+      cell: (row: ModelMetrics) => row.provider,
     },
     {
       name: "Model",
       accessorKey: "model",
       sortable: true,
       description: "The name of the model",
-      cell: (row: ModelResult) =>
+      cell: (row: ModelMetrics) =>
         row.provider === "human" ? (
-          (row as any).model
+          row.model
         ) : (
-          <ModelCell model={(row as any).model} />
+          <ModelCell model={row.model} />
         ),
     },
     {
@@ -103,22 +112,22 @@ export default function Home() {
       description:
         "Aggregate metric that combines latency, scan size, and success rate.",
       className: "bg-[#FFFFFF]/5",
-      cell: (row: unknown) => {
-        if ((row as any).provider === "human") {
+      cell: (row: ModelMetrics) => {
+        if (row.provider === "human") {
           return "--";
         }
         return (
           <div className="inline-flex items-center">
             <div
-              className={`w-2 h-2 rounded-full mr-2 ${(row as any).efficiencyScore > 75
+              className={`w-2 h-2 rounded-full mr-2 ${row.efficiencyScore > 75
                 ? "bg-[#27F795]"
-                : (row as any).efficiencyScore > 50
+                : row.efficiencyScore > 50
                   ? "bg-[#F7D727]"
                   : "bg-[#F72727]"
                 }`}
             />
             <span className="font-mono">
-              {(row as any).efficiencyScore.toFixed(2)}
+              {row.efficiencyScore.toFixed(2)}
             </span>
           </div>
         );
@@ -130,17 +139,17 @@ export default function Home() {
       accessorKey: "successRate",
       sortable: true,
       description: "Percentage of queries that executed successfully",
-      cell: (row: unknown) => {
-        if ((row as any).provider === "human") {
+      cell: (row: ModelMetrics) => {
+        if (row.provider === "human") {
           return "--";
         }
         return (
           <div className="flex items-center">
             <ProgressBar
-              progress={(row as any).successRate}
+              progress={row.successRate}
             />
             <span className="font-mono">
-              {(row as any).successRate.toFixed(1)}
+              {row.successRate.toFixed(1)}
             </span>
           </div>
         );
@@ -151,15 +160,15 @@ export default function Home() {
       accessorKey: "firstAttemptRate",
       sortable: true,
       description: "Percentage of queries that succeeded on the first try",
-      cell: (row: unknown) => {
-        if ((row as any).provider === "human") {
+      cell: (row: ModelMetrics) => {
+        if (row.provider === "human") {
           return "--";
         }
         return (
           <div className="flex items-center">
-            <ProgressBar progress={(row as any).firstAttemptRate} />
+            <ProgressBar progress={row.firstAttemptRate} />
             <span className="font-mono">
-              {(row as any).firstAttemptRate.toFixed(1)}%
+              {row.firstAttemptRate.toFixed(1)}%
             </span>
           </div>
         );
@@ -171,12 +180,12 @@ export default function Home() {
       sortable: true,
       description:
         "Average time for the LLM to generate the SQL query in seconds",
-      cell: (row: unknown) =>
-        (row as any).provider === "human" ? (
+      cell: (row: ModelMetrics) =>
+        row.provider === "human" ? (
           "--"
         ) : (
           <span className="font-mono">
-            {(row as any).avgTotalDuration.toFixed(3)}
+            {row.avgTotalDuration.toFixed(3)}
           </span>
         ),
       type: "right" as const,
@@ -186,13 +195,13 @@ export default function Home() {
       accessorKey: "avgAttempts",
       sortable: true,
       description: "Average number of attempts needed per query",
-      cell: (row: unknown) => {
-        if ((row as any).provider === "human") {
+      cell: (row: ModelMetrics) => {
+        if (row.provider === "human") {
           return "--";
         }
         return (
           <span className="font-mono">
-            {(row as any).avgAttempts.toFixed(2)}
+            {row.avgAttempts.toFixed(2)}
           </span>
         );
       },
@@ -203,19 +212,19 @@ export default function Home() {
       accessorKey: "avgExecutionTime",
       sortable: true,
       description: "Average time taken to execute the query in milliseconds",
-      cell: (row: unknown) => {
+      cell: (row: ModelMetrics) => {
         const humanBaseline = humanMetrics.find((h) => h.provider === "human");
         const showPercentage =
-          showRelative && (row as any).provider !== "human" && humanBaseline;
+          showRelative && row.provider !== "human" && humanBaseline;
         if (showPercentage) {
           const percentage =
-            (((row as any).avgExecutionTime * 1000) /
+            ((row.avgExecutionTime * 1000) /
               (humanBaseline.avgExecutionTime * 1000)) *
             100;
           return (
             <div className="space-x-2">
               <span className="font-mono">
-                {((row as any).avgExecutionTime * 1000).toLocaleString()} ms
+                {(row.avgExecutionTime * 1000).toLocaleString()} ms
               </span>
               <span className="text-sm text-[#C6C6C6]">
                 {percentage.toFixed(0)}%
@@ -226,7 +235,7 @@ export default function Home() {
 
         return (
           <span className="font-mono">
-            {((row as any).avgExecutionTime * 1000).toLocaleString()} ms
+            {(row.avgExecutionTime * 1000).toLocaleString()} ms
           </span>
         );
       },
@@ -237,18 +246,18 @@ export default function Home() {
       accessorKey: "avgRowsRead",
       sortable: true,
       description: "Average number of rows read per query (lower is better)",
-      cell: (row: unknown) => {
+      cell: (row: ModelMetrics) => {
         const humanBaseline = humanMetrics.find((h) => h.provider === "human");
         const showPercentage =
-          showRelative && (row as any).provider !== "human" && humanBaseline;
+          showRelative && row.provider !== "human" && humanBaseline;
 
         if (showPercentage) {
           const percentage =
-            ((row as any).avgRowsRead / humanBaseline.avgRowsRead) * 100;
+            (row.avgRowsRead / humanBaseline.avgRowsRead) * 100;
           return (
             <div className="space-x-2">
               <span className="font-mono">
-                {Math.round((row as any).avgRowsRead).toLocaleString()}
+                {Math.round(row.avgRowsRead).toLocaleString()}
               </span>
               <span className="text-sm text-[#C6C6C6]">
                 {percentage.toFixed(0)}%
@@ -258,7 +267,7 @@ export default function Home() {
         }
         return (
           <span className="font-mono">
-            {Math.round((row as any).avgRowsRead).toLocaleString()}
+            {Math.round(row.avgRowsRead).toLocaleString()}
           </span>
         );
       },
@@ -269,18 +278,18 @@ export default function Home() {
       accessorKey: "avgBytesRead",
       sortable: true,
       description: "Average amount of data read per query in MB",
-      cell: (row: unknown) => {
+      cell: (row: ModelMetrics) => {
         const humanBaseline = humanMetrics.find((h) => h.provider === "human");
         const showPercentage =
-          showRelative && (row as any).provider !== "human" && humanBaseline;
+          showRelative && row.provider !== "human" && humanBaseline;
 
         if (showPercentage) {
           const percentage =
-            ((row as any).avgBytesRead / humanBaseline.avgBytesRead) * 100;
+            (row.avgBytesRead / humanBaseline.avgBytesRead) * 100;
           return (
             <div className="space-x-2">
               <span className="font-mono">
-                {((row as any).avgBytesRead / (1024 * 1024)).toLocaleString(
+                {(row.avgBytesRead / (1024 * 1024)).toLocaleString(
                   undefined,
                   { minimumFractionDigits: 2, maximumFractionDigits: 2 }
                 )}{" "}
@@ -294,7 +303,7 @@ export default function Home() {
         }
         return (
           <span className="font-mono">
-            {((row as any).avgBytesRead / (1024 * 1024)).toLocaleString(
+            {(row.avgBytesRead / (1024 * 1024)).toLocaleString(
               undefined,
               { minimumFractionDigits: 2, maximumFractionDigits: 2 }
             )}{" "}
@@ -308,16 +317,21 @@ export default function Home() {
 
   return (
     <div className="min-h-screen py-8 px-4 lg:px-8 font-sans">
-      <Header />
+      <Header
+        data={[...humanMetrics, ...modelMetrics]}
+        selectedModels={selectedModels}
+        selectedProviders={selectedProviders}
+        onModelChange={setSelectedModels}
+        onProviderChange={setSelectedProviders}
+      />
 
-      <div className="mb-4 flex items-center">
+      <div className="mb-4 flex items-center justify-between">
         <label className="inline-flex items-center cursor-pointer">
           <span className="custom-checkbox">
             <input
               type="checkbox"
               checked={showRelative}
               onChange={(e) => setShowRelative(e.target.checked)}
-            // Add disabled or error props as needed
             />
             <span className="custom-checkbox-box">
               <svg
@@ -343,10 +357,10 @@ export default function Home() {
         </label>
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto w-full">
         <Table
           columns={columns}
-          data={[...humanMetrics, ...modelMetrics]}
+          data={filteredData}
           defaultSort={{ key: "rank", direction: "asc" }}
         />
       </div>
