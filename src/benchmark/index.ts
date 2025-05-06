@@ -3,6 +3,7 @@ import { getClient } from "./client";
 import { getConfig } from "./config";
 import { getEndpointQuestions } from "./resources";
 import { ChatResponse } from "./types";
+import { compareResults } from "./result-validator";
 
 const MAX_RETRIES = 2;
 const RESULTS_FILE = "benchmark/results.json";
@@ -71,11 +72,16 @@ function validateResults(results: ChatResponse[]): Record<string, any> {
     }
 
     const modelKey = `${result.provider}/${result.model}`;
-    validation[questionName].models[modelKey] = compareResults(
-      humanResult.sqlResult,
-      result.sqlResult
-    );
+    const comparisonResult = compareResults(humanResult.sqlResult, result.sqlResult);
+    
+    validation[questionName].models[modelKey] = {
+      ...comparisonResult,
+      sql: result.sql
+    };
   }
+
+  const summary = calculateValidationSummary(validation);
+  validation._summary = summary;
 
   writeFileSync(
     "benchmark/validation-results.json",
@@ -85,186 +91,73 @@ function validateResults(results: ChatResponse[]): Record<string, any> {
   return validation;
 }
 
-function compareResults(humanResult: any, llmResult: any): any {
-  if (!humanResult.data || !llmResult.data) {
-    return {
-      matches: false,
-      reason: "Missing data in results",
-    };
-  }
-
-  const humanData = humanResult.data;
-  const llmData = llmResult.data;
-
-  if (humanData.length === 0 && llmData.length === 0) {
-    return {
-      matches: true,
-      details: "Both results are empty",
-    };
-  }
-
-  if (humanData.length === 0 || llmData.length === 0) {
-    return {
-      matches: false,
-      reason: "One result is empty while the other is not",
-      humanRowCount: humanData.length,
-      llmRowCount: llmData.length,
-    };
-  }
-
-  if (humanData.length !== llmData.length) {
-    return {
-      matches: false,
-      reason: "Row count mismatch",
-      humanRowCount: humanData.length,
-      llmRowCount: llmData.length,
-    };
-  }
-
-  const humanColumns = Object.keys(humanData[0]);
-  const llmColumns = Object.keys(llmData[0]);
-
-  if (humanColumns.length !== llmColumns.length) {
-    return {
-      matches: false,
-      reason: "Column count mismatch",
-      humanColumns,
-      llmColumns,
-    };
-  }
-
-  const columnMapping = mapColumns(humanColumns, llmColumns);
-  
-  if (Object.keys(columnMapping).length !== humanColumns.length) {
-    return {
-      matches: false,
-      reason: "Could not map all columns",
-      mapping: columnMapping,
-      humanColumns,
-      llmColumns,
-    };
-  }
-
-  const unmatchedRows = [];
-  for (let i = 0; i < humanData.length; i++) {
-    const humanRow = humanData[i];
-    
-    let foundMatch = false;
-    for (let j = 0; j < llmData.length; j++) {
-      const llmRow = llmData[j];
-      
-      let rowMatches = true;
-      for (const humanCol of humanColumns) {
-        const llmCol = columnMapping[humanCol];
-        const humanValue = normalizeValue(humanRow[humanCol]);
-        const llmValue = normalizeValue(llmRow[llmCol]);
-        
-        if (!valuesEqual(humanValue, llmValue)) {
-          rowMatches = false;
-          break;
-        }
-      }
-      
-      if (rowMatches) {
-        foundMatch = true;
-        break;
-      }
-    }
-    
-    if (!foundMatch) {
-      unmatchedRows.push({
-        rowIndex: i,
-        humanRow,
-      });
-    }
-  }
-
-  if (unmatchedRows.length > 0) {
-    return {
-      matches: false,
-      reason: "Values mismatch",
-      unmatchedRowCount: unmatchedRows.length,
-      totalRows: humanData.length,
-      sampleMismatches: unmatchedRows.slice(0, 3),
-    };
-  }
-
-  return {
-    matches: true,
-    details: "All rows and values match",
-    columnMapping,
+function calculateValidationSummary(validation: Record<string, any>): any {
+  const summary = {
+    totalQuestions: 0,
+    modelStats: {} as Record<string, {
+      totalMatches: number,
+      exactMatches: number,
+      numericMatches: number,
+      avgExactDistance: number,
+      avgNumericDistance: number,
+      avgFScore: number
+    }>
   };
-}
-
-function mapColumns(humanColumns: string[], llmColumns: string[]): Record<string, string> {
-  const mapping: Record<string, string> = {};
   
-  for (const humanCol of humanColumns) {
-    if (llmColumns.includes(humanCol)) {
-      mapping[humanCol] = humanCol;
-    }
-  }
+  const questions = Object.keys(validation).filter(key => key !== '_summary');
+  summary.totalQuestions = questions.length;
   
-  const remainingHumanCols = humanColumns.filter(col => !mapping[col]);
-  const remainingLlmCols = llmColumns.filter(col => !Object.values(mapping).includes(col));
-  
-  for (const humanCol of remainingHumanCols) {
-    for (const llmCol of remainingLlmCols) {
-      if (humanCol.toLowerCase() === llmCol.toLowerCase()) {
-        mapping[humanCol] = llmCol;
-        remainingLlmCols.splice(remainingLlmCols.indexOf(llmCol), 1);
-        break;
+  for (const questionName of questions) {
+    const questionData = validation[questionName];
+    const models = questionData.models;
+    
+    for (const modelKey of Object.keys(models)) {
+      if (!summary.modelStats[modelKey]) {
+        summary.modelStats[modelKey] = {
+          totalMatches: 0,
+          exactMatches: 0,
+          numericMatches: 0,
+          avgExactDistance: 0,
+          avgNumericDistance: 0,
+          avgFScore: 0
+        };
+      }
+      
+      const modelResult = models[modelKey];
+      const stats = summary.modelStats[modelKey];
+      
+      if (modelResult.matches) {
+        stats.totalMatches++;
+      }
+      
+      if (modelResult.exactMatches) {
+        stats.exactMatches++;
+      }
+      
+      if (modelResult.numericMatches) {
+        stats.numericMatches++;
+      }
+      
+      if (modelResult.distance) {
+        stats.avgExactDistance += modelResult.distance.exact || 0;
+        stats.avgNumericDistance += modelResult.distance.numeric || 0;
+        stats.avgFScore += modelResult.distance.fScore || 0;
       }
     }
   }
   
-  const stillRemainingHumanCols = humanColumns.filter(col => !mapping[col]);
-  const stillRemainingLlmCols = llmColumns.filter(col => !Object.values(mapping).includes(col));
-  
-  if (stillRemainingHumanCols.length === stillRemainingLlmCols.length) {
-    for (let i = 0; i < stillRemainingHumanCols.length; i++) {
-      mapping[stillRemainingHumanCols[i]] = stillRemainingLlmCols[i];
+  for (const modelKey of Object.keys(summary.modelStats)) {
+    const stats = summary.modelStats[modelKey];
+    const count = summary.totalQuestions;
+    
+    if (count > 0) {
+      stats.avgExactDistance = stats.avgExactDistance / count;
+      stats.avgNumericDistance = stats.avgNumericDistance / count;
+      stats.avgFScore = stats.avgFScore / count;
     }
   }
   
-  return mapping;
-}
-
-function normalizeValue(value: any): any {
-  if (value === null || value === undefined) {
-    return null;
-  }
-  
-  if (typeof value === 'number') {
-    return parseFloat(value.toFixed(6));
-  }
-  
-  if (typeof value === 'string') {
-    return value.trim().toLowerCase();
-  }
-  
-  if (value instanceof Date) {
-    return value.getTime();
-  }
-  
-  return value;
-}
-
-function valuesEqual(val1: any, val2: any): boolean {
-  if (val1 === null && val2 === null) {
-    return true;
-  }
-  
-  if (val1 === null || val2 === null) {
-    return false;
-  }
-  
-  if (typeof val1 === 'number' && typeof val2 === 'number') {
-    const epsilon = 0.000001;
-    return Math.abs(val1 - val2) < epsilon;
-  }
-  
-  return val1 === val2;
+  return summary;
 }
 
 function getCompletedQuestionsForModel(
@@ -409,6 +302,7 @@ async function runModelBenchmark(
     };
   }
 
+<<<<<<< HEAD
   // Filter out completed questions and take first 10
   const pendingQuestions = questions
     .filter(q => !completedQuestions.has(q.name))
@@ -419,6 +313,18 @@ async function runModelBenchmark(
       console.log(`Skipping already completed question: ${question.name}`);
       continue;
     }
+||||||| parent of f5586a1 (Update)
+  for (const question of questions.slice(0, 10)) {
+    if (completedQuestions.has(question.name)) {
+      console.log(`Skipping already completed question: ${question.name}`);
+      continue;
+    }
+=======
+  // Filter out completed questions and take first 10
+  const pendingQuestions = questions
+    .filter(q => !completedQuestions.has(q.name))
+    .slice(0, 10);
+>>>>>>> f5586a1 (Update)
 
   // Process questions in batches of 5
   for (let i = 0; i < pendingQuestions.length; i += 5) {
