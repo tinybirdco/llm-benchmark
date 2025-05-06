@@ -119,9 +119,9 @@ export default function Home() {
         return (
           <div className="inline-flex items-center">
             <div
-              className={`w-2 h-2 rounded-full mr-2 ${row.efficiencyScore > 75
+              className={`w-2 h-2 rounded-full mr-2 ${row.efficiencyScore > 90
                 ? "bg-[#27F795]"
-                : row.efficiencyScore > 50
+                : row.efficiencyScore >= 80
                   ? "bg-[#F7D727]"
                   : "bg-[#F72727]"
                 }`}

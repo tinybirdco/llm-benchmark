@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "clsx": "^2.1.1",
+    "recharts": "^2.15.3",
     "tailwind-merge": "^3.2.0"
   }
 }
