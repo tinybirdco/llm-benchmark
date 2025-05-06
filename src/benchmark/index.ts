@@ -1,7 +1,7 @@
 import { writeFileSync, readFileSync, existsSync } from "fs";
 import { getClient } from "./client";
 import { getConfig } from "./config";
-import { getEndpointQuestions } from "./resources";
+import { getEndpointQuestion, getEndpointQuestions } from "./resources";
 import { ChatResponse } from "./types";
 import { compareResults } from "./result-validator";
 
@@ -263,7 +263,9 @@ async function runModelBenchmark(
   completedQuestions: Set<string>
 ) {
   const client = getClient();
-  const questions = getEndpointQuestions();
+  const question = getEndpointQuestion("pipe_31.pipe");
+  const questions = [question];
+  
   const results: ChatResponse[] = [];
 
   async function generateQueryWithRetry(
