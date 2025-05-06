@@ -73,7 +73,7 @@ export function PreviewModal({ metric }: { metric: ModelMetrics }) {
           {result?.sqlResult && (
             <GenericTable
               data={result.sqlResult.data}
-              meta={result.sqlResult.meta || []}
+              meta={result.sqlResult.meta}
               error={result.sqlResult.error}
             />
           )}
@@ -94,7 +94,7 @@ export default function GenericTable({
   error,
 }: {
   data: Record<string, unknown>[];
-  meta: ColumnMeta[];
+  meta?: ColumnMeta[];
   error?: string;
 }) {
   if (!data || !meta)
