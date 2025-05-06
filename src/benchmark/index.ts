@@ -6,6 +6,20 @@ import { ChatResponse } from "./types";
 
 const MAX_RETRIES = 2;
 const RESULTS_FILE = "benchmark/results.json";
+const HUMAN_RESULTS_FILE = "benchmark/results-human.json";
+
+function readHumanResults(): ChatResponse[] {
+  if (!existsSync(HUMAN_RESULTS_FILE)) {
+    console.error("Human results file not found");
+    return [];
+  }
+  try {
+    return JSON.parse(readFileSync(HUMAN_RESULTS_FILE, "utf-8"));
+  } catch (error) {
+    console.error("Error reading human results file:", error);
+    return [];
+  }
+}
 
 function readExistingResults(): ChatResponse[] {
   if (!existsSync(RESULTS_FILE)) {
@@ -23,6 +37,236 @@ function writeResults(results: ChatResponse[]) {
   writeFileSync(RESULTS_FILE, JSON.stringify(results, null, 2));
 }
 
+function validateResults(results: ChatResponse[]): Record<string, any> {
+  const humanResults = readHumanResults();
+  if (humanResults.length === 0) {
+    console.error("No human results available for validation");
+    return {};
+  }
+
+  const humanResultsByQuestion = new Map<string, ChatResponse>();
+  for (const result of humanResults) {
+    humanResultsByQuestion.set(result.question.name, result);
+  }
+
+  const validation: Record<string, any> = {};
+
+  for (const result of results) {
+    if (!result.question || !result.sqlResult || result.error) {
+      continue;
+    }
+
+    const questionName = result.question.name;
+    const humanResult = humanResultsByQuestion.get(questionName);
+
+    if (!humanResult || !humanResult.sqlResult) {
+      continue;
+    }
+
+    if (!validation[questionName]) {
+      validation[questionName] = {
+        models: {},
+        humanResults: humanResult.sqlResult,
+      };
+    }
+
+    const modelKey = `${result.provider}/${result.model}`;
+    validation[questionName].models[modelKey] = compareResults(
+      humanResult.sqlResult,
+      result.sqlResult
+    );
+  }
+
+  writeFileSync(
+    "benchmark/validation-results.json",
+    JSON.stringify(validation, null, 2)
+  );
+
+  return validation;
+}
+
+function compareResults(humanResult: any, llmResult: any): any {
+  if (!humanResult.data || !llmResult.data) {
+    return {
+      matches: false,
+      reason: "Missing data in results",
+    };
+  }
+
+  const humanData = humanResult.data;
+  const llmData = llmResult.data;
+
+  if (humanData.length === 0 && llmData.length === 0) {
+    return {
+      matches: true,
+      details: "Both results are empty",
+    };
+  }
+
+  if (humanData.length === 0 || llmData.length === 0) {
+    return {
+      matches: false,
+      reason: "One result is empty while the other is not",
+      humanRowCount: humanData.length,
+      llmRowCount: llmData.length,
+    };
+  }
+
+  if (humanData.length !== llmData.length) {
+    return {
+      matches: false,
+      reason: "Row count mismatch",
+      humanRowCount: humanData.length,
+      llmRowCount: llmData.length,
+    };
+  }
+
+  const humanColumns = Object.keys(humanData[0]);
+  const llmColumns = Object.keys(llmData[0]);
+
+  if (humanColumns.length !== llmColumns.length) {
+    return {
+      matches: false,
+      reason: "Column count mismatch",
+      humanColumns,
+      llmColumns,
+    };
+  }
+
+  const columnMapping = mapColumns(humanColumns, llmColumns);
+  
+  if (Object.keys(columnMapping).length !== humanColumns.length) {
+    return {
+      matches: false,
+      reason: "Could not map all columns",
+      mapping: columnMapping,
+      humanColumns,
+      llmColumns,
+    };
+  }
+
+  const unmatchedRows = [];
+  for (let i = 0; i < humanData.length; i++) {
+    const humanRow = humanData[i];
+    
+    let foundMatch = false;
+    for (let j = 0; j < llmData.length; j++) {
+      const llmRow = llmData[j];
+      
+      let rowMatches = true;
+      for (const humanCol of humanColumns) {
+        const llmCol = columnMapping[humanCol];
+        const humanValue = normalizeValue(humanRow[humanCol]);
+        const llmValue = normalizeValue(llmRow[llmCol]);
+        
+        if (!valuesEqual(humanValue, llmValue)) {
+          rowMatches = false;
+          break;
+        }
+      }
+      
+      if (rowMatches) {
+        foundMatch = true;
+        break;
+      }
+    }
+    
+    if (!foundMatch) {
+      unmatchedRows.push({
+        rowIndex: i,
+        humanRow,
+      });
+    }
+  }
+
+  if (unmatchedRows.length > 0) {
+    return {
+      matches: false,
+      reason: "Values mismatch",
+      unmatchedRowCount: unmatchedRows.length,
+      totalRows: humanData.length,
+      sampleMismatches: unmatchedRows.slice(0, 3),
+    };
+  }
+
+  return {
+    matches: true,
+    details: "All rows and values match",
+    columnMapping,
+  };
+}
+
+function mapColumns(humanColumns: string[], llmColumns: string[]): Record<string, string> {
+  const mapping: Record<string, string> = {};
+  
+  for (const humanCol of humanColumns) {
+    if (llmColumns.includes(humanCol)) {
+      mapping[humanCol] = humanCol;
+    }
+  }
+  
+  const remainingHumanCols = humanColumns.filter(col => !mapping[col]);
+  const remainingLlmCols = llmColumns.filter(col => !Object.values(mapping).includes(col));
+  
+  for (const humanCol of remainingHumanCols) {
+    for (const llmCol of remainingLlmCols) {
+      if (humanCol.toLowerCase() === llmCol.toLowerCase()) {
+        mapping[humanCol] = llmCol;
+        remainingLlmCols.splice(remainingLlmCols.indexOf(llmCol), 1);
+        break;
+      }
+    }
+  }
+  
+  const stillRemainingHumanCols = humanColumns.filter(col => !mapping[col]);
+  const stillRemainingLlmCols = llmColumns.filter(col => !Object.values(mapping).includes(col));
+  
+  if (stillRemainingHumanCols.length === stillRemainingLlmCols.length) {
+    for (let i = 0; i < stillRemainingHumanCols.length; i++) {
+      mapping[stillRemainingHumanCols[i]] = stillRemainingLlmCols[i];
+    }
+  }
+  
+  return mapping;
+}
+
+function normalizeValue(value: any): any {
+  if (value === null || value === undefined) {
+    return null;
+  }
+  
+  if (typeof value === 'number') {
+    return parseFloat(value.toFixed(6));
+  }
+  
+  if (typeof value === 'string') {
+    return value.trim().toLowerCase();
+  }
+  
+  if (value instanceof Date) {
+    return value.getTime();
+  }
+  
+  return value;
+}
+
+function valuesEqual(val1: any, val2: any): boolean {
+  if (val1 === null && val2 === null) {
+    return true;
+  }
+  
+  if (val1 === null || val2 === null) {
+    return false;
+  }
+  
+  if (typeof val1 === 'number' && typeof val2 === 'number') {
+    const epsilon = 0.000001;
+    return Math.abs(val1 - val2) < epsilon;
+  }
+  
+  return val1 === val2;
+}
+
 function getCompletedQuestionsForModel(
   existingResults: ChatResponse[],
   provider: string,
@@ -38,6 +282,11 @@ function getCompletedQuestionsForModel(
 async function main() {
   // await runHumanQueries();
   await runBenchmark();
+  
+  const results = readExistingResults();
+  console.log("Validating results against human baseline...");
+  const validation = validateResults(results);
+  console.log("Validation complete. Results saved to benchmark/validation-results.json");
 }
 
 async function runHumanQueries() {
@@ -104,14 +353,10 @@ async function runBenchmark() {
         completedQuestions
       );
 
-      // Update results file after each model run
-      // Remove only the results for this specific model/provider combination
       existingResults = existingResults.filter(
         (r) => !(r.provider === provider && r.model === model)
       );
-      // Add the new results
       existingResults.push(...results);
-      // Write the updated results
       writeResults(existingResults);
 
       index++;
@@ -168,6 +413,12 @@ async function runModelBenchmark(
   const pendingQuestions = questions
     .filter(q => !completedQuestions.has(q.name))
     .slice(0, 10);
+  for (const question of questions.slice(0, 10)) {
+    // Skip already completed questions
+    if (completedQuestions.has(question.name)) {
+      console.log(`Skipping already completed question: ${question.name}`);
+      continue;
+    }
 
   // Process questions in batches of 5
   for (let i = 0; i < pendingQuestions.length; i += 5) {
