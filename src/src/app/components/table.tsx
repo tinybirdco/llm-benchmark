@@ -92,14 +92,25 @@ export const Table = ({
   };
 
   return (
-    <div className="w-full bg-[#0A0A0A] overflow-auto table-auto">
+    <div className="w-full min-w-[1200px] bg-[#0A0A0A] overflow-auto table-auto">
       <div className="table-header-group">
         {columns.map((column) => (
           <div
             className={cn(
               "align-middle items-center text-sm table-cell text-nowrap whitespace-nowrap group",
               column.sortable ? "cursor-pointer hover:bg-[#353535]" : "",
-              column.type === "right" ? "text-right" : "text-left"
+              column.type === "right" ? "text-right" : "text-left",
+              column.accessorKey === "rank" ? "w-[60px]" : "",
+              column.accessorKey === "provider" ? "w-[120px]" : "",
+              column.accessorKey === "model" ? "w-[300px]" : "",
+              column.accessorKey === "efficiencyScore" ? "w-[120px]" : "",
+              column.accessorKey === "successRate" ? "w-[150px]" : "",
+              column.accessorKey === "firstAttemptRate" ? "w-[150px]" : "",
+              column.accessorKey === "avgTotalDuration" ? "w-[150px]" : "",
+              column.accessorKey === "avgAttempts" ? "w-[120px]" : "",
+              column.accessorKey === "avgExecutionTime" ? "w-[150px]" : "",
+              column.accessorKey === "avgRowsRead" ? "w-[150px]" : "",
+              column.accessorKey === "avgBytesRead" ? "w-[150px]" : ""
             )}
             key={column.name}
           >
