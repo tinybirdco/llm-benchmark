@@ -150,10 +150,10 @@ export const Header = ({
         <QuestionSelect />
         <Filters
           data={data}
-          selectedModels={selectedModels}
           selectedProviders={selectedProviders}
-          onModelChange={onModelChange}
+          selectedModels={selectedModels}
           onProviderChange={onProviderChange}
+          onModelChange={onModelChange}
         />
         <div className="flex items-center h-full">
           <label className="inline-flex items-center cursor-pointer">

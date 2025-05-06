@@ -3,6 +3,7 @@ import { ModelMetrics } from "@/lib/eval";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { ChevronDownIcon } from "./icons";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useMemo } from "react";
 
 type FilterProps = {
     label: string;
@@ -80,22 +81,38 @@ export function Filters({
     onModelChange,
     onProviderChange,
 }: FiltersProps) {
-    const models = Array.from(new Set(data.map((d) => d.model))).sort();
-    const providers = Array.from(new Set(data.map((d) => d.provider))).sort();
+    // Cross-filtering logic
+    const filteredModels = useMemo(() => {
+        if (selectedProviders.length === 0) {
+            return Array.from(new Set(data.map((d) => d.model))).sort();
+        }
+        return Array.from(new Set(
+            data.filter((d) => selectedProviders.includes(d.provider)).map((d) => d.model)
+        )).sort();
+    }, [data, selectedProviders]);
+
+    const filteredProviders = useMemo(() => {
+        if (selectedModels.length === 0) {
+            return Array.from(new Set(data.map((d) => d.provider))).sort();
+        }
+        return Array.from(new Set(
+            data.filter((d) => selectedModels.includes(d.model)).map((d) => d.provider)
+        )).sort();
+    }, [data, selectedModels]);
 
     return (
         <div className="flex flex-col sm:flex-row gap-4">
             <Filter
-                label="Models"
-                options={models}
-                selected={selectedModels}
-                onChange={onModelChange}
-            />
-            <Filter
                 label="Providers"
-                options={providers}
+                options={filteredProviders}
                 selected={selectedProviders}
                 onChange={onProviderChange}
+            />
+            <Filter
+                label="Models"
+                options={filteredModels}
+                selected={selectedModels}
+                onChange={onModelChange}
             />
         </div>
     );
