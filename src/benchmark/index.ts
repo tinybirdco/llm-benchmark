@@ -164,16 +164,24 @@ async function runModelBenchmark(
     };
   }
 
-  for (const question of questions.slice(0, 10)) {
-    // Skip already completed questions
-    if (completedQuestions.has(question.name)) {
-      console.log(`Skipping already completed question: ${question.name}`);
-      continue;
-    }
+  // Filter out completed questions and take first 10
+  const pendingQuestions = questions
+    .filter(q => !completedQuestions.has(q.name))
+    .slice(0, 10);
 
-    console.log(`Running question: ${question.name}`);
-    const result = await generateQueryWithRetry(question);
-    results.push(result);
+  // Process questions in batches of 5
+  for (let i = 0; i < pendingQuestions.length; i += 5) {
+    const batch = pendingQuestions.slice(i, i + 5);
+    console.log(`Processing batch ${Math.floor(i/5) + 1} with ${batch.length} questions`);
+    
+    const batchResults = await Promise.all(
+      batch.map(question => {
+        console.log(`Running question: ${question.name}`);
+        return generateQueryWithRetry(question);
+      })
+    );
+    
+    results.push(...batchResults);
   }
 
   return results;
