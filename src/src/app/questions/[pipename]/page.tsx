@@ -59,12 +59,7 @@ const ModelCell = ({ metric }: { metric: ModelMetric }) => {
 
   return (
     <div className={`max-w-[475px] -m-4 p-4`}>
-      <Link
-        href={`/models/${encodeURIComponent(metric.model)}`}
-        className="text-[#27F795] text-sm"
-      >
-        <div className="truncate">{metric.model}</div>
-      </Link>
+      <div className="truncate">{metric.model}</div>
     </div>
   );
 };
@@ -106,13 +101,14 @@ export default function QuestionDetail() {
   // Get the question details from any result (they're all the same)
   const questionDetails = benchmarkResults.find(
     (r) => r.name === pipeName
-  )?.question;
+  )?.attempts?.[0]?.question;
 
   const columns = [
     {
       name: "Model",
       accessorKey: "model",
       sortable: true,
+      description: "The name of the model that generated the query",
       cell: (row: unknown) => {
         const metric = row as ModelMetric;
         return (
@@ -127,6 +123,7 @@ export default function QuestionDetail() {
       name: "Success",
       accessorKey: "success",
       sortable: true,
+      description: "Whether the query executed successfully",
       cell: (row: unknown) => {
         const metric = row as ModelMetric;
         return (
@@ -140,6 +137,7 @@ export default function QuestionDetail() {
       name: "First Attempt",
       accessorKey: "firstAttempt",
       sortable: true,
+      description: "Whether the query succeeded on the first try",
       cell: (row: unknown) => {
         const metric = row as ModelMetric;
         return (
@@ -150,23 +148,25 @@ export default function QuestionDetail() {
       },
     },
     {
-      name: "Execution (ms)",
+      name: "Query Latency",
       accessorKey: "executionTime",
       sortable: true,
+      description: "Time taken to execute the query in milliseconds",
       cell: (row: unknown) => (
         <span className="font-mono">
-          {((row as ModelMetric).executionTime * 1000).toFixed(2)}
+          {((row as ModelMetric).executionTime * 1000).toLocaleString()} ms
         </span>
       ),
       type: "right" as const,
     },
     {
-      name: "LLM Gen (s)",
+      name: "LLM Gen",
       accessorKey: "totalDuration",
       sortable: true,
+      description: "Time for the LLM to generate the SQL query in seconds",
       cell: (row: unknown) => (
         <span className="font-mono">
-          {(row as ModelMetric).totalDuration.toFixed(3)}
+          {(row as ModelMetric).totalDuration.toLocaleString()} s
         </span>
       ),
       type: "right" as const,
@@ -175,6 +175,7 @@ export default function QuestionDetail() {
       name: "Attempts",
       accessorKey: "attempts",
       sortable: true,
+      description: "Number of attempts needed for this query",
       cell: (row: unknown) => (
         <span className="font-mono">{(row as ModelMetric).attempts}</span>
       ),
@@ -184,6 +185,7 @@ export default function QuestionDetail() {
       name: "Rows Read",
       accessorKey: "rowsRead",
       sortable: true,
+      description: "Number of rows read by this query (lower is better)",
       cell: (row: unknown) => (
         <span className="font-mono">
           {(row as ModelMetric).rowsRead.toLocaleString()}
@@ -195,6 +197,7 @@ export default function QuestionDetail() {
       name: "Query Length",
       accessorKey: "queryLength",
       sortable: true,
+      description: "Length of the generated SQL query in characters",
       cell: (row: unknown) => (
         <span className="font-mono">{(row as ModelMetric).queryLength}</span>
       ),
@@ -204,6 +207,7 @@ export default function QuestionDetail() {
       name: "Tokens",
       accessorKey: "tokens",
       sortable: true,
+      description: "Number of tokens used to generate the query",
       cell: (row: unknown) => (
         <span className="font-mono">
           {(row as ModelMetric).tokens.toLocaleString()}
@@ -214,8 +218,10 @@ export default function QuestionDetail() {
   ];
 
   return (
-    <div className="min-h-screen p-8 font-sans">
+    <div className="min-h-screen py-8 px-4 lg:px-8 font-sans">
       <Header />
+      <h2 className="text-xl mb-4">Model Results for &quot;{questionDetails?.question}&quot;</h2>
+
 
       <div className="mb-8 space-y-5">
         <button
@@ -236,8 +242,6 @@ export default function QuestionDetail() {
           </div>
         ) : null}
       </div>
-
-      <h2 className="text-2xl mb-4">Model Results</h2>
 
       <div className="overflow-x-auto">
         <Table

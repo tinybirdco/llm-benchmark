@@ -77,7 +77,12 @@ export function calculateModelMetrics(
   const penalty = attemptsPenalty * genTimePenalty * execTimePenalty * 
                  rowsPenalty * bytesPenalty * bytesPerRowPenalty * failurePenalty;
 
-  const efficiencyScore = Math.sqrt(penalty / C); // inverted: lower is better
+  // Calculate raw efficiency score (lower is better)
+  const rawEfficiencyScore = Math.sqrt(penalty / C);
+  
+  // Find the maximum raw score across all models to use as reference
+  // This will be done in calculateRanks function
+  const efficiencyScore = 0; // Placeholder, will be set in calculateRanks
 
   return {
     model: modelResults[0].model,
@@ -98,6 +103,7 @@ export function calculateModelMetrics(
     successRate,
     firstAttemptRate,
     efficiencyScore,
+    rawEfficiencyScore, // Add this to store the raw score
     rank: 0, // This will be calculated after all metrics are computed
   };
 }
@@ -106,10 +112,20 @@ export function calculateModelMetrics(
 export function calculateRanks(
   metrics: ReturnType<typeof calculateModelMetrics>[]
 ) {
-  const sortedByEfficiency = [...metrics].sort(
-    (a, b) => a.efficiencyScore - b.efficiencyScore
+  // Find the maximum raw efficiency score to use as reference
+  const maxRawScore = Math.max(...metrics.map(m => m.rawEfficiencyScore));
+  
+  // Calculate interpolated scores (0-10 scale, higher is better)
+  const metricsWithScores = metrics.map(metric => ({
+    ...metric,
+    efficiencyScore: 100 * (1 - (metric.rawEfficiencyScore / maxRawScore)), // Interpolate to 0-10 scale
+  }));
+
+  const sortedByEfficiency = [...metricsWithScores].sort(
+    (a, b) => b.efficiencyScore - a.efficiencyScore // Sort by interpolated score, higher is better
   );
-  return metrics.map((metric) => ({
+  
+  return metricsWithScores.map((metric) => ({
     ...metric,
     rank:
       sortedByEfficiency.findIndex(

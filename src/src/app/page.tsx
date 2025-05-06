@@ -42,9 +42,9 @@ export default function Home() {
       {}
     );
 
-    return calculateRanks(Object.values(modelGroups).map((group) =>
-      calculateModelMetrics(group)
-    ));
+    return calculateRanks(
+      Object.values(modelGroups).map((group) => calculateModelMetrics(group))
+    );
   }, []);
 
   const modelMetrics = useMemo(() => {
@@ -58,9 +58,9 @@ export default function Home() {
       {}
     );
 
-    return calculateRanks(Object.values(modelGroups).map((group) =>
-      calculateModelMetrics(group)
-    ));
+    return calculateRanks(
+      Object.values(modelGroups).map((group) => calculateModelMetrics(group))
+    );
   }, []);
 
   const columns = [
@@ -68,21 +68,27 @@ export default function Home() {
       name: "Rank",
       accessorKey: "rank",
       sortable: true,
-      cell: (row: unknown) => row.provider === "human" ? "--" :  (
-        <span className="font-mono">#{(row as any).rank}</span>
-      ),
-      type: "right",
+      description: "The ranking of the model based on overall performance",
+      cell: (row: unknown) =>
+        row.provider === "human" ? (
+          "--"
+        ) : (
+          <span className="font-mono">#{(row as any).rank}</span>
+        ),
+      type: "right" as const,
     },
     {
       name: "Provider",
       accessorKey: "provider",
       sortable: true,
+      description: "The provider of the model",
       cell: (row: unknown) => (row as any).provider,
     },
     {
       name: "Model",
       accessorKey: "model",
       sortable: true,
+      description: "The name of the model",
       cell: (row: unknown) =>
         (row as any).provider === "human" ? (
           (row as any).model
@@ -94,6 +100,7 @@ export default function Home() {
       name: "Success Rate",
       accessorKey: "successRate",
       sortable: true,
+      description: "Percentage of queries that executed successfully",
       cell: (row: unknown) => {
         if ((row as any).provider === "human") {
           return "--";
@@ -112,6 +119,7 @@ export default function Home() {
       name: "First Attempt Rate",
       accessorKey: "firstAttemptRate",
       sortable: true,
+      description: "Percentage of queries that succeeded on the first try",
       cell: (row: unknown) => {
         if ((row as any).provider === "human") {
           return "--";
@@ -127,9 +135,10 @@ export default function Home() {
       },
     },
     {
-      name: "Avg Execution (ms)",
+      name: "Avg Query Latency",
       accessorKey: "avgExecutionTime",
       sortable: true,
+      description: "Average time taken to execute the query in milliseconds",
       cell: (row: unknown) => {
         const humanBaseline = humanMetrics.find((h) => h.provider === "human");
         const showPercentage =
@@ -142,7 +151,7 @@ export default function Home() {
           return (
             <div className="space-x-2">
               <span className="font-mono">
-                {((row as any).avgExecutionTime * 1000).toFixed(2)}
+                {((row as any).avgExecutionTime * 1000).toLocaleString()} ms
               </span>
               <span className="text-sm text-[#C6C6C6]">
                 {percentage.toFixed(0)}%
@@ -150,18 +159,21 @@ export default function Home() {
             </div>
           );
         }
+
         return (
           <span className="font-mono">
-            {((row as any).avgExecutionTime * 1000).toFixed(2)}
+            {((row as any).avgExecutionTime * 1000).toLocaleString()} ms
           </span>
         );
       },
-      type: "right",
+      type: "right" as const,
     },
     {
       name: "LLM Gen Time (s)",
       accessorKey: "avgTotalDuration",
       sortable: true,
+      description:
+        "Average time for the LLM to generate the SQL query in seconds",
       cell: (row: unknown) =>
         (row as any).provider === "human" ? (
           "--"
@@ -170,12 +182,13 @@ export default function Home() {
             {(row as any).avgTotalDuration.toFixed(3)}
           </span>
         ),
-      type: "right",
+      type: "right" as const,
     },
     {
       name: "Avg Attempts",
       accessorKey: "avgAttempts",
       sortable: true,
+      description: "Average number of attempts needed per query",
       cell: (row: unknown) => {
         if ((row as any).provider === "human") {
           return "--";
@@ -186,12 +199,13 @@ export default function Home() {
           </span>
         );
       },
-      type: "right",
+      type: "right" as const,
     },
     {
       name: "Avg Rows Read",
       accessorKey: "avgRowsRead",
       sortable: true,
+      description: "Average number of rows read per query (lower is better)",
       cell: (row: unknown) => {
         const humanBaseline = humanMetrics.find((h) => h.provider === "human");
         const showPercentage =
@@ -217,12 +231,13 @@ export default function Home() {
           </span>
         );
       },
-      type: "right",
+      type: "right" as const,
     },
     {
       name: "Avg Data Read",
       accessorKey: "avgBytesRead",
       sortable: true,
+      description: "Average amount of data read per query in MB",
       cell: (row: unknown) => {
         const humanBaseline = humanMetrics.find((h) => h.provider === "human");
         const showPercentage =
@@ -234,7 +249,11 @@ export default function Home() {
           return (
             <div className="space-x-2">
               <span className="font-mono">
-                {((row as any).avgBytesRead / (1024 * 1024)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MB
+                {((row as any).avgBytesRead / (1024 * 1024)).toLocaleString(
+                  undefined,
+                  { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+                )}{" "}
+                MB
               </span>
               <span className="text-sm text-[#C6C6C6]">
                 {percentage.toFixed(0)}%
@@ -244,16 +263,21 @@ export default function Home() {
         }
         return (
           <span className="font-mono">
-            {((row as any).avgBytesRead / (1024 * 1024)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MB
+            {((row as any).avgBytesRead / (1024 * 1024)).toLocaleString(
+              undefined,
+              { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+            )}{" "}
+            MB
           </span>
         );
       },
-      type: "right",
+      type: "right" as const,
     },
     {
       name: "Avg Query Length",
       accessorKey: "avgQueryLength",
       sortable: true,
+      description: "Average length of generated SQL queries in characters",
       cell: (row: unknown) => {
         const humanBaseline = humanMetrics.find((h) => h.provider === "human");
         const showPercentage =
@@ -279,12 +303,14 @@ export default function Home() {
           </span>
         );
       },
-      type: "right",
+      type: "right" as const,
     },
     {
-      name: "Overall Score",
+      name: "Score",
       accessorKey: "efficiencyScore",
       sortable: true,
+      description:
+        "Custom metric combining execution time, data read, and success rate (lower is better)",
       cell: (row: unknown) => {
         if ((row as any).provider === "human") {
           return "--";
@@ -293,9 +319,9 @@ export default function Home() {
           <div className="inline-flex items-center">
             <div
               className={`w-2 h-2 rounded-full mr-2 ${
-                (row as any).efficiencyScore < 1000
+                (row as any).efficiencyScore > 75
                   ? "bg-[#27F795]"
-                  : (row as any).efficiencyScore < 5000
+                  : (row as any).efficiencyScore > 50
                   ? "bg-[#F7D727]"
                   : "bg-[#F72727]"
               }`}
@@ -306,21 +332,22 @@ export default function Home() {
           </div>
         );
       },
-      type: "right",
+      type: "right" as const,
     },
     {
       name: "Total Queries",
       accessorKey: "totalQueries",
       sortable: true,
+      description: "Total number of queries executed for this model",
       cell: (row: unknown) => (
         <span className="font-mono">{(row as any).totalQueries}</span>
       ),
-      type: "right",
+      type: "right" as const,
     },
   ];
 
   return (
-    <div className="min-h-screen p-8 font-sans">
+    <div className="min-h-screen py-8 px-4 lg:px-8 font-sans">
       <Header />
 
       <div className="mb-4 flex items-center">
@@ -333,8 +360,20 @@ export default function Home() {
               // Add disabled or error props as needed
             />
             <span className="custom-checkbox-box">
-              <svg className="checkmark" viewBox="0 0 16 16" fill="none" width="16" height="16">
-                <path d="M4 8.5L7 11.5L12 5.5" stroke="#222" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+              <svg
+                className="checkmark"
+                viewBox="0 0 16 16"
+                fill="none"
+                width="16"
+                height="16"
+              >
+                <path
+                  d="M4 8.5L7 11.5L12 5.5"
+                  stroke="#222"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </svg>
             </span>
           </span>
@@ -365,7 +404,7 @@ export default function Home() {
             Percentage of queries that succeeded on the first try
           </li>
           <li>
-            <span className="text-[#F4F4F4]">Avg Execution:</span> Average time
+            <span className="text-[#F4F4F4]">Query Latency:</span> Average time
             taken to execute the query in milliseconds
           </li>
           <li>
@@ -385,9 +424,9 @@ export default function Home() {
             length of generated SQL queries in characters
           </li>
           <li>
-            <span className="text-[#F4F4F4]">Efficiency Score:</span> Custom
-            metric combining execution time, data read, and success rate (lower
-            is better)
+            <span className="text-[#F4F4F4]">Score:</span> Custom metric
+            combining execution time, data read, and success rate (lower is
+            better)
           </li>
         </ul>
       </div>

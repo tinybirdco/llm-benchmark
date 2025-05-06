@@ -22,7 +22,7 @@ type QuestionMetric = {
   bytesRead: number;
   rowsRead: number;
   queryLength: number;
-  attempts: number;
+  attempts: Array<{ question: { question: string } }>;
   success: boolean;
   firstAttempt: boolean;
   tokens: number;
@@ -40,25 +40,26 @@ function calculateQuestionMetrics(result: BenchmarkResult): QuestionMetric {
     bytesRead: result.sqlResult?.statistics?.bytes_read || 0,
     rowsRead: result.sqlResult?.statistics?.rows_read || 0,
     queryLength: result.sql?.length || 0,
-    attempts: result.attempts?.length || 1,
+    attempts: result.attempts?.map((a) => ({
+      question: { question: a.question.question },
+    })) || [{ question: { question: "" } }],
     success: result.sqlResult?.success || false,
-    firstAttempt: result.model === "human" ? true : result.attempts?.length === 1 && result.sqlResult?.success,
+    firstAttempt:
+      result.model === "human"
+        ? true
+        : result.attempts?.length === 1 && result.sqlResult?.success,
     tokens: result.metrics?.tokens?.totalTokens || 0,
   };
 }
 
 const QuestionCell = ({ metric }: { metric: QuestionMetric }) => {
+  const question = metric.attempts?.[0]?.question?.question || metric.question;
+  
   return (
     <div className={`max-w-[475px] -m-4 p-4`}>
-      <Link
-        href={`/questions/${encodeURIComponent(metric.name)}`}
-        className="hover:text-[#27F795] text-sm"
-      >
-        <div className="truncate" title={metric.question}>
-          {metric.question}
-        </div>
-      </Link>
-
+      <div className="truncate" title={question}>
+        {question}
+      </div>
 
       <PreviewModal metric={metric as any} />
     </div>
@@ -79,6 +80,7 @@ export default function ModelDetail() {
       name: "Question",
       accessorKey: "question",
       sortable: true,
+      description: "The question that was asked to the model",
       cell: (row: unknown) => {
         const metric = row as QuestionMetric;
         return <QuestionCell metric={metric} />;
@@ -88,6 +90,7 @@ export default function ModelDetail() {
       name: "Success",
       accessorKey: "success",
       sortable: true,
+      description: "Whether the query executed successfully",
       cell: (row: unknown) => {
         const metric = row as QuestionMetric;
         return (
@@ -101,6 +104,7 @@ export default function ModelDetail() {
       name: "First Attempt",
       accessorKey: "firstAttempt",
       sortable: true,
+      description: "Whether the query succeeded on the first try",
       cell: (row: unknown) => {
         const metric = row as QuestionMetric;
         return (
@@ -111,23 +115,25 @@ export default function ModelDetail() {
       },
     },
     {
-      name: "Execution (ms)",
+      name: "Query Latency",
       accessorKey: "executionTime",
       sortable: true,
+      description: "Time taken to execute the query in milliseconds",
       cell: (row: unknown) => (
         <span className="font-mono">
-          {((row as QuestionMetric).executionTime * 1000).toFixed(2)}
+          {((row as QuestionMetric).executionTime * 1000).toLocaleString()} ms
         </span>
       ),
       type: "right" as const,
     },
     {
-      name: "LLM Gen (s)",
+      name: "LLM Gen",
       accessorKey: "totalDuration",
       sortable: true,
+      description: "Time for the LLM to generate the SQL query in seconds",
       cell: (row: unknown) => (
         <span className="font-mono">
-          {(row as QuestionMetric).totalDuration.toFixed(3)}
+          {(row as QuestionMetric).totalDuration.toLocaleString()} s
         </span>
       ),
       type: "right" as const,
@@ -136,8 +142,11 @@ export default function ModelDetail() {
       name: "Attempts",
       accessorKey: "attempts",
       sortable: true,
+      description: "Number of attempts needed for this query",
       cell: (row: unknown) => (
-        <span className="font-mono">{(row as QuestionMetric).attempts}</span>
+        <span className="font-mono">
+          {(row as QuestionMetric).attempts.length}
+        </span>
       ),
       type: "right" as const,
     },
@@ -145,6 +154,7 @@ export default function ModelDetail() {
       name: "Rows Read",
       accessorKey: "rowsRead",
       sortable: true,
+      description: "Number of rows read by this query (lower is better)",
       cell: (row: unknown) => (
         <span className="font-mono">
           {(row as QuestionMetric).rowsRead.toLocaleString()}
@@ -156,9 +166,14 @@ export default function ModelDetail() {
       name: "Data Read",
       accessorKey: "bytesRead",
       sortable: true,
+      description: "Amount of data read by this query in MB",
       cell: (row: unknown) => (
         <span className="font-mono">
-          {((row as QuestionMetric).bytesRead / (1024 * 1024)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MB
+          {((row as QuestionMetric).bytesRead / (1024 * 1024)).toLocaleString(
+            undefined,
+            { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+          )}{" "}
+          MB
         </span>
       ),
       type: "right" as const,
@@ -167,6 +182,7 @@ export default function ModelDetail() {
       name: "Query Length",
       accessorKey: "queryLength",
       sortable: true,
+      description: "Length of the generated SQL query in characters",
       cell: (row: unknown) => (
         <span className="font-mono">{(row as QuestionMetric).queryLength}</span>
       ),
@@ -176,6 +192,7 @@ export default function ModelDetail() {
       name: "Tokens",
       accessorKey: "tokens",
       sortable: true,
+      description: "Number of tokens used to generate the query",
       cell: (row: unknown) => (
         <span className="font-mono">
           {(row as QuestionMetric).tokens.toLocaleString()}
@@ -204,7 +221,7 @@ export default function ModelDetail() {
   }
 
   return (
-    <div className="min-h-screen p-8 font-sans">
+    <div className="min-h-screen py-8 px-4 lg:px-8 font-sans">
       <div className="mb-8">
         <Link
           href="/"
