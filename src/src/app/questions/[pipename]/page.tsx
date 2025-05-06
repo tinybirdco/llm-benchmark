@@ -223,7 +223,7 @@ export default function QuestionDetail() {
   ];
 
   return (
-    <div className="min-h-screen p-8 font-sans">
+    <div className="min-h-screen py-8 px-4 lg:px-8 font-sans">
       <Header />
 
       <div className="mb-8 space-y-5">

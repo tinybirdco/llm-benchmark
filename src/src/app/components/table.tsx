@@ -95,7 +95,7 @@ export const Table = ({
         {columns.map((column) => (
           <div
             className={cn(
-              "align-start items-center text-sm table-cell text-nowrap whitespace-nowrap h-[52px] group",
+              "align-start items-center text-sm table-cell text-nowrap whitespace-nowrap group",
               column.sortable ? "cursor-pointer hover:bg-[#353535]" : ""
             )}
             key={column.name}
@@ -106,15 +106,21 @@ export const Table = ({
                   <div
                     onClick={() => handleSort(column)}
                     className={cn(
-                      "p-4 align-start text-sm text-nowrap whitespace-nowrap",
+                      "p-2.5 lg:p-4 align-start text-sm text-nowrap whitespace-nowrap",
                       column.type === "right" ? "text-right" : "text-left",
                       sortConfig?.key === column.accessorKey ? "font-bold" : ""
                     )}
                   >
                     <div className="flex items-center gap-2">
-                      {column.name}
+                      <span
+                        className={cn(
+                          column.accessorKey === "rank" ? "w-0 overflow-hidden lg:overflow-auto lg:w-auto" : ""
+                        )}
+                      >
+                        {column.name}
+                      </span>
                       <div className="flex items-center gap-1.5 bg-transparent pl-2 group-hover:bg-background-secondary -ml-1.5">
-                        <HelpCircle className="w-3 h-3 group-hover:opacity-100 opacity-50" />
+                        <HelpCircle className="w-3 h-3 group-hover:opacity-100 opacity-50 hidden lg:block" />
                         {getSortIcon(column)}
                       </div>
                     </div>
@@ -127,15 +133,15 @@ export const Table = ({
         ))}
       </div>
       <div className="table-row-group">
-        {sortedData.map((row) => (
+        {sortedData.map((row, idx) => (
           <div
             key={crypto.randomUUID()}
-            className="table-row hover:bg-[#353535]"
+            className={cn("table-row lg:hover:bg-[#353535]", idx % 2 === 0 ? "bg-[#1A1A1A]" : "")}
           >
             {columns.map((column) => (
               <div
                 key={column.name}
-                className={`p-4 align-start table-cell text-sm text-nowrap whitespace-nowrap ${
+                className={`p-2.5 lg:p-4 align-start table-cell text-sm text-nowrap whitespace-nowrap ${
                   column.type === "right" ? "text-right" : "text-left pr-6"
                 }`}
               >
