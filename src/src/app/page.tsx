@@ -166,6 +166,39 @@ export default function Home() {
       },
     },
     {
+      name: "LLM Gen Time (s)",
+      accessorKey: "avgTotalDuration",
+      sortable: true,
+      description:
+        "Average time for the LLM to generate the SQL query in seconds",
+      cell: (row: unknown) =>
+        (row as any).provider === "human" ? (
+          "--"
+        ) : (
+          <span className="font-mono">
+            {(row as any).avgTotalDuration.toFixed(3)}
+          </span>
+        ),
+      type: "right" as const,
+    },
+    {
+      name: "Avg Attempts",
+      accessorKey: "avgAttempts",
+      sortable: true,
+      description: "Average number of attempts needed per query",
+      cell: (row: unknown) => {
+        if ((row as any).provider === "human") {
+          return "--";
+        }
+        return (
+          <span className="font-mono">
+            {(row as any).avgAttempts.toFixed(2)}
+          </span>
+        );
+      },
+      type: "right" as const,
+    },
+    {
       name: "Avg Query Latency",
       accessorKey: "avgExecutionTime",
       sortable: true,
@@ -194,39 +227,6 @@ export default function Home() {
         return (
           <span className="font-mono">
             {((row as any).avgExecutionTime * 1000).toLocaleString()} ms
-          </span>
-        );
-      },
-      type: "right" as const,
-    },
-    {
-      name: "LLM Gen Time (s)",
-      accessorKey: "avgTotalDuration",
-      sortable: true,
-      description:
-        "Average time for the LLM to generate the SQL query in seconds",
-      cell: (row: unknown) =>
-        (row as any).provider === "human" ? (
-          "--"
-        ) : (
-          <span className="font-mono">
-            {(row as any).avgTotalDuration.toFixed(3)}
-          </span>
-        ),
-      type: "right" as const,
-    },
-    {
-      name: "Avg Attempts",
-      accessorKey: "avgAttempts",
-      sortable: true,
-      description: "Average number of attempts needed per query",
-      cell: (row: unknown) => {
-        if ((row as any).provider === "human") {
-          return "--";
-        }
-        return (
-          <span className="font-mono">
-            {(row as any).avgAttempts.toFixed(2)}
           </span>
         );
       },
@@ -302,48 +302,6 @@ export default function Home() {
           </span>
         );
       },
-      type: "right" as const,
-    },
-    {
-      name: "Avg Query Length",
-      accessorKey: "avgQueryLength",
-      sortable: true,
-      description: "Average length of generated SQL queries in characters",
-      cell: (row: unknown) => {
-        const humanBaseline = humanMetrics.find((h) => h.provider === "human");
-        const showPercentage =
-          showRelative && (row as any).provider !== "human" && humanBaseline;
-
-        if (showPercentage) {
-          const percentage =
-            ((row as any).avgQueryLength / humanBaseline.avgQueryLength) * 100;
-          return (
-            <div className="space-x-2">
-              <span className="font-mono">
-                {Math.round((row as any).avgQueryLength)}
-              </span>
-              <span className="text-sm text-[#C6C6C6]">
-                {percentage.toFixed(0)}%
-              </span>
-            </div>
-          );
-        }
-        return (
-          <span className="font-mono">
-            {(row as any).avgQueryLength.toFixed(0)}
-          </span>
-        );
-      },
-      type: "right" as const,
-    },
-    {
-      name: "Total Queries",
-      accessorKey: "totalQueries",
-      sortable: true,
-      description: "Total number of queries executed for this model",
-      cell: (row: unknown) => (
-        <span className="font-mono">{(row as any).totalQueries}</span>
-      ),
       type: "right" as const,
     },
   ];
