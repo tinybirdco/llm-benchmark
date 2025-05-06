@@ -84,7 +84,7 @@ export function Filters({
     const providers = Array.from(new Set(data.map((d) => d.provider))).sort();
 
     return (
-        <div className="flex flex-col sm:flex-row gap-4 w-full">
+        <div className="flex flex-col sm:flex-row gap-4">
             <Filter
                 label="Models"
                 options={models}

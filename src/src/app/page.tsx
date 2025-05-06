@@ -318,44 +318,14 @@ export default function Home() {
   return (
     <div className="min-h-screen py-8 px-4 lg:px-8 font-sans">
       <Header
-        data={[...humanMetrics, ...modelMetrics]}
+        data={modelMetrics}
         selectedModels={selectedModels}
         selectedProviders={selectedProviders}
         onModelChange={setSelectedModels}
         onProviderChange={setSelectedProviders}
+        showRelative={showRelative}
+        onShowRelativeChange={setShowRelative}
       />
-
-      <div className="mb-4 flex items-center justify-between">
-        <label className="inline-flex items-center cursor-pointer">
-          <span className="custom-checkbox">
-            <input
-              type="checkbox"
-              checked={showRelative}
-              onChange={(e) => setShowRelative(e.target.checked)}
-            />
-            <span className="custom-checkbox-box">
-              <svg
-                className="checkmark"
-                viewBox="0 0 16 16"
-                fill="none"
-                width="16"
-                height="16"
-              >
-                <path
-                  d="M4 8.5L7 11.5L12 5.5"
-                  stroke="#222"
-                  strokeWidth="2.2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </span>
-          </span>
-          <span className="ml-2 text-sm text-[#F4F4F4]">
-            Show metrics relative to human baseline
-          </span>
-        </label>
-      </div>
 
       <div className="overflow-x-auto w-full">
         <Table

@@ -16,6 +16,8 @@ type HeaderProps = {
   selectedProviders: string[];
   onModelChange: (models: string[]) => void;
   onProviderChange: (providers: string[]) => void;
+  showRelative: boolean;
+  onShowRelativeChange: (checked: boolean) => void;
 };
 
 export const QuestionSelect = () => {
@@ -100,6 +102,8 @@ export const Header = ({
   selectedProviders,
   onModelChange,
   onProviderChange,
+  showRelative,
+  onShowRelativeChange,
 }: HeaderProps) => {
   return (
     <header>
@@ -151,6 +155,37 @@ export const Header = ({
           onModelChange={onModelChange}
           onProviderChange={onProviderChange}
         />
+        <div className="flex items-center h-full">
+          <label className="inline-flex items-center cursor-pointer">
+            <span className="custom-checkbox">
+              <input
+                type="checkbox"
+                checked={showRelative}
+                onChange={(e) => onShowRelativeChange(e.target.checked)}
+              />
+              <span className="custom-checkbox-box">
+                <svg
+                  className="checkmark"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  width="16"
+                  height="16"
+                >
+                  <path
+                    d="M4 8.5L7 11.5L12 5.5"
+                    stroke="#222"
+                    strokeWidth="2.2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
+            </span>
+            <span className="ml-2 text-sm text-[#F4F4F4]">
+              Show metrics relative to human baseline
+            </span>
+          </label>
+        </div>
       </div>
     </header>
   );
