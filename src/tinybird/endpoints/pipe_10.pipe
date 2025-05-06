@@ -1,18 +1,18 @@
 DESCRIPTION >
-    top 10 Authors that contributed to tensorflow also contributed to what repositories?
+    Find the top 10 non-TensorFlow repositories that received the most pull requests from TensorFlow contributors, ranked by the number of unique contributors.
 
 NODE endpoint
 SQL >
     SELECT
         repo_name,
         count() AS prs,
-        uniq(actor_login) AS authors
+        uniqExact(actor_login) AS authors
     FROM github_events
     WHERE (event_type = 'PullRequestEvent') AND (action = 'opened') AND (actor_login IN
     (
         SELECT actor_login
         FROM github_events
-        WHERE (event_type = 'PullRequestEvent') AND (action = 'opened') AND (repo_name IN ('tensorflow/tensorflow'))
+        WHERE (event_type = 'PullRequestEvent') AND (action = 'opened') AND (repo_name like '%tensorflow%')
     )) AND (repo_name NOT ILIKE '%tensorflow%')
     GROUP BY repo_name
     ORDER BY authors DESC
