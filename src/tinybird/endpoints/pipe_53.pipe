@@ -1,5 +1,5 @@
 DESCRIPTION >
-    top 10 Authors with the most code reviews
+    Top 10 Authors with the most code reviews. Return the author, the number of pull request comments created, and from those, the number of unique repositories and PRs.
 
 NODE endpoint
 SQL >
@@ -7,8 +7,7 @@ SQL >
         actor_login,
         count(),
         uniq(repo_name) AS repos,
-        uniq(repo_name, number) AS prs,
-        replaceRegexpAll(substringUTF8(anyHeavy(body), 1, 100), '[\r\n]', ' ') AS comment
+        uniq(repo_name, number) AS prs
     FROM github_events
     WHERE (event_type = 'PullRequestReviewCommentEvent') AND (action = 'created')
     GROUP BY actor_login

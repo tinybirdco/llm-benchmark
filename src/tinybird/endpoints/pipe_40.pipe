@@ -1,5 +1,5 @@
 DESCRIPTION >
-    find top 10 repositories with "epic bugs", filter out by issue number
+    Top 10 GitHub issues (repo + issue number > 10) by how many comments have been created
 
 NODE endpoint
 SQL >

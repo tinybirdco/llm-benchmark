@@ -1,5 +1,5 @@
 DESCRIPTION >
-    top 10 Organizations by the number of stars
+    Top 10 users/organizations by the number of stars (get the organization name from the repo_name)
 
 NODE endpoint
 SQL >

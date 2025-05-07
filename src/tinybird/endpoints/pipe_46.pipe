@@ -1,12 +1,11 @@
 DESCRIPTION >
-    top 10 authors with the most pushes
+    Top 10 authors with the most pushes
 
 NODE endpoint
 SQL >
     SELECT
         actor_login,
-        count() AS c,
-        uniq(repo_name) AS repos
+        count() AS c
     FROM github_events
     WHERE event_type = 'PushEvent'
     GROUP BY actor_login

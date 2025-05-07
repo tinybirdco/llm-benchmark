@@ -1,5 +1,5 @@
 DESCRIPTION >
-    top 10 most tough code reviews
+    Top 10 most tough code reviews (that is, PRs with the most authors involved creating comments). Return the full URL of the PR, and the number of unique authors.
 
 NODE endpoint
 SQL >

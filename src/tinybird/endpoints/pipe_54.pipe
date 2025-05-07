@@ -1,5 +1,5 @@
 DESCRIPTION >
-    top 10 most popular labels for issues and pull requests
+    Top 10 most popular labels for issues and pull requests. Return the label and the number of times it has been used in issues, pull requests, and issue comments created, opened, or labeled.
 
 NODE endpoint
 SQL >

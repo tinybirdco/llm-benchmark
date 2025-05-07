@@ -173,7 +173,7 @@ function getCompletedQuestionsForModel(
 }
 
 async function main() {
-  // await runHumanQueries();
+  await runHumanQueries("pipe_58.pipe");
   await runBenchmark();
   
   const results = readExistingResults();
@@ -182,13 +182,17 @@ async function main() {
   console.log("Validation complete. Results saved to benchmark/validation-results.json");
 }
 
-async function runHumanQueries() {
+async function runHumanQueries(filter: string) {
   const client = getClient();
   const endpoints = getEndpointQuestions();
 
   const results = [];
 
   for (const endpoint of endpoints) {
+    if (filter && endpoint.name !== filter) {
+      continue;
+    }
+
     console.log(`Running ${endpoint.name}`);
 
     const sql = endpoint.content
@@ -226,11 +230,13 @@ async function runBenchmark() {
   const { providers } = getConfig();
   let existingResults = readExistingResults();
 
-  for (const provider in providers) {
+  // FIXME: Only run for Anthropic and some OAI for now
+  for (const provider of ["anthropic", "google"]) {
     const models = providers[provider as keyof typeof providers].models;
 
     let index = 0;
-    for (const model of models) {
+    // FIXME: Only run for Anthropic and some OAI for now
+    for (const model of models.slice(0, 2)) {
       console.log(
         `Benchmarking ${provider}/${model} (${index + 1}/${models.length})`
       );
@@ -263,7 +269,7 @@ async function runModelBenchmark(
   completedQuestions: Set<string>
 ) {
   const client = getClient();
-  const question = getEndpointQuestion("pipe_31.pipe");
+  const question = getEndpointQuestion("pipe_58.pipe");
   const questions = [question];
   
   const results: ChatResponse[] = [];

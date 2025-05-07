@@ -1,8 +1,8 @@
 DESCRIPTION >
-    Total number of issues on GitHub
+    Total number of issues opened on GitHub
 
 NODE endpoint
 SQL >
-    SELECT count() FROM github_events WHERE event_type = 'IssueCommentEvent'
+    SELECT count() FROM github_events WHERE event_type = 'IssuesEvent' AND action = 'opened'
 
 TYPE endpoint

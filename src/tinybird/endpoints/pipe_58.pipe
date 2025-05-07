@@ -1,5 +1,5 @@
 DESCRIPTION >
-    top 10 Repositories with tensorflow related comments
+    Top 10 Repositories with most events talking about tensorflow. Return the repository name and the number of events matching.
 
 NODE endpoint
 SQL >

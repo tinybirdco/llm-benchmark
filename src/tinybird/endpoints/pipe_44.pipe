@@ -1,5 +1,5 @@
 DESCRIPTION >
-    top 10 "hottest" commits
+    Top 10 commits ordered by the count of commit events; include only commits with ≥ 10 distinct commenters and return full commit url, total comments, and unique authors
 
 NODE endpoint
 SQL >

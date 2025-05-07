@@ -1,48 +1,48 @@
 [
   {
-    "sql": "SELECT \n    repo_name,\n    COUNT(*) as accepted_invitations\nFROM github_events\nWHERE event_type = 'MemberEvent'\n    AND action = 'added'\nGROUP BY repo_name\nORDER BY accepted_invitations DESC\nLIMIT 10",
+    "sql": "SELECT repo_name, count(*) AS comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY comment_count DESC\nLIMIT 10",
     "sqlResult": {
       "success": true,
       "data": [
         {
-          "repo_name": "/",
-          "accepted_invitations": 2995
+          "repo_name": "rails/rails",
+          "comment_count": 14225
         },
         {
-          "repo_name": "astro/gitpop",
-          "accepted_invitations": 935
+          "repo_name": "contao/test",
+          "comment_count": 13481
         },
         {
-          "repo_name": "jeresig/thunderhub",
-          "accepted_invitations": 445
+          "repo_name": "mxcl/homebrew",
+          "comment_count": 12690
         },
         {
-          "repo_name": "matthewmccullough/hellogitworld",
-          "accepted_invitations": 128
+          "repo_name": "contao/import",
+          "comment_count": 12494
         },
         {
-          "repo_name": "buhtip/buhtip-repo",
-          "accepted_invitations": 55
+          "repo_name": "symfony/symfony",
+          "comment_count": 7375
         },
         {
-          "repo_name": "braitsch/client1",
-          "accepted_invitations": 44
+          "repo_name": "jquery/jquery-mobile",
+          "comment_count": 6944
         },
         {
-          "repo_name": "societies/SOCIETIES-Platform",
-          "accepted_invitations": 37
+          "repo_name": "joyent/node",
+          "comment_count": 6562
         },
         {
-          "repo_name": "dm4/IntroCS-2011-Fall-Homework6",
-          "accepted_invitations": 32
+          "repo_name": "sympy/sympy",
+          "comment_count": 6532
         },
         {
-          "repo_name": "rperlinski/zpi-basic",
-          "accepted_invitations": 32
+          "repo_name": "spotweb/spotweb",
+          "comment_count": 6313
         },
         {
-          "repo_name": "tjhickey724/OctaveBat",
-          "accepted_invitations": 32
+          "repo_name": "diaspora/diaspora",
+          "comment_count": 5164
         }
       ],
       "meta": [
@@ -51,451 +51,82 @@
           "type": "LowCardinality(String)"
         },
         {
-          "name": "accepted_invitations",
+          "name": "comment_count",
           "type": "UInt64"
         }
       ],
       "statistics": {
-        "elapsed": 0.028954306,
-        "rows_read": 459796,
-        "bytes_read": 803860
+        "elapsed": 0.027657091,
+        "rows_read": 1250141,
+        "bytes_read": 3081893
       },
-      "executionTime": 0.267,
-      "requestId": "01JTJMVEJ61NE9GNTWFMTN5JTN",
-      "length": 632
+      "executionTime": 0.082,
+      "requestId": "01JTMWKRQHTA3MSBGET3WM5TZP",
+      "length": 522
     },
-    "name": "pipe_31.pipe",
+    "name": "pipe_39.pipe",
     "question": {
-      "name": "pipe_31.pipe",
-      "content": "DESCRIPTION >\n    top 10 Repositories with the maximum number of accepted invitations\n\nNODE endpoint\nSQL >\n    SELECT repo_name, sum(event_type = 'MemberEvent') AS invitations, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('MemberEvent', 'WatchEvent') GROUP BY repo_name HAVING stars >= 100 ORDER BY invitations DESC LIMIT 10\n\nTYPE endpoint",
-      "question": "top 10 Repositories with the maximum number of accepted invitations"
-    },
-    "model": "claude-3.5-sonnet",
-    "provider": "anthropic",
-    "metrics": {
-      "timeToFirstToken": 6.248,
-      "totalDuration": 6.996,
-      "tokens": {
-        "promptTokens": 5235,
-        "completionTokens": 67,
-        "totalTokens": 5302
-      }
-    },
-    "error": null,
-    "attempts": [
-      {
-        "sql": "SELECT \n    repo_name,\n    COUNT(*) as accepted_invitations\nFROM github_events\nWHERE event_type = 'MemberEvent'\n    AND action = 'added'\nGROUP BY repo_name\nORDER BY accepted_invitations DESC\nLIMIT 10",
-        "sqlResult": {
-          "success": true,
-          "data": [
-            {
-              "repo_name": "/",
-              "accepted_invitations": 2995
-            },
-            {
-              "repo_name": "astro/gitpop",
-              "accepted_invitations": 935
-            },
-            {
-              "repo_name": "jeresig/thunderhub",
-              "accepted_invitations": 445
-            },
-            {
-              "repo_name": "matthewmccullough/hellogitworld",
-              "accepted_invitations": 128
-            },
-            {
-              "repo_name": "buhtip/buhtip-repo",
-              "accepted_invitations": 55
-            },
-            {
-              "repo_name": "braitsch/client1",
-              "accepted_invitations": 44
-            },
-            {
-              "repo_name": "societies/SOCIETIES-Platform",
-              "accepted_invitations": 37
-            },
-            {
-              "repo_name": "dm4/IntroCS-2011-Fall-Homework6",
-              "accepted_invitations": 32
-            },
-            {
-              "repo_name": "rperlinski/zpi-basic",
-              "accepted_invitations": 32
-            },
-            {
-              "repo_name": "tjhickey724/OctaveBat",
-              "accepted_invitations": 32
-            }
-          ],
-          "meta": [
-            {
-              "name": "repo_name",
-              "type": "LowCardinality(String)"
-            },
-            {
-              "name": "accepted_invitations",
-              "type": "UInt64"
-            }
-          ],
-          "statistics": {
-            "elapsed": 0.028954306,
-            "rows_read": 459796,
-            "bytes_read": 803860
-          },
-          "executionTime": 0.267,
-          "requestId": "01JTJMVEJ61NE9GNTWFMTN5JTN",
-          "length": 632
-        },
-        "name": "pipe_31.pipe",
-        "question": {
-          "name": "pipe_31.pipe",
-          "content": "DESCRIPTION >\n    top 10 Repositories with the maximum number of accepted invitations\n\nNODE endpoint\nSQL >\n    SELECT repo_name, sum(event_type = 'MemberEvent') AS invitations, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('MemberEvent', 'WatchEvent') GROUP BY repo_name HAVING stars >= 100 ORDER BY invitations DESC LIMIT 10\n\nTYPE endpoint",
-          "question": "top 10 Repositories with the maximum number of accepted invitations"
-        },
-        "model": "claude-3.5-sonnet",
-        "provider": "anthropic",
-        "metrics": {
-          "timeToFirstToken": 6.248,
-          "totalDuration": 6.996,
-          "tokens": {
-            "promptTokens": 5235,
-            "completionTokens": 67,
-            "totalTokens": 5302
-          }
-        },
-        "error": null
-      }
-    ]
-  },
-  {
-    "sql": "SELECT \n    repo_name,\n    COUNT(*) AS accepted_invitations\nFROM github_events\nWHERE event_type = 'MemberEvent' \n    AND action = 'added'\nGROUP BY repo_name\nORDER BY accepted_invitations DESC\nLIMIT 10",
-    "sqlResult": {
-      "success": true,
-      "data": [
-        {
-          "repo_name": "/",
-          "accepted_invitations": 2995
-        },
-        {
-          "repo_name": "astro/gitpop",
-          "accepted_invitations": 935
-        },
-        {
-          "repo_name": "jeresig/thunderhub",
-          "accepted_invitations": 445
-        },
-        {
-          "repo_name": "matthewmccullough/hellogitworld",
-          "accepted_invitations": 128
-        },
-        {
-          "repo_name": "buhtip/buhtip-repo",
-          "accepted_invitations": 55
-        },
-        {
-          "repo_name": "braitsch/client1",
-          "accepted_invitations": 44
-        },
-        {
-          "repo_name": "societies/SOCIETIES-Platform",
-          "accepted_invitations": 37
-        },
-        {
-          "repo_name": "dm4/IntroCS-2011-Fall-Homework6",
-          "accepted_invitations": 32
-        },
-        {
-          "repo_name": "rperlinski/zpi-basic",
-          "accepted_invitations": 32
-        },
-        {
-          "repo_name": "tjhickey724/OctaveBat",
-          "accepted_invitations": 32
-        }
-      ],
-      "meta": [
-        {
-          "name": "repo_name",
-          "type": "LowCardinality(String)"
-        },
-        {
-          "name": "accepted_invitations",
-          "type": "UInt64"
-        }
-      ],
-      "statistics": {
-        "elapsed": 0.033595391,
-        "rows_read": 459796,
-        "bytes_read": 803860
-      },
-      "executionTime": 0.139,
-      "requestId": "01JTJMVKM3Q1XNQ7C8S8G1VDT3",
-      "length": 632
-    },
-    "name": "pipe_31.pipe",
-    "question": {
-      "name": "pipe_31.pipe",
-      "content": "DESCRIPTION >\n    top 10 Repositories with the maximum number of accepted invitations\n\nNODE endpoint\nSQL >\n    SELECT repo_name, sum(event_type = 'MemberEvent') AS invitations, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('MemberEvent', 'WatchEvent') GROUP BY repo_name HAVING stars >= 100 ORDER BY invitations DESC LIMIT 10\n\nTYPE endpoint",
-      "question": "top 10 Repositories with the maximum number of accepted invitations"
-    },
-    "model": "claude-3.7-sonnet",
-    "provider": "anthropic",
-    "metrics": {
-      "timeToFirstToken": 1.824,
-      "totalDuration": 2.446,
-      "tokens": {
-        "promptTokens": 5235,
-        "completionTokens": 68,
-        "totalTokens": 5303
-      }
-    },
-    "error": null,
-    "attempts": [
-      {
-        "sql": "SELECT \n    repo_name,\n    COUNT(*) AS accepted_invitations\nFROM github_events\nWHERE event_type = 'MemberEvent' \n    AND action = 'added'\nGROUP BY repo_name\nORDER BY accepted_invitations DESC\nLIMIT 10",
-        "sqlResult": {
-          "success": true,
-          "data": [
-            {
-              "repo_name": "/",
-              "accepted_invitations": 2995
-            },
-            {
-              "repo_name": "astro/gitpop",
-              "accepted_invitations": 935
-            },
-            {
-              "repo_name": "jeresig/thunderhub",
-              "accepted_invitations": 445
-            },
-            {
-              "repo_name": "matthewmccullough/hellogitworld",
-              "accepted_invitations": 128
-            },
-            {
-              "repo_name": "buhtip/buhtip-repo",
-              "accepted_invitations": 55
-            },
-            {
-              "repo_name": "braitsch/client1",
-              "accepted_invitations": 44
-            },
-            {
-              "repo_name": "societies/SOCIETIES-Platform",
-              "accepted_invitations": 37
-            },
-            {
-              "repo_name": "dm4/IntroCS-2011-Fall-Homework6",
-              "accepted_invitations": 32
-            },
-            {
-              "repo_name": "rperlinski/zpi-basic",
-              "accepted_invitations": 32
-            },
-            {
-              "repo_name": "tjhickey724/OctaveBat",
-              "accepted_invitations": 32
-            }
-          ],
-          "meta": [
-            {
-              "name": "repo_name",
-              "type": "LowCardinality(String)"
-            },
-            {
-              "name": "accepted_invitations",
-              "type": "UInt64"
-            }
-          ],
-          "statistics": {
-            "elapsed": 0.033595391,
-            "rows_read": 459796,
-            "bytes_read": 803860
-          },
-          "executionTime": 0.139,
-          "requestId": "01JTJMVKM3Q1XNQ7C8S8G1VDT3",
-          "length": 632
-        },
-        "name": "pipe_31.pipe",
-        "question": {
-          "name": "pipe_31.pipe",
-          "content": "DESCRIPTION >\n    top 10 Repositories with the maximum number of accepted invitations\n\nNODE endpoint\nSQL >\n    SELECT repo_name, sum(event_type = 'MemberEvent') AS invitations, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('MemberEvent', 'WatchEvent') GROUP BY repo_name HAVING stars >= 100 ORDER BY invitations DESC LIMIT 10\n\nTYPE endpoint",
-          "question": "top 10 Repositories with the maximum number of accepted invitations"
-        },
-        "model": "claude-3.7-sonnet",
-        "provider": "anthropic",
-        "metrics": {
-          "timeToFirstToken": 1.824,
-          "totalDuration": 2.446,
-          "tokens": {
-            "promptTokens": 5235,
-            "completionTokens": 68,
-            "totalTokens": 5303
-          }
-        },
-        "error": null
-      }
-    ]
-  },
-  {
-    "sql": "SELECT repo_name, count(*) as invitations_count\nFROM github_events\nWHERE event_type = 'MemberEvent'\nAND action = 'added'\nGROUP BY repo_name\nORDER BY invitations_count DESC\nLIMIT 10",
-    "sqlResult": {
-      "success": true,
-      "data": [
-        {
-          "repo_name": "/",
-          "invitations_count": 2995
-        },
-        {
-          "repo_name": "astro/gitpop",
-          "invitations_count": 935
-        },
-        {
-          "repo_name": "jeresig/thunderhub",
-          "invitations_count": 445
-        },
-        {
-          "repo_name": "matthewmccullough/hellogitworld",
-          "invitations_count": 128
-        },
-        {
-          "repo_name": "buhtip/buhtip-repo",
-          "invitations_count": 55
-        },
-        {
-          "repo_name": "braitsch/client1",
-          "invitations_count": 44
-        },
-        {
-          "repo_name": "societies/SOCIETIES-Platform",
-          "invitations_count": 37
-        },
-        {
-          "repo_name": "dm4/IntroCS-2011-Fall-Homework6",
-          "invitations_count": 32
-        },
-        {
-          "repo_name": "rperlinski/zpi-basic",
-          "invitations_count": 32
-        },
-        {
-          "repo_name": "tjhickey724/OctaveBat",
-          "invitations_count": 32
-        }
-      ],
-      "meta": [
-        {
-          "name": "repo_name",
-          "type": "LowCardinality(String)"
-        },
-        {
-          "name": "invitations_count",
-          "type": "UInt64"
-        }
-      ],
-      "statistics": {
-        "elapsed": 0.031255273,
-        "rows_read": 459796,
-        "bytes_read": 803860
-      },
-      "executionTime": 0.127,
-      "requestId": "01JTJMVXBM8DCEFSVTVD53Z1NY",
-      "length": 602
-    },
-    "name": "pipe_31.pipe",
-    "question": {
-      "name": "pipe_31.pipe",
-      "content": "DESCRIPTION >\n    top 10 Repositories with the maximum number of accepted invitations\n\nNODE endpoint\nSQL >\n    SELECT repo_name, sum(event_type = 'MemberEvent') AS invitations, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('MemberEvent', 'WatchEvent') GROUP BY repo_name HAVING stars >= 100 ORDER BY invitations DESC LIMIT 10\n\nTYPE endpoint",
-      "question": "I previously asked: \"top 10 Repositories with the maximum number of accepted invitations\"\n\nYou generated this SQL query:\n```sql\n (MemberEvent with action = added)\n\nSELECT repo_name, count(*) as invitations_count\nFROM github_events\nWHERE event_type = 'MemberEvent'\nAND action = 'added'\nGROUP BY repo_name\nORDER BY invitations_count DESC\nLIMIT 10\n```\n\nBut it resulted in this error:\n```\nnull\n```\n\nPlease fix the SQL query to correctly answer my original question. Make sure the SQL is valid for Tinybird/ClickHouse."
+      "name": "pipe_39.pipe",
+      "content": "DESCRIPTION >\n    Find top 10 repositories by the most commented issues\n\nNODE endpoint\nSQL >\n    SELECT\n        repo_name,\n        number,\n        count() AS comments\n    FROM github_events\n    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created')\n    GROUP BY\n        repo_name,\n        number\n    ORDER BY count() DESC\n    LIMIT 10\n\nTYPE endpoint",
+      "question": "Find top 10 repositories by the most commented issues"
     },
     "model": "deepseek-chat-v3-0324",
     "provider": "deepseek",
     "metrics": {
-      "timeToFirstToken": 1.386,
-      "totalDuration": 2.289,
+      "timeToFirstToken": 2.681,
+      "totalDuration": 4.063,
       "tokens": {
-        "promptTokens": 4576,
-        "completionTokens": 45,
-        "totalTokens": 4621
+        "promptTokens": 4470,
+        "completionTokens": 40,
+        "totalTokens": 4510
       }
     },
     "error": null,
     "attempts": [
       {
-        "sql": " (MemberEvent with action = added)\n\nSELECT repo_name, count(*) as invitations_count\nFROM github_events\nWHERE event_type = 'MemberEvent'\nAND action = 'added'\nGROUP BY repo_name\nORDER BY invitations_count DESC\nLIMIT 10",
-        "sqlResult": {
-          "success": false,
-          "data": [],
-          "executionTime": 0.1,
-          "requestId": "01JTJMVRK4N80CXSP8G200HBC5",
-          "error": "{\"error\": \"DB::Exception: Syntax error: failed at position 2 ('MemberEvent') (line 1, col 2): MemberEvent with action = added)\\n\\nSELECT repo_name, count(*) as invitations_count\\nFROM github_events\\nWHERE event_type = 'MemberEvent'\\nAND action = 'added'\\nGROUP. Expected one of: SELECT query, possibly with UNION, list of union elements, SELECT query, subquery, possibly with UNION, SELECT subquery, SELECT query, WITH, FROM, SELECT, EXPLAIN, EXPLAIN\", \"documentation\": \"https://docs.tinybird.co/quer",
-          "length": 2
-        },
-        "name": "pipe_31.pipe",
-        "question": {
-          "name": "pipe_31.pipe",
-          "content": "DESCRIPTION >\n    top 10 Repositories with the maximum number of accepted invitations\n\nNODE endpoint\nSQL >\n    SELECT repo_name, sum(event_type = 'MemberEvent') AS invitations, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('MemberEvent', 'WatchEvent') GROUP BY repo_name HAVING stars >= 100 ORDER BY invitations DESC LIMIT 10\n\nTYPE endpoint",
-          "question": "top 10 Repositories with the maximum number of accepted invitations"
-        },
-        "model": "deepseek-chat-v3-0324",
-        "provider": "deepseek",
-        "metrics": {
-          "timeToFirstToken": 0.982,
-          "totalDuration": 2.422,
-          "tokens": {
-            "promptTokens": 4108,
-            "completionTokens": 53,
-            "totalTokens": 4161
-          }
-        },
-        "error": null
-      },
-      {
-        "sql": "SELECT repo_name, count(*) as invitations_count\nFROM github_events\nWHERE event_type = 'MemberEvent'\nAND action = 'added'\nGROUP BY repo_name\nORDER BY invitations_count DESC\nLIMIT 10",
+        "sql": "SELECT repo_name, count(*) AS comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY comment_count DESC\nLIMIT 10",
         "sqlResult": {
           "success": true,
           "data": [
             {
-              "repo_name": "/",
-              "invitations_count": 2995
+              "repo_name": "rails/rails",
+              "comment_count": 14225
             },
             {
-              "repo_name": "astro/gitpop",
-              "invitations_count": 935
+              "repo_name": "contao/test",
+              "comment_count": 13481
             },
             {
-              "repo_name": "jeresig/thunderhub",
-              "invitations_count": 445
+              "repo_name": "mxcl/homebrew",
+              "comment_count": 12690
             },
             {
-              "repo_name": "matthewmccullough/hellogitworld",
-              "invitations_count": 128
+              "repo_name": "contao/import",
+              "comment_count": 12494
             },
             {
-              "repo_name": "buhtip/buhtip-repo",
-              "invitations_count": 55
+              "repo_name": "symfony/symfony",
+              "comment_count": 7375
             },
             {
-              "repo_name": "braitsch/client1",
-              "invitations_count": 44
+              "repo_name": "jquery/jquery-mobile",
+              "comment_count": 6944
             },
             {
-              "repo_name": "societies/SOCIETIES-Platform",
-              "invitations_count": 37
+              "repo_name": "joyent/node",
+              "comment_count": 6562
             },
             {
-              "repo_name": "dm4/IntroCS-2011-Fall-Homework6",
-              "invitations_count": 32
+              "repo_name": "sympy/sympy",
+              "comment_count": 6532
             },
             {
-              "repo_name": "rperlinski/zpi-basic",
-              "invitations_count": 32
+              "repo_name": "spotweb/spotweb",
+              "comment_count": 6313
             },
             {
-              "repo_name": "tjhickey724/OctaveBat",
-              "invitations_count": 32
+              "repo_name": "diaspora/diaspora",
+              "comment_count": 5164
             }
           ],
           "meta": [
@@ -504,34 +135,34 @@
               "type": "LowCardinality(String)"
             },
             {
-              "name": "invitations_count",
+              "name": "comment_count",
               "type": "UInt64"
             }
           ],
           "statistics": {
-            "elapsed": 0.031255273,
-            "rows_read": 459796,
-            "bytes_read": 803860
+            "elapsed": 0.027657091,
+            "rows_read": 1250141,
+            "bytes_read": 3081893
           },
-          "executionTime": 0.127,
-          "requestId": "01JTJMVXBM8DCEFSVTVD53Z1NY",
-          "length": 602
+          "executionTime": 0.082,
+          "requestId": "01JTMWKRQHTA3MSBGET3WM5TZP",
+          "length": 522
         },
-        "name": "pipe_31.pipe",
+        "name": "pipe_39.pipe",
         "question": {
-          "name": "pipe_31.pipe",
-          "content": "DESCRIPTION >\n    top 10 Repositories with the maximum number of accepted invitations\n\nNODE endpoint\nSQL >\n    SELECT repo_name, sum(event_type = 'MemberEvent') AS invitations, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('MemberEvent', 'WatchEvent') GROUP BY repo_name HAVING stars >= 100 ORDER BY invitations DESC LIMIT 10\n\nTYPE endpoint",
-          "question": "I previously asked: \"top 10 Repositories with the maximum number of accepted invitations\"\n\nYou generated this SQL query:\n```sql\n (MemberEvent with action = added)\n\nSELECT repo_name, count(*) as invitations_count\nFROM github_events\nWHERE event_type = 'MemberEvent'\nAND action = 'added'\nGROUP BY repo_name\nORDER BY invitations_count DESC\nLIMIT 10\n```\n\nBut it resulted in this error:\n```\nnull\n```\n\nPlease fix the SQL query to correctly answer my original question. Make sure the SQL is valid for Tinybird/ClickHouse."
+          "name": "pipe_39.pipe",
+          "content": "DESCRIPTION >\n    Find top 10 repositories by the most commented issues\n\nNODE endpoint\nSQL >\n    SELECT\n        repo_name,\n        number,\n        count() AS comments\n    FROM github_events\n    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created')\n    GROUP BY\n        repo_name,\n        number\n    ORDER BY count() DESC\n    LIMIT 10\n\nTYPE endpoint",
+          "question": "Find top 10 repositories by the most commented issues"
         },
         "model": "deepseek-chat-v3-0324",
         "provider": "deepseek",
         "metrics": {
-          "timeToFirstToken": 1.386,
-          "totalDuration": 2.289,
+          "timeToFirstToken": 2.681,
+          "totalDuration": 4.063,
           "tokens": {
-            "promptTokens": 4576,
-            "completionTokens": 45,
-            "totalTokens": 4621
+            "promptTokens": 4470,
+            "completionTokens": 40,
+            "totalTokens": 4510
           }
         },
         "error": null
@@ -539,49 +170,49 @@
     ]
   },
   {
-    "sql": "SELECT \n    repo_name,\n    count(*) as accepted_invitations_count\nFROM github_events\nWHERE event_type = 'MemberEvent' \nAND action = 'added'\nGROUP BY repo_name\nORDER BY accepted_invitations_count DESC\nLIMIT 10",
+    "sql": "SELECT \n    repo_name,\n    COUNT(*) AS comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY comment_count DESC\nLIMIT 10",
     "sqlResult": {
       "success": true,
       "data": [
         {
-          "repo_name": "/",
-          "accepted_invitations_count": 2995
+          "repo_name": "rails/rails",
+          "comment_count": 14225
         },
         {
-          "repo_name": "astro/gitpop",
-          "accepted_invitations_count": 935
+          "repo_name": "contao/test",
+          "comment_count": 13481
         },
         {
-          "repo_name": "jeresig/thunderhub",
-          "accepted_invitations_count": 445
+          "repo_name": "mxcl/homebrew",
+          "comment_count": 12690
         },
         {
-          "repo_name": "matthewmccullough/hellogitworld",
-          "accepted_invitations_count": 128
+          "repo_name": "contao/import",
+          "comment_count": 12494
         },
         {
-          "repo_name": "buhtip/buhtip-repo",
-          "accepted_invitations_count": 55
+          "repo_name": "symfony/symfony",
+          "comment_count": 7375
         },
         {
-          "repo_name": "braitsch/client1",
-          "accepted_invitations_count": 44
+          "repo_name": "jquery/jquery-mobile",
+          "comment_count": 6944
         },
         {
-          "repo_name": "societies/SOCIETIES-Platform",
-          "accepted_invitations_count": 37
+          "repo_name": "joyent/node",
+          "comment_count": 6562
         },
         {
-          "repo_name": "dm4/IntroCS-2011-Fall-Homework6",
-          "accepted_invitations_count": 32
+          "repo_name": "sympy/sympy",
+          "comment_count": 6532
         },
         {
-          "repo_name": "rperlinski/zpi-basic",
-          "accepted_invitations_count": 32
+          "repo_name": "spotweb/spotweb",
+          "comment_count": 6313
         },
         {
-          "repo_name": "tjhickey724/OctaveBat",
-          "accepted_invitations_count": 32
+          "repo_name": "diaspora/diaspora",
+          "comment_count": 5164
         }
       ],
       "meta": [
@@ -590,252 +221,111 @@
           "type": "LowCardinality(String)"
         },
         {
-          "name": "accepted_invitations_count",
+          "name": "comment_count",
           "type": "UInt64"
         }
       ],
       "statistics": {
-        "elapsed": 0.028912846,
-        "rows_read": 459796,
-        "bytes_read": 803860
+        "elapsed": 0.027165967,
+        "rows_read": 1250141,
+        "bytes_read": 3081893
       },
-      "executionTime": 0.222,
-      "requestId": "01JTJMW53K56V5G7RH911VQW69",
-      "length": 692
+      "executionTime": 0.106,
+      "requestId": "01JTMWMCH4JZD145YCX5952ERQ",
+      "length": 522
     },
-    "name": "pipe_31.pipe",
+    "name": "pipe_39.pipe",
     "question": {
-      "name": "pipe_31.pipe",
-      "content": "DESCRIPTION >\n    top 10 Repositories with the maximum number of accepted invitations\n\nNODE endpoint\nSQL >\n    SELECT repo_name, sum(event_type = 'MemberEvent') AS invitations, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('MemberEvent', 'WatchEvent') GROUP BY repo_name HAVING stars >= 100 ORDER BY invitations DESC LIMIT 10\n\nTYPE endpoint",
-      "question": "top 10 Repositories with the maximum number of accepted invitations"
+      "name": "pipe_39.pipe",
+      "content": "DESCRIPTION >\n    Find top 10 repositories by the most commented issues\n\nNODE endpoint\nSQL >\n    SELECT\n        repo_name,\n        number,\n        count() AS comments\n    FROM github_events\n    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created')\n    GROUP BY\n        repo_name,\n        number\n    ORDER BY count() DESC\n    LIMIT 10\n\nTYPE endpoint",
+      "question": "I previously asked: \"Find top 10 repositories by the most commented issues\"\n\nYou generated this SQL query:\n```sql\n**Solution:**\n\n\nSELECT \n    repo_name,\n    COUNT(*) AS comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY comment_count DESC\nLIMIT 10\n\n\nThis query:\n1. Filters for `IssueCommentEvent` events (comments on issues)\n2. Groups by repository name\n3. Counts the number of comments per repository\n4. Orders by comment count in descending order\n5. Limits to the top 10 repositories\n\nThe result will show the 10 repositories with the most issue comments, which indicates active discussion and engagement on issues.\n```\n\nBut it resulted in this error:\n```\nnull\n```\n\nPlease fix the SQL query to correctly answer my original question. Make sure the SQL is valid for Tinybird/ClickHouse."
     },
     "model": "deepseek-chat-v3-0324:free",
     "provider": "deepseek",
     "metrics": {
-      "timeToFirstToken": 3.547,
-      "totalDuration": 5.266,
+      "timeToFirstToken": 5.129,
+      "totalDuration": 6.57,
       "tokens": {
-        "promptTokens": 4471,
-        "completionTokens": 55,
-        "totalTokens": 4526
+        "promptTokens": 4647,
+        "completionTokens": 43,
+        "totalTokens": 4690
       }
     },
     "error": null,
     "attempts": [
       {
-        "sql": "SELECT \n    repo_name,\n    count(*) as accepted_invitations_count\nFROM github_events\nWHERE event_type = 'MemberEvent' \nAND action = 'added'\nGROUP BY repo_name\nORDER BY accepted_invitations_count DESC\nLIMIT 10",
+        "sql": "**Solution:**\n\n\nSELECT \n    repo_name,\n    COUNT(*) AS comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY comment_count DESC\nLIMIT 10\n\n\nThis query:\n1. Filters for `IssueCommentEvent` events (comments on issues)\n2. Groups by repository name\n3. Counts the number of comments per repository\n4. Orders by comment count in descending order\n5. Limits to the top 10 repositories\n\nThe result will show the 10 repositories with the most issue comments, which indicates active discussion and engagement on issues.",
         "sqlResult": {
-          "success": true,
-          "data": [
-            {
-              "repo_name": "/",
-              "accepted_invitations_count": 2995
-            },
-            {
-              "repo_name": "astro/gitpop",
-              "accepted_invitations_count": 935
-            },
-            {
-              "repo_name": "jeresig/thunderhub",
-              "accepted_invitations_count": 445
-            },
-            {
-              "repo_name": "matthewmccullough/hellogitworld",
-              "accepted_invitations_count": 128
-            },
-            {
-              "repo_name": "buhtip/buhtip-repo",
-              "accepted_invitations_count": 55
-            },
-            {
-              "repo_name": "braitsch/client1",
-              "accepted_invitations_count": 44
-            },
-            {
-              "repo_name": "societies/SOCIETIES-Platform",
-              "accepted_invitations_count": 37
-            },
-            {
-              "repo_name": "dm4/IntroCS-2011-Fall-Homework6",
-              "accepted_invitations_count": 32
-            },
-            {
-              "repo_name": "rperlinski/zpi-basic",
-              "accepted_invitations_count": 32
-            },
-            {
-              "repo_name": "tjhickey724/OctaveBat",
-              "accepted_invitations_count": 32
-            }
-          ],
-          "meta": [
-            {
-              "name": "repo_name",
-              "type": "LowCardinality(String)"
-            },
-            {
-              "name": "accepted_invitations_count",
-              "type": "UInt64"
-            }
-          ],
-          "statistics": {
-            "elapsed": 0.028912846,
-            "rows_read": 459796,
-            "bytes_read": 803860
-          },
-          "executionTime": 0.222,
-          "requestId": "01JTJMW53K56V5G7RH911VQW69",
-          "length": 692
+          "success": false,
+          "data": [],
+          "executionTime": 0.047,
+          "requestId": "01JTMWM3KT6KE20CHYT0N26J11",
+          "error": "{\"error\": \"DB::Exception: Syntax error: failed at position 1 ('*') (line 1, col 1): **Solution:**\\n\\n\\nSELECT \\n    repo_name,\\n    COUNT(*) AS comment_count\\nFROM github_events\\nWHERE event_type = 'IssueCommentEvent'\\nGROUP BY repo_name\\nORDER BY comme. Expected one of: Query, Query with output, EXPLAIN, EXPLAIN, SELECT query, possibly with UNION, list of union elements, SELECT query, subquery, possibly with UNION, SELECT subquery, SELECT query, WITH, FROM, SELECT, SHOW CREATE QUOTA query, SHOW",
+          "length": 2
         },
-        "name": "pipe_31.pipe",
+        "name": "pipe_39.pipe",
         "question": {
-          "name": "pipe_31.pipe",
-          "content": "DESCRIPTION >\n    top 10 Repositories with the maximum number of accepted invitations\n\nNODE endpoint\nSQL >\n    SELECT repo_name, sum(event_type = 'MemberEvent') AS invitations, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('MemberEvent', 'WatchEvent') GROUP BY repo_name HAVING stars >= 100 ORDER BY invitations DESC LIMIT 10\n\nTYPE endpoint",
-          "question": "top 10 Repositories with the maximum number of accepted invitations"
+          "name": "pipe_39.pipe",
+          "content": "DESCRIPTION >\n    Find top 10 repositories by the most commented issues\n\nNODE endpoint\nSQL >\n    SELECT\n        repo_name,\n        number,\n        count() AS comments\n    FROM github_events\n    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created')\n    GROUP BY\n        repo_name,\n        number\n    ORDER BY count() DESC\n    LIMIT 10\n\nTYPE endpoint",
+          "question": "Find top 10 repositories by the most commented issues"
         },
         "model": "deepseek-chat-v3-0324:free",
         "provider": "deepseek",
         "metrics": {
-          "timeToFirstToken": 3.547,
-          "totalDuration": 5.266,
+          "timeToFirstToken": 1.29,
+          "totalDuration": 8.555,
           "tokens": {
-            "promptTokens": 4471,
-            "completionTokens": 55,
-            "totalTokens": 4526
+            "promptTokens": 4469,
+            "completionTokens": 130,
+            "totalTokens": 4599
           }
         },
         "error": null
-      }
-    ]
-  },
-  {
-    "sql": "\nSELECT\n    repo_name,\n    count() AS accepted_invitations\nFROM github_events\nWHERE event_type = 'MemberEvent' AND action = 'added'\nGROUP BY repo_name\nORDER BY accepted_invitations DESC\nLIMIT 10\n",
-    "sqlResult": {
-      "success": true,
-      "data": [
-        {
-          "repo_name": "/",
-          "accepted_invitations": 2995
-        },
-        {
-          "repo_name": "astro/gitpop",
-          "accepted_invitations": 935
-        },
-        {
-          "repo_name": "jeresig/thunderhub",
-          "accepted_invitations": 445
-        },
-        {
-          "repo_name": "matthewmccullough/hellogitworld",
-          "accepted_invitations": 128
-        },
-        {
-          "repo_name": "buhtip/buhtip-repo",
-          "accepted_invitations": 55
-        },
-        {
-          "repo_name": "braitsch/client1",
-          "accepted_invitations": 44
-        },
-        {
-          "repo_name": "societies/SOCIETIES-Platform",
-          "accepted_invitations": 37
-        },
-        {
-          "repo_name": "dm4/IntroCS-2011-Fall-Homework6",
-          "accepted_invitations": 32
-        },
-        {
-          "repo_name": "rperlinski/zpi-basic",
-          "accepted_invitations": 32
-        },
-        {
-          "repo_name": "tjhickey724/OctaveBat",
-          "accepted_invitations": 32
-        }
-      ],
-      "meta": [
-        {
-          "name": "repo_name",
-          "type": "LowCardinality(String)"
-        },
-        {
-          "name": "accepted_invitations",
-          "type": "UInt64"
-        }
-      ],
-      "statistics": {
-        "elapsed": 0.032835094,
-        "rows_read": 459796,
-        "bytes_read": 803860
       },
-      "executionTime": 0.121,
-      "requestId": "01JTJMW9868XTY0GX66PWYQ8YE",
-      "length": 632
-    },
-    "name": "pipe_31.pipe",
-    "question": {
-      "name": "pipe_31.pipe",
-      "content": "DESCRIPTION >\n    top 10 Repositories with the maximum number of accepted invitations\n\nNODE endpoint\nSQL >\n    SELECT repo_name, sum(event_type = 'MemberEvent') AS invitations, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('MemberEvent', 'WatchEvent') GROUP BY repo_name HAVING stars >= 100 ORDER BY invitations DESC LIMIT 10\n\nTYPE endpoint",
-      "question": "top 10 Repositories with the maximum number of accepted invitations"
-    },
-    "model": "gemini-2.0-flash-001",
-    "provider": "google",
-    "metrics": {
-      "timeToFirstToken": 1.274,
-      "totalDuration": 1.551,
-      "tokens": {
-        "promptTokens": 4616,
-        "completionTokens": 61,
-        "totalTokens": 4677
-      }
-    },
-    "error": null,
-    "attempts": [
       {
-        "sql": "\nSELECT\n    repo_name,\n    count() AS accepted_invitations\nFROM github_events\nWHERE event_type = 'MemberEvent' AND action = 'added'\nGROUP BY repo_name\nORDER BY accepted_invitations DESC\nLIMIT 10\n",
+        "sql": "SELECT \n    repo_name,\n    COUNT(*) AS comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY comment_count DESC\nLIMIT 10",
         "sqlResult": {
           "success": true,
           "data": [
             {
-              "repo_name": "/",
-              "accepted_invitations": 2995
+              "repo_name": "rails/rails",
+              "comment_count": 14225
             },
             {
-              "repo_name": "astro/gitpop",
-              "accepted_invitations": 935
+              "repo_name": "contao/test",
+              "comment_count": 13481
             },
             {
-              "repo_name": "jeresig/thunderhub",
-              "accepted_invitations": 445
+              "repo_name": "mxcl/homebrew",
+              "comment_count": 12690
             },
             {
-              "repo_name": "matthewmccullough/hellogitworld",
-              "accepted_invitations": 128
+              "repo_name": "contao/import",
+              "comment_count": 12494
             },
             {
-              "repo_name": "buhtip/buhtip-repo",
-              "accepted_invitations": 55
+              "repo_name": "symfony/symfony",
+              "comment_count": 7375
             },
             {
-              "repo_name": "braitsch/client1",
-              "accepted_invitations": 44
+              "repo_name": "jquery/jquery-mobile",
+              "comment_count": 6944
             },
             {
-              "repo_name": "societies/SOCIETIES-Platform",
-              "accepted_invitations": 37
+              "repo_name": "joyent/node",
+              "comment_count": 6562
             },
             {
-              "repo_name": "dm4/IntroCS-2011-Fall-Homework6",
-              "accepted_invitations": 32
+              "repo_name": "sympy/sympy",
+              "comment_count": 6532
             },
             {
-              "repo_name": "rperlinski/zpi-basic",
-              "accepted_invitations": 32
+              "repo_name": "spotweb/spotweb",
+              "comment_count": 6313
             },
             {
-              "repo_name": "tjhickey724/OctaveBat",
-              "accepted_invitations": 32
+              "repo_name": "diaspora/diaspora",
+              "comment_count": 5164
             }
           ],
           "meta": [
@@ -844,34 +334,34 @@
               "type": "LowCardinality(String)"
             },
             {
-              "name": "accepted_invitations",
+              "name": "comment_count",
               "type": "UInt64"
             }
           ],
           "statistics": {
-            "elapsed": 0.032835094,
-            "rows_read": 459796,
-            "bytes_read": 803860
+            "elapsed": 0.027165967,
+            "rows_read": 1250141,
+            "bytes_read": 3081893
           },
-          "executionTime": 0.121,
-          "requestId": "01JTJMW9868XTY0GX66PWYQ8YE",
-          "length": 632
+          "executionTime": 0.106,
+          "requestId": "01JTMWMCH4JZD145YCX5952ERQ",
+          "length": 522
         },
-        "name": "pipe_31.pipe",
+        "name": "pipe_39.pipe",
         "question": {
-          "name": "pipe_31.pipe",
-          "content": "DESCRIPTION >\n    top 10 Repositories with the maximum number of accepted invitations\n\nNODE endpoint\nSQL >\n    SELECT repo_name, sum(event_type = 'MemberEvent') AS invitations, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('MemberEvent', 'WatchEvent') GROUP BY repo_name HAVING stars >= 100 ORDER BY invitations DESC LIMIT 10\n\nTYPE endpoint",
-          "question": "top 10 Repositories with the maximum number of accepted invitations"
+          "name": "pipe_39.pipe",
+          "content": "DESCRIPTION >\n    Find top 10 repositories by the most commented issues\n\nNODE endpoint\nSQL >\n    SELECT\n        repo_name,\n        number,\n        count() AS comments\n    FROM github_events\n    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created')\n    GROUP BY\n        repo_name,\n        number\n    ORDER BY count() DESC\n    LIMIT 10\n\nTYPE endpoint",
+          "question": "I previously asked: \"Find top 10 repositories by the most commented issues\"\n\nYou generated this SQL query:\n```sql\n**Solution:**\n\n\nSELECT \n    repo_name,\n    COUNT(*) AS comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY comment_count DESC\nLIMIT 10\n\n\nThis query:\n1. Filters for `IssueCommentEvent` events (comments on issues)\n2. Groups by repository name\n3. Counts the number of comments per repository\n4. Orders by comment count in descending order\n5. Limits to the top 10 repositories\n\nThe result will show the 10 repositories with the most issue comments, which indicates active discussion and engagement on issues.\n```\n\nBut it resulted in this error:\n```\nnull\n```\n\nPlease fix the SQL query to correctly answer my original question. Make sure the SQL is valid for Tinybird/ClickHouse."
         },
-        "model": "gemini-2.0-flash-001",
-        "provider": "google",
+        "model": "deepseek-chat-v3-0324:free",
+        "provider": "deepseek",
         "metrics": {
-          "timeToFirstToken": 1.274,
-          "totalDuration": 1.551,
+          "timeToFirstToken": 5.129,
+          "totalDuration": 6.57,
           "tokens": {
-            "promptTokens": 4616,
-            "completionTokens": 61,
-            "totalTokens": 4677
+            "promptTokens": 4647,
+            "completionTokens": 43,
+            "totalTokens": 4690
           }
         },
         "error": null
@@ -879,49 +369,49 @@
     ]
   },
   {
-    "sql": "SELECT\n    repo_name,\n    count() AS accepted_invitations\nFROM github_events\nWHERE\n    event_type = 'MemberEvent' AND action = 'added'\nGROUP BY repo_name\nORDER BY accepted_invitations DESC\nLIMIT 10",
+    "sql": "SELECT\n    repo_name,\n    count() AS total_issue_comments\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY total_issue_comments DESC\nLIMIT 10",
     "sqlResult": {
       "success": true,
       "data": [
         {
-          "repo_name": "/",
-          "accepted_invitations": 2995
+          "repo_name": "rails/rails",
+          "total_issue_comments": 14225
         },
         {
-          "repo_name": "astro/gitpop",
-          "accepted_invitations": 935
+          "repo_name": "contao/test",
+          "total_issue_comments": 13481
         },
         {
-          "repo_name": "jeresig/thunderhub",
-          "accepted_invitations": 445
+          "repo_name": "mxcl/homebrew",
+          "total_issue_comments": 12690
         },
         {
-          "repo_name": "matthewmccullough/hellogitworld",
-          "accepted_invitations": 128
+          "repo_name": "contao/import",
+          "total_issue_comments": 12494
         },
         {
-          "repo_name": "buhtip/buhtip-repo",
-          "accepted_invitations": 55
+          "repo_name": "symfony/symfony",
+          "total_issue_comments": 7375
         },
         {
-          "repo_name": "braitsch/client1",
-          "accepted_invitations": 44
+          "repo_name": "jquery/jquery-mobile",
+          "total_issue_comments": 6944
         },
         {
-          "repo_name": "societies/SOCIETIES-Platform",
-          "accepted_invitations": 37
+          "repo_name": "joyent/node",
+          "total_issue_comments": 6562
         },
         {
-          "repo_name": "dm4/IntroCS-2011-Fall-Homework6",
-          "accepted_invitations": 32
+          "repo_name": "sympy/sympy",
+          "total_issue_comments": 6532
         },
         {
-          "repo_name": "rperlinski/zpi-basic",
-          "accepted_invitations": 32
+          "repo_name": "spotweb/spotweb",
+          "total_issue_comments": 6313
         },
         {
-          "repo_name": "tjhickey724/OctaveBat",
-          "accepted_invitations": 32
+          "repo_name": "diaspora/diaspora",
+          "total_issue_comments": 5164
         }
       ],
       "meta": [
@@ -930,252 +420,82 @@
           "type": "LowCardinality(String)"
         },
         {
-          "name": "accepted_invitations",
+          "name": "total_issue_comments",
           "type": "UInt64"
         }
       ],
       "statistics": {
-        "elapsed": 0.031740879,
-        "rows_read": 459796,
-        "bytes_read": 803860
+        "elapsed": 0.025321267,
+        "rows_read": 1250141,
+        "bytes_read": 3081893
       },
-      "executionTime": 0.128,
-      "requestId": "01JTJMWD1WWE91W25VXEXM0HCY",
-      "length": 632
+      "executionTime": 0.081,
+      "requestId": "01JTMWN5FK6044WEP06QX3YRMK",
+      "length": 592
     },
-    "name": "pipe_31.pipe",
+    "name": "pipe_39.pipe",
     "question": {
-      "name": "pipe_31.pipe",
-      "content": "DESCRIPTION >\n    top 10 Repositories with the maximum number of accepted invitations\n\nNODE endpoint\nSQL >\n    SELECT repo_name, sum(event_type = 'MemberEvent') AS invitations, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('MemberEvent', 'WatchEvent') GROUP BY repo_name HAVING stars >= 100 ORDER BY invitations DESC LIMIT 10\n\nTYPE endpoint",
-      "question": "top 10 Repositories with the maximum number of accepted invitations"
-    },
-    "model": "gemini-2.5-flash-preview",
-    "provider": "google",
-    "metrics": {
-      "timeToFirstToken": 0.776,
-      "totalDuration": 1.258,
-      "tokens": {
-        "promptTokens": 4616,
-        "completionTokens": 58,
-        "totalTokens": 4674
-      }
-    },
-    "error": null,
-    "attempts": [
-      {
-        "sql": "SELECT\n    repo_name,\n    count() AS accepted_invitations\nFROM github_events\nWHERE\n    event_type = 'MemberEvent' AND action = 'added'\nGROUP BY repo_name\nORDER BY accepted_invitations DESC\nLIMIT 10",
-        "sqlResult": {
-          "success": true,
-          "data": [
-            {
-              "repo_name": "/",
-              "accepted_invitations": 2995
-            },
-            {
-              "repo_name": "astro/gitpop",
-              "accepted_invitations": 935
-            },
-            {
-              "repo_name": "jeresig/thunderhub",
-              "accepted_invitations": 445
-            },
-            {
-              "repo_name": "matthewmccullough/hellogitworld",
-              "accepted_invitations": 128
-            },
-            {
-              "repo_name": "buhtip/buhtip-repo",
-              "accepted_invitations": 55
-            },
-            {
-              "repo_name": "braitsch/client1",
-              "accepted_invitations": 44
-            },
-            {
-              "repo_name": "societies/SOCIETIES-Platform",
-              "accepted_invitations": 37
-            },
-            {
-              "repo_name": "dm4/IntroCS-2011-Fall-Homework6",
-              "accepted_invitations": 32
-            },
-            {
-              "repo_name": "rperlinski/zpi-basic",
-              "accepted_invitations": 32
-            },
-            {
-              "repo_name": "tjhickey724/OctaveBat",
-              "accepted_invitations": 32
-            }
-          ],
-          "meta": [
-            {
-              "name": "repo_name",
-              "type": "LowCardinality(String)"
-            },
-            {
-              "name": "accepted_invitations",
-              "type": "UInt64"
-            }
-          ],
-          "statistics": {
-            "elapsed": 0.031740879,
-            "rows_read": 459796,
-            "bytes_read": 803860
-          },
-          "executionTime": 0.128,
-          "requestId": "01JTJMWD1WWE91W25VXEXM0HCY",
-          "length": 632
-        },
-        "name": "pipe_31.pipe",
-        "question": {
-          "name": "pipe_31.pipe",
-          "content": "DESCRIPTION >\n    top 10 Repositories with the maximum number of accepted invitations\n\nNODE endpoint\nSQL >\n    SELECT repo_name, sum(event_type = 'MemberEvent') AS invitations, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('MemberEvent', 'WatchEvent') GROUP BY repo_name HAVING stars >= 100 ORDER BY invitations DESC LIMIT 10\n\nTYPE endpoint",
-          "question": "top 10 Repositories with the maximum number of accepted invitations"
-        },
-        "model": "gemini-2.5-flash-preview",
-        "provider": "google",
-        "metrics": {
-          "timeToFirstToken": 0.776,
-          "totalDuration": 1.258,
-          "tokens": {
-            "promptTokens": 4616,
-            "completionTokens": 58,
-            "totalTokens": 4674
-          }
-        },
-        "error": null
-      }
-    ]
-  },
-  {
-    "sql": "SELECT\n    repo_name,\n    count() AS invitations_accepted\nFROM github_events\nWHERE event_type = 'MemberEvent' AND action = 'added'\nGROUP BY repo_name\nORDER BY invitations_accepted DESC\nLIMIT 10",
-    "sqlResult": {
-      "success": true,
-      "data": [
-        {
-          "repo_name": "/",
-          "invitations_accepted": 2995
-        },
-        {
-          "repo_name": "astro/gitpop",
-          "invitations_accepted": 935
-        },
-        {
-          "repo_name": "jeresig/thunderhub",
-          "invitations_accepted": 445
-        },
-        {
-          "repo_name": "matthewmccullough/hellogitworld",
-          "invitations_accepted": 128
-        },
-        {
-          "repo_name": "buhtip/buhtip-repo",
-          "invitations_accepted": 55
-        },
-        {
-          "repo_name": "braitsch/client1",
-          "invitations_accepted": 44
-        },
-        {
-          "repo_name": "societies/SOCIETIES-Platform",
-          "invitations_accepted": 37
-        },
-        {
-          "repo_name": "dm4/IntroCS-2011-Fall-Homework6",
-          "invitations_accepted": 32
-        },
-        {
-          "repo_name": "rperlinski/zpi-basic",
-          "invitations_accepted": 32
-        },
-        {
-          "repo_name": "tjhickey724/OctaveBat",
-          "invitations_accepted": 32
-        }
-      ],
-      "meta": [
-        {
-          "name": "repo_name",
-          "type": "LowCardinality(String)"
-        },
-        {
-          "name": "invitations_accepted",
-          "type": "UInt64"
-        }
-      ],
-      "statistics": {
-        "elapsed": 0.031583622,
-        "rows_read": 459796,
-        "bytes_read": 803860
-      },
-      "executionTime": 0.137,
-      "requestId": "01JTJMWJ467EQC2M2T73KZSBEW",
-      "length": 632
-    },
-    "name": "pipe_31.pipe",
-    "question": {
-      "name": "pipe_31.pipe",
-      "content": "DESCRIPTION >\n    top 10 Repositories with the maximum number of accepted invitations\n\nNODE endpoint\nSQL >\n    SELECT repo_name, sum(event_type = 'MemberEvent') AS invitations, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('MemberEvent', 'WatchEvent') GROUP BY repo_name HAVING stars >= 100 ORDER BY invitations DESC LIMIT 10\n\nTYPE endpoint",
-      "question": "top 10 Repositories with the maximum number of accepted invitations"
+      "name": "pipe_39.pipe",
+      "content": "DESCRIPTION >\n    Find top 10 repositories by the most commented issues\n\nNODE endpoint\nSQL >\n    SELECT\n        repo_name,\n        number,\n        count() AS comments\n    FROM github_events\n    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created')\n    GROUP BY\n        repo_name,\n        number\n    ORDER BY count() DESC\n    LIMIT 10\n\nTYPE endpoint",
+      "question": "Find top 10 repositories by the most commented issues"
     },
     "model": "gemini-2.5-pro-preview-03-25",
     "provider": "google",
     "metrics": {
-      "timeToFirstToken": 2.391,
-      "totalDuration": 2.563,
+      "timeToFirstToken": 15.057,
+      "totalDuration": 15.067,
       "tokens": {
-        "promptTokens": 4616,
-        "completionTokens": 152,
-        "totalTokens": 4768
+        "promptTokens": 4614,
+        "completionTokens": 1304,
+        "totalTokens": 5918
       }
     },
     "error": null,
     "attempts": [
       {
-        "sql": "SELECT\n    repo_name,\n    count() AS invitations_accepted\nFROM github_events\nWHERE event_type = 'MemberEvent' AND action = 'added'\nGROUP BY repo_name\nORDER BY invitations_accepted DESC\nLIMIT 10",
+        "sql": "SELECT\n    repo_name,\n    count() AS total_issue_comments\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY total_issue_comments DESC\nLIMIT 10",
         "sqlResult": {
           "success": true,
           "data": [
             {
-              "repo_name": "/",
-              "invitations_accepted": 2995
+              "repo_name": "rails/rails",
+              "total_issue_comments": 14225
             },
             {
-              "repo_name": "astro/gitpop",
-              "invitations_accepted": 935
+              "repo_name": "contao/test",
+              "total_issue_comments": 13481
             },
             {
-              "repo_name": "jeresig/thunderhub",
-              "invitations_accepted": 445
+              "repo_name": "mxcl/homebrew",
+              "total_issue_comments": 12690
             },
             {
-              "repo_name": "matthewmccullough/hellogitworld",
-              "invitations_accepted": 128
+              "repo_name": "contao/import",
+              "total_issue_comments": 12494
             },
             {
-              "repo_name": "buhtip/buhtip-repo",
-              "invitations_accepted": 55
+              "repo_name": "symfony/symfony",
+              "total_issue_comments": 7375
             },
             {
-              "repo_name": "braitsch/client1",
-              "invitations_accepted": 44
+              "repo_name": "jquery/jquery-mobile",
+              "total_issue_comments": 6944
             },
             {
-              "repo_name": "societies/SOCIETIES-Platform",
-              "invitations_accepted": 37
+              "repo_name": "joyent/node",
+              "total_issue_comments": 6562
             },
             {
-              "repo_name": "dm4/IntroCS-2011-Fall-Homework6",
-              "invitations_accepted": 32
+              "repo_name": "sympy/sympy",
+              "total_issue_comments": 6532
             },
             {
-              "repo_name": "rperlinski/zpi-basic",
-              "invitations_accepted": 32
+              "repo_name": "spotweb/spotweb",
+              "total_issue_comments": 6313
             },
             {
-              "repo_name": "tjhickey724/OctaveBat",
-              "invitations_accepted": 32
+              "repo_name": "diaspora/diaspora",
+              "total_issue_comments": 5164
             }
           ],
           "meta": [
@@ -1184,34 +504,34 @@
               "type": "LowCardinality(String)"
             },
             {
-              "name": "invitations_accepted",
+              "name": "total_issue_comments",
               "type": "UInt64"
             }
           ],
           "statistics": {
-            "elapsed": 0.031583622,
-            "rows_read": 459796,
-            "bytes_read": 803860
+            "elapsed": 0.025321267,
+            "rows_read": 1250141,
+            "bytes_read": 3081893
           },
-          "executionTime": 0.137,
-          "requestId": "01JTJMWJ467EQC2M2T73KZSBEW",
-          "length": 632
+          "executionTime": 0.081,
+          "requestId": "01JTMWN5FK6044WEP06QX3YRMK",
+          "length": 592
         },
-        "name": "pipe_31.pipe",
+        "name": "pipe_39.pipe",
         "question": {
-          "name": "pipe_31.pipe",
-          "content": "DESCRIPTION >\n    top 10 Repositories with the maximum number of accepted invitations\n\nNODE endpoint\nSQL >\n    SELECT repo_name, sum(event_type = 'MemberEvent') AS invitations, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('MemberEvent', 'WatchEvent') GROUP BY repo_name HAVING stars >= 100 ORDER BY invitations DESC LIMIT 10\n\nTYPE endpoint",
-          "question": "top 10 Repositories with the maximum number of accepted invitations"
+          "name": "pipe_39.pipe",
+          "content": "DESCRIPTION >\n    Find top 10 repositories by the most commented issues\n\nNODE endpoint\nSQL >\n    SELECT\n        repo_name,\n        number,\n        count() AS comments\n    FROM github_events\n    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created')\n    GROUP BY\n        repo_name,\n        number\n    ORDER BY count() DESC\n    LIMIT 10\n\nTYPE endpoint",
+          "question": "Find top 10 repositories by the most commented issues"
         },
         "model": "gemini-2.5-pro-preview-03-25",
         "provider": "google",
         "metrics": {
-          "timeToFirstToken": 2.391,
-          "totalDuration": 2.563,
+          "timeToFirstToken": 15.057,
+          "totalDuration": 15.067,
           "tokens": {
-            "promptTokens": 4616,
-            "completionTokens": 152,
-            "totalTokens": 4768
+            "promptTokens": 4614,
+            "completionTokens": 1304,
+            "totalTokens": 5918
           }
         },
         "error": null
@@ -1219,49 +539,49 @@
     ]
   },
   {
-    "sql": "SELECT repo_name, COUNT(*) as num_invitations \nFROM github_events \nWHERE event_type = 'MemberEvent' AND action = 'added' \nGROUP BY repo_name \nORDER BY num_invitations DESC \nLIMIT 10",
+    "sql": "SELECT repo_name, COUNT(*) as num_commented_issues \nFROM github_events \nWHERE event_type = 'IssuesEvent' AND action = 'opened' AND comments > 0 \nGROUP BY repo_name \nORDER BY num_commented_issues DESC \nLIMIT 10",
     "sqlResult": {
       "success": true,
       "data": [
         {
-          "repo_name": "/",
-          "num_invitations": 2995
+          "repo_name": "react-navigation/react-navigation",
+          "num_commented_issues": 1266
         },
         {
-          "repo_name": "astro/gitpop",
-          "num_invitations": 935
+          "repo_name": "contao/import",
+          "num_commented_issues": 1009
         },
         {
-          "repo_name": "jeresig/thunderhub",
-          "num_invitations": 445
+          "repo_name": "contao/test",
+          "num_commented_issues": 820
         },
         {
-          "repo_name": "matthewmccullough/hellogitworld",
-          "num_invitations": 128
+          "repo_name": "radareorg/ideas",
+          "num_commented_issues": 624
         },
         {
-          "repo_name": "buhtip/buhtip-repo",
-          "num_invitations": 55
+          "repo_name": "schemaorg/suggestions-questions-brainstorming",
+          "num_commented_issues": 528
         },
         {
-          "repo_name": "braitsch/client1",
-          "num_invitations": 44
+          "repo_name": "rubygems/rubygems",
+          "num_commented_issues": 483
         },
         {
-          "repo_name": "societies/SOCIETIES-Platform",
-          "num_invitations": 37
+          "repo_name": "artemp/mapnik",
+          "num_commented_issues": 318
         },
         {
-          "repo_name": "dm4/IntroCS-2011-Fall-Homework6",
-          "num_invitations": 32
+          "repo_name": "react-navigation/react-navigation-4",
+          "num_commented_issues": 296
         },
         {
-          "repo_name": "rperlinski/zpi-basic",
-          "num_invitations": 32
+          "repo_name": "mapnik-org/mapnik",
+          "num_commented_issues": 276
         },
         {
-          "repo_name": "tjhickey724/OctaveBat",
-          "num_invitations": 32
+          "repo_name": "contao/issues",
+          "num_commented_issues": 274
         }
       ],
       "meta": [
@@ -1270,82 +590,82 @@
           "type": "LowCardinality(String)"
         },
         {
-          "name": "num_invitations",
+          "name": "num_commented_issues",
           "type": "UInt64"
         }
       ],
       "statistics": {
-        "elapsed": 0.032982396,
-        "rows_read": 459796,
-        "bytes_read": 803860
+        "elapsed": 0.062305512,
+        "rows_read": 15470766,
+        "bytes_read": 110295455
       },
-      "executionTime": 0.114,
-      "requestId": "01JTJMWPT2DGHSAJYFVVQTF6M4",
-      "length": 582
+      "executionTime": 0.113,
+      "requestId": "01JTMWN9M4SW9SGSS7NR12PJH5",
+      "length": 655
     },
-    "name": "pipe_31.pipe",
+    "name": "pipe_39.pipe",
     "question": {
-      "name": "pipe_31.pipe",
-      "content": "DESCRIPTION >\n    top 10 Repositories with the maximum number of accepted invitations\n\nNODE endpoint\nSQL >\n    SELECT repo_name, sum(event_type = 'MemberEvent') AS invitations, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('MemberEvent', 'WatchEvent') GROUP BY repo_name HAVING stars >= 100 ORDER BY invitations DESC LIMIT 10\n\nTYPE endpoint",
-      "question": "top 10 Repositories with the maximum number of accepted invitations"
+      "name": "pipe_39.pipe",
+      "content": "DESCRIPTION >\n    Find top 10 repositories by the most commented issues\n\nNODE endpoint\nSQL >\n    SELECT\n        repo_name,\n        number,\n        count() AS comments\n    FROM github_events\n    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created')\n    GROUP BY\n        repo_name,\n        number\n    ORDER BY count() DESC\n    LIMIT 10\n\nTYPE endpoint",
+      "question": "Find top 10 repositories by the most commented issues"
     },
     "model": "llama-4-maverick",
     "provider": "meta-llama",
     "metrics": {
-      "timeToFirstToken": 1.052,
-      "totalDuration": 2.165,
+      "timeToFirstToken": 0.992,
+      "totalDuration": 1.653,
       "tokens": {
-        "promptTokens": 4125,
-        "completionTokens": 48,
-        "totalTokens": 4173
+        "promptTokens": 4123,
+        "completionTokens": 55,
+        "totalTokens": 4178
       }
     },
     "error": null,
     "attempts": [
       {
-        "sql": "SELECT repo_name, COUNT(*) as num_invitations \nFROM github_events \nWHERE event_type = 'MemberEvent' AND action = 'added' \nGROUP BY repo_name \nORDER BY num_invitations DESC \nLIMIT 10",
+        "sql": "SELECT repo_name, COUNT(*) as num_commented_issues \nFROM github_events \nWHERE event_type = 'IssuesEvent' AND action = 'opened' AND comments > 0 \nGROUP BY repo_name \nORDER BY num_commented_issues DESC \nLIMIT 10",
         "sqlResult": {
           "success": true,
           "data": [
             {
-              "repo_name": "/",
-              "num_invitations": 2995
+              "repo_name": "react-navigation/react-navigation",
+              "num_commented_issues": 1266
             },
             {
-              "repo_name": "astro/gitpop",
-              "num_invitations": 935
+              "repo_name": "contao/import",
+              "num_commented_issues": 1009
             },
             {
-              "repo_name": "jeresig/thunderhub",
-              "num_invitations": 445
+              "repo_name": "contao/test",
+              "num_commented_issues": 820
             },
             {
-              "repo_name": "matthewmccullough/hellogitworld",
-              "num_invitations": 128
+              "repo_name": "radareorg/ideas",
+              "num_commented_issues": 624
             },
             {
-              "repo_name": "buhtip/buhtip-repo",
-              "num_invitations": 55
+              "repo_name": "schemaorg/suggestions-questions-brainstorming",
+              "num_commented_issues": 528
             },
             {
-              "repo_name": "braitsch/client1",
-              "num_invitations": 44
+              "repo_name": "rubygems/rubygems",
+              "num_commented_issues": 483
             },
             {
-              "repo_name": "societies/SOCIETIES-Platform",
-              "num_invitations": 37
+              "repo_name": "artemp/mapnik",
+              "num_commented_issues": 318
             },
             {
-              "repo_name": "dm4/IntroCS-2011-Fall-Homework6",
-              "num_invitations": 32
+              "repo_name": "react-navigation/react-navigation-4",
+              "num_commented_issues": 296
             },
             {
-              "repo_name": "rperlinski/zpi-basic",
-              "num_invitations": 32
+              "repo_name": "mapnik-org/mapnik",
+              "num_commented_issues": 276
             },
             {
-              "repo_name": "tjhickey724/OctaveBat",
-              "num_invitations": 32
+              "repo_name": "contao/issues",
+              "num_commented_issues": 274
             }
           ],
           "meta": [
@@ -1354,34 +674,34 @@
               "type": "LowCardinality(String)"
             },
             {
-              "name": "num_invitations",
+              "name": "num_commented_issues",
               "type": "UInt64"
             }
           ],
           "statistics": {
-            "elapsed": 0.032982396,
-            "rows_read": 459796,
-            "bytes_read": 803860
+            "elapsed": 0.062305512,
+            "rows_read": 15470766,
+            "bytes_read": 110295455
           },
-          "executionTime": 0.114,
-          "requestId": "01JTJMWPT2DGHSAJYFVVQTF6M4",
-          "length": 582
+          "executionTime": 0.113,
+          "requestId": "01JTMWN9M4SW9SGSS7NR12PJH5",
+          "length": 655
         },
-        "name": "pipe_31.pipe",
+        "name": "pipe_39.pipe",
         "question": {
-          "name": "pipe_31.pipe",
-          "content": "DESCRIPTION >\n    top 10 Repositories with the maximum number of accepted invitations\n\nNODE endpoint\nSQL >\n    SELECT repo_name, sum(event_type = 'MemberEvent') AS invitations, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('MemberEvent', 'WatchEvent') GROUP BY repo_name HAVING stars >= 100 ORDER BY invitations DESC LIMIT 10\n\nTYPE endpoint",
-          "question": "top 10 Repositories with the maximum number of accepted invitations"
+          "name": "pipe_39.pipe",
+          "content": "DESCRIPTION >\n    Find top 10 repositories by the most commented issues\n\nNODE endpoint\nSQL >\n    SELECT\n        repo_name,\n        number,\n        count() AS comments\n    FROM github_events\n    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created')\n    GROUP BY\n        repo_name,\n        number\n    ORDER BY count() DESC\n    LIMIT 10\n\nTYPE endpoint",
+          "question": "Find top 10 repositories by the most commented issues"
         },
         "model": "llama-4-maverick",
         "provider": "meta-llama",
         "metrics": {
-          "timeToFirstToken": 1.052,
-          "totalDuration": 2.165,
+          "timeToFirstToken": 0.992,
+          "totalDuration": 1.653,
           "tokens": {
-            "promptTokens": 4125,
-            "completionTokens": 48,
-            "totalTokens": 4173
+            "promptTokens": 4123,
+            "completionTokens": 55,
+            "totalTokens": 4178
           }
         },
         "error": null
@@ -1389,49 +709,49 @@
     ]
   },
   {
-    "sql": "SELECT \n  repo_name, \n  COUNT(*) as num_invitations\nFROM \n  github_events\nWHERE \n  event_type = 'MemberEvent' AND \n  action = 'added'\nGROUP BY \n  repo_name\nORDER BY \n  num_invitations DESC\nLIMIT 10",
+    "sql": "SELECT \n  repo_name,\n  SUM(comments) AS total_comments\nFROM \n  github_events\nWHERE \n  event_type = 'IssuesEvent' AND action = 'opened'\nGROUP BY \n  repo_name\nORDER BY \n  total_comments DESC\nLIMIT 10",
     "sqlResult": {
       "success": true,
       "data": [
         {
-          "repo_name": "/",
-          "num_invitations": 2995
+          "repo_name": "react-navigation/react-navigation",
+          "total_comments": 5118
         },
         {
-          "repo_name": "astro/gitpop",
-          "num_invitations": 935
+          "repo_name": "radareorg/ideas",
+          "total_comments": 3330
         },
         {
-          "repo_name": "jeresig/thunderhub",
-          "num_invitations": 445
+          "repo_name": "rubygems/rubygems",
+          "total_comments": 2844
         },
         {
-          "repo_name": "matthewmccullough/hellogitworld",
-          "num_invitations": 128
+          "repo_name": "schemaorg/suggestions-questions-brainstorming",
+          "total_comments": 2604
         },
         {
-          "repo_name": "buhtip/buhtip-repo",
-          "num_invitations": 55
+          "repo_name": "contao/import",
+          "total_comments": 1917
         },
         {
-          "repo_name": "braitsch/client1",
-          "num_invitations": 44
+          "repo_name": "contao/test",
+          "total_comments": 1142
         },
         {
-          "repo_name": "societies/SOCIETIES-Platform",
-          "num_invitations": 37
+          "repo_name": "pol-is/polisServer",
+          "total_comments": 1094
         },
         {
-          "repo_name": "dm4/IntroCS-2011-Fall-Homework6",
-          "num_invitations": 32
+          "repo_name": "react-navigation/react-navigation-4",
+          "total_comments": 1022
         },
         {
-          "repo_name": "rperlinski/zpi-basic",
-          "num_invitations": 32
+          "repo_name": "renovatebot/renovate",
+          "total_comments": 710
         },
         {
-          "repo_name": "tjhickey724/OctaveBat",
-          "num_invitations": 32
+          "repo_name": "rabbitmq/rabbitmq-server",
+          "total_comments": 606
         }
       ],
       "meta": [
@@ -1440,82 +760,82 @@
           "type": "LowCardinality(String)"
         },
         {
-          "name": "num_invitations",
+          "name": "total_comments",
           "type": "UInt64"
         }
       ],
       "statistics": {
-        "elapsed": 0.032004187,
-        "rows_read": 459796,
-        "bytes_read": 803860
+        "elapsed": 0.096918616,
+        "rows_read": 15470766,
+        "bytes_read": 122065283
       },
-      "executionTime": 0.217,
-      "requestId": "01JTJMWV4ZH7WXBJSF6RRFNAT2",
-      "length": 582
+      "executionTime": 0.179,
+      "requestId": "01JTMWNDAX9N5ZHT4MYGEA04S6",
+      "length": 620
     },
-    "name": "pipe_31.pipe",
+    "name": "pipe_39.pipe",
     "question": {
-      "name": "pipe_31.pipe",
-      "content": "DESCRIPTION >\n    top 10 Repositories with the maximum number of accepted invitations\n\nNODE endpoint\nSQL >\n    SELECT repo_name, sum(event_type = 'MemberEvent') AS invitations, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('MemberEvent', 'WatchEvent') GROUP BY repo_name HAVING stars >= 100 ORDER BY invitations DESC LIMIT 10\n\nTYPE endpoint",
-      "question": "top 10 Repositories with the maximum number of accepted invitations"
+      "name": "pipe_39.pipe",
+      "content": "DESCRIPTION >\n    Find top 10 repositories by the most commented issues\n\nNODE endpoint\nSQL >\n    SELECT\n        repo_name,\n        number,\n        count() AS comments\n    FROM github_events\n    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created')\n    GROUP BY\n        repo_name,\n        number\n    ORDER BY count() DESC\n    LIMIT 10\n\nTYPE endpoint",
+      "question": "Find top 10 repositories by the most commented issues"
     },
     "model": "llama-4-scout",
     "provider": "meta-llama",
     "metrics": {
-      "timeToFirstToken": 0.968,
-      "totalDuration": 1.778,
+      "timeToFirstToken": 0.606,
+      "totalDuration": 1.174,
       "tokens": {
-        "promptTokens": 4125,
-        "completionTokens": 62,
-        "totalTokens": 4187
+        "promptTokens": 4123,
+        "completionTokens": 56,
+        "totalTokens": 4179
       }
     },
     "error": null,
     "attempts": [
       {
-        "sql": "SELECT \n  repo_name, \n  COUNT(*) as num_invitations\nFROM \n  github_events\nWHERE \n  event_type = 'MemberEvent' AND \n  action = 'added'\nGROUP BY \n  repo_name\nORDER BY \n  num_invitations DESC\nLIMIT 10",
+        "sql": "SELECT \n  repo_name,\n  SUM(comments) AS total_comments\nFROM \n  github_events\nWHERE \n  event_type = 'IssuesEvent' AND action = 'opened'\nGROUP BY \n  repo_name\nORDER BY \n  total_comments DESC\nLIMIT 10",
         "sqlResult": {
           "success": true,
           "data": [
             {
-              "repo_name": "/",
-              "num_invitations": 2995
+              "repo_name": "react-navigation/react-navigation",
+              "total_comments": 5118
             },
             {
-              "repo_name": "astro/gitpop",
-              "num_invitations": 935
+              "repo_name": "radareorg/ideas",
+              "total_comments": 3330
             },
             {
-              "repo_name": "jeresig/thunderhub",
-              "num_invitations": 445
+              "repo_name": "rubygems/rubygems",
+              "total_comments": 2844
             },
             {
-              "repo_name": "matthewmccullough/hellogitworld",
-              "num_invitations": 128
+              "repo_name": "schemaorg/suggestions-questions-brainstorming",
+              "total_comments": 2604
             },
             {
-              "repo_name": "buhtip/buhtip-repo",
-              "num_invitations": 55
+              "repo_name": "contao/import",
+              "total_comments": 1917
             },
             {
-              "repo_name": "braitsch/client1",
-              "num_invitations": 44
+              "repo_name": "contao/test",
+              "total_comments": 1142
             },
             {
-              "repo_name": "societies/SOCIETIES-Platform",
-              "num_invitations": 37
+              "repo_name": "pol-is/polisServer",
+              "total_comments": 1094
             },
             {
-              "repo_name": "dm4/IntroCS-2011-Fall-Homework6",
-              "num_invitations": 32
+              "repo_name": "react-navigation/react-navigation-4",
+              "total_comments": 1022
             },
             {
-              "repo_name": "rperlinski/zpi-basic",
-              "num_invitations": 32
+              "repo_name": "renovatebot/renovate",
+              "total_comments": 710
             },
             {
-              "repo_name": "tjhickey724/OctaveBat",
-              "num_invitations": 32
+              "repo_name": "rabbitmq/rabbitmq-server",
+              "total_comments": 606
             }
           ],
           "meta": [
@@ -1524,34 +844,34 @@
               "type": "LowCardinality(String)"
             },
             {
-              "name": "num_invitations",
+              "name": "total_comments",
               "type": "UInt64"
             }
           ],
           "statistics": {
-            "elapsed": 0.032004187,
-            "rows_read": 459796,
-            "bytes_read": 803860
+            "elapsed": 0.096918616,
+            "rows_read": 15470766,
+            "bytes_read": 122065283
           },
-          "executionTime": 0.217,
-          "requestId": "01JTJMWV4ZH7WXBJSF6RRFNAT2",
-          "length": 582
+          "executionTime": 0.179,
+          "requestId": "01JTMWNDAX9N5ZHT4MYGEA04S6",
+          "length": 620
         },
-        "name": "pipe_31.pipe",
+        "name": "pipe_39.pipe",
         "question": {
-          "name": "pipe_31.pipe",
-          "content": "DESCRIPTION >\n    top 10 Repositories with the maximum number of accepted invitations\n\nNODE endpoint\nSQL >\n    SELECT repo_name, sum(event_type = 'MemberEvent') AS invitations, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('MemberEvent', 'WatchEvent') GROUP BY repo_name HAVING stars >= 100 ORDER BY invitations DESC LIMIT 10\n\nTYPE endpoint",
-          "question": "top 10 Repositories with the maximum number of accepted invitations"
+          "name": "pipe_39.pipe",
+          "content": "DESCRIPTION >\n    Find top 10 repositories by the most commented issues\n\nNODE endpoint\nSQL >\n    SELECT\n        repo_name,\n        number,\n        count() AS comments\n    FROM github_events\n    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created')\n    GROUP BY\n        repo_name,\n        number\n    ORDER BY count() DESC\n    LIMIT 10\n\nTYPE endpoint",
+          "question": "Find top 10 repositories by the most commented issues"
         },
         "model": "llama-4-scout",
         "provider": "meta-llama",
         "metrics": {
-          "timeToFirstToken": 0.968,
-          "totalDuration": 1.778,
+          "timeToFirstToken": 0.606,
+          "totalDuration": 1.174,
           "tokens": {
-            "promptTokens": 4125,
-            "completionTokens": 62,
-            "totalTokens": 4187
+            "promptTokens": 4123,
+            "completionTokens": 56,
+            "totalTokens": 4179
           }
         },
         "error": null
@@ -1559,87 +879,169 @@
     ]
   },
   {
-    "sql": "SELECT \n  repo_name, \n  count() as num_invitations\nFROM \n  github_events\nWHERE \n  event_type = 'MemberEvent' \n  AND action = 'accepted'\nGROUP BY \n  repo_name\nORDER BY \n  num_invitations DESC\nLIMIT 10",
+    "sql": "SELECT repo_name, count() as num_comments \nFROM github_events \nWHERE event_type = 'IssueCommentEvent' \nGROUP BY repo_name \nORDER BY num_comments DESC \nLIMIT 10",
     "sqlResult": {
       "success": true,
-      "data": [],
+      "data": [
+        {
+          "repo_name": "rails/rails",
+          "num_comments": 14225
+        },
+        {
+          "repo_name": "contao/test",
+          "num_comments": 13481
+        },
+        {
+          "repo_name": "mxcl/homebrew",
+          "num_comments": 12690
+        },
+        {
+          "repo_name": "contao/import",
+          "num_comments": 12494
+        },
+        {
+          "repo_name": "symfony/symfony",
+          "num_comments": 7375
+        },
+        {
+          "repo_name": "jquery/jquery-mobile",
+          "num_comments": 6944
+        },
+        {
+          "repo_name": "joyent/node",
+          "num_comments": 6562
+        },
+        {
+          "repo_name": "sympy/sympy",
+          "num_comments": 6532
+        },
+        {
+          "repo_name": "spotweb/spotweb",
+          "num_comments": 6313
+        },
+        {
+          "repo_name": "diaspora/diaspora",
+          "num_comments": 5164
+        }
+      ],
       "meta": [
         {
           "name": "repo_name",
           "type": "LowCardinality(String)"
         },
         {
-          "name": "num_invitations",
+          "name": "num_comments",
           "type": "UInt64"
         }
       ],
       "statistics": {
-        "elapsed": 0.014686032,
-        "rows_read": 459796,
-        "bytes_read": 574484
+        "elapsed": 0.027132847,
+        "rows_read": 1250141,
+        "bytes_read": 3081893
       },
-      "executionTime": 0.208,
-      "requestId": "01JTJMWZTQG3F30VB5CAW2GYJ9",
-      "length": 2
+      "executionTime": 0.076,
+      "requestId": "01JTMWNJKKFQB617AD11K402HG",
+      "length": 512
     },
-    "name": "pipe_31.pipe",
+    "name": "pipe_39.pipe",
     "question": {
-      "name": "pipe_31.pipe",
-      "content": "DESCRIPTION >\n    top 10 Repositories with the maximum number of accepted invitations\n\nNODE endpoint\nSQL >\n    SELECT repo_name, sum(event_type = 'MemberEvent') AS invitations, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('MemberEvent', 'WatchEvent') GROUP BY repo_name HAVING stars >= 100 ORDER BY invitations DESC LIMIT 10\n\nTYPE endpoint",
-      "question": "top 10 Repositories with the maximum number of accepted invitations"
+      "name": "pipe_39.pipe",
+      "content": "DESCRIPTION >\n    Find top 10 repositories by the most commented issues\n\nNODE endpoint\nSQL >\n    SELECT\n        repo_name,\n        number,\n        count() AS comments\n    FROM github_events\n    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created')\n    GROUP BY\n        repo_name,\n        number\n    ORDER BY count() DESC\n    LIMIT 10\n\nTYPE endpoint",
+      "question": "Find top 10 repositories by the most commented issues"
     },
     "model": "llama-3.3-70b-instruct",
     "provider": "meta-llama",
     "metrics": {
-      "timeToFirstToken": 0.789,
-      "totalDuration": 2.086,
+      "timeToFirstToken": 1.63,
+      "totalDuration": 2.72,
       "tokens": {
-        "promptTokens": 4169,
-        "completionTokens": 59,
-        "totalTokens": 4228
+        "promptTokens": 4126,
+        "completionTokens": 38,
+        "totalTokens": 4164
       }
     },
     "error": null,
     "attempts": [
       {
-        "sql": "SELECT \n  repo_name, \n  count() as num_invitations\nFROM \n  github_events\nWHERE \n  event_type = 'MemberEvent' \n  AND action = 'accepted'\nGROUP BY \n  repo_name\nORDER BY \n  num_invitations DESC\nLIMIT 10",
+        "sql": "SELECT repo_name, count() as num_comments \nFROM github_events \nWHERE event_type = 'IssueCommentEvent' \nGROUP BY repo_name \nORDER BY num_comments DESC \nLIMIT 10",
         "sqlResult": {
           "success": true,
-          "data": [],
+          "data": [
+            {
+              "repo_name": "rails/rails",
+              "num_comments": 14225
+            },
+            {
+              "repo_name": "contao/test",
+              "num_comments": 13481
+            },
+            {
+              "repo_name": "mxcl/homebrew",
+              "num_comments": 12690
+            },
+            {
+              "repo_name": "contao/import",
+              "num_comments": 12494
+            },
+            {
+              "repo_name": "symfony/symfony",
+              "num_comments": 7375
+            },
+            {
+              "repo_name": "jquery/jquery-mobile",
+              "num_comments": 6944
+            },
+            {
+              "repo_name": "joyent/node",
+              "num_comments": 6562
+            },
+            {
+              "repo_name": "sympy/sympy",
+              "num_comments": 6532
+            },
+            {
+              "repo_name": "spotweb/spotweb",
+              "num_comments": 6313
+            },
+            {
+              "repo_name": "diaspora/diaspora",
+              "num_comments": 5164
+            }
+          ],
           "meta": [
             {
               "name": "repo_name",
               "type": "LowCardinality(String)"
             },
             {
-              "name": "num_invitations",
+              "name": "num_comments",
               "type": "UInt64"
             }
           ],
           "statistics": {
-            "elapsed": 0.014686032,
-            "rows_read": 459796,
-            "bytes_read": 574484
+            "elapsed": 0.027132847,
+            "rows_read": 1250141,
+            "bytes_read": 3081893
           },
-          "executionTime": 0.208,
-          "requestId": "01JTJMWZTQG3F30VB5CAW2GYJ9",
-          "length": 2
+          "executionTime": 0.076,
+          "requestId": "01JTMWNJKKFQB617AD11K402HG",
+          "length": 512
         },
-        "name": "pipe_31.pipe",
+        "name": "pipe_39.pipe",
         "question": {
-          "name": "pipe_31.pipe",
-          "content": "DESCRIPTION >\n    top 10 Repositories with the maximum number of accepted invitations\n\nNODE endpoint\nSQL >\n    SELECT repo_name, sum(event_type = 'MemberEvent') AS invitations, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('MemberEvent', 'WatchEvent') GROUP BY repo_name HAVING stars >= 100 ORDER BY invitations DESC LIMIT 10\n\nTYPE endpoint",
-          "question": "top 10 Repositories with the maximum number of accepted invitations"
+          "name": "pipe_39.pipe",
+          "content": "DESCRIPTION >\n    Find top 10 repositories by the most commented issues\n\nNODE endpoint\nSQL >\n    SELECT\n        repo_name,\n        number,\n        count() AS comments\n    FROM github_events\n    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created')\n    GROUP BY\n        repo_name,\n        number\n    ORDER BY count() DESC\n    LIMIT 10\n\nTYPE endpoint",
+          "question": "Find top 10 repositories by the most commented issues"
         },
         "model": "llama-3.3-70b-instruct",
         "provider": "meta-llama",
         "metrics": {
-          "timeToFirstToken": 0.789,
-          "totalDuration": 2.086,
+          "timeToFirstToken": 1.63,
+          "totalDuration": 2.72,
           "tokens": {
-            "promptTokens": 4169,
-            "completionTokens": 59,
-            "totalTokens": 4228
+            "promptTokens": 4126,
+            "completionTokens": 38,
+            "totalTokens": 4164
           }
         },
         "error": null
@@ -1647,687 +1049,7 @@
     ]
   },
   {
-    "sql": "\nSELECT\n    repo_name,\n    COUNT(assignees) AS accepted_invitations\nFROM\n    github_events\nWHERE\n    event_type = 'MemberEvent'\n    AND action = 'added'\nGROUP BY\n    repo_name\nORDER BY\n    accepted_invitations DESC\nLIMIT 10\n",
-    "sqlResult": {
-      "success": true,
-      "data": [
-        {
-          "repo_name": "/",
-          "accepted_invitations": 2995
-        },
-        {
-          "repo_name": "astro/gitpop",
-          "accepted_invitations": 935
-        },
-        {
-          "repo_name": "jeresig/thunderhub",
-          "accepted_invitations": 445
-        },
-        {
-          "repo_name": "matthewmccullough/hellogitworld",
-          "accepted_invitations": 128
-        },
-        {
-          "repo_name": "buhtip/buhtip-repo",
-          "accepted_invitations": 55
-        },
-        {
-          "repo_name": "braitsch/client1",
-          "accepted_invitations": 44
-        },
-        {
-          "repo_name": "societies/SOCIETIES-Platform",
-          "accepted_invitations": 37
-        },
-        {
-          "repo_name": "dm4/IntroCS-2011-Fall-Homework6",
-          "accepted_invitations": 32
-        },
-        {
-          "repo_name": "rperlinski/zpi-basic",
-          "accepted_invitations": 32
-        },
-        {
-          "repo_name": "tjhickey724/OctaveBat",
-          "accepted_invitations": 32
-        }
-      ],
-      "meta": [
-        {
-          "name": "repo_name",
-          "type": "LowCardinality(String)"
-        },
-        {
-          "name": "accepted_invitations",
-          "type": "UInt64"
-        }
-      ],
-      "statistics": {
-        "elapsed": 0.054326766,
-        "rows_read": 459796,
-        "bytes_read": 1721364
-      },
-      "executionTime": 0.22,
-      "requestId": "01JTJMX3FAZWSK3XDX6EBDMC2R",
-      "length": 632
-    },
-    "name": "pipe_31.pipe",
-    "question": {
-      "name": "pipe_31.pipe",
-      "content": "DESCRIPTION >\n    top 10 Repositories with the maximum number of accepted invitations\n\nNODE endpoint\nSQL >\n    SELECT repo_name, sum(event_type = 'MemberEvent') AS invitations, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('MemberEvent', 'WatchEvent') GROUP BY repo_name HAVING stars >= 100 ORDER BY invitations DESC LIMIT 10\n\nTYPE endpoint",
-      "question": "top 10 Repositories with the maximum number of accepted invitations"
-    },
-    "model": "ministral-8b",
-    "provider": "mistralai",
-    "metrics": {
-      "timeToFirstToken": 0.472,
-      "totalDuration": 1.012,
-      "tokens": {
-        "promptTokens": 4508,
-        "completionTokens": 68,
-        "totalTokens": 4576
-      }
-    },
-    "error": null,
-    "attempts": [
-      {
-        "sql": "\nSELECT\n    repo_name,\n    COUNT(assignees) AS accepted_invitations\nFROM\n    github_events\nWHERE\n    event_type = 'MemberEvent'\n    AND action = 'added'\nGROUP BY\n    repo_name\nORDER BY\n    accepted_invitations DESC\nLIMIT 10\n",
-        "sqlResult": {
-          "success": true,
-          "data": [
-            {
-              "repo_name": "/",
-              "accepted_invitations": 2995
-            },
-            {
-              "repo_name": "astro/gitpop",
-              "accepted_invitations": 935
-            },
-            {
-              "repo_name": "jeresig/thunderhub",
-              "accepted_invitations": 445
-            },
-            {
-              "repo_name": "matthewmccullough/hellogitworld",
-              "accepted_invitations": 128
-            },
-            {
-              "repo_name": "buhtip/buhtip-repo",
-              "accepted_invitations": 55
-            },
-            {
-              "repo_name": "braitsch/client1",
-              "accepted_invitations": 44
-            },
-            {
-              "repo_name": "societies/SOCIETIES-Platform",
-              "accepted_invitations": 37
-            },
-            {
-              "repo_name": "dm4/IntroCS-2011-Fall-Homework6",
-              "accepted_invitations": 32
-            },
-            {
-              "repo_name": "rperlinski/zpi-basic",
-              "accepted_invitations": 32
-            },
-            {
-              "repo_name": "tjhickey724/OctaveBat",
-              "accepted_invitations": 32
-            }
-          ],
-          "meta": [
-            {
-              "name": "repo_name",
-              "type": "LowCardinality(String)"
-            },
-            {
-              "name": "accepted_invitations",
-              "type": "UInt64"
-            }
-          ],
-          "statistics": {
-            "elapsed": 0.054326766,
-            "rows_read": 459796,
-            "bytes_read": 1721364
-          },
-          "executionTime": 0.22,
-          "requestId": "01JTJMX3FAZWSK3XDX6EBDMC2R",
-          "length": 632
-        },
-        "name": "pipe_31.pipe",
-        "question": {
-          "name": "pipe_31.pipe",
-          "content": "DESCRIPTION >\n    top 10 Repositories with the maximum number of accepted invitations\n\nNODE endpoint\nSQL >\n    SELECT repo_name, sum(event_type = 'MemberEvent') AS invitations, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('MemberEvent', 'WatchEvent') GROUP BY repo_name HAVING stars >= 100 ORDER BY invitations DESC LIMIT 10\n\nTYPE endpoint",
-          "question": "top 10 Repositories with the maximum number of accepted invitations"
-        },
-        "model": "ministral-8b",
-        "provider": "mistralai",
-        "metrics": {
-          "timeToFirstToken": 0.472,
-          "totalDuration": 1.012,
-          "tokens": {
-            "promptTokens": 4508,
-            "completionTokens": 68,
-            "totalTokens": 4576
-          }
-        },
-        "error": null
-      }
-    ]
-  },
-  {
-    "sql": "SELECT\n  repo_name,\n  count() AS accepted_invitations\nFROM\n  github_events\nWHERE\n  event_type = 'MemberEvent'\n  AND action = 'added'\nGROUP BY\n  repo_name\nORDER BY\n  accepted_invitations DESC\nLIMIT 10",
-    "sqlResult": {
-      "success": true,
-      "data": [
-        {
-          "repo_name": "/",
-          "accepted_invitations": 2995
-        },
-        {
-          "repo_name": "astro/gitpop",
-          "accepted_invitations": 935
-        },
-        {
-          "repo_name": "jeresig/thunderhub",
-          "accepted_invitations": 445
-        },
-        {
-          "repo_name": "matthewmccullough/hellogitworld",
-          "accepted_invitations": 128
-        },
-        {
-          "repo_name": "buhtip/buhtip-repo",
-          "accepted_invitations": 55
-        },
-        {
-          "repo_name": "braitsch/client1",
-          "accepted_invitations": 44
-        },
-        {
-          "repo_name": "societies/SOCIETIES-Platform",
-          "accepted_invitations": 37
-        },
-        {
-          "repo_name": "dm4/IntroCS-2011-Fall-Homework6",
-          "accepted_invitations": 32
-        },
-        {
-          "repo_name": "rperlinski/zpi-basic",
-          "accepted_invitations": 32
-        },
-        {
-          "repo_name": "tjhickey724/OctaveBat",
-          "accepted_invitations": 32
-        }
-      ],
-      "meta": [
-        {
-          "name": "repo_name",
-          "type": "LowCardinality(String)"
-        },
-        {
-          "name": "accepted_invitations",
-          "type": "UInt64"
-        }
-      ],
-      "statistics": {
-        "elapsed": 0.028212958,
-        "rows_read": 459796,
-        "bytes_read": 803860
-      },
-      "executionTime": 0.172,
-      "requestId": "01JTJMX7VMKEY0HPFYZ6XV9JSH",
-      "length": 632
-    },
-    "name": "pipe_31.pipe",
-    "question": {
-      "name": "pipe_31.pipe",
-      "content": "DESCRIPTION >\n    top 10 Repositories with the maximum number of accepted invitations\n\nNODE endpoint\nSQL >\n    SELECT repo_name, sum(event_type = 'MemberEvent') AS invitations, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('MemberEvent', 'WatchEvent') GROUP BY repo_name HAVING stars >= 100 ORDER BY invitations DESC LIMIT 10\n\nTYPE endpoint",
-      "question": "top 10 Repositories with the maximum number of accepted invitations"
-    },
-    "model": "mistral-small-3.1-24b-instruct",
-    "provider": "mistralai",
-    "metrics": {
-      "timeToFirstToken": 0.698,
-      "totalDuration": 1.799,
-      "tokens": {
-        "promptTokens": 4510,
-        "completionTokens": 61,
-        "totalTokens": 4571
-      }
-    },
-    "error": null,
-    "attempts": [
-      {
-        "sql": "SELECT\n  repo_name,\n  count() AS accepted_invitations\nFROM\n  github_events\nWHERE\n  event_type = 'MemberEvent'\n  AND action = 'added'\nGROUP BY\n  repo_name\nORDER BY\n  accepted_invitations DESC\nLIMIT 10",
-        "sqlResult": {
-          "success": true,
-          "data": [
-            {
-              "repo_name": "/",
-              "accepted_invitations": 2995
-            },
-            {
-              "repo_name": "astro/gitpop",
-              "accepted_invitations": 935
-            },
-            {
-              "repo_name": "jeresig/thunderhub",
-              "accepted_invitations": 445
-            },
-            {
-              "repo_name": "matthewmccullough/hellogitworld",
-              "accepted_invitations": 128
-            },
-            {
-              "repo_name": "buhtip/buhtip-repo",
-              "accepted_invitations": 55
-            },
-            {
-              "repo_name": "braitsch/client1",
-              "accepted_invitations": 44
-            },
-            {
-              "repo_name": "societies/SOCIETIES-Platform",
-              "accepted_invitations": 37
-            },
-            {
-              "repo_name": "dm4/IntroCS-2011-Fall-Homework6",
-              "accepted_invitations": 32
-            },
-            {
-              "repo_name": "rperlinski/zpi-basic",
-              "accepted_invitations": 32
-            },
-            {
-              "repo_name": "tjhickey724/OctaveBat",
-              "accepted_invitations": 32
-            }
-          ],
-          "meta": [
-            {
-              "name": "repo_name",
-              "type": "LowCardinality(String)"
-            },
-            {
-              "name": "accepted_invitations",
-              "type": "UInt64"
-            }
-          ],
-          "statistics": {
-            "elapsed": 0.028212958,
-            "rows_read": 459796,
-            "bytes_read": 803860
-          },
-          "executionTime": 0.172,
-          "requestId": "01JTJMX7VMKEY0HPFYZ6XV9JSH",
-          "length": 632
-        },
-        "name": "pipe_31.pipe",
-        "question": {
-          "name": "pipe_31.pipe",
-          "content": "DESCRIPTION >\n    top 10 Repositories with the maximum number of accepted invitations\n\nNODE endpoint\nSQL >\n    SELECT repo_name, sum(event_type = 'MemberEvent') AS invitations, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('MemberEvent', 'WatchEvent') GROUP BY repo_name HAVING stars >= 100 ORDER BY invitations DESC LIMIT 10\n\nTYPE endpoint",
-          "question": "top 10 Repositories with the maximum number of accepted invitations"
-        },
-        "model": "mistral-small-3.1-24b-instruct",
-        "provider": "mistralai",
-        "metrics": {
-          "timeToFirstToken": 0.698,
-          "totalDuration": 1.799,
-          "tokens": {
-            "promptTokens": 4510,
-            "completionTokens": 61,
-            "totalTokens": 4571
-          }
-        },
-        "error": null
-      }
-    ]
-  },
-  {
-    "sql": " SELECT\n  repo_name,\n  COUNT(DISTINCT member_login) AS accepted_invitations\nFROM\n  github_events\nWHERE\n  event_type = 'MemberEvent' AND\n  action = 'added'\nGROUP BY\n  repo_name\nORDER BY\n  accepted_invitations DESC\nLIMIT 10",
-    "sqlResult": {
-      "success": true,
-      "data": [
-        {
-          "repo_name": "/",
-          "accepted_invitations": 2366
-        },
-        {
-          "repo_name": "astro/gitpop",
-          "accepted_invitations": 896
-        },
-        {
-          "repo_name": "jeresig/thunderhub",
-          "accepted_invitations": 431
-        },
-        {
-          "repo_name": "matthewmccullough/hellogitworld",
-          "accepted_invitations": 127
-        },
-        {
-          "repo_name": "societies/SOCIETIES-Platform",
-          "accepted_invitations": 37
-        },
-        {
-          "repo_name": "dm4/IntroCS-2011-Fall-Homework6",
-          "accepted_invitations": 32
-        },
-        {
-          "repo_name": "rperlinski/zpi-basic",
-          "accepted_invitations": 32
-        },
-        {
-          "repo_name": "tjhickey724/OctaveBat",
-          "accepted_invitations": 32
-        },
-        {
-          "repo_name": "gf3/ot-crew.com",
-          "accepted_invitations": 30
-        },
-        {
-          "repo_name": "imagire/TDD-Boot-Camp-Tokyo-for-CPP",
-          "accepted_invitations": 25
-        }
-      ],
-      "meta": [
-        {
-          "name": "repo_name",
-          "type": "LowCardinality(String)"
-        },
-        {
-          "name": "accepted_invitations",
-          "type": "UInt64"
-        }
-      ],
-      "statistics": {
-        "elapsed": 0.052991817,
-        "rows_read": 459796,
-        "bytes_read": 1033236
-      },
-      "executionTime": 0.161,
-      "requestId": "01JTJMXFATMPHVWD2XVQR3R2XE",
-      "length": 648
-    },
-    "name": "pipe_31.pipe",
-    "question": {
-      "name": "pipe_31.pipe",
-      "content": "DESCRIPTION >\n    top 10 Repositories with the maximum number of accepted invitations\n\nNODE endpoint\nSQL >\n    SELECT repo_name, sum(event_type = 'MemberEvent') AS invitations, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('MemberEvent', 'WatchEvent') GROUP BY repo_name HAVING stars >= 100 ORDER BY invitations DESC LIMIT 10\n\nTYPE endpoint",
-      "question": "top 10 Repositories with the maximum number of accepted invitations"
-    },
-    "model": "mistral-nemo",
-    "provider": "mistralai",
-    "metrics": {
-      "timeToFirstToken": 4.848,
-      "totalDuration": 4.946,
-      "tokens": {
-        "promptTokens": 4513,
-        "completionTokens": 66,
-        "totalTokens": 4579
-      }
-    },
-    "error": null,
-    "attempts": [
-      {
-        "sql": " SELECT\n  repo_name,\n  COUNT(DISTINCT member_login) AS accepted_invitations\nFROM\n  github_events\nWHERE\n  event_type = 'MemberEvent' AND\n  action = 'added'\nGROUP BY\n  repo_name\nORDER BY\n  accepted_invitations DESC\nLIMIT 10",
-        "sqlResult": {
-          "success": true,
-          "data": [
-            {
-              "repo_name": "/",
-              "accepted_invitations": 2366
-            },
-            {
-              "repo_name": "astro/gitpop",
-              "accepted_invitations": 896
-            },
-            {
-              "repo_name": "jeresig/thunderhub",
-              "accepted_invitations": 431
-            },
-            {
-              "repo_name": "matthewmccullough/hellogitworld",
-              "accepted_invitations": 127
-            },
-            {
-              "repo_name": "societies/SOCIETIES-Platform",
-              "accepted_invitations": 37
-            },
-            {
-              "repo_name": "dm4/IntroCS-2011-Fall-Homework6",
-              "accepted_invitations": 32
-            },
-            {
-              "repo_name": "rperlinski/zpi-basic",
-              "accepted_invitations": 32
-            },
-            {
-              "repo_name": "tjhickey724/OctaveBat",
-              "accepted_invitations": 32
-            },
-            {
-              "repo_name": "gf3/ot-crew.com",
-              "accepted_invitations": 30
-            },
-            {
-              "repo_name": "imagire/TDD-Boot-Camp-Tokyo-for-CPP",
-              "accepted_invitations": 25
-            }
-          ],
-          "meta": [
-            {
-              "name": "repo_name",
-              "type": "LowCardinality(String)"
-            },
-            {
-              "name": "accepted_invitations",
-              "type": "UInt64"
-            }
-          ],
-          "statistics": {
-            "elapsed": 0.052991817,
-            "rows_read": 459796,
-            "bytes_read": 1033236
-          },
-          "executionTime": 0.161,
-          "requestId": "01JTJMXFATMPHVWD2XVQR3R2XE",
-          "length": 648
-        },
-        "name": "pipe_31.pipe",
-        "question": {
-          "name": "pipe_31.pipe",
-          "content": "DESCRIPTION >\n    top 10 Repositories with the maximum number of accepted invitations\n\nNODE endpoint\nSQL >\n    SELECT repo_name, sum(event_type = 'MemberEvent') AS invitations, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('MemberEvent', 'WatchEvent') GROUP BY repo_name HAVING stars >= 100 ORDER BY invitations DESC LIMIT 10\n\nTYPE endpoint",
-          "question": "top 10 Repositories with the maximum number of accepted invitations"
-        },
-        "model": "mistral-nemo",
-        "provider": "mistralai",
-        "metrics": {
-          "timeToFirstToken": 4.848,
-          "totalDuration": 4.946,
-          "tokens": {
-            "promptTokens": 4513,
-            "completionTokens": 66,
-            "totalTokens": 4579
-          }
-        },
-        "error": null
-      }
-    ]
-  },
-  {
-    "sql": "SELECT repo_name, count() as accepted_invitations\nFROM github_events\nWHERE event_type = 'MemberEvent' AND action = 'added'\nGROUP BY repo_name\nORDER BY accepted_invitations DESC\nLIMIT 10",
-    "sqlResult": {
-      "success": true,
-      "data": [
-        {
-          "repo_name": "/",
-          "accepted_invitations": 2995
-        },
-        {
-          "repo_name": "astro/gitpop",
-          "accepted_invitations": 935
-        },
-        {
-          "repo_name": "jeresig/thunderhub",
-          "accepted_invitations": 445
-        },
-        {
-          "repo_name": "matthewmccullough/hellogitworld",
-          "accepted_invitations": 128
-        },
-        {
-          "repo_name": "buhtip/buhtip-repo",
-          "accepted_invitations": 55
-        },
-        {
-          "repo_name": "braitsch/client1",
-          "accepted_invitations": 44
-        },
-        {
-          "repo_name": "societies/SOCIETIES-Platform",
-          "accepted_invitations": 37
-        },
-        {
-          "repo_name": "dm4/IntroCS-2011-Fall-Homework6",
-          "accepted_invitations": 32
-        },
-        {
-          "repo_name": "rperlinski/zpi-basic",
-          "accepted_invitations": 32
-        },
-        {
-          "repo_name": "tjhickey724/OctaveBat",
-          "accepted_invitations": 32
-        }
-      ],
-      "meta": [
-        {
-          "name": "repo_name",
-          "type": "LowCardinality(String)"
-        },
-        {
-          "name": "accepted_invitations",
-          "type": "UInt64"
-        }
-      ],
-      "statistics": {
-        "elapsed": 0.046519521,
-        "rows_read": 459796,
-        "bytes_read": 803860
-      },
-      "executionTime": 0.12,
-      "requestId": "01JTJMXS0V8G88GHBSEX8KDS9J",
-      "length": 632
-    },
-    "name": "pipe_31.pipe",
-    "question": {
-      "name": "pipe_31.pipe",
-      "content": "DESCRIPTION >\n    top 10 Repositories with the maximum number of accepted invitations\n\nNODE endpoint\nSQL >\n    SELECT repo_name, sum(event_type = 'MemberEvent') AS invitations, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('MemberEvent', 'WatchEvent') GROUP BY repo_name HAVING stars >= 100 ORDER BY invitations DESC LIMIT 10\n\nTYPE endpoint",
-      "question": "top 10 Repositories with the maximum number of accepted invitations"
-    },
-    "model": "gpt-4.1",
-    "provider": "openai",
-    "metrics": {
-      "timeToFirstToken": 3.442,
-      "totalDuration": 7.286,
-      "tokens": {
-        "promptTokens": 4130,
-        "completionTokens": 47,
-        "totalTokens": 4177
-      }
-    },
-    "error": null,
-    "attempts": [
-      {
-        "sql": "SELECT repo_name, count() as accepted_invitations\nFROM github_events\nWHERE event_type = 'MemberEvent' AND action = 'added'\nGROUP BY repo_name\nORDER BY accepted_invitations DESC\nLIMIT 10",
-        "sqlResult": {
-          "success": true,
-          "data": [
-            {
-              "repo_name": "/",
-              "accepted_invitations": 2995
-            },
-            {
-              "repo_name": "astro/gitpop",
-              "accepted_invitations": 935
-            },
-            {
-              "repo_name": "jeresig/thunderhub",
-              "accepted_invitations": 445
-            },
-            {
-              "repo_name": "matthewmccullough/hellogitworld",
-              "accepted_invitations": 128
-            },
-            {
-              "repo_name": "buhtip/buhtip-repo",
-              "accepted_invitations": 55
-            },
-            {
-              "repo_name": "braitsch/client1",
-              "accepted_invitations": 44
-            },
-            {
-              "repo_name": "societies/SOCIETIES-Platform",
-              "accepted_invitations": 37
-            },
-            {
-              "repo_name": "dm4/IntroCS-2011-Fall-Homework6",
-              "accepted_invitations": 32
-            },
-            {
-              "repo_name": "rperlinski/zpi-basic",
-              "accepted_invitations": 32
-            },
-            {
-              "repo_name": "tjhickey724/OctaveBat",
-              "accepted_invitations": 32
-            }
-          ],
-          "meta": [
-            {
-              "name": "repo_name",
-              "type": "LowCardinality(String)"
-            },
-            {
-              "name": "accepted_invitations",
-              "type": "UInt64"
-            }
-          ],
-          "statistics": {
-            "elapsed": 0.046519521,
-            "rows_read": 459796,
-            "bytes_read": 803860
-          },
-          "executionTime": 0.12,
-          "requestId": "01JTJMXS0V8G88GHBSEX8KDS9J",
-          "length": 632
-        },
-        "name": "pipe_31.pipe",
-        "question": {
-          "name": "pipe_31.pipe",
-          "content": "DESCRIPTION >\n    top 10 Repositories with the maximum number of accepted invitations\n\nNODE endpoint\nSQL >\n    SELECT repo_name, sum(event_type = 'MemberEvent') AS invitations, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('MemberEvent', 'WatchEvent') GROUP BY repo_name HAVING stars >= 100 ORDER BY invitations DESC LIMIT 10\n\nTYPE endpoint",
-          "question": "top 10 Repositories with the maximum number of accepted invitations"
-        },
-        "model": "gpt-4.1",
-        "provider": "openai",
-        "metrics": {
-          "timeToFirstToken": 3.442,
-          "totalDuration": 7.286,
-          "tokens": {
-            "promptTokens": 4130,
-            "completionTokens": 47,
-            "totalTokens": 4177
-          }
-        },
-        "error": null
-      }
-    ]
-  },
-  {
-    "sql": "%  \nSELECT \n  repo_name, \n  SUM(CASE WHEN action = 'accepted' THEN 1 ELSE 0 END) AS accepted_invitations\nFROM github_events\nWHERE action = 'accepted'\nGROUP BY repo_name\nORDER BY accepted_invitations DESC\nLIMIT 10",
+    "sql": "\nSELECT\n  repo_name,\n  COUNT(*) AS comment_count\nFROM\n  github_events\nWHERE\n  event_type = 'IssuesEvent' AND\n  action = 'created' AND\n  comment_id IS NOT NULL\nGROUP BY\n  repo_name\nORDER BY\n  comment_count DESC\nLIMIT 10\n",
     "sqlResult": {
       "success": true,
       "data": [],
@@ -2337,40 +1059,40 @@
           "type": "LowCardinality(String)"
         },
         {
-          "name": "accepted_invitations",
+          "name": "comment_count",
           "type": "UInt64"
         }
       ],
       "statistics": {
-        "elapsed": 0.046401081,
-        "rows_read": 200000000,
-        "bytes_read": 200000000
+        "elapsed": 0.023404184,
+        "rows_read": 15470766,
+        "bytes_read": 30701134
       },
-      "executionTime": 0.165,
-      "requestId": "01JTJMXWT3AFJKQSDW755QR1RE",
+      "executionTime": 0.073,
+      "requestId": "01JTMWNP90KNF31RKNF9ZXCCPJ",
       "length": 2
     },
-    "name": "pipe_31.pipe",
+    "name": "pipe_39.pipe",
     "question": {
-      "name": "pipe_31.pipe",
-      "content": "DESCRIPTION >\n    top 10 Repositories with the maximum number of accepted invitations\n\nNODE endpoint\nSQL >\n    SELECT repo_name, sum(event_type = 'MemberEvent') AS invitations, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('MemberEvent', 'WatchEvent') GROUP BY repo_name HAVING stars >= 100 ORDER BY invitations DESC LIMIT 10\n\nTYPE endpoint",
-      "question": "top 10 Repositories with the maximum number of accepted invitations"
+      "name": "pipe_39.pipe",
+      "content": "DESCRIPTION >\n    Find top 10 repositories by the most commented issues\n\nNODE endpoint\nSQL >\n    SELECT\n        repo_name,\n        number,\n        count() AS comments\n    FROM github_events\n    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created')\n    GROUP BY\n        repo_name,\n        number\n    ORDER BY count() DESC\n    LIMIT 10\n\nTYPE endpoint",
+      "question": "Find top 10 repositories by the most commented issues"
     },
-    "model": "gpt-4.1-nano",
-    "provider": "openai",
+    "model": "ministral-8b",
+    "provider": "mistralai",
     "metrics": {
-      "timeToFirstToken": 0.92,
-      "totalDuration": 1.206,
+      "timeToFirstToken": 0.462,
+      "totalDuration": 1.178,
       "tokens": {
-        "promptTokens": 4130,
-        "completionTokens": 60,
-        "totalTokens": 4190
+        "promptTokens": 4505,
+        "completionTokens": 73,
+        "totalTokens": 4578
       }
     },
     "error": null,
     "attempts": [
       {
-        "sql": "%  \nSELECT \n  repo_name, \n  SUM(CASE WHEN action = 'accepted' THEN 1 ELSE 0 END) AS accepted_invitations\nFROM github_events\nWHERE action = 'accepted'\nGROUP BY repo_name\nORDER BY accepted_invitations DESC\nLIMIT 10",
+        "sql": "\nSELECT\n  repo_name,\n  COUNT(*) AS comment_count\nFROM\n  github_events\nWHERE\n  event_type = 'IssuesEvent' AND\n  action = 'created' AND\n  comment_id IS NOT NULL\nGROUP BY\n  repo_name\nORDER BY\n  comment_count DESC\nLIMIT 10\n",
         "sqlResult": {
           "success": true,
           "data": [],
@@ -2380,34 +1102,521 @@
               "type": "LowCardinality(String)"
             },
             {
-              "name": "accepted_invitations",
+              "name": "comment_count",
               "type": "UInt64"
             }
           ],
           "statistics": {
-            "elapsed": 0.046401081,
-            "rows_read": 200000000,
-            "bytes_read": 200000000
+            "elapsed": 0.023404184,
+            "rows_read": 15470766,
+            "bytes_read": 30701134
           },
-          "executionTime": 0.165,
-          "requestId": "01JTJMXWT3AFJKQSDW755QR1RE",
+          "executionTime": 0.073,
+          "requestId": "01JTMWNP90KNF31RKNF9ZXCCPJ",
           "length": 2
         },
-        "name": "pipe_31.pipe",
+        "name": "pipe_39.pipe",
         "question": {
-          "name": "pipe_31.pipe",
-          "content": "DESCRIPTION >\n    top 10 Repositories with the maximum number of accepted invitations\n\nNODE endpoint\nSQL >\n    SELECT repo_name, sum(event_type = 'MemberEvent') AS invitations, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('MemberEvent', 'WatchEvent') GROUP BY repo_name HAVING stars >= 100 ORDER BY invitations DESC LIMIT 10\n\nTYPE endpoint",
-          "question": "top 10 Repositories with the maximum number of accepted invitations"
+          "name": "pipe_39.pipe",
+          "content": "DESCRIPTION >\n    Find top 10 repositories by the most commented issues\n\nNODE endpoint\nSQL >\n    SELECT\n        repo_name,\n        number,\n        count() AS comments\n    FROM github_events\n    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created')\n    GROUP BY\n        repo_name,\n        number\n    ORDER BY count() DESC\n    LIMIT 10\n\nTYPE endpoint",
+          "question": "Find top 10 repositories by the most commented issues"
+        },
+        "model": "ministral-8b",
+        "provider": "mistralai",
+        "metrics": {
+          "timeToFirstToken": 0.462,
+          "totalDuration": 1.178,
+          "tokens": {
+            "promptTokens": 4505,
+            "completionTokens": 73,
+            "totalTokens": 4578
+          }
+        },
+        "error": null
+      }
+    ]
+  },
+  {
+    "sql": "SELECT\n  repo_name repo,\n  sum(comments) comments\nFROM\n  github_events\nWHERE\n  event_type = 'IssuesEvent'\n  AND comments > 0\nGROUP BY\n  repo_name\nORDER BY\n  comments DESC\nLIMIT 10",
+    "sqlResult": {
+      "success": false,
+      "data": [],
+      "executionTime": 0.057,
+      "requestId": "01JTMWP33ANFJ46R9D46APHS4A",
+      "error": "{\"error\": \"[Error] You cannot use the aggregate function 'sum(comments) AS comments is found in WHERE in query. (ILLEGAL_AGGREGATION) (version 24.8.14.2 (official build))\\\\n'' or its alias inside another aggregate function.\", \"documentation\": \"https://www.tinybird.co/docs/concepts/data-sources.html#partitioning\"}",
+      "length": 2
+    },
+    "name": "pipe_39.pipe",
+    "question": {
+      "name": "pipe_39.pipe",
+      "content": "DESCRIPTION >\n    Find top 10 repositories by the most commented issues\n\nNODE endpoint\nSQL >\n    SELECT\n        repo_name,\n        number,\n        count() AS comments\n    FROM github_events\n    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created')\n    GROUP BY\n        repo_name,\n        number\n    ORDER BY count() DESC\n    LIMIT 10\n\nTYPE endpoint",
+      "question": "I previously asked: \"I previously asked: \"Find top 10 repositories by the most commented issues\"\n\nYou generated this SQL query:\n```sql\nSELECT\n  repo_name repo,\n  count() comments\nFROM\n  github_events\nWHERE\n  event_type = 'IssuesEvent'\n  AND action = 'opened'\n  AND comments > 0\nGROUP BY\n  repo_name\nORDER BY\n  comments DESC\nLIMIT 10\n```\n\nBut it resulted in this error:\n```\nnull\n```\n\nPlease fix the SQL query to correctly answer my original question. Make sure the SQL is valid for Tinybird/ClickHouse.\"\n\nYou generated this SQL query:\n```sql\nSELECT\n  repo_name repo,\n  count() comments\nFROM\n  github_events\nWHERE\n  event_type = 'IssuesEvent'\n  AND comments > 0\nGROUP BY\n  repo_name\nORDER BY\n  comments DESC\nLIMIT 10\n```\n\nBut it resulted in this error:\n```\nnull\n```\n\nPlease fix the SQL query to correctly answer my original question. Make sure the SQL is valid for Tinybird/ClickHouse."
+    },
+    "model": "mistral-small-3.1-24b-instruct",
+    "provider": "mistralai",
+    "metrics": {
+      "timeToFirstToken": 0.547,
+      "totalDuration": 1.821,
+      "tokens": {
+        "promptTokens": 4729,
+        "completionTokens": 58,
+        "totalTokens": 4787
+      }
+    },
+    "error": null,
+    "attempts": [
+      {
+        "sql": "SELECT\n  repo_name repo,\n  count() comments\nFROM\n  github_events\nWHERE\n  event_type = 'IssuesEvent'\n  AND action = 'opened'\n  AND comments > 0\nGROUP BY\n  repo_name\nORDER BY\n  comments DESC\nLIMIT 10",
+        "sqlResult": {
+          "success": false,
+          "data": [],
+          "executionTime": 0.05,
+          "requestId": "01JTMWNTMDYMMYANKBCK7FCBPC",
+          "error": "{\"error\": \"[Error] You cannot use the aggregate function 'count() AS comments is found in WHERE in query. (ILLEGAL_AGGREGATION) (version 24.8.14.2 (official build))\\\\n'' or its alias inside another aggregate function.\", \"documentation\": \"https://www.tinybird.co/docs/concepts/data-sources.html#partitioning\"}",
+          "length": 2
+        },
+        "name": "pipe_39.pipe",
+        "question": {
+          "name": "pipe_39.pipe",
+          "content": "DESCRIPTION >\n    Find top 10 repositories by the most commented issues\n\nNODE endpoint\nSQL >\n    SELECT\n        repo_name,\n        number,\n        count() AS comments\n    FROM github_events\n    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created')\n    GROUP BY\n        repo_name,\n        number\n    ORDER BY count() DESC\n    LIMIT 10\n\nTYPE endpoint",
+          "question": "Find top 10 repositories by the most commented issues"
+        },
+        "model": "mistral-small-3.1-24b-instruct",
+        "provider": "mistralai",
+        "metrics": {
+          "timeToFirstToken": 0.485,
+          "totalDuration": 1.882,
+          "tokens": {
+            "promptTokens": 4507,
+            "completionTokens": 63,
+            "totalTokens": 4570
+          }
+        },
+        "error": null
+      },
+      {
+        "sql": "SELECT\n  repo_name repo,\n  count() comments\nFROM\n  github_events\nWHERE\n  event_type = 'IssuesEvent'\n  AND comments > 0\nGROUP BY\n  repo_name\nORDER BY\n  comments DESC\nLIMIT 10",
+        "sqlResult": {
+          "success": false,
+          "data": [],
+          "executionTime": 0.052,
+          "requestId": "01JTMWNYTJE8J46QYFSYB3Z0FT",
+          "error": "{\"error\": \"[Error] You cannot use the aggregate function 'count() AS comments is found in WHERE in query. (ILLEGAL_AGGREGATION) (version 24.8.14.2 (official build))\\\\n'' or its alias inside another aggregate function.\", \"documentation\": \"https://www.tinybird.co/docs/concepts/data-sources.html#partitioning\"}",
+          "length": 2
+        },
+        "name": "pipe_39.pipe",
+        "question": {
+          "name": "pipe_39.pipe",
+          "content": "DESCRIPTION >\n    Find top 10 repositories by the most commented issues\n\nNODE endpoint\nSQL >\n    SELECT\n        repo_name,\n        number,\n        count() AS comments\n    FROM github_events\n    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created')\n    GROUP BY\n        repo_name,\n        number\n    ORDER BY count() DESC\n    LIMIT 10\n\nTYPE endpoint",
+          "question": "I previously asked: \"Find top 10 repositories by the most commented issues\"\n\nYou generated this SQL query:\n```sql\nSELECT\n  repo_name repo,\n  count() comments\nFROM\n  github_events\nWHERE\n  event_type = 'IssuesEvent'\n  AND action = 'opened'\n  AND comments > 0\nGROUP BY\n  repo_name\nORDER BY\n  comments DESC\nLIMIT 10\n```\n\nBut it resulted in this error:\n```\nnull\n```\n\nPlease fix the SQL query to correctly answer my original question. Make sure the SQL is valid for Tinybird/ClickHouse."
+        },
+        "model": "mistral-small-3.1-24b-instruct",
+        "provider": "mistralai",
+        "metrics": {
+          "timeToFirstToken": 0.555,
+          "totalDuration": 1.741,
+          "tokens": {
+            "promptTokens": 4622,
+            "completionTokens": 56,
+            "totalTokens": 4678
+          }
+        },
+        "error": null
+      },
+      {
+        "sql": "SELECT\n  repo_name repo,\n  sum(comments) comments\nFROM\n  github_events\nWHERE\n  event_type = 'IssuesEvent'\n  AND comments > 0\nGROUP BY\n  repo_name\nORDER BY\n  comments DESC\nLIMIT 10",
+        "sqlResult": {
+          "success": false,
+          "data": [],
+          "executionTime": 0.057,
+          "requestId": "01JTMWP33ANFJ46R9D46APHS4A",
+          "error": "{\"error\": \"[Error] You cannot use the aggregate function 'sum(comments) AS comments is found in WHERE in query. (ILLEGAL_AGGREGATION) (version 24.8.14.2 (official build))\\\\n'' or its alias inside another aggregate function.\", \"documentation\": \"https://www.tinybird.co/docs/concepts/data-sources.html#partitioning\"}",
+          "length": 2
+        },
+        "name": "pipe_39.pipe",
+        "question": {
+          "name": "pipe_39.pipe",
+          "content": "DESCRIPTION >\n    Find top 10 repositories by the most commented issues\n\nNODE endpoint\nSQL >\n    SELECT\n        repo_name,\n        number,\n        count() AS comments\n    FROM github_events\n    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created')\n    GROUP BY\n        repo_name,\n        number\n    ORDER BY count() DESC\n    LIMIT 10\n\nTYPE endpoint",
+          "question": "I previously asked: \"I previously asked: \"Find top 10 repositories by the most commented issues\"\n\nYou generated this SQL query:\n```sql\nSELECT\n  repo_name repo,\n  count() comments\nFROM\n  github_events\nWHERE\n  event_type = 'IssuesEvent'\n  AND action = 'opened'\n  AND comments > 0\nGROUP BY\n  repo_name\nORDER BY\n  comments DESC\nLIMIT 10\n```\n\nBut it resulted in this error:\n```\nnull\n```\n\nPlease fix the SQL query to correctly answer my original question. Make sure the SQL is valid for Tinybird/ClickHouse.\"\n\nYou generated this SQL query:\n```sql\nSELECT\n  repo_name repo,\n  count() comments\nFROM\n  github_events\nWHERE\n  event_type = 'IssuesEvent'\n  AND comments > 0\nGROUP BY\n  repo_name\nORDER BY\n  comments DESC\nLIMIT 10\n```\n\nBut it resulted in this error:\n```\nnull\n```\n\nPlease fix the SQL query to correctly answer my original question. Make sure the SQL is valid for Tinybird/ClickHouse."
+        },
+        "model": "mistral-small-3.1-24b-instruct",
+        "provider": "mistralai",
+        "metrics": {
+          "timeToFirstToken": 0.547,
+          "totalDuration": 1.821,
+          "tokens": {
+            "promptTokens": 4729,
+            "completionTokens": 58,
+            "totalTokens": 4787
+          }
+        },
+        "error": null
+      }
+    ]
+  },
+  {
+    "sql": " SELECT\n  repo_name,\n  COUNT(DISTINCT comment_id) AS comment_count\nFROM\n  github_events\nWHERE\n  event_type = 'IssueCommentEvent'\nGROUP BY\n  repo_name\nORDER BY\n  comment_count DESC\nLIMIT 10",
+    "sqlResult": {
+      "success": true,
+      "data": [
+        {
+          "repo_name": "contao/test",
+          "comment_count": 13481
+        },
+        {
+          "repo_name": "contao/import",
+          "comment_count": 12494
+        },
+        {
+          "repo_name": "contao/issues",
+          "comment_count": 4303
+        },
+        {
+          "repo_name": "mxcl/homebrew",
+          "comment_count": 3899
+        },
+        {
+          "repo_name": "rails/rails",
+          "comment_count": 3150
+        },
+        {
+          "repo_name": "sympy/sympy",
+          "comment_count": 2686
+        },
+        {
+          "repo_name": "joyent/node",
+          "comment_count": 2619
+        },
+        {
+          "repo_name": "jquery/jquery-mobile",
+          "comment_count": 2617
+        },
+        {
+          "repo_name": "passbe/beef-migration-test-2",
+          "comment_count": 2374
+        },
+        {
+          "repo_name": "mapnik-org/mapnik",
+          "comment_count": 2325
+        }
+      ],
+      "meta": [
+        {
+          "name": "repo_name",
+          "type": "LowCardinality(String)"
+        },
+        {
+          "name": "comment_count",
+          "type": "UInt64"
+        }
+      ],
+      "statistics": {
+        "elapsed": 0.025143451,
+        "rows_read": 1250141,
+        "bytes_read": 10408901
+      },
+      "executionTime": 0.164,
+      "requestId": "01JTMWP97BEBK7THETH6DKS8SQ",
+      "length": 531
+    },
+    "name": "pipe_39.pipe",
+    "question": {
+      "name": "pipe_39.pipe",
+      "content": "DESCRIPTION >\n    Find top 10 repositories by the most commented issues\n\nNODE endpoint\nSQL >\n    SELECT\n        repo_name,\n        number,\n        count() AS comments\n    FROM github_events\n    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created')\n    GROUP BY\n        repo_name,\n        number\n    ORDER BY count() DESC\n    LIMIT 10\n\nTYPE endpoint",
+      "question": "Find top 10 repositories by the most commented issues"
+    },
+    "model": "mistral-nemo",
+    "provider": "mistralai",
+    "metrics": {
+      "timeToFirstToken": 2.28,
+      "totalDuration": 3.709,
+      "tokens": {
+        "promptTokens": 4510,
+        "completionTokens": 55,
+        "totalTokens": 4565
+      }
+    },
+    "error": null,
+    "attempts": [
+      {
+        "sql": " SELECT\n  repo_name,\n  COUNT(DISTINCT comment_id) AS comment_count\nFROM\n  github_events\nWHERE\n  event_type = 'IssueCommentEvent'\nGROUP BY\n  repo_name\nORDER BY\n  comment_count DESC\nLIMIT 10",
+        "sqlResult": {
+          "success": true,
+          "data": [
+            {
+              "repo_name": "contao/test",
+              "comment_count": 13481
+            },
+            {
+              "repo_name": "contao/import",
+              "comment_count": 12494
+            },
+            {
+              "repo_name": "contao/issues",
+              "comment_count": 4303
+            },
+            {
+              "repo_name": "mxcl/homebrew",
+              "comment_count": 3899
+            },
+            {
+              "repo_name": "rails/rails",
+              "comment_count": 3150
+            },
+            {
+              "repo_name": "sympy/sympy",
+              "comment_count": 2686
+            },
+            {
+              "repo_name": "joyent/node",
+              "comment_count": 2619
+            },
+            {
+              "repo_name": "jquery/jquery-mobile",
+              "comment_count": 2617
+            },
+            {
+              "repo_name": "passbe/beef-migration-test-2",
+              "comment_count": 2374
+            },
+            {
+              "repo_name": "mapnik-org/mapnik",
+              "comment_count": 2325
+            }
+          ],
+          "meta": [
+            {
+              "name": "repo_name",
+              "type": "LowCardinality(String)"
+            },
+            {
+              "name": "comment_count",
+              "type": "UInt64"
+            }
+          ],
+          "statistics": {
+            "elapsed": 0.025143451,
+            "rows_read": 1250141,
+            "bytes_read": 10408901
+          },
+          "executionTime": 0.164,
+          "requestId": "01JTMWP97BEBK7THETH6DKS8SQ",
+          "length": 531
+        },
+        "name": "pipe_39.pipe",
+        "question": {
+          "name": "pipe_39.pipe",
+          "content": "DESCRIPTION >\n    Find top 10 repositories by the most commented issues\n\nNODE endpoint\nSQL >\n    SELECT\n        repo_name,\n        number,\n        count() AS comments\n    FROM github_events\n    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created')\n    GROUP BY\n        repo_name,\n        number\n    ORDER BY count() DESC\n    LIMIT 10\n\nTYPE endpoint",
+          "question": "Find top 10 repositories by the most commented issues"
+        },
+        "model": "mistral-nemo",
+        "provider": "mistralai",
+        "metrics": {
+          "timeToFirstToken": 2.28,
+          "totalDuration": 3.709,
+          "tokens": {
+            "promptTokens": 4510,
+            "completionTokens": 55,
+            "totalTokens": 4565
+          }
+        },
+        "error": null
+      }
+    ]
+  },
+  {
+    "sql": "SELECT\n  repo_name,\n  sum(comments) AS total_comments\nFROM github_events\nWHERE event_type = 'IssuesEvent'\nGROUP BY repo_name\nORDER BY total_comments DESC\nLIMIT 10",
+    "sqlResult": {
+      "success": true,
+      "data": [
+        {
+          "repo_name": "quarkusio/quarkus",
+          "total_comments": 163302
+        },
+        {
+          "repo_name": "openjournals/joss-reviews",
+          "total_comments": 76442
+        },
+        {
+          "repo_name": "tensorflow/tensorflow",
+          "total_comments": 70496
+        },
+        {
+          "repo_name": "githubschool/open-enrollment-classes-introduction-to-github",
+          "total_comments": 59538
+        },
+        {
+          "repo_name": "rust-lang/rust",
+          "total_comments": 57348
+        },
+        {
+          "repo_name": "jens-maus/yam",
+          "total_comments": 55668
+        },
+        {
+          "repo_name": "pytorch/pytorch",
+          "total_comments": 50217
+        },
+        {
+          "repo_name": "golang/go",
+          "total_comments": 49508
+        },
+        {
+          "repo_name": "mozilla-mobile/fenix",
+          "total_comments": 45313
+        },
+        {
+          "repo_name": "qbittorrent/qBittorrent",
+          "total_comments": 41742
+        }
+      ],
+      "meta": [
+        {
+          "name": "repo_name",
+          "type": "LowCardinality(String)"
+        },
+        {
+          "name": "total_comments",
+          "type": "UInt64"
+        }
+      ],
+      "statistics": {
+        "elapsed": 0.083134547,
+        "rows_read": 15470766,
+        "bytes_read": 106834915
+      },
+      "executionTime": 0.139,
+      "requestId": "01JTMWPMEB2ZK8V5GP41413302",
+      "length": 618
+    },
+    "name": "pipe_39.pipe",
+    "question": {
+      "name": "pipe_39.pipe",
+      "content": "DESCRIPTION >\n    Find top 10 repositories by the most commented issues\n\nNODE endpoint\nSQL >\n    SELECT\n        repo_name,\n        number,\n        count() AS comments\n    FROM github_events\n    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created')\n    GROUP BY\n        repo_name,\n        number\n    ORDER BY count() DESC\n    LIMIT 10\n\nTYPE endpoint",
+      "question": "I previously asked: \"Find top 10 repositories by the most commented issues\"\n\nYou generated this SQL query:\n```sql\n%\nSELECT\n  repo_name,\n  sum(issues) AS total_issues_comments\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'closed'\nGROUP BY repo_name\nORDER BY total_issues_comments DESC\nLIMIT 10\n```\n\nBut it resulted in this error:\n```\nnull\n```\n\nPlease fix the SQL query to correctly answer my original question. Make sure the SQL is valid for Tinybird/ClickHouse."
+    },
+    "model": "gpt-4.1-nano",
+    "provider": "openai",
+    "metrics": {
+      "timeToFirstToken": 0.753,
+      "totalDuration": 1.107,
+      "tokens": {
+        "promptTokens": 4236,
+        "completionTokens": 42,
+        "totalTokens": 4278
+      }
+    },
+    "error": null,
+    "attempts": [
+      {
+        "sql": "%\nSELECT\n  repo_name,\n  sum(issues) AS total_issues_comments\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'closed'\nGROUP BY repo_name\nORDER BY total_issues_comments DESC\nLIMIT 10",
+        "sqlResult": {
+          "success": false,
+          "data": [],
+          "executionTime": 0.091,
+          "requestId": "01JTMWPGTK83FWYCTYXGSR3E90",
+          "error": "{\"error\": \"[Error] Unknown expression or function identifier 'issues' in scope SELECT repo_name, sum(issues) AS total_issues_comments FROM github_llm_bench.github_events AS github_events WHERE (event_type = 'IssuesEvent') AND (action = 'closed') GROUP BY repo_name ORDER BY total_issues_comments DESC LIMIT 10. (UNKNOWN_IDENTIFIER)\", \"documentation\": \"https://docs.tinybird.co/api-reference/query-api.html#get--v0-sql\"}",
+          "length": 2
+        },
+        "name": "pipe_39.pipe",
+        "question": {
+          "name": "pipe_39.pipe",
+          "content": "DESCRIPTION >\n    Find top 10 repositories by the most commented issues\n\nNODE endpoint\nSQL >\n    SELECT\n        repo_name,\n        number,\n        count() AS comments\n    FROM github_events\n    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created')\n    GROUP BY\n        repo_name,\n        number\n    ORDER BY count() DESC\n    LIMIT 10\n\nTYPE endpoint",
+          "question": "Find top 10 repositories by the most commented issues"
         },
         "model": "gpt-4.1-nano",
         "provider": "openai",
         "metrics": {
-          "timeToFirstToken": 0.92,
-          "totalDuration": 1.206,
+          "timeToFirstToken": 0.703,
+          "totalDuration": 1.036,
           "tokens": {
-            "promptTokens": 4130,
-            "completionTokens": 60,
-            "totalTokens": 4190
+            "promptTokens": 4128,
+            "completionTokens": 53,
+            "totalTokens": 4181
+          }
+        },
+        "error": null
+      },
+      {
+        "sql": "SELECT\n  repo_name,\n  sum(comments) AS total_comments\nFROM github_events\nWHERE event_type = 'IssuesEvent'\nGROUP BY repo_name\nORDER BY total_comments DESC\nLIMIT 10",
+        "sqlResult": {
+          "success": true,
+          "data": [
+            {
+              "repo_name": "quarkusio/quarkus",
+              "total_comments": 163302
+            },
+            {
+              "repo_name": "openjournals/joss-reviews",
+              "total_comments": 76442
+            },
+            {
+              "repo_name": "tensorflow/tensorflow",
+              "total_comments": 70496
+            },
+            {
+              "repo_name": "githubschool/open-enrollment-classes-introduction-to-github",
+              "total_comments": 59538
+            },
+            {
+              "repo_name": "rust-lang/rust",
+              "total_comments": 57348
+            },
+            {
+              "repo_name": "jens-maus/yam",
+              "total_comments": 55668
+            },
+            {
+              "repo_name": "pytorch/pytorch",
+              "total_comments": 50217
+            },
+            {
+              "repo_name": "golang/go",
+              "total_comments": 49508
+            },
+            {
+              "repo_name": "mozilla-mobile/fenix",
+              "total_comments": 45313
+            },
+            {
+              "repo_name": "qbittorrent/qBittorrent",
+              "total_comments": 41742
+            }
+          ],
+          "meta": [
+            {
+              "name": "repo_name",
+              "type": "LowCardinality(String)"
+            },
+            {
+              "name": "total_comments",
+              "type": "UInt64"
+            }
+          ],
+          "statistics": {
+            "elapsed": 0.083134547,
+            "rows_read": 15470766,
+            "bytes_read": 106834915
+          },
+          "executionTime": 0.139,
+          "requestId": "01JTMWPMEB2ZK8V5GP41413302",
+          "length": 618
+        },
+        "name": "pipe_39.pipe",
+        "question": {
+          "name": "pipe_39.pipe",
+          "content": "DESCRIPTION >\n    Find top 10 repositories by the most commented issues\n\nNODE endpoint\nSQL >\n    SELECT\n        repo_name,\n        number,\n        count() AS comments\n    FROM github_events\n    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created')\n    GROUP BY\n        repo_name,\n        number\n    ORDER BY count() DESC\n    LIMIT 10\n\nTYPE endpoint",
+          "question": "I previously asked: \"Find top 10 repositories by the most commented issues\"\n\nYou generated this SQL query:\n```sql\n%\nSELECT\n  repo_name,\n  sum(issues) AS total_issues_comments\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'closed'\nGROUP BY repo_name\nORDER BY total_issues_comments DESC\nLIMIT 10\n```\n\nBut it resulted in this error:\n```\nnull\n```\n\nPlease fix the SQL query to correctly answer my original question. Make sure the SQL is valid for Tinybird/ClickHouse."
+        },
+        "model": "gpt-4.1-nano",
+        "provider": "openai",
+        "metrics": {
+          "timeToFirstToken": 0.753,
+          "totalDuration": 1.107,
+          "tokens": {
+            "promptTokens": 4236,
+            "completionTokens": 42,
+            "totalTokens": 4278
           }
         },
         "error": null
@@ -2415,49 +1624,49 @@
     ]
   },
   {
-    "sql": "SELECT repo_name, COUNT(*) AS accepted_invitations\nFROM github_events\nWHERE action = 'added'\nGROUP BY repo_name\nORDER BY accepted_invitations DESC\nLIMIT 10",
+    "sql": "SELECT repo_name, SUM(comments) AS total_comments\nFROM github_events\nWHERE event_type = 'IssuesEvent'\nGROUP BY repo_name\nORDER BY total_comments DESC\nLIMIT 10",
     "sqlResult": {
       "success": true,
       "data": [
         {
-          "repo_name": "/",
-          "accepted_invitations": 2995
+          "repo_name": "quarkusio/quarkus",
+          "total_comments": 163302
         },
         {
-          "repo_name": "astro/gitpop",
-          "accepted_invitations": 935
+          "repo_name": "openjournals/joss-reviews",
+          "total_comments": 76442
         },
         {
-          "repo_name": "jeresig/thunderhub",
-          "accepted_invitations": 445
+          "repo_name": "tensorflow/tensorflow",
+          "total_comments": 70496
         },
         {
-          "repo_name": "matthewmccullough/hellogitworld",
-          "accepted_invitations": 128
+          "repo_name": "githubschool/open-enrollment-classes-introduction-to-github",
+          "total_comments": 59538
         },
         {
-          "repo_name": "buhtip/buhtip-repo",
-          "accepted_invitations": 55
+          "repo_name": "rust-lang/rust",
+          "total_comments": 57348
         },
         {
-          "repo_name": "braitsch/client1",
-          "accepted_invitations": 44
+          "repo_name": "jens-maus/yam",
+          "total_comments": 55668
         },
         {
-          "repo_name": "societies/SOCIETIES-Platform",
-          "accepted_invitations": 37
+          "repo_name": "pytorch/pytorch",
+          "total_comments": 50217
         },
         {
-          "repo_name": "dm4/IntroCS-2011-Fall-Homework6",
-          "accepted_invitations": 32
+          "repo_name": "golang/go",
+          "total_comments": 49508
         },
         {
-          "repo_name": "rperlinski/zpi-basic",
-          "accepted_invitations": 32
+          "repo_name": "mozilla-mobile/fenix",
+          "total_comments": 45313
         },
         {
-          "repo_name": "tjhickey724/OctaveBat",
-          "accepted_invitations": 32
+          "repo_name": "qbittorrent/qBittorrent",
+          "total_comments": 41742
         }
       ],
       "meta": [
@@ -2466,82 +1675,82 @@
           "type": "LowCardinality(String)"
         },
         {
-          "name": "accepted_invitations",
+          "name": "total_comments",
           "type": "UInt64"
         }
       ],
       "statistics": {
-        "elapsed": 0.058647632,
-        "rows_read": 200000000,
-        "bytes_read": 200321186
+        "elapsed": 0.083495526,
+        "rows_read": 15470766,
+        "bytes_read": 106834915
       },
-      "executionTime": 0.136,
-      "requestId": "01JTJMY11AJYA30CTWC86QYDKT",
-      "length": 632
+      "executionTime": 0.141,
+      "requestId": "01JTMWPRJHM0TQ5JNP3MJE71NJ",
+      "length": 618
     },
-    "name": "pipe_31.pipe",
+    "name": "pipe_39.pipe",
     "question": {
-      "name": "pipe_31.pipe",
-      "content": "DESCRIPTION >\n    top 10 Repositories with the maximum number of accepted invitations\n\nNODE endpoint\nSQL >\n    SELECT repo_name, sum(event_type = 'MemberEvent') AS invitations, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('MemberEvent', 'WatchEvent') GROUP BY repo_name HAVING stars >= 100 ORDER BY invitations DESC LIMIT 10\n\nTYPE endpoint",
-      "question": "top 10 Repositories with the maximum number of accepted invitations"
+      "name": "pipe_39.pipe",
+      "content": "DESCRIPTION >\n    Find top 10 repositories by the most commented issues\n\nNODE endpoint\nSQL >\n    SELECT\n        repo_name,\n        number,\n        count() AS comments\n    FROM github_events\n    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created')\n    GROUP BY\n        repo_name,\n        number\n    ORDER BY count() DESC\n    LIMIT 10\n\nTYPE endpoint",
+      "question": "Find top 10 repositories by the most commented issues"
     },
     "model": "gpt-4o-mini",
     "provider": "openai",
     "metrics": {
-      "timeToFirstToken": 1.141,
-      "totalDuration": 1.697,
+      "timeToFirstToken": 0.945,
+      "totalDuration": 1.585,
       "tokens": {
-        "promptTokens": 4130,
+        "promptTokens": 4128,
         "completionTokens": 39,
-        "totalTokens": 4169
+        "totalTokens": 4167
       }
     },
     "error": null,
     "attempts": [
       {
-        "sql": "SELECT repo_name, COUNT(*) AS accepted_invitations\nFROM github_events\nWHERE action = 'added'\nGROUP BY repo_name\nORDER BY accepted_invitations DESC\nLIMIT 10",
+        "sql": "SELECT repo_name, SUM(comments) AS total_comments\nFROM github_events\nWHERE event_type = 'IssuesEvent'\nGROUP BY repo_name\nORDER BY total_comments DESC\nLIMIT 10",
         "sqlResult": {
           "success": true,
           "data": [
             {
-              "repo_name": "/",
-              "accepted_invitations": 2995
+              "repo_name": "quarkusio/quarkus",
+              "total_comments": 163302
             },
             {
-              "repo_name": "astro/gitpop",
-              "accepted_invitations": 935
+              "repo_name": "openjournals/joss-reviews",
+              "total_comments": 76442
             },
             {
-              "repo_name": "jeresig/thunderhub",
-              "accepted_invitations": 445
+              "repo_name": "tensorflow/tensorflow",
+              "total_comments": 70496
             },
             {
-              "repo_name": "matthewmccullough/hellogitworld",
-              "accepted_invitations": 128
+              "repo_name": "githubschool/open-enrollment-classes-introduction-to-github",
+              "total_comments": 59538
             },
             {
-              "repo_name": "buhtip/buhtip-repo",
-              "accepted_invitations": 55
+              "repo_name": "rust-lang/rust",
+              "total_comments": 57348
             },
             {
-              "repo_name": "braitsch/client1",
-              "accepted_invitations": 44
+              "repo_name": "jens-maus/yam",
+              "total_comments": 55668
             },
             {
-              "repo_name": "societies/SOCIETIES-Platform",
-              "accepted_invitations": 37
+              "repo_name": "pytorch/pytorch",
+              "total_comments": 50217
             },
             {
-              "repo_name": "dm4/IntroCS-2011-Fall-Homework6",
-              "accepted_invitations": 32
+              "repo_name": "golang/go",
+              "total_comments": 49508
             },
             {
-              "repo_name": "rperlinski/zpi-basic",
-              "accepted_invitations": 32
+              "repo_name": "mozilla-mobile/fenix",
+              "total_comments": 45313
             },
             {
-              "repo_name": "tjhickey724/OctaveBat",
-              "accepted_invitations": 32
+              "repo_name": "qbittorrent/qBittorrent",
+              "total_comments": 41742
             }
           ],
           "meta": [
@@ -2550,34 +1759,34 @@
               "type": "LowCardinality(String)"
             },
             {
-              "name": "accepted_invitations",
+              "name": "total_comments",
               "type": "UInt64"
             }
           ],
           "statistics": {
-            "elapsed": 0.058647632,
-            "rows_read": 200000000,
-            "bytes_read": 200321186
+            "elapsed": 0.083495526,
+            "rows_read": 15470766,
+            "bytes_read": 106834915
           },
-          "executionTime": 0.136,
-          "requestId": "01JTJMY11AJYA30CTWC86QYDKT",
-          "length": 632
+          "executionTime": 0.141,
+          "requestId": "01JTMWPRJHM0TQ5JNP3MJE71NJ",
+          "length": 618
         },
-        "name": "pipe_31.pipe",
+        "name": "pipe_39.pipe",
         "question": {
-          "name": "pipe_31.pipe",
-          "content": "DESCRIPTION >\n    top 10 Repositories with the maximum number of accepted invitations\n\nNODE endpoint\nSQL >\n    SELECT repo_name, sum(event_type = 'MemberEvent') AS invitations, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('MemberEvent', 'WatchEvent') GROUP BY repo_name HAVING stars >= 100 ORDER BY invitations DESC LIMIT 10\n\nTYPE endpoint",
-          "question": "top 10 Repositories with the maximum number of accepted invitations"
+          "name": "pipe_39.pipe",
+          "content": "DESCRIPTION >\n    Find top 10 repositories by the most commented issues\n\nNODE endpoint\nSQL >\n    SELECT\n        repo_name,\n        number,\n        count() AS comments\n    FROM github_events\n    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created')\n    GROUP BY\n        repo_name,\n        number\n    ORDER BY count() DESC\n    LIMIT 10\n\nTYPE endpoint",
+          "question": "Find top 10 repositories by the most commented issues"
         },
         "model": "gpt-4o-mini",
         "provider": "openai",
         "metrics": {
-          "timeToFirstToken": 1.141,
-          "totalDuration": 1.697,
+          "timeToFirstToken": 0.945,
+          "totalDuration": 1.585,
           "tokens": {
-            "promptTokens": 4130,
+            "promptTokens": 4128,
             "completionTokens": 39,
-            "totalTokens": 4169
+            "totalTokens": 4167
           }
         },
         "error": null
@@ -2585,49 +1794,49 @@
     ]
   },
   {
-    "sql": "SELECT\n  repo_name,\n  count(*) AS accepted_invitations\nFROM github_events\nWHERE event_type = 'MemberEvent'\n  AND action = 'added'\nGROUP BY repo_name\nORDER BY accepted_invitations DESC\nLIMIT 10",
+    "sql": "SELECT\n  repo_name,\n  SUM(comments) AS total_comments\nFROM github_events\nWHERE event_type = 'IssuesEvent'\nGROUP BY repo_name\nORDER BY total_comments DESC\nLIMIT 10",
     "sqlResult": {
       "success": true,
       "data": [
         {
-          "repo_name": "/",
-          "accepted_invitations": 2995
+          "repo_name": "quarkusio/quarkus",
+          "total_comments": 163302
         },
         {
-          "repo_name": "astro/gitpop",
-          "accepted_invitations": 935
+          "repo_name": "openjournals/joss-reviews",
+          "total_comments": 76442
         },
         {
-          "repo_name": "jeresig/thunderhub",
-          "accepted_invitations": 445
+          "repo_name": "tensorflow/tensorflow",
+          "total_comments": 70496
         },
         {
-          "repo_name": "matthewmccullough/hellogitworld",
-          "accepted_invitations": 128
+          "repo_name": "githubschool/open-enrollment-classes-introduction-to-github",
+          "total_comments": 59538
         },
         {
-          "repo_name": "buhtip/buhtip-repo",
-          "accepted_invitations": 55
+          "repo_name": "rust-lang/rust",
+          "total_comments": 57348
         },
         {
-          "repo_name": "braitsch/client1",
-          "accepted_invitations": 44
+          "repo_name": "jens-maus/yam",
+          "total_comments": 55668
         },
         {
-          "repo_name": "societies/SOCIETIES-Platform",
-          "accepted_invitations": 37
+          "repo_name": "pytorch/pytorch",
+          "total_comments": 50217
         },
         {
-          "repo_name": "dm4/IntroCS-2011-Fall-Homework6",
-          "accepted_invitations": 32
+          "repo_name": "golang/go",
+          "total_comments": 49508
         },
         {
-          "repo_name": "rperlinski/zpi-basic",
-          "accepted_invitations": 32
+          "repo_name": "mozilla-mobile/fenix",
+          "total_comments": 45313
         },
         {
-          "repo_name": "tjhickey724/OctaveBat",
-          "accepted_invitations": 32
+          "repo_name": "qbittorrent/qBittorrent",
+          "total_comments": 41742
         }
       ],
       "meta": [
@@ -2636,82 +1845,82 @@
           "type": "LowCardinality(String)"
         },
         {
-          "name": "accepted_invitations",
+          "name": "total_comments",
           "type": "UInt64"
         }
       ],
       "statistics": {
-        "elapsed": 0.030339879,
-        "rows_read": 459796,
-        "bytes_read": 803860
+        "elapsed": 0.088714825,
+        "rows_read": 15470766,
+        "bytes_read": 106834915
       },
-      "executionTime": 0.145,
-      "requestId": "01JTJMYBGXN69RQFMDSHEA54BA",
-      "length": 632
+      "executionTime": 0.142,
+      "requestId": "01JTMWQ3RMD7GA25KZZWJW583M",
+      "length": 618
     },
-    "name": "pipe_31.pipe",
+    "name": "pipe_39.pipe",
     "question": {
-      "name": "pipe_31.pipe",
-      "content": "DESCRIPTION >\n    top 10 Repositories with the maximum number of accepted invitations\n\nNODE endpoint\nSQL >\n    SELECT repo_name, sum(event_type = 'MemberEvent') AS invitations, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('MemberEvent', 'WatchEvent') GROUP BY repo_name HAVING stars >= 100 ORDER BY invitations DESC LIMIT 10\n\nTYPE endpoint",
-      "question": "top 10 Repositories with the maximum number of accepted invitations"
+      "name": "pipe_39.pipe",
+      "content": "DESCRIPTION >\n    Find top 10 repositories by the most commented issues\n\nNODE endpoint\nSQL >\n    SELECT\n        repo_name,\n        number,\n        count() AS comments\n    FROM github_events\n    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created')\n    GROUP BY\n        repo_name,\n        number\n    ORDER BY count() DESC\n    LIMIT 10\n\nTYPE endpoint",
+      "question": "Find top 10 repositories by the most commented issues"
     },
     "model": "o3-mini",
     "provider": "openai",
     "metrics": {
-      "timeToFirstToken": 7.781,
-      "totalDuration": 8.061,
+      "timeToFirstToken": 8.55,
+      "totalDuration": 8.812,
       "tokens": {
-        "promptTokens": 4129,
-        "completionTokens": 765,
-        "totalTokens": 4894
+        "promptTokens": 4127,
+        "completionTokens": 756,
+        "totalTokens": 4883
       }
     },
     "error": null,
     "attempts": [
       {
-        "sql": "SELECT\n  repo_name,\n  count(*) AS accepted_invitations\nFROM github_events\nWHERE event_type = 'MemberEvent'\n  AND action = 'added'\nGROUP BY repo_name\nORDER BY accepted_invitations DESC\nLIMIT 10",
+        "sql": "SELECT\n  repo_name,\n  SUM(comments) AS total_comments\nFROM github_events\nWHERE event_type = 'IssuesEvent'\nGROUP BY repo_name\nORDER BY total_comments DESC\nLIMIT 10",
         "sqlResult": {
           "success": true,
           "data": [
             {
-              "repo_name": "/",
-              "accepted_invitations": 2995
+              "repo_name": "quarkusio/quarkus",
+              "total_comments": 163302
             },
             {
-              "repo_name": "astro/gitpop",
-              "accepted_invitations": 935
+              "repo_name": "openjournals/joss-reviews",
+              "total_comments": 76442
             },
             {
-              "repo_name": "jeresig/thunderhub",
-              "accepted_invitations": 445
+              "repo_name": "tensorflow/tensorflow",
+              "total_comments": 70496
             },
             {
-              "repo_name": "matthewmccullough/hellogitworld",
-              "accepted_invitations": 128
+              "repo_name": "githubschool/open-enrollment-classes-introduction-to-github",
+              "total_comments": 59538
             },
             {
-              "repo_name": "buhtip/buhtip-repo",
-              "accepted_invitations": 55
+              "repo_name": "rust-lang/rust",
+              "total_comments": 57348
             },
             {
-              "repo_name": "braitsch/client1",
-              "accepted_invitations": 44
+              "repo_name": "jens-maus/yam",
+              "total_comments": 55668
             },
             {
-              "repo_name": "societies/SOCIETIES-Platform",
-              "accepted_invitations": 37
+              "repo_name": "pytorch/pytorch",
+              "total_comments": 50217
             },
             {
-              "repo_name": "dm4/IntroCS-2011-Fall-Homework6",
-              "accepted_invitations": 32
+              "repo_name": "golang/go",
+              "total_comments": 49508
             },
             {
-              "repo_name": "rperlinski/zpi-basic",
-              "accepted_invitations": 32
+              "repo_name": "mozilla-mobile/fenix",
+              "total_comments": 45313
             },
             {
-              "repo_name": "tjhickey724/OctaveBat",
-              "accepted_invitations": 32
+              "repo_name": "qbittorrent/qBittorrent",
+              "total_comments": 41742
             }
           ],
           "meta": [
@@ -2720,34 +1929,34 @@
               "type": "LowCardinality(String)"
             },
             {
-              "name": "accepted_invitations",
+              "name": "total_comments",
               "type": "UInt64"
             }
           ],
           "statistics": {
-            "elapsed": 0.030339879,
-            "rows_read": 459796,
-            "bytes_read": 803860
+            "elapsed": 0.088714825,
+            "rows_read": 15470766,
+            "bytes_read": 106834915
           },
-          "executionTime": 0.145,
-          "requestId": "01JTJMYBGXN69RQFMDSHEA54BA",
-          "length": 632
+          "executionTime": 0.142,
+          "requestId": "01JTMWQ3RMD7GA25KZZWJW583M",
+          "length": 618
         },
-        "name": "pipe_31.pipe",
+        "name": "pipe_39.pipe",
         "question": {
-          "name": "pipe_31.pipe",
-          "content": "DESCRIPTION >\n    top 10 Repositories with the maximum number of accepted invitations\n\nNODE endpoint\nSQL >\n    SELECT repo_name, sum(event_type = 'MemberEvent') AS invitations, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('MemberEvent', 'WatchEvent') GROUP BY repo_name HAVING stars >= 100 ORDER BY invitations DESC LIMIT 10\n\nTYPE endpoint",
-          "question": "top 10 Repositories with the maximum number of accepted invitations"
+          "name": "pipe_39.pipe",
+          "content": "DESCRIPTION >\n    Find top 10 repositories by the most commented issues\n\nNODE endpoint\nSQL >\n    SELECT\n        repo_name,\n        number,\n        count() AS comments\n    FROM github_events\n    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created')\n    GROUP BY\n        repo_name,\n        number\n    ORDER BY count() DESC\n    LIMIT 10\n\nTYPE endpoint",
+          "question": "Find top 10 repositories by the most commented issues"
         },
         "model": "o3-mini",
         "provider": "openai",
         "metrics": {
-          "timeToFirstToken": 7.781,
-          "totalDuration": 8.061,
+          "timeToFirstToken": 8.55,
+          "totalDuration": 8.812,
           "tokens": {
-            "promptTokens": 4129,
-            "completionTokens": 765,
-            "totalTokens": 4894
+            "promptTokens": 4127,
+            "completionTokens": 756,
+            "totalTokens": 4883
           }
         },
         "error": null
@@ -2755,49 +1964,49 @@
     ]
   },
   {
-    "sql": "SELECT\n  repo_name,\n  count() AS accepted_invitations\nFROM github_events\nWHERE event_type = 'MemberEvent'\n  AND action = 'added'\nGROUP BY repo_name\nORDER BY accepted_invitations DESC\nLIMIT 10",
+    "sql": "SELECT\n  repo_name,\n  count() AS comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY comment_count DESC\nLIMIT 10",
     "sqlResult": {
       "success": true,
       "data": [
         {
-          "repo_name": "/",
-          "accepted_invitations": 2995
+          "repo_name": "rails/rails",
+          "comment_count": 14225
         },
         {
-          "repo_name": "astro/gitpop",
-          "accepted_invitations": 935
+          "repo_name": "contao/test",
+          "comment_count": 13481
         },
         {
-          "repo_name": "jeresig/thunderhub",
-          "accepted_invitations": 445
+          "repo_name": "mxcl/homebrew",
+          "comment_count": 12690
         },
         {
-          "repo_name": "matthewmccullough/hellogitworld",
-          "accepted_invitations": 128
+          "repo_name": "contao/import",
+          "comment_count": 12494
         },
         {
-          "repo_name": "buhtip/buhtip-repo",
-          "accepted_invitations": 55
+          "repo_name": "symfony/symfony",
+          "comment_count": 7375
         },
         {
-          "repo_name": "braitsch/client1",
-          "accepted_invitations": 44
+          "repo_name": "jquery/jquery-mobile",
+          "comment_count": 6944
         },
         {
-          "repo_name": "societies/SOCIETIES-Platform",
-          "accepted_invitations": 37
+          "repo_name": "joyent/node",
+          "comment_count": 6562
         },
         {
-          "repo_name": "dm4/IntroCS-2011-Fall-Homework6",
-          "accepted_invitations": 32
+          "repo_name": "sympy/sympy",
+          "comment_count": 6532
         },
         {
-          "repo_name": "rperlinski/zpi-basic",
-          "accepted_invitations": 32
+          "repo_name": "spotweb/spotweb",
+          "comment_count": 6313
         },
         {
-          "repo_name": "tjhickey724/OctaveBat",
-          "accepted_invitations": 32
+          "repo_name": "diaspora/diaspora",
+          "comment_count": 5164
         }
       ],
       "meta": [
@@ -2806,82 +2015,82 @@
           "type": "LowCardinality(String)"
         },
         {
-          "name": "accepted_invitations",
+          "name": "comment_count",
           "type": "UInt64"
         }
       ],
       "statistics": {
-        "elapsed": 0.05466787,
-        "rows_read": 459796,
-        "bytes_read": 803860
+        "elapsed": 0.026857749,
+        "rows_read": 1250141,
+        "bytes_read": 3081893
       },
-      "executionTime": 0.158,
-      "requestId": "01JTJMYPX7WPWA3YF3JGTGSGE8",
-      "length": 632
+      "executionTime": 0.08,
+      "requestId": "01JTMWQC5288PGMEF0ANPDQFQJ",
+      "length": 522
     },
-    "name": "pipe_31.pipe",
+    "name": "pipe_39.pipe",
     "question": {
-      "name": "pipe_31.pipe",
-      "content": "DESCRIPTION >\n    top 10 Repositories with the maximum number of accepted invitations\n\nNODE endpoint\nSQL >\n    SELECT repo_name, sum(event_type = 'MemberEvent') AS invitations, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('MemberEvent', 'WatchEvent') GROUP BY repo_name HAVING stars >= 100 ORDER BY invitations DESC LIMIT 10\n\nTYPE endpoint",
-      "question": "top 10 Repositories with the maximum number of accepted invitations"
+      "name": "pipe_39.pipe",
+      "content": "DESCRIPTION >\n    Find top 10 repositories by the most commented issues\n\nNODE endpoint\nSQL >\n    SELECT\n        repo_name,\n        number,\n        count() AS comments\n    FROM github_events\n    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created')\n    GROUP BY\n        repo_name,\n        number\n    ORDER BY count() DESC\n    LIMIT 10\n\nTYPE endpoint",
+      "question": "Find top 10 repositories by the most commented issues"
     },
     "model": "o4-mini",
     "provider": "openai",
     "metrics": {
-      "timeToFirstToken": 8.916,
-      "totalDuration": 9.01,
+      "timeToFirstToken": 5.616,
+      "totalDuration": 5.942,
       "tokens": {
-        "promptTokens": 4129,
-        "completionTokens": 965,
-        "totalTokens": 5094
+        "promptTokens": 4127,
+        "completionTokens": 507,
+        "totalTokens": 4634
       }
     },
     "error": null,
     "attempts": [
       {
-        "sql": "SELECT\n  repo_name,\n  count() AS accepted_invitations\nFROM github_events\nWHERE event_type = 'MemberEvent'\n  AND action = 'added'\nGROUP BY repo_name\nORDER BY accepted_invitations DESC\nLIMIT 10",
+        "sql": "SELECT\n  repo_name,\n  count() AS comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY comment_count DESC\nLIMIT 10",
         "sqlResult": {
           "success": true,
           "data": [
             {
-              "repo_name": "/",
-              "accepted_invitations": 2995
+              "repo_name": "rails/rails",
+              "comment_count": 14225
             },
             {
-              "repo_name": "astro/gitpop",
-              "accepted_invitations": 935
+              "repo_name": "contao/test",
+              "comment_count": 13481
             },
             {
-              "repo_name": "jeresig/thunderhub",
-              "accepted_invitations": 445
+              "repo_name": "mxcl/homebrew",
+              "comment_count": 12690
             },
             {
-              "repo_name": "matthewmccullough/hellogitworld",
-              "accepted_invitations": 128
+              "repo_name": "contao/import",
+              "comment_count": 12494
             },
             {
-              "repo_name": "buhtip/buhtip-repo",
-              "accepted_invitations": 55
+              "repo_name": "symfony/symfony",
+              "comment_count": 7375
             },
             {
-              "repo_name": "braitsch/client1",
-              "accepted_invitations": 44
+              "repo_name": "jquery/jquery-mobile",
+              "comment_count": 6944
             },
             {
-              "repo_name": "societies/SOCIETIES-Platform",
-              "accepted_invitations": 37
+              "repo_name": "joyent/node",
+              "comment_count": 6562
             },
             {
-              "repo_name": "dm4/IntroCS-2011-Fall-Homework6",
-              "accepted_invitations": 32
+              "repo_name": "sympy/sympy",
+              "comment_count": 6532
             },
             {
-              "repo_name": "rperlinski/zpi-basic",
-              "accepted_invitations": 32
+              "repo_name": "spotweb/spotweb",
+              "comment_count": 6313
             },
             {
-              "repo_name": "tjhickey724/OctaveBat",
-              "accepted_invitations": 32
+              "repo_name": "diaspora/diaspora",
+              "comment_count": 5164
             }
           ],
           "meta": [
@@ -2890,34 +2099,34 @@
               "type": "LowCardinality(String)"
             },
             {
-              "name": "accepted_invitations",
+              "name": "comment_count",
               "type": "UInt64"
             }
           ],
           "statistics": {
-            "elapsed": 0.05466787,
-            "rows_read": 459796,
-            "bytes_read": 803860
+            "elapsed": 0.026857749,
+            "rows_read": 1250141,
+            "bytes_read": 3081893
           },
-          "executionTime": 0.158,
-          "requestId": "01JTJMYPX7WPWA3YF3JGTGSGE8",
-          "length": 632
+          "executionTime": 0.08,
+          "requestId": "01JTMWQC5288PGMEF0ANPDQFQJ",
+          "length": 522
         },
-        "name": "pipe_31.pipe",
+        "name": "pipe_39.pipe",
         "question": {
-          "name": "pipe_31.pipe",
-          "content": "DESCRIPTION >\n    top 10 Repositories with the maximum number of accepted invitations\n\nNODE endpoint\nSQL >\n    SELECT repo_name, sum(event_type = 'MemberEvent') AS invitations, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('MemberEvent', 'WatchEvent') GROUP BY repo_name HAVING stars >= 100 ORDER BY invitations DESC LIMIT 10\n\nTYPE endpoint",
-          "question": "top 10 Repositories with the maximum number of accepted invitations"
+          "name": "pipe_39.pipe",
+          "content": "DESCRIPTION >\n    Find top 10 repositories by the most commented issues\n\nNODE endpoint\nSQL >\n    SELECT\n        repo_name,\n        number,\n        count() AS comments\n    FROM github_events\n    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created')\n    GROUP BY\n        repo_name,\n        number\n    ORDER BY count() DESC\n    LIMIT 10\n\nTYPE endpoint",
+          "question": "Find top 10 repositories by the most commented issues"
         },
         "model": "o4-mini",
         "provider": "openai",
         "metrics": {
-          "timeToFirstToken": 8.916,
-          "totalDuration": 9.01,
+          "timeToFirstToken": 5.616,
+          "totalDuration": 5.942,
           "tokens": {
-            "promptTokens": 4129,
-            "completionTokens": 965,
-            "totalTokens": 5094
+            "promptTokens": 4127,
+            "completionTokens": 507,
+            "totalTokens": 4634
           }
         },
         "error": null
@@ -2925,49 +2134,49 @@
     ]
   },
   {
-    "sql": "SELECT\n  repo_name,\n  count() AS accepted_invitations_count\nFROM github_events\nWHERE event_type = 'MemberEvent'\n  AND action = 'added'\nGROUP BY repo_name\nORDER BY accepted_invitations_count DESC\nLIMIT 10",
+    "sql": "SELECT\n  repo_name,\n  count() AS issue_comments_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY\n  repo_name\nORDER BY\n  issue_comments_count DESC\nLIMIT 10",
     "sqlResult": {
       "success": true,
       "data": [
         {
-          "repo_name": "/",
-          "accepted_invitations_count": 2995
+          "repo_name": "rails/rails",
+          "issue_comments_count": 14225
         },
         {
-          "repo_name": "astro/gitpop",
-          "accepted_invitations_count": 935
+          "repo_name": "contao/test",
+          "issue_comments_count": 13481
         },
         {
-          "repo_name": "jeresig/thunderhub",
-          "accepted_invitations_count": 445
+          "repo_name": "mxcl/homebrew",
+          "issue_comments_count": 12690
         },
         {
-          "repo_name": "matthewmccullough/hellogitworld",
-          "accepted_invitations_count": 128
+          "repo_name": "contao/import",
+          "issue_comments_count": 12494
         },
         {
-          "repo_name": "buhtip/buhtip-repo",
-          "accepted_invitations_count": 55
+          "repo_name": "symfony/symfony",
+          "issue_comments_count": 7375
         },
         {
-          "repo_name": "braitsch/client1",
-          "accepted_invitations_count": 44
+          "repo_name": "jquery/jquery-mobile",
+          "issue_comments_count": 6944
         },
         {
-          "repo_name": "societies/SOCIETIES-Platform",
-          "accepted_invitations_count": 37
+          "repo_name": "joyent/node",
+          "issue_comments_count": 6562
         },
         {
-          "repo_name": "dm4/IntroCS-2011-Fall-Homework6",
-          "accepted_invitations_count": 32
+          "repo_name": "sympy/sympy",
+          "issue_comments_count": 6532
         },
         {
-          "repo_name": "rperlinski/zpi-basic",
-          "accepted_invitations_count": 32
+          "repo_name": "spotweb/spotweb",
+          "issue_comments_count": 6313
         },
         {
-          "repo_name": "tjhickey724/OctaveBat",
-          "accepted_invitations_count": 32
+          "repo_name": "diaspora/diaspora",
+          "issue_comments_count": 5164
         }
       ],
       "meta": [
@@ -2976,82 +2185,82 @@
           "type": "LowCardinality(String)"
         },
         {
-          "name": "accepted_invitations_count",
+          "name": "issue_comments_count",
           "type": "UInt64"
         }
       ],
       "statistics": {
-        "elapsed": 0.025130846,
-        "rows_read": 459796,
-        "bytes_read": 803860
+        "elapsed": 0.025894214,
+        "rows_read": 1250141,
+        "bytes_read": 3081893
       },
-      "executionTime": 0.279,
-      "requestId": "01JTJMZ6WJE49CCC9D5TWNAK63",
-      "length": 692
+      "executionTime": 0.083,
+      "requestId": "01JTMWQMMWZ9Y3DTBJ1MM2VR73",
+      "length": 592
     },
-    "name": "pipe_31.pipe",
+    "name": "pipe_39.pipe",
     "question": {
-      "name": "pipe_31.pipe",
-      "content": "DESCRIPTION >\n    top 10 Repositories with the maximum number of accepted invitations\n\nNODE endpoint\nSQL >\n    SELECT repo_name, sum(event_type = 'MemberEvent') AS invitations, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('MemberEvent', 'WatchEvent') GROUP BY repo_name HAVING stars >= 100 ORDER BY invitations DESC LIMIT 10\n\nTYPE endpoint",
-      "question": "top 10 Repositories with the maximum number of accepted invitations"
+      "name": "pipe_39.pipe",
+      "content": "DESCRIPTION >\n    Find top 10 repositories by the most commented issues\n\nNODE endpoint\nSQL >\n    SELECT\n        repo_name,\n        number,\n        count() AS comments\n    FROM github_events\n    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created')\n    GROUP BY\n        repo_name,\n        number\n    ORDER BY count() DESC\n    LIMIT 10\n\nTYPE endpoint",
+      "question": "Find top 10 repositories by the most commented issues"
     },
     "model": "o4-mini-high",
     "provider": "openai",
     "metrics": {
-      "timeToFirstToken": 13.23,
-      "totalDuration": 13.702,
+      "timeToFirstToken": 5.807,
+      "totalDuration": 6.109,
       "tokens": {
-        "promptTokens": 4129,
-        "completionTokens": 1287,
-        "totalTokens": 5416
+        "promptTokens": 4127,
+        "completionTokens": 769,
+        "totalTokens": 4896
       }
     },
     "error": null,
     "attempts": [
       {
-        "sql": "SELECT\n  repo_name,\n  count() AS accepted_invitations_count\nFROM github_events\nWHERE event_type = 'MemberEvent'\n  AND action = 'added'\nGROUP BY repo_name\nORDER BY accepted_invitations_count DESC\nLIMIT 10",
+        "sql": "SELECT\n  repo_name,\n  count() AS issue_comments_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY\n  repo_name\nORDER BY\n  issue_comments_count DESC\nLIMIT 10",
         "sqlResult": {
           "success": true,
           "data": [
             {
-              "repo_name": "/",
-              "accepted_invitations_count": 2995
+              "repo_name": "rails/rails",
+              "issue_comments_count": 14225
             },
             {
-              "repo_name": "astro/gitpop",
-              "accepted_invitations_count": 935
+              "repo_name": "contao/test",
+              "issue_comments_count": 13481
             },
             {
-              "repo_name": "jeresig/thunderhub",
-              "accepted_invitations_count": 445
+              "repo_name": "mxcl/homebrew",
+              "issue_comments_count": 12690
             },
             {
-              "repo_name": "matthewmccullough/hellogitworld",
-              "accepted_invitations_count": 128
+              "repo_name": "contao/import",
+              "issue_comments_count": 12494
             },
             {
-              "repo_name": "buhtip/buhtip-repo",
-              "accepted_invitations_count": 55
+              "repo_name": "symfony/symfony",
+              "issue_comments_count": 7375
             },
             {
-              "repo_name": "braitsch/client1",
-              "accepted_invitations_count": 44
+              "repo_name": "jquery/jquery-mobile",
+              "issue_comments_count": 6944
             },
             {
-              "repo_name": "societies/SOCIETIES-Platform",
-              "accepted_invitations_count": 37
+              "repo_name": "joyent/node",
+              "issue_comments_count": 6562
             },
             {
-              "repo_name": "dm4/IntroCS-2011-Fall-Homework6",
-              "accepted_invitations_count": 32
+              "repo_name": "sympy/sympy",
+              "issue_comments_count": 6532
             },
             {
-              "repo_name": "rperlinski/zpi-basic",
-              "accepted_invitations_count": 32
+              "repo_name": "spotweb/spotweb",
+              "issue_comments_count": 6313
             },
             {
-              "repo_name": "tjhickey724/OctaveBat",
-              "accepted_invitations_count": 32
+              "repo_name": "diaspora/diaspora",
+              "issue_comments_count": 5164
             }
           ],
           "meta": [
@@ -3060,34 +2269,152 @@
               "type": "LowCardinality(String)"
             },
             {
-              "name": "accepted_invitations_count",
+              "name": "issue_comments_count",
               "type": "UInt64"
             }
           ],
           "statistics": {
-            "elapsed": 0.025130846,
-            "rows_read": 459796,
-            "bytes_read": 803860
+            "elapsed": 0.025894214,
+            "rows_read": 1250141,
+            "bytes_read": 3081893
           },
-          "executionTime": 0.279,
-          "requestId": "01JTJMZ6WJE49CCC9D5TWNAK63",
-          "length": 692
+          "executionTime": 0.083,
+          "requestId": "01JTMWQMMWZ9Y3DTBJ1MM2VR73",
+          "length": 592
         },
-        "name": "pipe_31.pipe",
+        "name": "pipe_39.pipe",
         "question": {
-          "name": "pipe_31.pipe",
-          "content": "DESCRIPTION >\n    top 10 Repositories with the maximum number of accepted invitations\n\nNODE endpoint\nSQL >\n    SELECT repo_name, sum(event_type = 'MemberEvent') AS invitations, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('MemberEvent', 'WatchEvent') GROUP BY repo_name HAVING stars >= 100 ORDER BY invitations DESC LIMIT 10\n\nTYPE endpoint",
-          "question": "top 10 Repositories with the maximum number of accepted invitations"
+          "name": "pipe_39.pipe",
+          "content": "DESCRIPTION >\n    Find top 10 repositories by the most commented issues\n\nNODE endpoint\nSQL >\n    SELECT\n        repo_name,\n        number,\n        count() AS comments\n    FROM github_events\n    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created')\n    GROUP BY\n        repo_name,\n        number\n    ORDER BY count() DESC\n    LIMIT 10\n\nTYPE endpoint",
+          "question": "Find top 10 repositories by the most commented issues"
         },
         "model": "o4-mini-high",
         "provider": "openai",
         "metrics": {
-          "timeToFirstToken": 13.23,
-          "totalDuration": 13.702,
+          "timeToFirstToken": 5.807,
+          "totalDuration": 6.109,
           "tokens": {
-            "promptTokens": 4129,
-            "completionTokens": 1287,
-            "totalTokens": 5416
+            "promptTokens": 4127,
+            "completionTokens": 769,
+            "totalTokens": 4896
+          }
+        },
+        "error": null
+      }
+    ]
+  },
+  {
+    "sql": "SELECT\n  repo_name,\n  countIf(event_type = 'WatchEvent') AS star_count,\n  any(issue_number) AS issue_number,\n  any(issue_url) AS issue_url,\n  max(comment_count) AS comment_count,\n  max(unique_commenters) AS unique_commenters\nFROM (\n  SELECT\n    repo_name,\n    number AS issue_number,\n    concat('https://github.com/', repo_name, '/issues/', toString(number)) AS issue_url,\n    max(comments) AS comment_count,\n    uniqExactIf(actor_login, event_type = 'IssueCommentEvent') AS unique_commenters\n  FROM github_events\n  WHERE\n    event_type IN ('IssuesEvent', 'IssueCommentEvent')\n    AND number > 10\n    AND repo_name IN (\n      SELECT repo_name\n      FROM github_events\n      WHERE event_type = 'WatchEvent'\n      GROUP BY repo_name\n      HAVING count() > 100\n    )\n  GROUP BY repo_name, number\n  HAVING comment_count = max(comment_count) AND unique_commenters >= 10\n)\nANY LEFT JOIN (\n  SELECT\n    repo_name,\n    countIf(event_type = 'WatchEvent') AS star_count\n  FROM github_events\n  WHERE event_type = 'WatchEvent'\n  GROUP BY repo_name\n) USING repo_name\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10",
+    "sqlResult": {
+      "success": false,
+      "data": [],
+      "executionTime": 0.108,
+      "requestId": "01JTMY91991ZA29ERYSWT7AQ0Z",
+      "error": "{\"error\": \"[Error] You cannot use the aggregate function 'max(comments) AS comment_count' or its alias inside another aggregate function.\", \"documentation\": \"https://www.tinybird.co/docs/concepts/data-sources.html#partitioning\"}",
+      "length": 2
+    },
+    "name": "pipe_42.pipe",
+    "question": {
+      "name": "pipe_42.pipe",
+      "content": "DESCRIPTION >\n    Top‑10 repos (with > 100 stars) ranked by total stars; for each repo return the *single* issue (number > 10) that has the most issue comments created (with >= 10 unique commenters) along with its URL, comment count, unique authors, issue #, and the repo’s star count\n\nNODE endpoint\nSQL >\n    SELECT\n        concat('https://github.com/', repo_name, '/issues/', toString(number)) AS URL,\n        max(comments),\n        argMax(authors, comments) AS authors,\n        argMax(number, comments) AS number,\n        sum(stars) AS stars\n    FROM\n    (\n        SELECT *\n        FROM\n        (\n            SELECT\n                repo_name,\n                number,\n                count() AS comments,\n                uniq(actor_login) AS authors\n            FROM github_events\n            WHERE (event_type = 'IssueCommentEvent') AND (action = 'created') AND (number > 10)\n            GROUP BY\n                repo_name,\n                number\n            HAVING authors >= 10\n        ) AS t1\n        INNER JOIN\n        (\n            SELECT\n                repo_name,\n                count() AS stars\n            FROM github_events\n            WHERE event_type = 'WatchEvent'\n            GROUP BY repo_name\n            HAVING stars > 100\n        ) AS t2 USING (repo_name)\n    )\n    GROUP BY repo_name\n    ORDER BY stars DESC\n    LIMIT 10\n\nTYPE endpoint",
+      "question": "I previously asked: \"I previously asked: \"Top‑10 repos (with > 100 stars) ranked by total stars; for each repo return the *single* issue (number > 10) that has the most issue comments created (with >= 10 unique commenters) along with its URL, comment count, unique authors, issue #, and the repo’s star count\"\n\nYou generated this SQL query:\n```sql\nSELECT\n  repo_name,\n  max(comments) comment_count,\n  any(number) issue_number,\n  any(concat('https://github.com/', repo_name, '/issues/', toString(number))) issue_url,\n  any(star_count) star_count,\n  uniqExactIf(actor_login, event_type = 'IssueCommentEvent' AND number > 10) unique_commenters\nFROM (\n  SELECT\n    repo_name,\n    number,\n    comments,\n    countIf(DISTINCT actor_login, event_type = 'IssueCommentEvent' AND number > 10) unique_commenters,\n    maxIf(comments, number > 10) max_comments,\n    anyIf(concat('https://github.com/', repo_name, '/issues/', toString(number)), number > 10) issue_url,\n    maxIf(star_count, number > 10) star_count\n  FROM github_events\n  WHERE event_type = 'IssuesEvent'\n    AND state = 'open'\n    AND number > 10\n    AND repo_name IN (\n      SELECT repo_name\n      FROM github_events\n      WHERE event_type = 'WatchEvent'\n      GROUP BY repo_name\n      HAVING count() > 100\n    )\n  GROUP BY repo_name, number, comments\n  HAVING comments = max_comments AND unique_commenters >= 10\n)\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n```\n\nBut it resulted in this error:\n```\nnull\n```\n\nPlease fix the SQL query to correctly answer my original question. Make sure the SQL is valid for Tinybird/ClickHouse.\"\n\nYou generated this SQL query:\n```sql\nSELECT\n  repo_name,\n  max(star_count) AS star_count,\n  any(issue_number) AS issue_number,\n  any(issue_url) AS issue_url,\n  max(comment_count) AS comment_count,\n  max(unique_commenters) AS unique_commenters\nFROM (\n  SELECT\n    repo_name,\n    number AS issue_number,\n    concat('https://github.com/', repo_name, '/issues/', toString(number)) AS issue_url,\n    max(comments) AS comment_count,\n    uniqExactIf(actor_login, event_type = 'IssueCommentEvent' AND number > 10) AS unique_commenters,\n    countIf(event_type = 'WatchEvent') AS star_count\n  FROM github_events\n  WHERE\n    (repo_name IN (\n      SELECT repo_name\n      FROM github_events\n      WHERE event_type = 'WatchEvent'\n      GROUP BY repo_name\n      HAVING count() > 100\n    ))\n    AND (\n      (event_type = 'IssuesEvent' AND number > 10)\n      OR (event_type = 'IssueCommentEvent' AND number > 10)\n      OR (event_type = 'WatchEvent')\n    )\n  GROUP BY repo_name, number\n  HAVING comment_count = max(comment_count) AND unique_commenters >= 10\n)\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n```\n\nBut it resulted in this error:\n```\nnull\n```\n\nPlease fix the SQL query to correctly answer my original question. Make sure the SQL is valid for Tinybird/ClickHouse."
+    },
+    "model": "gpt-4.1",
+    "provider": "openai",
+    "metrics": {
+      "timeToFirstToken": 1.2,
+      "totalDuration": 3.493,
+      "tokens": {
+        "promptTokens": 4863,
+        "completionTokens": 286,
+        "totalTokens": 5149
+      }
+    },
+    "error": null,
+    "attempts": [
+      {
+        "sql": "SELECT\n  repo_name,\n  max(comments) comment_count,\n  any(number) issue_number,\n  any(concat('https://github.com/', repo_name, '/issues/', toString(number))) issue_url,\n  any(star_count) star_count,\n  uniqExactIf(actor_login, event_type = 'IssueCommentEvent' AND number > 10) unique_commenters\nFROM (\n  SELECT\n    repo_name,\n    number,\n    comments,\n    countIf(DISTINCT actor_login, event_type = 'IssueCommentEvent' AND number > 10) unique_commenters,\n    maxIf(comments, number > 10) max_comments,\n    anyIf(concat('https://github.com/', repo_name, '/issues/', toString(number)), number > 10) issue_url,\n    maxIf(star_count, number > 10) star_count\n  FROM github_events\n  WHERE event_type = 'IssuesEvent'\n    AND state = 'open'\n    AND number > 10\n    AND repo_name IN (\n      SELECT repo_name\n      FROM github_events\n      WHERE event_type = 'WatchEvent'\n      GROUP BY repo_name\n      HAVING count() > 100\n    )\n  GROUP BY repo_name, number, comments\n  HAVING comments = max_comments AND unique_commenters >= 10\n)\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10",
+        "sqlResult": {
+          "success": false,
+          "data": [],
+          "executionTime": 0.055,
+          "requestId": "01JTMY8NADHAQT2PYF1XBC1QHS",
+          "error": "{\"error\": \"[Error] Unknown expression or function identifier 'star_count' in scope SELECT repo_name, max(comments) AS comment_count, any(number) AS issue_number, any(concat('https://github.com/', repo_name, '/issues/', toString(number))) AS issue_url, any(star_count) AS star_count, uniqExactIf(actor_login, (event_type = 'IssueCommentEvent') AND (number > 10)) AS unique_commenters FROM (SELECT repo_name, number, comments, countIfDistinct(actor_login, (event_type = 'IssueCommentEvent') AND (number",
+          "length": 2
+        },
+        "name": "pipe_42.pipe",
+        "question": {
+          "name": "pipe_42.pipe",
+          "content": "DESCRIPTION >\n    Top‑10 repos (with > 100 stars) ranked by total stars; for each repo return the *single* issue (number > 10) that has the most issue comments created (with >= 10 unique commenters) along with its URL, comment count, unique authors, issue #, and the repo’s star count\n\nNODE endpoint\nSQL >\n    SELECT\n        concat('https://github.com/', repo_name, '/issues/', toString(number)) AS URL,\n        max(comments),\n        argMax(authors, comments) AS authors,\n        argMax(number, comments) AS number,\n        sum(stars) AS stars\n    FROM\n    (\n        SELECT *\n        FROM\n        (\n            SELECT\n                repo_name,\n                number,\n                count() AS comments,\n                uniq(actor_login) AS authors\n            FROM github_events\n            WHERE (event_type = 'IssueCommentEvent') AND (action = 'created') AND (number > 10)\n            GROUP BY\n                repo_name,\n                number\n            HAVING authors >= 10\n        ) AS t1\n        INNER JOIN\n        (\n            SELECT\n                repo_name,\n                count() AS stars\n            FROM github_events\n            WHERE event_type = 'WatchEvent'\n            GROUP BY repo_name\n            HAVING stars > 100\n        ) AS t2 USING (repo_name)\n    )\n    GROUP BY repo_name\n    ORDER BY stars DESC\n    LIMIT 10\n\nTYPE endpoint",
+          "question": "Top‑10 repos (with > 100 stars) ranked by total stars; for each repo return the *single* issue (number > 10) that has the most issue comments created (with >= 10 unique commenters) along with its URL, comment count, unique authors, issue #, and the repo’s star count"
+        },
+        "model": "gpt-4.1",
+        "provider": "openai",
+        "metrics": {
+          "timeToFirstToken": 0.794,
+          "totalDuration": 5.863,
+          "tokens": {
+            "promptTokens": 4186,
+            "completionTokens": 289,
+            "totalTokens": 4475
+          }
+        },
+        "error": null
+      },
+      {
+        "sql": "SELECT\n  repo_name,\n  max(star_count) AS star_count,\n  any(issue_number) AS issue_number,\n  any(issue_url) AS issue_url,\n  max(comment_count) AS comment_count,\n  max(unique_commenters) AS unique_commenters\nFROM (\n  SELECT\n    repo_name,\n    number AS issue_number,\n    concat('https://github.com/', repo_name, '/issues/', toString(number)) AS issue_url,\n    max(comments) AS comment_count,\n    uniqExactIf(actor_login, event_type = 'IssueCommentEvent' AND number > 10) AS unique_commenters,\n    countIf(event_type = 'WatchEvent') AS star_count\n  FROM github_events\n  WHERE\n    (repo_name IN (\n      SELECT repo_name\n      FROM github_events\n      WHERE event_type = 'WatchEvent'\n      GROUP BY repo_name\n      HAVING count() > 100\n    ))\n    AND (\n      (event_type = 'IssuesEvent' AND number > 10)\n      OR (event_type = 'IssueCommentEvent' AND number > 10)\n      OR (event_type = 'WatchEvent')\n    )\n  GROUP BY repo_name, number\n  HAVING comment_count = max(comment_count) AND unique_commenters >= 10\n)\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10",
+        "sqlResult": {
+          "success": false,
+          "data": [],
+          "executionTime": 0.051,
+          "requestId": "01JTMY8VCBNRDT5YGG3F0J4F8S",
+          "error": "{\"error\": \"[Error] You cannot use the aggregate function 'max(comments) AS comment_count' or its alias inside another aggregate function.\", \"documentation\": \"https://www.tinybird.co/docs/concepts/data-sources.html#partitioning\"}",
+          "length": 2
+        },
+        "name": "pipe_42.pipe",
+        "question": {
+          "name": "pipe_42.pipe",
+          "content": "DESCRIPTION >\n    Top‑10 repos (with > 100 stars) ranked by total stars; for each repo return the *single* issue (number > 10) that has the most issue comments created (with >= 10 unique commenters) along with its URL, comment count, unique authors, issue #, and the repo’s star count\n\nNODE endpoint\nSQL >\n    SELECT\n        concat('https://github.com/', repo_name, '/issues/', toString(number)) AS URL,\n        max(comments),\n        argMax(authors, comments) AS authors,\n        argMax(number, comments) AS number,\n        sum(stars) AS stars\n    FROM\n    (\n        SELECT *\n        FROM\n        (\n            SELECT\n                repo_name,\n                number,\n                count() AS comments,\n                uniq(actor_login) AS authors\n            FROM github_events\n            WHERE (event_type = 'IssueCommentEvent') AND (action = 'created') AND (number > 10)\n            GROUP BY\n                repo_name,\n                number\n            HAVING authors >= 10\n        ) AS t1\n        INNER JOIN\n        (\n            SELECT\n                repo_name,\n                count() AS stars\n            FROM github_events\n            WHERE event_type = 'WatchEvent'\n            GROUP BY repo_name\n            HAVING stars > 100\n        ) AS t2 USING (repo_name)\n    )\n    GROUP BY repo_name\n    ORDER BY stars DESC\n    LIMIT 10\n\nTYPE endpoint",
+          "question": "I previously asked: \"Top‑10 repos (with > 100 stars) ranked by total stars; for each repo return the *single* issue (number > 10) that has the most issue comments created (with >= 10 unique commenters) along with its URL, comment count, unique authors, issue #, and the repo’s star count\"\n\nYou generated this SQL query:\n```sql\nSELECT\n  repo_name,\n  max(comments) comment_count,\n  any(number) issue_number,\n  any(concat('https://github.com/', repo_name, '/issues/', toString(number))) issue_url,\n  any(star_count) star_count,\n  uniqExactIf(actor_login, event_type = 'IssueCommentEvent' AND number > 10) unique_commenters\nFROM (\n  SELECT\n    repo_name,\n    number,\n    comments,\n    countIf(DISTINCT actor_login, event_type = 'IssueCommentEvent' AND number > 10) unique_commenters,\n    maxIf(comments, number > 10) max_comments,\n    anyIf(concat('https://github.com/', repo_name, '/issues/', toString(number)), number > 10) issue_url,\n    maxIf(star_count, number > 10) star_count\n  FROM github_events\n  WHERE event_type = 'IssuesEvent'\n    AND state = 'open'\n    AND number > 10\n    AND repo_name IN (\n      SELECT repo_name\n      FROM github_events\n      WHERE event_type = 'WatchEvent'\n      GROUP BY repo_name\n      HAVING count() > 100\n    )\n  GROUP BY repo_name, number, comments\n  HAVING comments = max_comments AND unique_commenters >= 10\n)\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n```\n\nBut it resulted in this error:\n```\nnull\n```\n\nPlease fix the SQL query to correctly answer my original question. Make sure the SQL is valid for Tinybird/ClickHouse."
+        },
+        "model": "gpt-4.1",
+        "provider": "openai",
+        "metrics": {
+          "timeToFirstToken": 0.927,
+          "totalDuration": 3.647,
+          "tokens": {
+            "promptTokens": 4530,
+            "completionTokens": 279,
+            "totalTokens": 4809
+          }
+        },
+        "error": null
+      },
+      {
+        "sql": "SELECT\n  repo_name,\n  countIf(event_type = 'WatchEvent') AS star_count,\n  any(issue_number) AS issue_number,\n  any(issue_url) AS issue_url,\n  max(comment_count) AS comment_count,\n  max(unique_commenters) AS unique_commenters\nFROM (\n  SELECT\n    repo_name,\n    number AS issue_number,\n    concat('https://github.com/', repo_name, '/issues/', toString(number)) AS issue_url,\n    max(comments) AS comment_count,\n    uniqExactIf(actor_login, event_type = 'IssueCommentEvent') AS unique_commenters\n  FROM github_events\n  WHERE\n    event_type IN ('IssuesEvent', 'IssueCommentEvent')\n    AND number > 10\n    AND repo_name IN (\n      SELECT repo_name\n      FROM github_events\n      WHERE event_type = 'WatchEvent'\n      GROUP BY repo_name\n      HAVING count() > 100\n    )\n  GROUP BY repo_name, number\n  HAVING comment_count = max(comment_count) AND unique_commenters >= 10\n)\nANY LEFT JOIN (\n  SELECT\n    repo_name,\n    countIf(event_type = 'WatchEvent') AS star_count\n  FROM github_events\n  WHERE event_type = 'WatchEvent'\n  GROUP BY repo_name\n) USING repo_name\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10",
+        "sqlResult": {
+          "success": false,
+          "data": [],
+          "executionTime": 0.108,
+          "requestId": "01JTMY91991ZA29ERYSWT7AQ0Z",
+          "error": "{\"error\": \"[Error] You cannot use the aggregate function 'max(comments) AS comment_count' or its alias inside another aggregate function.\", \"documentation\": \"https://www.tinybird.co/docs/concepts/data-sources.html#partitioning\"}",
+          "length": 2
+        },
+        "name": "pipe_42.pipe",
+        "question": {
+          "name": "pipe_42.pipe",
+          "content": "DESCRIPTION >\n    Top‑10 repos (with > 100 stars) ranked by total stars; for each repo return the *single* issue (number > 10) that has the most issue comments created (with >= 10 unique commenters) along with its URL, comment count, unique authors, issue #, and the repo’s star count\n\nNODE endpoint\nSQL >\n    SELECT\n        concat('https://github.com/', repo_name, '/issues/', toString(number)) AS URL,\n        max(comments),\n        argMax(authors, comments) AS authors,\n        argMax(number, comments) AS number,\n        sum(stars) AS stars\n    FROM\n    (\n        SELECT *\n        FROM\n        (\n            SELECT\n                repo_name,\n                number,\n                count() AS comments,\n                uniq(actor_login) AS authors\n            FROM github_events\n            WHERE (event_type = 'IssueCommentEvent') AND (action = 'created') AND (number > 10)\n            GROUP BY\n                repo_name,\n                number\n            HAVING authors >= 10\n        ) AS t1\n        INNER JOIN\n        (\n            SELECT\n                repo_name,\n                count() AS stars\n            FROM github_events\n            WHERE event_type = 'WatchEvent'\n            GROUP BY repo_name\n            HAVING stars > 100\n        ) AS t2 USING (repo_name)\n    )\n    GROUP BY repo_name\n    ORDER BY stars DESC\n    LIMIT 10\n\nTYPE endpoint",
+          "question": "I previously asked: \"I previously asked: \"Top‑10 repos (with > 100 stars) ranked by total stars; for each repo return the *single* issue (number > 10) that has the most issue comments created (with >= 10 unique commenters) along with its URL, comment count, unique authors, issue #, and the repo’s star count\"\n\nYou generated this SQL query:\n```sql\nSELECT\n  repo_name,\n  max(comments) comment_count,\n  any(number) issue_number,\n  any(concat('https://github.com/', repo_name, '/issues/', toString(number))) issue_url,\n  any(star_count) star_count,\n  uniqExactIf(actor_login, event_type = 'IssueCommentEvent' AND number > 10) unique_commenters\nFROM (\n  SELECT\n    repo_name,\n    number,\n    comments,\n    countIf(DISTINCT actor_login, event_type = 'IssueCommentEvent' AND number > 10) unique_commenters,\n    maxIf(comments, number > 10) max_comments,\n    anyIf(concat('https://github.com/', repo_name, '/issues/', toString(number)), number > 10) issue_url,\n    maxIf(star_count, number > 10) star_count\n  FROM github_events\n  WHERE event_type = 'IssuesEvent'\n    AND state = 'open'\n    AND number > 10\n    AND repo_name IN (\n      SELECT repo_name\n      FROM github_events\n      WHERE event_type = 'WatchEvent'\n      GROUP BY repo_name\n      HAVING count() > 100\n    )\n  GROUP BY repo_name, number, comments\n  HAVING comments = max_comments AND unique_commenters >= 10\n)\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n```\n\nBut it resulted in this error:\n```\nnull\n```\n\nPlease fix the SQL query to correctly answer my original question. Make sure the SQL is valid for Tinybird/ClickHouse.\"\n\nYou generated this SQL query:\n```sql\nSELECT\n  repo_name,\n  max(star_count) AS star_count,\n  any(issue_number) AS issue_number,\n  any(issue_url) AS issue_url,\n  max(comment_count) AS comment_count,\n  max(unique_commenters) AS unique_commenters\nFROM (\n  SELECT\n    repo_name,\n    number AS issue_number,\n    concat('https://github.com/', repo_name, '/issues/', toString(number)) AS issue_url,\n    max(comments) AS comment_count,\n    uniqExactIf(actor_login, event_type = 'IssueCommentEvent' AND number > 10) AS unique_commenters,\n    countIf(event_type = 'WatchEvent') AS star_count\n  FROM github_events\n  WHERE\n    (repo_name IN (\n      SELECT repo_name\n      FROM github_events\n      WHERE event_type = 'WatchEvent'\n      GROUP BY repo_name\n      HAVING count() > 100\n    ))\n    AND (\n      (event_type = 'IssuesEvent' AND number > 10)\n      OR (event_type = 'IssueCommentEvent' AND number > 10)\n      OR (event_type = 'WatchEvent')\n    )\n  GROUP BY repo_name, number\n  HAVING comment_count = max(comment_count) AND unique_commenters >= 10\n)\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n```\n\nBut it resulted in this error:\n```\nnull\n```\n\nPlease fix the SQL query to correctly answer my original question. Make sure the SQL is valid for Tinybird/ClickHouse."
+        },
+        "model": "gpt-4.1",
+        "provider": "openai",
+        "metrics": {
+          "timeToFirstToken": 1.2,
+          "totalDuration": 3.493,
+          "tokens": {
+            "promptTokens": 4863,
+            "completionTokens": 286,
+            "totalTokens": 5149
           }
         },
         "error": null

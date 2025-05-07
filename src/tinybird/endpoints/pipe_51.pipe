@@ -1,6 +1,7 @@
 DESCRIPTION >
-    top 10 Repositories by amount of modified code
-    I want to get the repositories with the most added and removed code over time
+    top 10 repos ranked by total code churn (adds + dels) from pull requests opened
+    only include PRs with <10 000 adds & <10 000 dels. return repo, pr count, unique authors, total adds, total dels
+
 
 NODE endpoint
 SQL >
@@ -13,7 +14,6 @@ SQL >
     FROM github_events
     WHERE (event_type = 'PullRequestEvent') AND (action = 'opened') AND (additions < 10000) AND (deletions < 10000)
     GROUP BY repo_name
-    HAVING (adds / dels) < 10
     ORDER BY adds + dels DESC
     LIMIT 10
 

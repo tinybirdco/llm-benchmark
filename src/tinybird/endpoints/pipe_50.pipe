@@ -1,5 +1,6 @@
 DESCRIPTION >
-    top 10 Organizations by the size of community
+    top 10 Organizations by the size of community (get the organization name from the repo_name)
+    return the organization name, the number of unique authors, the number of unique pull request authors, the number of unique issue authors, the number of unique issue comment authors, and the number of unique push authors.
 
 NODE endpoint
 SQL >

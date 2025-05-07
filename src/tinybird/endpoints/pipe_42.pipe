@@ -1,5 +1,5 @@
 DESCRIPTION >
-    Top 10 commented issues for the top repositories
+    Top‑10 repos (with > 100 stars) ranked by total stars; for each repo return the *single* issue (number > 10) that has the most issue comments created (with >= 10 unique commenters) along with its URL, comment count, unique authors, issue #, and the repo’s star count
 
 NODE endpoint
 SQL >

@@ -1,5 +1,5 @@
 DESCRIPTION >
-    find top 10 repositories by the most active issues
+    Top 10 GitHub issues (repo + issue number) by how many comments have been created
 
 NODE endpoint
 SQL >
