@@ -1,5 +1,5 @@
 DESCRIPTION >
-    top 10 Repositories with the maximum amount of issues, distinguish real issues from robot ones, add a cutoff at 1000 stars
+    top 10 Repositories with the maximum amount of issues opened, distinguish real issues from robot ones, add a cutoff at 1000 stars
 
 NODE endpoint
 SQL >

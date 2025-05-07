@@ -1,5 +1,5 @@
 DESCRIPTION >
-    top 10 Repositories with the most stars over one day
+    top uniq 10 Repositories with the most stars over one full day at any instant. Limit to 10 results do not repeat repository names
 
 NODE endpoint
 SQL >
