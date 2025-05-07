@@ -1,5 +1,5 @@
 DESCRIPTION >
-    top 10 "friends" to javisantana through counting stars
+    Find the top 10 GitHub users who have the highest proportion of their stars given to repositories owned by 'javisantana' compared to all other repositories they've starred. Show each user's name, the number of stars they gave to javisantana's repos, the number of stars they gave to other repos, and the ratio of javisantana stars to total stars.
 
 NODE endpoint
 SQL >
