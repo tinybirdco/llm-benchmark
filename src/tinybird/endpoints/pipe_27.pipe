@@ -1,0 +1,15 @@
+DESCRIPTION >
+    top 10 Repositories with the most people who have push access to the main branch
+
+NODE endpoint
+SQL >
+    SELECT
+        repo_name,
+        uniqIf(actor_login, (event_type = 'PushEvent') AND match(ref, '/(main|master)$')) AS u
+    FROM github_events
+    WHERE (event_type IN ('PushEvent', 'WatchEvent'))
+    GROUP BY repo_name
+    ORDER BY u DESC
+    LIMIT 10
+
+TYPE endpoint

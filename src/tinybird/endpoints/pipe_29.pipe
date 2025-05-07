@@ -1,15 +1,8 @@
 DESCRIPTION >
-    top 10 Repositories with the most people who have push access to the main branch
+    Top 10 repositories by maximum number of member invitations
 
 NODE endpoint
 SQL >
-    SELECT
-        repo_name,
-        uniqIf(actor_login, (event_type = 'PushEvent') AND match(ref, '/(main|master)$')) AS u
-    FROM github_events
-    WHERE (event_type IN ('PushEvent', 'WatchEvent'))
-    GROUP BY repo_name
-    ORDER BY u DESC
-    LIMIT 10
+    SELECT repo_name, count() AS invitations FROM github_events WHERE event_type = 'MemberEvent' AND action = 'added' GROUP BY repo_name ORDER BY invitations DESC LIMIT 10
 
 TYPE endpoint

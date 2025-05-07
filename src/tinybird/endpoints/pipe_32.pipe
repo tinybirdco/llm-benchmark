@@ -1,8 +1,13 @@
 DESCRIPTION >
-    top 10 Most forked repositories
+     Total number of stars, forks, and ratio (rounded to 2 decimal places) between stars and forks
 
 NODE endpoint
 SQL >
-    SELECT repo_name, count() AS forks FROM github_events WHERE event_type = 'ForkEvent' GROUP BY repo_name ORDER BY forks DESC LIMIT 10
+    SELECT
+        sum(event_type = 'WatchEvent') AS stars,
+        sum(event_type = 'ForkEvent') AS forks,
+        round(stars / forks, 2) AS ratio
+    FROM github_events
+    WHERE event_type IN ('ForkEvent', 'WatchEvent')
 
 TYPE endpoint

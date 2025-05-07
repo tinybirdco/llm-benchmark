@@ -1,8 +1,0 @@
-DESCRIPTION >
-    Top 10 Repositories with most events talking about tensorflow. Return the repository name and the number of events matching.
-
-NODE endpoint
-SQL >
-    SELECT repo_name, count() FROM github_events WHERE body ILIKE '%tensorflow%' GROUP BY repo_name ORDER BY count() DESC LIMIT 10
-
-TYPE endpoint

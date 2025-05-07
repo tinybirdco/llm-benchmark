@@ -1,8 +1,17 @@
 DESCRIPTION >
-    Top 10 repositories by maximum number of member invitations
+    top 10 reposistories by ratio between stars and forks
 
 NODE endpoint
 SQL >
-    SELECT repo_name, count() AS invitations FROM github_events WHERE event_type = 'MemberEvent' AND action = 'added' GROUP BY repo_name ORDER BY invitations DESC LIMIT 10
+    SELECT
+        repo_name,
+        sum(event_type = 'ForkEvent') AS forks,
+        sum(event_type = 'WatchEvent') AS stars,
+        round(stars / forks, 3) AS ratio
+    FROM github_events
+    WHERE event_type IN ('ForkEvent', 'WatchEvent')
+    GROUP BY repo_name
+    ORDER BY forks DESC
+    LIMIT 10
 
 TYPE endpoint

@@ -1,15 +1,15 @@
 DESCRIPTION >
-    top 10 repositories by the number of commit comments
+    Top 10 users/organizations by the number of stars (get the organization name from the repo_name)
 
 NODE endpoint
 SQL >
     SELECT
-        repo_name,
-        count() AS comments
+        lower(substring(repo_name, 1, position(repo_name, '/'))) AS org,
+        count() AS stars
     FROM github_events
-    WHERE event_type = 'CommitCommentEvent'
-    GROUP BY repo_name
-    ORDER BY count() DESC
+    WHERE event_type = 'WatchEvent'
+    GROUP BY org
+    ORDER BY stars DESC
     LIMIT 10
 
 TYPE endpoint

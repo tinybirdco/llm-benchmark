@@ -1,8 +1,20 @@
 DESCRIPTION >
-    The top 10 repositories by issue comment events
+    TTop 10 GitHub issues (repo + issue number > 10) by how many comments have been created. Let's also count the number of comment authors and add a threshold of >= 10
 
 NODE endpoint
 SQL >
-    SELECT repo_name, count() FROM github_events WHERE event_type = 'IssueCommentEvent' GROUP BY repo_name ORDER BY count() DESC LIMIT 10
+    SELECT
+        repo_name,
+        number,
+        count() AS comments,
+        uniq(actor_login) AS authors
+    FROM github_events
+    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created') AND (number > 10)
+    GROUP BY
+        repo_name,
+        number
+    HAVING authors >= 10
+    ORDER BY count() DESC
+    LIMIT 10
 
 TYPE endpoint

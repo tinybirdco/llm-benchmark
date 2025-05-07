@@ -1,8 +1,0 @@
-DESCRIPTION >
-    Top 10 longest repository names with at least 1 star. Return the repository name and the repository name length.
-
-NODE endpoint
-SQL >
-    SELECT repo_name, length(repo_name) as name_length FROM github_events WHERE event_type = 'WatchEvent' GROUP BY repo_name ORDER BY name_length DESC LIMIT 10
-
-TYPE endpoint

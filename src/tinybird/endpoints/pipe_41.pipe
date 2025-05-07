@@ -1,20 +1,17 @@
 DESCRIPTION >
-    TTop 10 GitHub issues (repo + issue number > 10) by how many comments have been created. Let's also count the number of comment authors and add a threshold of >= 10
+    Top 10 most tough code reviews (that is, PRs with the most authors involved creating comments). Return the full URL of the PR, and the number of unique authors.
 
 NODE endpoint
 SQL >
     SELECT
-        repo_name,
-        number,
-        count() AS comments,
+        concat('https://github.com/', repo_name, '/pull/', toString(number)) AS URL,
         uniq(actor_login) AS authors
     FROM github_events
-    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created') AND (number > 10)
+    WHERE (event_type = 'PullRequestReviewCommentEvent') AND (action = 'created')
     GROUP BY
         repo_name,
         number
-    HAVING authors >= 10
-    ORDER BY count() DESC
+    ORDER BY authors DESC
     LIMIT 10
 
 TYPE endpoint

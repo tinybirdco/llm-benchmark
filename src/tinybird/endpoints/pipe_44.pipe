@@ -1,19 +1,21 @@
 DESCRIPTION >
-    Top 10 commits ordered by the count of commit events; include only commits with ≥ 10 distinct commenters and return full commit url, total comments, and unique authors
+    Top 10 organizations by the number of repositories (get the organization name from the repo_name)
 
 NODE endpoint
 SQL >
     SELECT
-        concat('https://github.com/', repo_name, '/commit/', commit_id) AS URL,
-        count() AS comments,
-        uniq(actor_login) AS authors
-    FROM github_events
-    WHERE (event_type = 'CommitCommentEvent') AND notEmpty(commit_id)
-    GROUP BY
-        repo_name,
-        commit_id
-    HAVING authors >= 10
-    ORDER BY count() DESC
+        lower(substring(repo_name, 1, position(repo_name, '/'))) AS org,
+        uniq(repo_name) AS repos
+    FROM
+    (
+        SELECT repo_name
+        FROM github_events
+        WHERE event_type = 'WatchEvent'
+        GROUP BY repo_name
+        HAVING count() >= 10
+    )
+    GROUP BY org
+    ORDER BY repos DESC
     LIMIT 10
 
 TYPE endpoint
