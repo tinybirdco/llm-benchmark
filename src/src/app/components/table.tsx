@@ -12,12 +12,11 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "./tooltip";
-import { ModelMetrics } from "@/lib/eval";
 
-type ColumnDefinition = {
+type ColumnDefinition<T> = {
   name: string;
   accessorKey: string;
-  cell: (row: ModelMetrics) => React.ReactNode;
+  cell: (row: T) => React.ReactNode;
   type?: "left" | "right";
   sortable?: boolean;
   description?: string;
@@ -29,20 +28,20 @@ type SortConfig = {
   direction: "asc" | "desc" | null;
 };
 
-export const Table = ({
+export const Table = <T extends Record<string, any>>({
   columns,
   data,
   defaultSort,
 }: {
-  columns: ColumnDefinition[];
-  data: ModelMetrics[];
+  columns: ColumnDefinition<T>[];
+  data: T[];
   defaultSort?: SortConfig;
 }) => {
   const [sortConfig, setSortConfig] = React.useState<SortConfig | null>(
     defaultSort || null
   );
 
-  const handleSort = (column: ColumnDefinition) => {
+  const handleSort = (column: ColumnDefinition<T>) => {
     if (!column.sortable) return;
 
     setSortConfig((currentSort) => {
@@ -66,8 +65,8 @@ export const Table = ({
     if (!sortConfig) return data;
 
     return [...data].sort((a, b) => {
-      const aValue = a[sortConfig.key as keyof ModelMetrics];
-      const bValue = b[sortConfig.key as keyof ModelMetrics];
+      const aValue = a[sortConfig.key];
+      const bValue = b[sortConfig.key];
 
       if (aValue === bValue) return 0;
       if (aValue === null || aValue === undefined) return 1;
@@ -78,7 +77,7 @@ export const Table = ({
     });
   }, [data, sortConfig]);
 
-  const getSortIcon = (column: ColumnDefinition) => {
+  const getSortIcon = (column: ColumnDefinition<T>) => {
     if (!column.sortable) return null;
     if (!sortConfig || sortConfig.key !== column.accessorKey)
       return (

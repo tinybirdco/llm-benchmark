@@ -8,7 +8,11 @@ import humanResults from "../../benchmark/results-human.json";
 import { Header } from "./components/nav";
 import { ProgressBar } from "./components/progress";
 import { Table } from "./components/table";
-import { calculateModelMetrics, calculateRanks, ModelMetrics } from "@/lib/eval";
+import {
+  calculateModelMetrics,
+  calculateRanks,
+  ModelMetrics,
+} from "@/lib/eval";
 import { useResults } from "@/lib/use-results";
 
 type HumanResult = (typeof humanResults)[number];
@@ -60,14 +64,19 @@ export default function Home() {
       {}
     );
 
-    return Object.values(modelGroups).map((group) => calculateModelMetrics(group));
+    return Object.values(modelGroups).map((group) =>
+      calculateModelMetrics(group)
+    );
   }, []);
 
   const filteredData = useMemo(() => {
     const allData = [...humanMetrics, ...modelMetrics];
     return allData.filter((item) => {
-      const modelMatch = selectedModels.length === 0 || selectedModels.includes(item.model);
-      const providerMatch = selectedProviders.length === 0 || selectedProviders.includes(item.provider);
+      const modelMatch =
+        selectedModels.length === 0 || selectedModels.includes(item.model);
+      const providerMatch =
+        selectedProviders.length === 0 ||
+        selectedProviders.includes(item.provider);
       return modelMatch && providerMatch;
     });
   }, [humanMetrics, modelMetrics, selectedModels, selectedProviders]);
@@ -99,15 +108,11 @@ export default function Home() {
       sortable: true,
       description: "The name of the model",
       cell: (row: ModelMetrics) =>
-        row.provider === "human" ? (
-          row.model
-        ) : (
-          <ModelCell model={row.model} />
-        ),
+        row.provider === "human" ? row.model : <ModelCell model={row.model} />,
     },
     {
       name: "Score",
-      accessorKey: "efficiencyScore",
+      accessorKey: "score",
       sortable: true,
       description:
         "Aggregate metric that combines latency, scan size, and success rate.",
@@ -119,23 +124,22 @@ export default function Home() {
         return (
           <div className="inline-flex items-center">
             <div
-              className={`w-2 h-2 rounded-full mr-2 ${row.efficiencyScore > 90
-                ? "bg-[#27F795]"
-                : row.efficiencyScore >= 80
+              className={`w-2 h-2 rounded-full mr-2 ${
+                row.score > 75
+                  ? "bg-[#27F795]"
+                  : row.score >= 60
                   ? "bg-[#F7D727]"
                   : "bg-[#F72727]"
-                }`}
+              }`}
             />
-            <span className="font-mono">
-              {row.efficiencyScore.toFixed(2)}
-            </span>
+            <span className="font-mono">{row.score.toFixed(2)}</span>
           </div>
         );
       },
       type: "right" as const,
     },
     {
-      name: "Success Rate",
+      name: "Valid Queries",
       accessorKey: "successRate",
       sortable: true,
       description: "Percentage of queries that executed successfully",
@@ -145,12 +149,8 @@ export default function Home() {
         }
         return (
           <div className="flex items-center">
-            <ProgressBar
-              progress={row.successRate}
-            />
-            <span className="font-mono">
-              {row.successRate.toFixed(1)}
-            </span>
+            <ProgressBar progress={row.successRate} />
+            <span className="font-mono">{row.successRate.toFixed(1)}</span>
           </div>
         );
       },
@@ -175,6 +175,31 @@ export default function Home() {
       },
     },
     {
+      name: "Exactness",
+      accessorKey: "exactnessScore",
+      sortable: true,
+      description: "How similar the model's output is to the human's output",
+      cell: (row: ModelMetrics) => {
+        if (row.provider === "human") {
+          return "--";
+        }
+        return (
+          <div className="inline-flex items-center">
+            <div
+              className={`w-2 h-2 rounded-full mr-2 ${
+                row.exactnessScore > 75
+                  ? "bg-[#27F795]"
+                  : row.exactnessScore >= 50
+                  ? "bg-[#F7D727]"
+                  : "bg-[#F72727]"
+              }`}
+            />
+            <span className="font-mono">{row.exactnessScore.toFixed(2)}</span>
+          </div>
+        );
+      },
+    },
+    {
       name: "LLM Gen Time (s)",
       accessorKey: "avgTotalDuration",
       sortable: true,
@@ -184,9 +209,7 @@ export default function Home() {
         row.provider === "human" ? (
           "--"
         ) : (
-          <span className="font-mono">
-            {row.avgTotalDuration.toFixed(3)}
-          </span>
+          <span className="font-mono">{row.avgTotalDuration.toFixed(3)}</span>
         ),
       type: "right" as const,
     },
@@ -199,11 +222,7 @@ export default function Home() {
         if (row.provider === "human") {
           return "--";
         }
-        return (
-          <span className="font-mono">
-            {row.avgAttempts.toFixed(2)}
-          </span>
-        );
+        return <span className="font-mono">{row.avgAttempts.toFixed(2)}</span>;
       },
       type: "right" as const,
     },
@@ -289,10 +308,10 @@ export default function Home() {
           return (
             <div className="space-x-2">
               <span className="font-mono">
-                {(row.avgBytesRead / (1024 * 1024)).toLocaleString(
-                  undefined,
-                  { minimumFractionDigits: 2, maximumFractionDigits: 2 }
-                )}{" "}
+                {(row.avgBytesRead / (1024 * 1024)).toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}{" "}
                 MB
               </span>
               <span className="text-sm text-[#C6C6C6]">
@@ -303,10 +322,10 @@ export default function Home() {
         }
         return (
           <span className="font-mono">
-            {(row.avgBytesRead / (1024 * 1024)).toLocaleString(
-              undefined,
-              { minimumFractionDigits: 2, maximumFractionDigits: 2 }
-            )}{" "}
+            {(row.avgBytesRead / (1024 * 1024)).toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}{" "}
             MB
           </span>
         );

@@ -10,7 +10,7 @@ import { Badge } from "../../components/badge";
 import { ArrowLeftIcon, ChevronDownIcon } from "@/app/components/icons";
 import { Header } from "@/app/components/nav";
 import { PreviewModal } from "@/app/components/code-preview";
-import { ModelMetrics } from "@/lib/eval";
+import { getExactnessScore, ModelMetrics } from "@/lib/eval";
 
 const typedBenchmarkResults = benchmarkResults as any[];
 const typedHumanResults = humanResults as any[];
@@ -40,7 +40,9 @@ function calculateModelMetrics(result: BenchmarkResult | HumanResult): ModelMetr
     firstAttemptRate: result.model === "human" || (result.sqlResult?.success && result.attempts?.length === 1) ? 100 : 0,
     efficiencyScore: 0,
     rawEfficiencyScore: 0,
-    rank: 0
+    exactnessScore: getExactnessScore(result.provider, result.model, result.question.name),
+    score: 0,
+    rank: 0,
   };
 }
 
@@ -151,6 +153,31 @@ export default function QuestionDetail() {
           <Badge status={row.firstAttemptRate === 100 ? "success" : "warning"}>
             {row.firstAttemptRate === 100 ? "Yes" : "No"}
           </Badge>
+        );
+      },
+    },
+    {
+      name: "Exactness",
+      accessorKey: "exactnessScore",
+      sortable: true,
+      description: "How similar the model's output is to the human's output",
+      cell: (row: ModelMetrics) => {
+        if (row.provider === "human") {
+          return "--";
+        }
+        return (
+          <div className="inline-flex items-center">
+            <div
+              className={`w-2 h-2 rounded-full mr-2 ${
+                row.exactnessScore > 75
+                  ? "bg-[#27F795]"
+                  : row.exactnessScore >= 50
+                  ? "bg-[#F7D727]"
+                  : "bg-[#F72727]"
+              }`}
+            />
+            <span className="font-mono">{row.exactnessScore.toFixed(2)}</span>
+          </div>
         );
       },
     },

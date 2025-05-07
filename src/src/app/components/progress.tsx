@@ -1,8 +1,8 @@
 export const ProgressBar = ({ progress }: { progress: number }) => {
   const color =
-    progress >= 90
+    progress >= 75
       ? "bg-[#27F795]"
-      : progress >= 80
+      : progress >= 50
         ? "bg-[#F7D727]"
         : "bg-[#F72727]";
 
