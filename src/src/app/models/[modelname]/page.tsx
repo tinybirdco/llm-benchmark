@@ -148,6 +148,7 @@ export default function ModelDetail() {
           </Badge>
         );
       },
+      type: "right" as const,
     },
     {
       name: "First Attempt",
@@ -161,6 +162,7 @@ export default function ModelDetail() {
           </Badge>
         );
       },
+      type: "right" as const,
     },
     {
       name: "Exactness",
@@ -214,9 +216,7 @@ export default function ModelDetail() {
       sortable: true,
       description: "Number of attempts needed for this query",
       cell: (row: QuestionMetric) => (
-        <span className="font-mono">
-          {row.attempts.length}
-        </span>
+        <span className="font-mono">{row.attempts.length}</span>
       ),
       type: "right" as const,
     },
@@ -226,9 +226,7 @@ export default function ModelDetail() {
       sortable: true,
       description: "Number of rows read by this query (lower is better)",
       cell: (row: QuestionMetric) => (
-        <span className="font-mono">
-          {row.rowsRead.toLocaleString()}
-        </span>
+        <span className="font-mono">{row.rowsRead.toLocaleString()}</span>
       ),
       type: "right" as const,
     },
@@ -264,9 +262,7 @@ export default function ModelDetail() {
       sortable: true,
       description: "Number of tokens used to generate the query",
       cell: (row: QuestionMetric) => (
-        <span className="font-mono">
-          {row.tokens.toLocaleString()}
-        </span>
+        <span className="font-mono">{row.tokens.toLocaleString()}</span>
       ),
       type: "right" as const,
     },
@@ -301,9 +297,7 @@ export default function ModelDetail() {
         </Link>
       </div>
 
-      <h1 className="text-3xl mb-8">
-        Detailed Results for <span className="text-[#27F795]">{modelName}</span>
-      </h1>
+      <h1 className="text-3xl mb-8">Detailed Results for {modelName}</h1>
 
       <div className="overflow-x-auto">
         <Table<QuestionMetric>

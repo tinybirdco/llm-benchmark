@@ -1,8 +1,7 @@
 import { cn } from "@/lib/utils";
 import {
-  ChevronDownIcon,
-  ChevronsUpDownIcon,
-  ChevronUpIcon,
+  ArrowDown,
+  ArrowUp,
   HelpCircle,
 } from "lucide-react";
 import React from "react";
@@ -81,12 +80,12 @@ export const Table = <T extends Record<string, any>>({
     if (!column.sortable) return null;
     if (!sortConfig || sortConfig.key !== column.accessorKey)
       return (
-        <ChevronsUpDownIcon className="w-3 h-3 group-hover:opacity-100 opacity-50" />
+        <ArrowUp className="w-4 h-4 group-hover:opacity-50 opacity-0" />
       );
     return sortConfig.direction === "asc" ? (
-      <ChevronUpIcon className="w-3 h-3" />
+      <ArrowUp className="w-4 h-4" />
     ) : (
-      <ChevronDownIcon className="w-3 h-3" />
+      <ArrowDown className="w-4 h-4" />
     );
   };
 
@@ -128,7 +127,9 @@ export const Table = <T extends Record<string, any>>({
                     <div className="flex items-center gap-2">
                       <span
                         className={cn(
-                          column.accessorKey === "rank" ? "w-0 overflow-hidden lg:overflow-auto lg:w-auto" : ""
+                          column.accessorKey === "rank"
+                            ? "w-0 overflow-hidden lg:overflow-auto lg:w-auto"
+                            : ""
                         )}
                       >
                         {column.name}
@@ -147,16 +148,16 @@ export const Table = <T extends Record<string, any>>({
         ))}
       </div>
       <div className="table-row-group">
-        {sortedData.map((row, idx) => (
+        {sortedData.map((row) => (
           <div
             key={crypto.randomUUID()}
-            className={cn("table-row lg:hover:bg-[#353535]", idx % 2 === 0 ? "bg-[#1A1A1A]" : "")}
+            className={cn("table-row lg:hover:bg-[#353535]")}
           >
             {columns.map((column) => (
               <div
                 key={column.name}
                 className={cn(
-                  "p-2.5 lg:p-4 align-middle table-cell text-sm text-nowrap whitespace-nowrap",
+                  "p-2.5 lg:p-4 align-middle table-cell text-sm text-nowrap whitespace-nowrap border-t border-t-background-secondary",
                   column.type === "right" ? "text-right" : "text-left pr-6",
                   column.className
                 )}

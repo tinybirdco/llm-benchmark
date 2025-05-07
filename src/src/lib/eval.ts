@@ -29,82 +29,72 @@ export type ModelMetrics = {
   rank: number;
 };
 
+function mean<T>(arr: T[], f: (x: T) => number | undefined): number {
+  if (!arr.length) return 0;
+  // debug print
+  return arr.reduce((s, x) => s + (f(x) ?? 0), 0) / arr.length;
+}
+
+const MAX_FAILURE_PENALTY = Math.pow(2, 10);
+
 export function calculateModelMetrics(
   modelResults: ModelResult[]
 ): ModelMetrics {
+  /* ---------- bookkeeping ---------- */
   const totalQueries = modelResults.length;
-  const successfulQueries = modelResults.filter(
-    (r) => r.sqlResult?.success
-  ).length;
+  const successes = modelResults.filter((r) => r.sqlResult?.success);
+  const fails = totalQueries - successes.length;
+
   const firstAttemptSuccess = modelResults.filter(
     (r) =>
-      r.model === "human" || (r.sqlResult?.success && r.attempts.length === 1)
+      r.model === "human" ||
+      (r.sqlResult?.success && (r.attempts?.length ?? 1) === 1)
   ).length;
 
-  const avgExecutionTime =
-    modelResults.reduce(
-      (acc, r) => acc + (r.sqlResult?.executionTime || 0),
-      0
-    ) / totalQueries;
-  const avgTimeToFirstToken =
-    modelResults.reduce(
-      (acc, r) => acc + (r.metrics?.timeToFirstToken || 0),
-      0
-    ) / totalQueries;
-  const avgTotalDuration =
-    modelResults.reduce((acc, r) => acc + (r.metrics?.totalDuration || 0), 0) /
-    totalQueries;
-
-  const totalBytesRead = modelResults.reduce(
-    (acc, r) => acc + (r.sqlResult?.statistics?.bytes_read || 0),
-    0
+  /* ---------- averages over *successful* queries only ---------- */
+  const avgExecTime = mean(successes, (r) => r.sqlResult!.executionTime);
+  const avgTTFT = mean(successes, (r) =>
+    r.model === "human" ? 0 : r.metrics!.timeToFirstToken
+  );
+  const avgDur = mean(successes, (r) =>
+    r.model === "human" ? 0 : r.metrics!.totalDuration
   );
 
-  const totalRowsRead = modelResults.reduce(
-    (acc, r) => acc + (r.sqlResult?.statistics?.rows_read || 0),
-    0
+  const avgBytesRead = mean(
+    successes,
+    (r) => r.sqlResult!.statistics!.bytes_read
   );
-  const avgRowsRead = totalRowsRead / totalQueries;
-  const avgBytesRead = totalBytesRead / totalQueries;
+  const avgRowsRead = mean(
+    successes,
+    (r) => r.sqlResult!.statistics!.rows_read
+  );
 
-  const avgQueryLength =
-    modelResults.reduce((acc, r) => acc + (r.sql?.length || 0), 0) /
-    totalQueries;
+  const avgAttempts = mean(successes, (r) =>
+    r.model === "human" ? 1 : r.attempts?.length ?? 1
+  );
 
-  const avgTokens =
-    modelResults.reduce(
-      (acc, r) => acc + (r.metrics?.tokens?.totalTokens || 0),
-      0
-    ) / totalQueries;
-  const avgAttempts =
-    modelResults.reduce(
-      (acc, r) => acc + (r.model === "human" ? 1 : r.attempts?.length || 1),
-      0
-    ) / totalQueries;
+  /* still useful & cheap to keep, even if failures are included */
+  const avgQueryLength = mean(modelResults, (r) => r.sql?.length);
+  const avgTokens = mean(modelResults, (r) => r.metrics?.tokens?.totalTokens);
 
-  const successRate = (successfulQueries / totalQueries) * 100;
+  /* ---------- success / first‑try rates ---------- */
+  const successRate = (successes.length / totalQueries) * 100;
   const firstAttemptRate = (firstAttemptSuccess / totalQueries) * 100;
 
-  const C = 200_000; // scaling constant
+  /* ---------- penalties ---------- */
+  const bytesMB = avgBytesRead / (1024 * 1024);
+  const rowsM = avgRowsRead / 1_000_000;
+  const bytesPerRowKB = avgRowsRead ? avgBytesRead / avgRowsRead / 1024 : 0;
 
-  const bytesMB = totalBytesRead / (1024 * 1024); // convert to MB
-  const rowsM = totalRowsRead / 1_000_000; // convert to millions
-  const bytesPerRowKB = totalBytesRead / totalRowsRead / 1024;
+  const attemptsPenalty = Math.pow(avgAttempts, 2); // rough on retries
+  const genTimePenalty = Math.pow(avgDur, 0.5); // mild on gen
+  const execTimePenalty = Math.pow(avgExecTime, 2); // heavy on runtime
+  const rowsPenalty = rowsM;
+  const bytesPenalty = bytesMB;
+  const bytesPerRowPenalty = Math.pow(bytesPerRowKB, 2); // very heavy for fat reads
+  const failurePenalty = Math.min(MAX_FAILURE_PENALTY, Math.pow(2, fails)); // each fail doubles pain
 
-  // Count failed queries
-  const failedQueries = modelResults.filter(
-    (r) => !r.sqlResult?.success
-  ).length;
-  const failurePenalty = Math.pow(2, failedQueries); // exponential penalty for each failure
-
-  // penalty terms with different exponents
-  const attemptsPenalty = Math.pow(avgAttempts, 2); // brutal on retries
-  const genTimePenalty = Math.pow(avgTotalDuration, 0.5); // mild on llm gen time
-  const execTimePenalty = Math.pow(avgExecutionTime, 2); // heavy on runtime
-  const rowsPenalty = rowsM; // extra cost per scanned row
-  const bytesPenalty = bytesMB; // cost per scanned byte
-  const bytesPerRowPenalty = Math.pow(bytesPerRowKB, 2); // very heavy if you pull fat columns
-
+  const C = 200_000;
   const penalty =
     attemptsPenalty *
     genTimePenalty *
@@ -114,37 +104,52 @@ export function calculateModelMetrics(
     bytesPerRowPenalty *
     failurePenalty;
 
-  // Calculate raw efficiency score (lower is better)
+  console.log({
+    model: modelResults[0].model,
+    penalty,
+    C,
+    successRate,
+    execTimePenalty,
+    genTimePenalty,
+    firstAttemptRate,
+    failurePenalty,
+    efficiency: Math.log(penalty / C)
+  });
+
   const rawEfficiencyScore = Math.sqrt(penalty / C);
 
-  // Find the maximum raw score across all models to use as reference
-  // This will be done in calculateRanks function
-  const efficiencyScore = 0; // Placeholder, will be set in calculateRanks
-
+  /** `efficiencyScore` will be filled in later when we min‑max / log‑scale
+   *   all models together. keep placeholder 0 for now. */
   return {
     model: modelResults[0].model,
     provider: modelResults[0].provider,
     name: modelResults[0].name,
+
     totalQueries,
-    successfulQueries,
+    successfulQueries: successes.length,
     firstAttemptSuccess,
-    avgExecutionTime,
-    avgTimeToFirstToken,
-    avgTotalDuration,
-    totalBytesRead,
-    totalRowsRead,
+
+    avgExecutionTime: avgExecTime,
+    avgTimeToFirstToken: avgTTFT,
+    avgTotalDuration: avgDur,
+
+    totalBytesRead: avgBytesRead * successes.length,
+    totalRowsRead: avgRowsRead * successes.length,
     avgRowsRead,
     avgBytesRead,
+
     avgQueryLength,
     avgTokens,
     avgAttempts,
+
     successRate,
     firstAttemptRate,
-    efficiencyScore,
+
+    efficiencyScore: 0, // to be set later
     rawEfficiencyScore,
     exactnessScore: 0,
-    score: 0, // This will be calculated after all metrics are computed
-    rank: 0, // This will be calculated after all metrics are computed
+    score: 0,
+    rank: 0,
   };
 }
 
@@ -207,7 +212,11 @@ function blendScore(exact: number, numeric: number, fscore: number) {
   return 100 * (0.65 * (1 - exact) + 0.25 * (1 - numeric) + 0.1 * fscore);
 }
 
-export function getExactnessScore(provider: string, model: string, question: string) {
+export function getExactnessScore(
+  provider: string,
+  model: string,
+  question: string
+) {
   const modelKey = `${provider}/${model}`;
 
   const pipe = validationResults[question as "pipe_01.pipe"];

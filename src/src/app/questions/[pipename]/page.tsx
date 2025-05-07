@@ -18,29 +18,46 @@ const typedHumanResults = humanResults as any[];
 type BenchmarkResult = (typeof typedBenchmarkResults)[number];
 type HumanResult = (typeof typedHumanResults)[number];
 
-function calculateModelMetrics(result: BenchmarkResult | HumanResult): ModelMetrics {
+function calculateModelMetrics(
+  result: BenchmarkResult | HumanResult
+): ModelMetrics {
   return {
     model: result.model,
     provider: result.provider,
     name: result.name,
     totalQueries: 1,
     successfulQueries: result.sqlResult?.success ? 1 : 0,
-    firstAttemptSuccess: result.model === "human" || (result.sqlResult?.success && result.attempts?.length === 1) ? 1 : 0,
+    firstAttemptSuccess:
+      result.model === "human" ||
+      (result.sqlResult?.success && result.attempts?.length === 1)
+        ? 1
+        : 0,
     avgExecutionTime: result.sqlResult?.executionTime || 0,
-    avgTimeToFirstToken: 'metrics' in result ? result.metrics?.timeToFirstToken || 0 : 0,
-    avgTotalDuration: 'metrics' in result ? result.metrics?.totalDuration || 0 : 0,
+    avgTimeToFirstToken:
+      "metrics" in result ? result.metrics?.timeToFirstToken || 0 : 0,
+    avgTotalDuration:
+      "metrics" in result ? result.metrics?.totalDuration || 0 : 0,
     totalBytesRead: result.sqlResult?.statistics?.bytes_read || 0,
     totalRowsRead: result.sqlResult?.statistics?.rows_read || 0,
     avgRowsRead: result.sqlResult?.statistics?.rows_read || 0,
     avgBytesRead: result.sqlResult?.statistics?.bytes_read || 0,
     avgQueryLength: result.sql?.length || 0,
-    avgTokens: 'metrics' in result ? result.metrics?.tokens?.totalTokens || 0 : 0,
+    avgTokens:
+      "metrics" in result ? result.metrics?.tokens?.totalTokens || 0 : 0,
     avgAttempts: result.attempts?.length || 1,
     successRate: result.sqlResult?.success ? 100 : 0,
-    firstAttemptRate: result.model === "human" || (result.sqlResult?.success && result.attempts?.length === 1) ? 100 : 0,
+    firstAttemptRate:
+      result.model === "human" ||
+      (result.sqlResult?.success && result.attempts?.length === 1)
+        ? 100
+        : 0,
     efficiencyScore: 0,
     rawEfficiencyScore: 0,
-    exactnessScore: getExactnessScore(result.provider, result.model, result.question.name),
+    exactnessScore: getExactnessScore(
+      result.provider,
+      result.model,
+      result.question.name
+    ),
     score: 0,
     rank: 0,
   };
@@ -70,8 +87,12 @@ export default function QuestionDetail() {
   const [showRelative, setShowRelative] = useState(false);
 
   const modelResults = useMemo(() => {
-    const questionResults = typedBenchmarkResults.filter((r) => r.name === pipeName);
-    const humanQuestionResults = typedHumanResults.filter((r) => r.name === pipeName);
+    const questionResults = typedBenchmarkResults.filter(
+      (r) => r.name === pipeName
+    );
+    const humanQuestionResults = typedHumanResults.filter(
+      (r) => r.name === pipeName
+    );
     return [
       ...humanQuestionResults.map(calculateModelMetrics),
       ...questionResults.map(calculateModelMetrics),
@@ -80,14 +101,20 @@ export default function QuestionDetail() {
 
   const filteredData = useMemo(() => {
     return modelResults.filter((result) => {
-      const modelMatch = selectedModels.length === 0 || selectedModels.includes(result.model);
-      const providerMatch = selectedProviders.length === 0 || selectedProviders.includes(result.provider);
+      const modelMatch =
+        selectedModels.length === 0 || selectedModels.includes(result.model);
+      const providerMatch =
+        selectedProviders.length === 0 ||
+        selectedProviders.includes(result.provider);
       return modelMatch && providerMatch;
     });
   }, [modelResults, selectedModels, selectedProviders]);
 
   // Find the human baseline for this question
-  const humanBaseline = useMemo(() => modelResults.find((m) => m.provider === "human"), [modelResults]);
+  const humanBaseline = useMemo(
+    () => modelResults.find((m) => m.provider === "human"),
+    [modelResults]
+  );
 
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -111,9 +138,8 @@ export default function QuestionDetail() {
   }
 
   // Get the question details from any result (they're all the same)
-  const questionDetails = typedBenchmarkResults.find(
-    (r) => r.name === pipeName
-  )?.attempts?.[0]?.question;
+  const questionDetails = typedBenchmarkResults.find((r) => r.name === pipeName)
+    ?.attempts?.[0]?.question;
 
   const columns = [
     {
@@ -142,6 +168,7 @@ export default function QuestionDetail() {
           </Badge>
         );
       },
+      type: "right" as const,
     },
     {
       name: "First Attempt",
@@ -155,6 +182,7 @@ export default function QuestionDetail() {
           </Badge>
         );
       },
+      type: "right" as const,
     },
     {
       name: "Exactness",
@@ -187,17 +215,29 @@ export default function QuestionDetail() {
       sortable: true,
       description: "Average time taken to execute the query in milliseconds",
       cell: (row: ModelMetrics) => {
-        const showPercentage = showRelative && row.provider !== "human" && humanBaseline;
+        const showPercentage =
+          showRelative && row.provider !== "human" && humanBaseline;
         if (showPercentage) {
-          const percentage = ((row.avgExecutionTime * 1000) / (humanBaseline.avgExecutionTime * 1000)) * 100;
+          const percentage =
+            ((row.avgExecutionTime * 1000) /
+              (humanBaseline.avgExecutionTime * 1000)) *
+            100;
           return (
             <div className="space-x-2">
-              <span className="font-mono">{(row.avgExecutionTime * 1000).toLocaleString()} ms</span>
-              <span className="text-sm text-[#C6C6C6]">{percentage.toFixed(0)}%</span>
+              <span className="font-mono">
+                {(row.avgExecutionTime * 1000).toLocaleString()} ms
+              </span>
+              <span className="text-sm text-[#C6C6C6]">
+                {percentage.toFixed(0)}%
+              </span>
             </div>
           );
         }
-        return <span className="font-mono">{(row.avgExecutionTime * 1000).toLocaleString()} ms</span>;
+        return (
+          <span className="font-mono">
+            {(row.avgExecutionTime * 1000).toLocaleString()} ms
+          </span>
+        );
       },
       type: "right" as const,
     },
@@ -229,17 +269,27 @@ export default function QuestionDetail() {
       sortable: true,
       description: "Average number of rows read per query (lower is better)",
       cell: (row: ModelMetrics) => {
-        const showPercentage = showRelative && row.provider !== "human" && humanBaseline;
+        const showPercentage =
+          showRelative && row.provider !== "human" && humanBaseline;
         if (showPercentage) {
-          const percentage = (row.avgRowsRead / humanBaseline.avgRowsRead) * 100;
+          const percentage =
+            (row.avgRowsRead / humanBaseline.avgRowsRead) * 100;
           return (
             <div className="space-x-2">
-              <span className="font-mono">{Math.round(row.avgRowsRead).toLocaleString()}</span>
-              <span className="text-sm text-[#C6C6C6]">{percentage.toFixed(0)}%</span>
+              <span className="font-mono">
+                {Math.round(row.avgRowsRead).toLocaleString()}
+              </span>
+              <span className="text-sm text-[#C6C6C6]">
+                {percentage.toFixed(0)}%
+              </span>
             </div>
           );
         }
-        return <span className="font-mono">{Math.round(row.avgRowsRead).toLocaleString()}</span>;
+        return (
+          <span className="font-mono">
+            {Math.round(row.avgRowsRead).toLocaleString()}
+          </span>
+        );
       },
       type: "right" as const,
     },
@@ -259,9 +309,7 @@ export default function QuestionDetail() {
       sortable: true,
       description: "Number of tokens used to generate the query",
       cell: (row: ModelMetrics) => (
-        <span className="font-mono">
-          {row.avgTokens.toLocaleString()}
-        </span>
+        <span className="font-mono">{row.avgTokens.toLocaleString()}</span>
       ),
       type: "right" as const,
     },
@@ -271,17 +319,35 @@ export default function QuestionDetail() {
       sortable: true,
       description: "Average amount of data read per query in MB",
       cell: (row: ModelMetrics) => {
-        const showPercentage = showRelative && row.provider !== "human" && humanBaseline;
+        const showPercentage =
+          showRelative && row.provider !== "human" && humanBaseline;
         if (showPercentage) {
-          const percentage = (row.avgBytesRead / humanBaseline.avgBytesRead) * 100;
+          const percentage =
+            (row.avgBytesRead / humanBaseline.avgBytesRead) * 100;
           return (
             <div className="space-x-2">
-              <span className="font-mono">{(row.avgBytesRead / (1024 * 1024)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MB</span>
-              <span className="text-sm text-[#C6C6C6]">{percentage.toFixed(0)}%</span>
+              <span className="font-mono">
+                {(row.avgBytesRead / (1024 * 1024)).toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}{" "}
+                MB
+              </span>
+              <span className="text-sm text-[#C6C6C6]">
+                {percentage.toFixed(0)}%
+              </span>
             </div>
           );
         }
-        return <span className="font-mono">{(row.avgBytesRead / (1024 * 1024)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MB</span>;
+        return (
+          <span className="font-mono">
+            {(row.avgBytesRead / (1024 * 1024)).toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}{" "}
+            MB
+          </span>
+        );
       },
       type: "right" as const,
     },
@@ -298,7 +364,9 @@ export default function QuestionDetail() {
         showRelative={showRelative}
         onShowRelativeChange={setShowRelative}
       />
-      <h2 className="text-xl mb-4">Model Results for &quot;{questionDetails?.question}&quot;</h2>
+      <h2 className="text-xl mb-4">
+        Model Results for &quot;{questionDetails?.question}&quot;
+      </h2>
 
       <div className="mb-8 space-y-5">
         <button

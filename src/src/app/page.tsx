@@ -6,7 +6,6 @@ import { useMemo, useState } from "react";
 import humanResults from "../../benchmark/results-human.json";
 
 import { Header } from "./components/nav";
-import { ProgressBar } from "./components/progress";
 import { Table } from "./components/table";
 import {
   calculateModelMetrics,
@@ -23,7 +22,7 @@ const ModelCell = ({ model }: { model: string }) => {
     <div className="max-w-[475px]">
       <Link
         href={`/models/${encodeURIComponent(model)}`}
-        className="text-[#27F795] text-sm"
+        className="text-accent hover:text-hover-accent text-sm"
       >
         <div className="truncate">{model}</div>
       </Link>
@@ -116,7 +115,6 @@ export default function Home() {
       sortable: true,
       description:
         "Aggregate metric that combines latency, scan size, and success rate.",
-      className: "bg-[#FFFFFF]/5",
       cell: (row: ModelMetrics) => {
         if (row.provider === "human") {
           return "--";
@@ -139,40 +137,30 @@ export default function Home() {
       type: "right" as const,
     },
     {
-      name: "Valid Queries",
-      accessorKey: "successRate",
+      name: "Efficiency",
+      accessorKey: "efficiencyScore",
       sortable: true,
-      description: "Percentage of queries that executed successfully",
+      description: "How fast the model is at generating valid queries",
       cell: (row: ModelMetrics) => {
         if (row.provider === "human") {
           return "--";
         }
         return (
-          <div className="flex items-center">
-            <ProgressBar progress={row.successRate} />
-            <span className="font-mono">{row.successRate.toFixed(1)}</span>
+          <div className="inline-flex items-center">
+            <div
+              className={`w-2 h-2 rounded-full mr-2 ${
+                row.efficiencyScore > 75
+                  ? "bg-[#27F795]"
+                  : row.efficiencyScore >= 50
+                  ? "bg-[#F7D727]"
+                  : "bg-[#F72727]"
+              }`}
+            />
+            <span className="font-mono">{row.efficiencyScore.toFixed(2)}</span>
           </div>
         );
       },
-    },
-    {
-      name: "First Attempt Rate",
-      accessorKey: "firstAttemptRate",
-      sortable: true,
-      description: "Percentage of queries that succeeded on the first try",
-      cell: (row: ModelMetrics) => {
-        if (row.provider === "human") {
-          return "--";
-        }
-        return (
-          <div className="flex items-center">
-            <ProgressBar progress={row.firstAttemptRate} />
-            <span className="font-mono">
-              {row.firstAttemptRate.toFixed(1)}%
-            </span>
-          </div>
-        );
-      },
+      type: "right" as const,
     },
     {
       name: "Exactness",
@@ -198,6 +186,7 @@ export default function Home() {
           </div>
         );
       },
+      type: "right" as const,
     },
     {
       name: "LLM Gen Time (s)",
@@ -245,7 +234,7 @@ export default function Home() {
               <span className="font-mono">
                 {(row.avgExecutionTime * 1000).toLocaleString()} ms
               </span>
-              <span className="text-sm text-[#C6C6C6]">
+              <span className="text-sm text-accent">
                 {percentage.toFixed(0)}%
               </span>
             </div>
@@ -278,7 +267,7 @@ export default function Home() {
               <span className="font-mono">
                 {Math.round(row.avgRowsRead).toLocaleString()}
               </span>
-              <span className="text-sm text-[#C6C6C6]">
+              <span className="text-sm text-accent">
                 {percentage.toFixed(0)}%
               </span>
             </div>
@@ -314,7 +303,7 @@ export default function Home() {
                 })}{" "}
                 MB
               </span>
-              <span className="text-sm text-[#C6C6C6]">
+              <span className="text-sm text-accent">
                 {percentage.toFixed(0)}%
               </span>
             </div>

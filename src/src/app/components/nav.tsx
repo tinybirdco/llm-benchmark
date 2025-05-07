@@ -58,27 +58,31 @@ export const QuestionSelect = () => {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <button className={cn(
-          "bg-[#353535] w-full sm:w-[200px] font-sans text-sm text-left hover:bg-[#454545] p-4 hover:text-white flex items-center justify-between cursor-pointer"
-        )}>
-          <span className="truncate">{selectedQuestionLabel || "All Questions"}</span>
+        <button
+          className={cn(
+            "bg-[#353535] lg:w-[415px] w-full sm:w-full font-sans text-sm text-left border-1 border-transparent hover:border-white data-[state=open]:border-white !outline-none p-4 hover:text-white flex items-center justify-between cursor-pointer"
+          )}
+        >
+          <span className="truncate">
+            {selectedQuestionLabel || "All Questions"}
+          </span>
           <ChevronDownIcon className="flex-shrink-0 ml-2" />
         </button>
       </PopoverTrigger>
       <PopoverContent
         align="start"
         side="bottom"
-        sideOffset={0}
+        sideOffset={4}
         className={cn(
           "w-full max-w-[415px] bg-[#353535] font-sans text-sm max-h-[500px] overflow-y-auto border-none rounded-none p-0",
           "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2"
         )}
         style={{
-          position: 'relative',
-          width: '100%',
-          marginTop: '0',
-          marginLeft: '0',
-          transform: 'none'
+          position: "relative",
+          width: "100%",
+          marginTop: "0",
+          marginLeft: "0",
+          transform: "none",
         }}
       >
         {questionOptions.map((opt) => (
@@ -113,15 +117,21 @@ export const Header = ({
           <h1 className="text-3xl">AI SQL Generation Benchmark Results</h1>
 
           <div className="flex gap-2 items-center">
-            <Button variant="secondary" size="lg" className="cursor-pointer"><GithubIcon /> GitHub</Button>
-            <Button variant="default" size="lg" className="cursor-pointer"><ClipboardListIcon /> Methodology</Button>
+            <Button variant="secondary" size="lg" className="cursor-pointer">
+              GitHub <GithubIcon />
+            </Button>
+            <Button variant="default" size="lg" className="cursor-pointer">
+              Methodology <ClipboardListIcon />
+            </Button>
           </div>
         </div>
 
         <p className="text-sm max-w-[556px]">
-          We assessed the ability of popular LLMs to generate accurate and efficient SQL from natural language prompts. Using a 3.1 billion record dataset from the{" "}
+          We assessed the ability of popular LLMs to generate accurate and
+          efficient SQL from natural language prompts. Using a 200 million
+          record dataset from the{" "}
           <Link
-            className="text-[#27F795]"
+            className="text-accent hover:text-hover-accent"
             href="https://www.gharchive.org/"
             target="_blank"
           >
@@ -129,25 +139,25 @@ export const Header = ({
           </Link>{" "}
           uploaded to{" "}
           <Link
-            className="text-[#27F795]"
+            className="text-accent hover:text-hover-accent"
             href="https://tinybird.co/"
             target="_blank"
           >
             Tinybird
           </Link>
-          , we asked the LLMs to generate SQL based on {" "}
+          , we asked the LLMs to generate SQL based on{" "}
           <Link
             className="text-[#27F795]"
             href="https://ghe.clickhouse.tech/"
             target="_blank"
           >
-            61 prompts
-          </Link>.{" "}
-          The results are shown below and can be compared to a human baseline.
+            50 prompts
+          </Link>
+          . The results are shown below and can be compared to a human baseline.
         </p>
       </div>
 
-      <div className="mb-6 flex flex-col sm:flex-row items-stretch sm:items-center gap-4 max-w-[1400px]">
+      <div className="mb-6 flex flex-col lg:flex-row items-stretch lg:items-center gap-4 max-w-[1400px]">
         <QuestionSelect />
         <Filters
           data={data}
