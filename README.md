@@ -1,4 +1,4 @@
-# LLM SQL Benchmark
+# LLM SQL Generation Benchmark
 
 A tool for benchmarking various Large Language Models (LLMs) on their ability to generate correct analytical SQL queries for Tinybird.
 
