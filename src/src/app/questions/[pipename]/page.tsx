@@ -131,7 +131,7 @@ export default function QuestionDetail() {
       },
     },
     {
-      name: "Success",
+      name: "Valid Query",
       accessorKey: "successRate",
       sortable: true,
       description: "Whether the query executed successfully",
