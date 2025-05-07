@@ -82,6 +82,7 @@ npm install
 
 ```bash
 curl https://tinybird.co | sh
+cd llm-benchmark/src/tinybird
 tb login
 tb --cloud deploy
 tb --cloud datasource append github_events https://storage.googleapis.com/dev-alrocar-public/github/01.parquet
