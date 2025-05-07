@@ -120,7 +120,7 @@ export const Header = ({
             <Button
               onClick={() => {
                 window.open(
-                  "https://github.com/tinybirdco/llm-benchmark",
+                  "https://git.new/llm-sql-benchmark",
                   "_blank"
                 );
               }}
