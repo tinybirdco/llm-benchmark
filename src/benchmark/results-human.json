@@ -3,7 +3,7 @@
     "name": "pipe_01.pipe",
     "question": {
       "name": "pipe_01.pipe",
-      "content": "Count all stars\n    The WatchEvent is the event when someone gives a star to a repo."
+      "content": "Count all stars"
     },
     "sql": "SELECT count() FROM github_events WHERE event_type = 'WatchEvent'",
     "sqlResult": {
@@ -20,12 +20,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.004183277,
+        "elapsed": 0.003474005,
         "rows_read": 32769,
         "bytes_read": 32784
       },
-      "executionTime": 0.053,
-      "requestId": "01JTJENYF6F90DGA3SS7A08KN6"
+      "executionTime": 0.052,
+      "requestId": "01JTMVJ9HM8SVX3TZ0ERDBZ6M9"
     },
     "model": "human",
     "provider": "human",
@@ -94,12 +94,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.049326199,
+        "elapsed": 0.041911526,
         "rows_read": 7319235,
         "bytes_read": 21919077
       },
       "executionTime": 0.1,
-      "requestId": "01JTJENZG8MCYC2QK7YHDAH26Y"
+      "requestId": "01JTMVJAJG9TNKHBG5DRK5Z7RA"
     },
     "model": "human",
     "provider": "human",
@@ -110,31 +110,31 @@
     "name": "pipe_03.pipe",
     "question": {
       "name": "pipe_03.pipe",
-      "content": "what is the distribution of repositories by stars? from 1 to 100000 in multiples of 10"
+      "content": "For each power of 10 (1, 10, 100, 1000, etc.), count how many GitHub repositories have approximately that many stars. Order the results from smallest to largest star count"
     },
-    "sql": "SELECT\n        exp10(floor(log10(c))) AS stars,\n        uniq(k)\n    FROM\n    (\n        SELECT\n            repo_name AS k,\n            count() AS c\n        FROM github_events\n        WHERE event_type = 'WatchEvent'\n        GROUP BY k\n    )\n    GROUP BY stars\n    ORDER BY stars ASC",
+    "sql": "SELECT\n        exp10(floor(log10(c))) AS stars,\n        uniqExact(k)\n    FROM\n    (\n        SELECT\n            repo_name AS k,\n            count() AS c\n        FROM github_events\n        WHERE event_type = 'WatchEvent'\n        GROUP BY k\n    )\n    GROUP BY stars\n    ORDER BY stars ASC",
     "sqlResult": {
       "success": true,
       "data": [
         {
           "stars": 1,
-          "uniq(k)": 539583
+          "uniqExact(k)": 537389
         },
         {
           "stars": 10,
-          "uniq(k)": 49995
+          "uniqExact(k)": 49995
         },
         {
           "stars": 100,
-          "uniq(k)": 8578
+          "uniqExact(k)": 8578
         },
         {
           "stars": 1000,
-          "uniq(k)": 902
+          "uniqExact(k)": 902
         },
         {
           "stars": 10000,
-          "uniq(k)": 31
+          "uniqExact(k)": 31
         }
       ],
       "meta": [
@@ -143,17 +143,17 @@
           "type": "Float64"
         },
         {
-          "name": "uniq(k)",
+          "name": "uniqExact(k)",
           "type": "UInt64"
         }
       ],
       "statistics": {
-        "elapsed": 0.069490902,
+        "elapsed": 0.091554491,
         "rows_read": 7319235,
         "bytes_read": 21919077
       },
-      "executionTime": 0.118,
-      "requestId": "01JTJEP0JPQ27999GEAK6SHFYC"
+      "executionTime": 0.15,
+      "requestId": "01JTMVJBMYE2WGRK1S6ZT0VENY"
     },
     "model": "human",
     "provider": "human",
@@ -181,12 +181,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 1.890334589,
+        "elapsed": 1.303885173,
         "rows_read": 200000000,
         "bytes_read": 394943756
       },
-      "executionTime": 2.018,
-      "requestId": "01JTJEP1R7M7MDPBRPHJCKPWZ1"
+      "executionTime": 1.475,
+      "requestId": "01JTMVJCWFNWRGBT7X1VQK2MDC"
     },
     "model": "human",
     "provider": "human",
@@ -199,7 +199,7 @@
       "name": "pipe_05.pipe",
       "content": "How has the list of top repositories changed over the years from 2015"
     },
-    "sql": "SELECT\n        year,\n        lower(repo_name) AS repo,\n        count()\n    FROM github_events\n    WHERE (event_type = 'WatchEvent') AND (year >= 2015)\n    GROUP BY\n        repo,\n        toYear(created_at) AS year\n    ORDER BY\n        year ASC,\n        count() DESC\n    LIMIT 10 BY year",
+    "sql": "SELECT\n        year,\n        lower(repo_name) AS repo,\n        count()\n    FROM github_events\n    WHERE (event_type = 'WatchEvent') AND (year >= 2015)\n    GROUP BY\n        repo,\n        toYear(created_at) AS year\n    ORDER BY\n        year ASC,\n        count() DESC\n    LIMIT 10",
     "sqlResult": {
       "success": true,
       "data": [
@@ -252,56 +252,6 @@
           "year": 2016,
           "repo": "zxing/zxing",
           "count()": 4890
-        },
-        {
-          "year": 2017,
-          "repo": "tensorflow/tensorflow",
-          "count()": 49278
-        },
-        {
-          "year": 2017,
-          "repo": "vuejs/vue",
-          "count()": 48185
-        },
-        {
-          "year": 2017,
-          "repo": "sindresorhus/awesome",
-          "count()": 29084
-        },
-        {
-          "year": 2017,
-          "repo": "thedaviddias/front-end-checklist",
-          "count()": 24745
-        },
-        {
-          "year": 2017,
-          "repo": "sdmg15/best-websites-a-programmer-should-visit",
-          "count()": 21764
-        },
-        {
-          "year": 2017,
-          "repo": "twbs/bootstrap",
-          "count()": 21157
-        },
-        {
-          "year": 2017,
-          "repo": "toddmotto/public-apis",
-          "count()": 20881
-        },
-        {
-          "year": 2017,
-          "repo": "robbyrussell/oh-my-zsh",
-          "count()": 19325
-        },
-        {
-          "year": 2017,
-          "repo": "vuejs/awesome-vue",
-          "count()": 18499
-        },
-        {
-          "year": 2017,
-          "repo": "tipsy/github-profile-summary",
-          "count()": 17847
         }
       ],
       "meta": [
@@ -319,12 +269,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.261925802,
+        "elapsed": 0.068587485,
         "rows_read": 7319235,
         "bytes_read": 51225945
       },
-      "executionTime": 0.386,
-      "requestId": "01JTJEP4M8N3Q1KCEYBTDAXGNV"
+      "executionTime": 0.114,
+      "requestId": "01JTMVJF6HQD64RSRFFAQA1R2M"
     },
     "model": "human",
     "provider": "human",
@@ -335,7 +285,7 @@
     "name": "pipe_06.pipe",
     "question": {
       "name": "pipe_06.pipe",
-      "content": "How has the total number of stars changed over time?"
+      "content": "How has the total number of stars changed over time by year?"
     },
     "sql": "SELECT toYear(created_at) AS year, count() AS stars FROM github_events WHERE event_type = 'WatchEvent' GROUP BY year ORDER BY year",
     "sqlResult": {
@@ -361,12 +311,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.026242276,
+        "elapsed": 0.016079002,
         "rows_read": 7319235,
         "bytes_read": 36596175
       },
-      "executionTime": 0.072,
-      "requestId": "01JTJEP5ZHH8F9G3JHKXG26W20"
+      "executionTime": 0.063,
+      "requestId": "01JTMVJG9ETEQ1J6DM91PMGZS3"
     },
     "model": "human",
     "provider": "human",
@@ -435,12 +385,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.200536226,
+        "elapsed": 0.169384277,
         "rows_read": 7319235,
         "bytes_read": 21957705
       },
-      "executionTime": 0.251,
-      "requestId": "01JTJEP718JKBWKZV3XBFDBD3Z"
+      "executionTime": 0.216,
+      "requestId": "01JTMVJHAVPN89EPZ3019H4T7M"
     },
     "model": "human",
     "provider": "human",
@@ -490,11 +440,11 @@
           "stars": 2887
         },
         {
-          "repo_name": "webpack/webpack",
+          "repo_name": "yarnpkg/yarn",
           "stars": 2774
         },
         {
-          "repo_name": "yarnpkg/yarn",
+          "repo_name": "webpack/webpack",
           "stars": 2774
         }
       ],
@@ -509,12 +459,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.155515538,
+        "elapsed": 0.137978878,
         "rows_read": 7360195,
         "bytes_read": 36693147
       },
-      "executionTime": 0.203,
-      "requestId": "01JTJEP88A3XPA6F3G40M0NR29"
+      "executionTime": 0.184,
+      "requestId": "01JTMVJJGYDNKQ1B8PBDZMDQRX"
     },
     "model": "human",
     "provider": "human",
@@ -525,68 +475,68 @@
     "name": "pipe_09.pipe",
     "question": {
       "name": "pipe_09.pipe",
-      "content": "top 10 \"friends\" to javisantana through counting stars"
+      "content": "Find the top 10 GitHub users who have the highest proportion of their stars given to repositories owned by 'javisantana' compared to all other repositories they've starred. Show each user's name, the number of stars they gave to javisantana's repos, the number of stars they gave to other repos, and the ratio of javisantana stars to total stars."
     },
     "sql": "WITH repo_name IN\n    (\n        SELECT repo_name\n        FROM github_events\n        WHERE (event_type = 'WatchEvent') AND (actor_login IN ('javisantana'))\n    ) AS is_my_repo\n    SELECT\n        actor_login,\n        sum(is_my_repo) AS stars_my,\n        sum(NOT is_my_repo) AS stars_other,\n        round(stars_my / (stars_my + stars_other), 3) AS ratio\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY actor_login\n    ORDER BY ratio DESC\n    LIMIT 10",
     "sqlResult": {
       "success": true,
       "data": [
         {
-          "actor_login": "DevAShah",
-          "stars_my": 0,
-          "stars_other": 13,
-          "ratio": 0
-        },
-        {
-          "actor_login": "obetancourthunicah",
+          "actor_login": "TeknoMatik",
           "stars_my": 0,
           "stars_other": 1,
           "ratio": 0
         },
         {
-          "actor_login": "vijayantkatyal",
+          "actor_login": "ukautz",
           "stars_my": 0,
-          "stars_other": 27,
+          "stars_other": 21,
           "ratio": 0
         },
         {
-          "actor_login": "amievon",
-          "stars_my": 0,
-          "stars_other": 1,
-          "ratio": 0
-        },
-        {
-          "actor_login": "whatsupDu",
-          "stars_my": 0,
-          "stars_other": 1,
-          "ratio": 0
-        },
-        {
-          "actor_login": "alanmacleod",
-          "stars_my": 0,
-          "stars_other": 15,
-          "ratio": 0
-        },
-        {
-          "actor_login": "fierayan",
-          "stars_my": 0,
-          "stars_other": 6,
-          "ratio": 0
-        },
-        {
-          "actor_login": "tallate",
+          "actor_login": "artofspeed",
           "stars_my": 0,
           "stars_other": 4,
           "ratio": 0
         },
         {
-          "actor_login": "BaBallover",
+          "actor_login": "wzsh",
+          "stars_my": 0,
+          "stars_other": 5,
+          "ratio": 0
+        },
+        {
+          "actor_login": "dochead",
+          "stars_my": 0,
+          "stars_other": 2,
+          "ratio": 0
+        },
+        {
+          "actor_login": "MatthewFreeman",
           "stars_my": 0,
           "stars_other": 1,
           "ratio": 0
         },
         {
-          "actor_login": "spale777",
+          "actor_login": "dejon97",
+          "stars_my": 0,
+          "stars_other": 1,
+          "ratio": 0
+        },
+        {
+          "actor_login": "yonidej",
+          "stars_my": 0,
+          "stars_other": 3,
+          "ratio": 0
+        },
+        {
+          "actor_login": "SarahMagdalena",
+          "stars_my": 0,
+          "stars_other": 1,
+          "ratio": 0
+        },
+        {
+          "actor_login": "sugitaka64",
           "stars_my": 0,
           "stars_other": 1,
           "ratio": 0
@@ -611,12 +561,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.339914219,
+        "elapsed": 0.282397582,
         "rows_read": 14638470,
         "bytes_read": 58515252
       },
-      "executionTime": 0.387,
-      "requestId": "01JTJEP9DZZD7BGJ99J9GXJNC8"
+      "executionTime": 0.341,
+      "requestId": "01JTMVJKP0HDDA1VEMQ1AJHKMT"
     },
     "model": "human",
     "provider": "human",
@@ -627,61 +577,51 @@
     "name": "pipe_10.pipe",
     "question": {
       "name": "pipe_10.pipe",
-      "content": "top 10 Authors that contributed to tensorflow also contributed to what repositories?"
+      "content": "Find the top 10 non-TensorFlow repositories that received the most pull requests from TensorFlow contributors, ranked by the number of unique contributors."
     },
-    "sql": "SELECT\n        repo_name,\n        count() AS prs,\n        uniq(actor_login) AS authors\n    FROM github_events\n    WHERE (event_type = 'PullRequestEvent') AND (action = 'opened') AND (actor_login IN\n    (\n        SELECT actor_login\n        FROM github_events\n        WHERE (event_type = 'PullRequestEvent') AND (action = 'opened') AND (repo_name IN ('tensorflow/tensorflow'))\n    )) AND (repo_name NOT ILIKE '%tensorflow%')\n    GROUP BY repo_name\n    ORDER BY authors DESC\n    LIMIT 10",
+    "sql": "SELECT\n        repo_name,\n        uniqExact(actor_login) AS authors\n    FROM github_events\n    WHERE (event_type = 'PullRequestEvent') AND (action = 'opened') AND (actor_login IN\n    (\n        SELECT actor_login\n        FROM github_events\n        WHERE (event_type = 'PullRequestEvent') AND (action = 'opened') AND (repo_name like '%tensorflow%')\n    )) AND (repo_name NOT ILIKE '%tensorflow%')\n    GROUP BY repo_name\n    ORDER BY authors DESC\n    LIMIT 10",
     "sqlResult": {
       "success": true,
       "data": [
         {
           "repo_name": "fchollet/keras",
-          "prs": 77,
-          "authors": 19
-        },
-        {
-          "repo_name": "pytorch/pytorch",
-          "prs": 48,
-          "authors": 19
+          "authors": 31
         },
         {
           "repo_name": "scikit-learn/scikit-learn",
-          "prs": 186,
-          "authors": 15
+          "authors": 25
+        },
+        {
+          "repo_name": "pytorch/pytorch",
+          "authors": 25
         },
         {
           "repo_name": "tflearn/tflearn",
-          "prs": 74,
-          "authors": 13
-        },
-        {
-          "repo_name": "google/protobuf",
-          "prs": 11,
-          "authors": 8
+          "authors": 18
         },
         {
           "repo_name": "openai/gym",
-          "prs": 18,
-          "authors": 7
+          "authors": 10
         },
         {
-          "repo_name": "numpy/numpy",
-          "prs": 22,
-          "authors": 6
+          "repo_name": "google/protobuf",
+          "authors": 10
         },
         {
           "repo_name": "kubernetes/kubernetes",
-          "prs": 86,
-          "authors": 5
+          "authors": 9
         },
         {
           "repo_name": "python/cpython",
-          "prs": 10,
-          "authors": 5
+          "authors": 9
+        },
+        {
+          "repo_name": "kubernetes/kubernetes.github.io",
+          "authors": 8
         },
         {
           "repo_name": "syl20bnr/spacemacs",
-          "prs": 21,
-          "authors": 5
+          "authors": 7
         }
       ],
       "meta": [
@@ -690,21 +630,17 @@
           "type": "LowCardinality(String)"
         },
         {
-          "name": "prs",
-          "type": "UInt64"
-        },
-        {
           "name": "authors",
           "type": "UInt64"
         }
       ],
       "statistics": {
-        "elapsed": 0.102639095,
-        "rows_read": 18884033,
-        "bytes_read": 90631389
+        "elapsed": 0.166759687,
+        "rows_read": 37129518,
+        "bytes_read": 184711487
       },
-      "executionTime": 0.149,
-      "requestId": "01JTJEPASD2VQVZBJ275HWB43X"
+      "executionTime": 0.302,
+      "requestId": "01JTMVJN02ZP429ATNS3G91G98"
     },
     "model": "human",
     "provider": "human",
@@ -715,7 +651,7 @@
     "name": "pipe_11.pipe",
     "question": {
       "name": "pipe_11.pipe",
-      "content": "top 10 Authors that filed an issue in tensorflow/tensorflow also filed issues in what repositories?"
+      "content": "top 10 repositories with most issues from users who also opened issues in tensorflow/tensorflow, rank by author."
     },
     "sql": "SELECT\n        repo_name,\n        count() AS prs,\n        uniq(actor_login) AS authors\n    FROM github_events\n    WHERE (event_type = 'IssuesEvent') AND (action = 'opened') AND (actor_login IN\n    (\n        SELECT actor_login\n        FROM github_events\n        WHERE (event_type = 'IssuesEvent') AND (action = 'opened') AND (repo_name IN ('tensorflow/tensorflow'))\n    )) AND (repo_name NOT ILIKE '%tensorflow%')\n    GROUP BY repo_name\n    ORDER BY authors DESC\n    LIMIT 10",
     "sqlResult": {
@@ -787,12 +723,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.113274048,
+        "elapsed": 0.096735232,
         "rows_read": 15857078,
         "bytes_read": 85431490
       },
-      "executionTime": 0.162,
-      "requestId": "01JTJEPBXDFDDX2FHRH4AH1VEJ"
+      "executionTime": 0.142,
+      "requestId": "01JTMVJP8VW77J7T4ASEG1C107"
     },
     "model": "human",
     "provider": "human",
@@ -803,7 +739,7 @@
     "name": "pipe_12.pipe",
     "question": {
       "name": "pipe_12.pipe",
-      "content": "top 10 Repositories with the most stars over one day"
+      "content": "top uniq 10 Repositories with the most stars over one full day at any instant. Limit to 10 results do not repeat repository names"
     },
     "sql": "SELECT\n        repo_name,\n        toDate(created_at) AS day,\n        count() AS stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY\n        repo_name,\n        day\n    ORDER BY count() DESC\n    LIMIT 1 BY repo_name\n    LIMIT 10",
     "sqlResult": {
@@ -875,12 +811,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.228377477,
+        "elapsed": 0.228439988,
         "rows_read": 7319235,
         "bytes_read": 51196017
       },
-      "executionTime": 0.279,
-      "requestId": "01JTJEPD1S3HJ5M79DKBBD72MT"
+      "executionTime": 0.277,
+      "requestId": "01JTMVJQCG7Y81CVN31M7CG2EW"
     },
     "model": "human",
     "provider": "human",
@@ -891,9 +827,9 @@
     "name": "pipe_13.pipe",
     "question": {
       "name": "pipe_13.pipe",
-      "content": "top 10 Repositories with the highest growth YoY 2016 and 2017"
+      "content": "top 10 Repositories with the highest growth YoY 2016 and 2017 starting from 1 star"
     },
-    "sql": "WITH toYear(created_at) AS year\n    SELECT\n        repo_name,\n        sum(year = 2017) AS stars2017,\n        sum(year = 2016) AS stars2016,\n        round(stars2017 / stars2016, 3) AS yoy,\n        min(created_at) AS first_seen\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n    HAVING stars2016 >= 1\n    ORDER BY yoy DESC\n    LIMIT 10",
+    "sql": "WITH toYear(created_at) AS year\n    SELECT\n        repo_name,\n        sum(year = 2017) AS stars2017,\n        sum(year = 2016) AS stars2016,\n        round((stars2017 - stars2016) / stars2016 * 100, 2) as yoy\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n    HAVING stars2016 >= 1\n    ORDER BY yoy DESC\n    LIMIT 10",
     "sqlResult": {
       "success": true,
       "data": [
@@ -901,71 +837,61 @@
           "repo_name": "xuset/planktos",
           "stars2017": 392,
           "stars2016": 2,
-          "yoy": 196,
-          "first_seen": "2016-12-20 21:17:38"
+          "yoy": 19500
         },
         {
           "repo_name": "zyphs21/HSStockChart",
           "stars2017": 319,
           "stars2016": 2,
-          "yoy": 159.5,
-          "first_seen": "2016-09-08 08:29:57"
+          "yoy": 15850
         },
         {
           "repo_name": "xinglie/gameboy",
           "stars2017": 153,
           "stars2016": 1,
-          "yoy": 153,
-          "first_seen": "2016-11-24 05:27:46"
+          "yoy": 15200
         },
         {
           "repo_name": "xulayen/WeChat",
           "stars2017": 147,
           "stars2016": 1,
-          "yoy": 147,
-          "first_seen": "2016-09-22 09:42:19"
+          "yoy": 14600
         },
         {
           "repo_name": "yacy/yacybot",
           "stars2017": 136,
           "stars2016": 1,
-          "yoy": 136,
-          "first_seen": "2016-07-19 05:43:22"
+          "yoy": 13500
         },
         {
           "repo_name": "yenchenlin/awesome-adversarial-machine-learning",
           "stars2017": 518,
           "stars2016": 4,
-          "yoy": 129.5,
-          "first_seen": "2016-12-19 09:24:33"
+          "yoy": 12850
         },
         {
           "repo_name": "xuexb/learn-nginx",
           "stars2017": 227,
           "stars2016": 2,
-          "yoy": 113.5,
-          "first_seen": "2016-07-21 02:55:42"
+          "yoy": 11250
         },
         {
           "repo_name": "xlab/treeprint",
           "stars2017": 112,
           "stars2016": 1,
-          "yoy": 112,
-          "first_seen": "2016-07-05 15:12:26"
+          "yoy": 11100
         },
         {
           "repo_name": "yaozs/YzsBaseActivity",
           "stars2017": 176,
           "stars2016": 2,
-          "yoy": 88,
-          "first_seen": "2016-12-28 03:14:27"
+          "yoy": 8700
         },
         {
           "repo_name": "zvovov/whatsapp-web",
           "stars2017": 84,
           "stars2016": 1,
-          "yoy": 84,
-          "first_seen": "2016-11-02 04:24:53"
+          "yoy": 8300
         }
       ],
       "meta": [
@@ -984,19 +910,15 @@
         {
           "name": "yoy",
           "type": "Float64"
-        },
-        {
-          "name": "first_seen",
-          "type": "DateTime"
         }
       ],
       "statistics": {
-        "elapsed": 0.06089651,
+        "elapsed": 0.057200895,
         "rows_read": 7319235,
         "bytes_read": 51196017
       },
-      "executionTime": 0.108,
-      "requestId": "01JTJEPE9TNZCHEF84WYX2EDZ4"
+      "executionTime": 0.104,
+      "requestId": "01JTMVJRMGZYVC8B5BKYCV37KE"
     },
     "model": "human",
     "provider": "human",
@@ -1007,9 +929,9 @@
     "name": "pipe_14.pipe",
     "question": {
       "name": "pipe_14.pipe",
-      "content": "top 10 Repositories with the worst stagnation in 2016 vs 2017"
+      "content": "top 10 Repositories with the worst stagnation in 2017 vs 2016. Repos with at least one star in 2017"
     },
-    "sql": "WITH toYear(created_at) AS year\n    SELECT\n        repo_name,\n        sum(year = 2017) AS stars2017,\n        sum(year = 2016) AS stars2016,\n        round(stars2017 / stars2016, 3) AS yoy,\n        min(created_at) AS first_seen\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n    HAVING (stars2017 >= 1)\n    ORDER BY yoy ASC\n    LIMIT 10",
+    "sql": "WITH toYear(created_at) AS year\n    SELECT\n        repo_name,\n        sum(year = 2017) AS stars2017,\n        sum(year = 2016) AS stars2016,\n        round((stars2017 - stars2016) / stars2016 * 100, 2) as yoy\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n    HAVING (stars2017 >= 1)\n    ORDER BY yoy ASC\n    LIMIT 10",
     "sqlResult": {
       "success": true,
       "data": [
@@ -1017,71 +939,61 @@
           "repo_name": "zymtom/DidIStealThis",
           "stars2017": 2,
           "stars2016": 514,
-          "yoy": 0.004,
-          "first_seen": "2016-02-07 14:50:28"
+          "yoy": -99.61
         },
         {
           "repo_name": "zverok/wheretz",
           "stars2017": 1,
           "stars2016": 73,
-          "yoy": 0.014,
-          "first_seen": "2016-01-28 15:56:09"
+          "yoy": -98.63
         },
         {
           "repo_name": "zzz40500/AndroidSweetBehavior",
           "stars2017": 2,
           "stars2016": 134,
-          "yoy": 0.015,
-          "first_seen": "2016-02-20 17:19:51"
+          "yoy": -98.51
         },
         {
           "repo_name": "zyqf/DNS",
           "stars2017": 16,
           "stars2016": 1022,
-          "yoy": 0.016,
-          "first_seen": "2016-01-25 23:15:35"
+          "yoy": -98.43
         },
         {
           "repo_name": "xyproto/simplehstore",
           "stars2017": 1,
           "stars2016": 49,
-          "yoy": 0.02,
-          "first_seen": "2016-08-10 00:33:38"
-        },
-        {
-          "repo_name": "zzarcon/psaux",
-          "stars2017": 2,
-          "stars2016": 94,
-          "yoy": 0.021,
-          "first_seen": "2016-02-22 02:38:01"
+          "yoy": -97.96
         },
         {
           "repo_name": "zuzuleinen/dave",
           "stars2017": 1,
           "stars2016": 48,
-          "yoy": 0.021,
-          "first_seen": "2016-11-16 21:46:57"
+          "yoy": -97.92
         },
         {
           "repo_name": "xjbeta/AppleDNS-GUI",
           "stars2017": 1,
           "stars2016": 47,
-          "yoy": 0.021,
-          "first_seen": "2016-04-08 10:49:06"
+          "yoy": -97.87
+        },
+        {
+          "repo_name": "zzarcon/psaux",
+          "stars2017": 2,
+          "stars2016": 94,
+          "yoy": -97.87
         },
         {
           "repo_name": "xxycode/NELivePlayer",
           "stars2017": 2,
           "stars2016": 90,
-          "yoy": 0.022,
-          "first_seen": "2016-05-02 18:08:47"
+          "yoy": -97.78
         },
         {
           "repo_name": "zzarcon/animotion",
           "stars2017": 1,
           "stars2016": 43,
-          "yoy": 0.023,
-          "first_seen": "2016-08-05 14:27:25"
+          "yoy": -97.67
         }
       ],
       "meta": [
@@ -1100,19 +1012,15 @@
         {
           "name": "yoy",
           "type": "Float64"
-        },
-        {
-          "name": "first_seen",
-          "type": "DateTime"
         }
       ],
       "statistics": {
-        "elapsed": 0.05747098,
+        "elapsed": 0.054401053,
         "rows_read": 7319235,
         "bytes_read": 51196017
       },
-      "executionTime": 0.103,
-      "requestId": "01JTJEPFCH61PHS9KDSFPXQ2EQ"
+      "executionTime": 0.1,
+      "requestId": "01JTMVJSQ4RWG40BG2BCFMKYKX"
     },
     "model": "human",
     "provider": "human",
@@ -1123,7 +1031,7 @@
     "name": "pipe_15.pipe",
     "question": {
       "name": "pipe_15.pipe",
-      "content": "top 10 Repositories with the most steady growth over time"
+      "content": "top 10 Repositories with the most steady star growth rate over time"
     },
     "sql": "SELECT\n        repo_name,\n        max(stars) AS daily_stars,\n        sum(stars) AS total_stars,\n        total_stars / daily_stars AS rate\n    FROM\n    (\n        SELECT\n            repo_name,\n            toDate(created_at) AS day,\n            count() AS stars\n        FROM github_events\n        WHERE event_type = 'WatchEvent'\n        GROUP BY\n            repo_name,\n            day\n    )\n    GROUP BY repo_name\n    ORDER BY rate DESC\n    LIMIT 10",
     "sqlResult": {
@@ -1209,12 +1117,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.256403138,
+        "elapsed": 0.214248584,
         "rows_read": 7319235,
         "bytes_read": 51196017
       },
-      "executionTime": 0.358,
-      "requestId": "01JTJEPGF6Q8H0YNYSJ0QJ5XYE"
+      "executionTime": 0.262,
+      "requestId": "01JTMVJTSNS3J9S4ZDJQ393CR5"
     },
     "model": "human",
     "provider": "human",
@@ -1271,12 +1179,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.015923359,
+        "elapsed": 0.01350127,
         "rows_read": 7319235,
         "bytes_read": 36596175
       },
-      "executionTime": 0.063,
-      "requestId": "01JTJEPHSJGXXKM5DQKGH6YGP6"
+      "executionTime": 0.059,
+      "requestId": "01JTMVJW15BPW631JPYGCKP0V1"
     },
     "model": "human",
     "provider": "human",
@@ -1304,12 +1212,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.525063054,
+        "elapsed": 0.476106729,
         "rows_read": 200000000,
         "bytes_read": 394865005
       },
-      "executionTime": 0.57,
-      "requestId": "01JTJEPJTWCB9J3SQC4AZP244E"
+      "executionTime": 0.521,
+      "requestId": "01JTMVJX29BXRVQM9N9AT919EP"
     },
     "model": "human",
     "provider": "human",
@@ -1337,12 +1245,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.113791519,
+        "elapsed": 0.116142681,
         "rows_read": 7319235,
         "bytes_read": 21957705
       },
-      "executionTime": 0.16,
-      "requestId": "01JTJEPMC0K46PFSNK8F6ZW2CN"
+      "executionTime": 0.159,
+      "requestId": "01JTMVJYHW8H0Y0NZQBG3AWP9S"
     },
     "model": "human",
     "provider": "human",
@@ -1370,12 +1278,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.161882626,
+        "elapsed": 0.145877421,
         "rows_read": 75689153,
         "bytes_read": 223381427
       },
-      "executionTime": 0.251,
-      "requestId": "01JTJEPNHNBV7Z06RYJJ99ASHT"
+      "executionTime": 0.189,
+      "requestId": "01JTMVJZP5RRNFH1TQB8HNDEJT"
     },
     "model": "human",
     "provider": "human",
@@ -1403,12 +1311,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.091860118,
+        "elapsed": 0.08583335,
         "rows_read": 18564759,
         "bytes_read": 73368008
       },
-      "executionTime": 0.141,
-      "requestId": "01JTJEPPQJ325QTTHWNSQJR9XJ"
+      "executionTime": 0.128,
+      "requestId": "01JTMVK0VCM2CEBAC9SVTZKVRS"
     },
     "model": "human",
     "provider": "human",
@@ -1477,12 +1385,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.472109196,
+        "elapsed": 0.425138636,
         "rows_read": 25883994,
         "bytes_read": 109955483
       },
-      "executionTime": 0.519,
-      "requestId": "01JTJEPQV6NQWHBJS2D3S41RMK"
+      "executionTime": 0.474,
+      "requestId": "01JTMVK1YTAH9KTP8CD1RZCNR8"
     },
     "model": "human",
     "provider": "human",
@@ -1493,7 +1401,7 @@
     "name": "pipe_22.pipe",
     "question": {
       "name": "pipe_22.pipe",
-      "content": "top 10 authors who have made at least 10 PRs?"
+      "content": "top 10 repos with authors who have made at least 10 PRs?"
     },
     "sql": "SELECT\n        repo_name,\n        count()\n    FROM github_events\n    WHERE (event_type = 'WatchEvent') AND (actor_login IN\n    (\n        SELECT actor_login\n        FROM github_events\n        WHERE (event_type = 'PullRequestEvent') AND (action = 'opened')\n        GROUP BY actor_login\n        HAVING count() >= 10\n    ))\n    GROUP BY repo_name\n    ORDER BY count() DESC\n    LIMIT 10",
     "sqlResult": {
@@ -1551,12 +1459,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.231968037,
+        "elapsed": 0.248137044,
         "rows_read": 25883994,
         "bytes_read": 109955483
       },
-      "executionTime": 0.279,
-      "requestId": "01JTJEPSAQYA6ZRQMANXMFH6Z9"
+      "executionTime": 0.293,
+      "requestId": "01JTMVK3CVGWF6PSTEX169N6NC"
     },
     "model": "human",
     "provider": "human",
@@ -1569,59 +1477,49 @@
       "name": "pipe_23.pipe",
       "content": "top 10 Repositories with the maximum amount of pull requests"
     },
-    "sql": "SELECT repo_name, count(), uniq(actor_login) FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' GROUP BY repo_name ORDER BY count() DESC LIMIT 10",
+    "sql": "SELECT repo_name, count() FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' GROUP BY repo_name ORDER BY count() DESC LIMIT 10",
     "sqlResult": {
       "success": true,
       "data": [
         {
           "repo_name": "sauron-demo/sauron",
-          "count()": 109608,
-          "uniq(actor_login)": 1
+          "count()": 109608
         },
         {
           "repo_name": "google-test/signcla-probe-repo",
-          "count()": 43435,
-          "uniq(actor_login)": 4
+          "count()": 43435
         },
         {
           "repo_name": "sauron-demo/sauron-demo",
-          "count()": 31288,
-          "uniq(actor_login)": 10
+          "count()": 31288
         },
         {
           "repo_name": "rust-lang/rust",
-          "count()": 13365,
-          "uniq(actor_login)": 703
+          "count()": 13365
         },
         {
           "repo_name": "everypolitician/everypolitician-data",
-          "count()": 13277,
-          "uniq(actor_login)": 3
+          "count()": 13277
         },
         {
           "repo_name": "ros/rosdistro",
-          "count()": 12932,
-          "uniq(actor_login)": 418
+          "count()": 12932
         },
         {
           "repo_name": "jlord/patchwork",
-          "count()": 12708,
-          "uniq(actor_login)": 5802
+          "count()": 12708
         },
         {
           "repo_name": "kubernetes/kubernetes",
-          "count()": 11347,
-          "uniq(actor_login)": 1065
+          "count()": 11347
         },
         {
           "repo_name": "saltstack/salt",
-          "count()": 10494,
-          "uniq(actor_login)": 690
+          "count()": 10494
         },
         {
           "repo_name": "nodejs/node",
-          "count()": 9708,
-          "uniq(actor_login)": 1031
+          "count()": 9708
         }
       ],
       "meta": [
@@ -1632,19 +1530,15 @@
         {
           "name": "count()",
           "type": "UInt64"
-        },
-        {
-          "name": "uniq(actor_login)",
-          "type": "UInt64"
         }
       ],
       "statistics": {
-        "elapsed": 0.155978133,
+        "elapsed": 0.088973848,
         "rows_read": 18564759,
-        "bytes_read": 109818681
+        "bytes_read": 73326053
       },
-      "executionTime": 0.205,
-      "requestId": "01JTJEPTJXDXDJD63HG0M1VA51"
+      "executionTime": 0.137,
+      "requestId": "01JTMVK4NDN5V5F031BMNP0RCM"
     },
     "model": "human",
     "provider": "human",
@@ -1657,58 +1551,48 @@
       "name": "pipe_24.pipe",
       "content": "top 10 Repositories with the maximum amount of pull request contributors"
     },
-    "sql": "SELECT repo_name, count(), uniq(actor_login) AS u FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' GROUP BY repo_name ORDER BY u DESC LIMIT 10",
+    "sql": "SELECT repo_name, uniqExact(actor_login) AS u FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' GROUP BY repo_name ORDER BY u DESC LIMIT 10",
     "sqlResult": {
       "success": true,
       "data": [
         {
           "repo_name": "jlord/patchwork",
-          "count()": 12708,
           "u": 5802
         },
         {
           "repo_name": "githubschool/open-enrollment-classes-introduction-to-github",
-          "count()": 4539,
           "u": 3586
         },
         {
           "repo_name": "learn-co-students/javascript-intro-to-functions-lab-bootcamp-prep-000",
-          "count()": 6088,
           "u": 3027
         },
         {
           "repo_name": "learn-co-students/js-functions-lab-bootcamp-prep-000",
-          "count()": 5838,
           "u": 2899
         },
         {
           "repo_name": "learn-co-students/js-from-dom-to-node-bootcamp-prep-000",
-          "count()": 5778,
           "u": 2860
         },
         {
           "repo_name": "learn-co-students/javascript-arithmetic-lab-bootcamp-prep-000",
-          "count()": 5404,
           "u": 2681
         },
         {
           "repo_name": "udacity/create-your-own-adventure",
-          "count()": 6454,
           "u": 2622
         },
         {
           "repo_name": "learn-co-students/js-node-practice-lab-bootcamp-prep-000",
-          "count()": 5220,
           "u": 2594
         },
         {
           "repo_name": "freeCodeCamp/guides",
-          "count()": 7694,
           "u": 2587
         },
         {
           "repo_name": "learn-co-students/js-if-else-files-lab-bootcamp-prep-000",
-          "count()": 5172,
           "u": 2581
         }
       ],
@@ -1718,21 +1602,17 @@
           "type": "LowCardinality(String)"
         },
         {
-          "name": "count()",
-          "type": "UInt64"
-        },
-        {
           "name": "u",
           "type": "UInt64"
         }
       ],
       "statistics": {
-        "elapsed": 0.15060057,
+        "elapsed": 0.161494156,
         "rows_read": 18564759,
         "bytes_read": 109818681
       },
-      "executionTime": 0.196,
-      "requestId": "01JTJEPVRG33924PFKJGDGQ768"
+      "executionTime": 0.211,
+      "requestId": "01JTMVK5S1FZFYG4XR2491NPAD"
     },
     "model": "human",
     "provider": "human",
@@ -1745,59 +1625,49 @@
       "name": "pipe_25.pipe",
       "content": "top 10 Repositories with the maximum amount of issues"
     },
-    "sql": "SELECT repo_name, count() AS c, uniq(actor_login) AS u FROM github_events WHERE event_type = 'IssuesEvent' AND action = 'opened' GROUP BY repo_name ORDER BY c DESC LIMIT 10",
+    "sql": "SELECT repo_name, count() AS c FROM github_events WHERE event_type = 'IssuesEvent' AND action = 'opened' GROUP BY repo_name ORDER BY c DESC LIMIT 10",
     "sqlResult": {
       "success": true,
       "data": [
         {
           "repo_name": "pddemo/demo",
-          "c": 432430,
-          "u": 1
+          "c": 432430
         },
         {
           "repo_name": "support-ops/sit-repo",
-          "c": 59634,
-          "u": 1
+          "c": 59634
         },
         {
           "repo_name": "nainardev/tamil-dubbed",
-          "c": 58392,
-          "u": 1
+          "c": 58392
         },
         {
           "repo_name": "bippybop/iitest",
-          "c": 41581,
-          "u": 1
+          "c": 41581
         },
         {
           "repo_name": "test-organization-kkjeer/app-test",
-          "c": 35864,
-          "u": 2
+          "c": 35864
         },
         {
           "repo_name": "test-organization-kkjeer/bot-validation",
-          "c": 35850,
-          "u": 3
+          "c": 35850
         },
         {
           "repo_name": "theapache64/movie-monk-creator",
-          "c": 34666,
-          "u": 2
+          "c": 34666
         },
         {
           "repo_name": "ouyanxia2/hgmgmg",
-          "c": 29922,
-          "u": 4
+          "c": 29922
         },
         {
           "repo_name": "pavlo-byshovets/Tutorials",
-          "c": 23302,
-          "u": 2
+          "c": 23302
         },
         {
           "repo_name": "ruben-archisketch/tinkerbell-template",
-          "c": 23268,
-          "u": 1
+          "c": 23268
         }
       ],
       "meta": [
@@ -1808,223 +1678,15 @@
         {
           "name": "c",
           "type": "UInt64"
-        },
-        {
-          "name": "u",
-          "type": "UInt64"
         }
       ],
       "statistics": {
-        "elapsed": 0.161972223,
+        "elapsed": 0.075749045,
         "rows_read": 15470766,
-        "bytes_read": 91604547
+        "bytes_read": 61143811
       },
-      "executionTime": 0.21,
-      "requestId": "01JTJEPWY15HZ5R0GTPHW5YK0B"
-    },
-    "model": "human",
-    "provider": "human",
-    "error": null,
-    "attempts": []
-  },
-  {
-    "name": "pipe_26.pipe",
-    "question": {
-      "name": "pipe_26.pipe",
-      "content": "top 10 Repositories with the maximum amount of issues, distinguish real issues from robot ones, add a cutoff at 1000 stars"
-    },
-    "sql": "WITH (event_type = 'IssuesEvent') AND (action = 'opened') AS issue_created\n    SELECT\n        repo_name,\n        sum(issue_created) AS c,\n        uniqIf(actor_login, issue_created) AS u,\n        sum(event_type = 'WatchEvent') AS stars\n    FROM github_events\n    WHERE event_type IN ('IssuesEvent', 'WatchEvent')\n    GROUP BY repo_name\n    HAVING stars >= 1000\n    ORDER BY c DESC\n    LIMIT 10",
-    "sqlResult": {
-      "success": true,
-      "data": [
-        {
-          "repo_name": "tensorflow/tensorflow",
-          "c": 13724,
-          "u": 4640,
-          "stars": 49278
-        },
-        {
-          "repo_name": "rust-lang/rust",
-          "c": 13422,
-          "u": 1700,
-          "stars": 8345
-        },
-        {
-          "repo_name": "spring-projects/spring-boot",
-          "c": 8296,
-          "u": 1069,
-          "stars": 11029
-        },
-        {
-          "repo_name": "rancher/rancher",
-          "c": 7308,
-          "u": 1140,
-          "stars": 2767
-        },
-        {
-          "repo_name": "spyder-ide/spyder",
-          "c": 4994,
-          "u": 1737,
-          "stars": 1139
-        },
-        {
-          "repo_name": "ray-project/ray",
-          "c": 4902,
-          "u": 850,
-          "stars": 1137
-        },
-        {
-          "repo_name": "saltstack/salt",
-          "c": 4482,
-          "u": 702,
-          "stars": 1470
-        },
-        {
-          "repo_name": "telegramdesktop/tdesktop",
-          "c": 4014,
-          "u": 1340,
-          "stars": 2409
-        },
-        {
-          "repo_name": "rails/rails",
-          "c": 3626,
-          "u": 1607,
-          "stars": 6908
-        },
-        {
-          "repo_name": "scikit-learn/scikit-learn",
-          "c": 3540,
-          "u": 818,
-          "stars": 9724
-        }
-      ],
-      "meta": [
-        {
-          "name": "repo_name",
-          "type": "LowCardinality(String)"
-        },
-        {
-          "name": "c",
-          "type": "UInt64"
-        },
-        {
-          "name": "u",
-          "type": "UInt64"
-        },
-        {
-          "name": "stars",
-          "type": "UInt64"
-        }
-      ],
-      "statistics": {
-        "elapsed": 0.320445264,
-        "rows_read": 22790001,
-        "bytes_read": 135686591
-      },
-      "executionTime": 0.408,
-      "requestId": "01JTJEPY42MC335FCKFG9DZJQR"
-    },
-    "model": "human",
-    "provider": "human",
-    "error": null,
-    "attempts": []
-  },
-  {
-    "name": "pipe_27.pipe",
-    "question": {
-      "name": "pipe_27.pipe",
-      "content": "top 10 Repositories with the maximum amount of issues, distinguish real issues from robot ones, add a cutoff at 1000 stars sort by the number of issue authors"
-    },
-    "sql": "WITH (event_type = 'IssuesEvent') AND (action = 'opened') AS issue_created\n    SELECT\n        repo_name,\n        sum(issue_created) AS c,\n        uniqIf(actor_login, issue_created) AS u,\n        sum(event_type = 'WatchEvent') AS stars\n    FROM github_events\n    WHERE event_type IN ('IssuesEvent', 'WatchEvent')\n    GROUP BY repo_name\n    ORDER BY u DESC\n    LIMIT 10",
-    "sqlResult": {
-      "success": true,
-      "data": [
-        {
-          "repo_name": "tensorflow/tensorflow",
-          "c": 13724,
-          "u": 4640,
-          "stars": 49278
-        },
-        {
-          "repo_name": "docker/docker",
-          "c": 5380,
-          "u": 3064,
-          "stars": 0
-        },
-        {
-          "repo_name": "pytorch/pytorch",
-          "c": 16326,
-          "u": 2595,
-          "stars": 0
-        },
-        {
-          "repo_name": "facebook/react-native",
-          "c": 3751,
-          "u": 2289,
-          "stars": 0
-        },
-        {
-          "repo_name": "timburgan/timburgan",
-          "c": 9013,
-          "u": 2191,
-          "stars": 0
-        },
-        {
-          "repo_name": "driftyco/ionic",
-          "c": 4256,
-          "u": 2005,
-          "stars": 0
-        },
-        {
-          "repo_name": "golang/go",
-          "c": 9272,
-          "u": 1915,
-          "stars": 0
-        },
-        {
-          "repo_name": "hashicorp/terraform",
-          "c": 6868,
-          "u": 1764,
-          "stars": 0
-        },
-        {
-          "repo_name": "spyder-ide/spyder",
-          "c": 4994,
-          "u": 1737,
-          "stars": 1139
-        },
-        {
-          "repo_name": "rust-lang/rust",
-          "c": 13422,
-          "u": 1700,
-          "stars": 8345
-        }
-      ],
-      "meta": [
-        {
-          "name": "repo_name",
-          "type": "LowCardinality(String)"
-        },
-        {
-          "name": "c",
-          "type": "UInt64"
-        },
-        {
-          "name": "u",
-          "type": "UInt64"
-        },
-        {
-          "name": "stars",
-          "type": "UInt64"
-        }
-      ],
-      "statistics": {
-        "elapsed": 0.350623635,
-        "rows_read": 22790001,
-        "bytes_read": 135686591
-      },
-      "executionTime": 0.402,
-      "requestId": "01JTJEPZG6ZRX5MDDG4NXNQP89"
+      "executionTime": 0.124,
+      "requestId": "01JTMVK6YVBY9FG73S78EKBCHZ"
     },
     "model": "human",
     "provider": "human",
@@ -2037,59 +1699,49 @@
       "name": "pipe_28.pipe",
       "content": "top 10 Repositories with the most people who have push access"
     },
-    "sql": "SELECT repo_name, uniqIf(actor_login, event_type = 'PushEvent') AS u, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('PushEvent', 'WatchEvent') AND repo_name != '/' GROUP BY repo_name ORDER BY u DESC LIMIT 10",
+    "sql": "SELECT repo_name, uniqIf(actor_login, event_type = 'PushEvent') AS u FROM github_events WHERE event_type IN ('PushEvent', 'WatchEvent') GROUP BY repo_name ORDER BY u DESC LIMIT 10",
     "sqlResult": {
       "success": true,
       "data": [
         {
+          "repo_name": "/",
+          "u": 18290
+        },
+        {
           "repo_name": "bioconda/bioconda-recipes",
-          "u": 269,
-          "stars": 0
+          "u": 269
         },
         {
           "repo_name": "githubteacher/github-for-developers-sept-2015",
-          "u": 189,
-          "stars": 0
+          "u": 189
         },
         {
           "repo_name": "Automattic/wp-calypso",
-          "u": 184,
-          "stars": 0
+          "u": 184
         },
         {
           "repo_name": "eecs183/lecture_practice",
-          "u": 176,
-          "stars": 0
+          "u": 176
         },
         {
           "repo_name": "cs371p-fall-2015/collatz-tests",
-          "u": 170,
-          "stars": 0
+          "u": 170
         },
         {
           "repo_name": "becodeorg/La-Veille",
-          "u": 161,
-          "stars": 0
+          "u": 161
         },
         {
           "repo_name": "gatsbyjs/gatsby",
-          "u": 144,
-          "stars": 0
+          "u": 144
         },
         {
           "repo_name": "flutter/flutter",
-          "u": 118,
-          "stars": 0
+          "u": 118
         },
         {
           "repo_name": "edx/edx-platform",
-          "u": 118,
-          "stars": 0
-        },
-        {
-          "repo_name": "githubteacher/intro-to-github",
-          "u": 112,
-          "stars": 0
+          "u": 118
         }
       ],
       "meta": [
@@ -2100,19 +1752,15 @@
         {
           "name": "u",
           "type": "UInt64"
-        },
-        {
-          "name": "stars",
-          "type": "UInt64"
         }
       ],
       "statistics": {
-        "elapsed": 0.586160601,
-        "rows_read": 82807796,
-        "bytes_read": 406502639
+        "elapsed": 0.846246075,
+        "rows_read": 82975620,
+        "bytes_read": 407391602
       },
-      "executionTime": 0.635,
-      "requestId": "01JTJEQ0VZDY4C9PFP2E6YXZ2H"
+      "executionTime": 0.957,
+      "requestId": "01JTMVK821ATE7PNYF6VNVS5P4"
     },
     "model": "human",
     "provider": "human",
@@ -2125,59 +1773,49 @@
       "name": "pipe_29.pipe",
       "content": "top 10 Repositories with the most people who have push access to the main branch"
     },
-    "sql": "SELECT\n        repo_name,\n        uniqIf(actor_login, (event_type = 'PushEvent') AND match(ref, '/(main|master)$')) AS u,\n        sum(event_type = 'WatchEvent') AS stars\n    FROM github_events\n    WHERE (event_type IN ('PushEvent', 'WatchEvent')) AND (repo_name != '/')\n    GROUP BY repo_name\n    ORDER BY u DESC\n    LIMIT 10",
+    "sql": "SELECT\n        repo_name,\n        uniqIf(actor_login, (event_type = 'PushEvent') AND match(ref, '/(main|master)$')) AS u\n    FROM github_events\n    WHERE (event_type IN ('PushEvent', 'WatchEvent'))\n    GROUP BY repo_name\n    ORDER BY u DESC\n    LIMIT 10",
     "sqlResult": {
       "success": true,
       "data": [
         {
+          "repo_name": "/",
+          "u": 17366
+        },
+        {
           "repo_name": "bioconda/bioconda-recipes",
-          "u": 244,
-          "stars": 0
+          "u": 244
         },
         {
           "repo_name": "Automattic/wp-calypso",
-          "u": 172,
-          "stars": 0
-        },
-        {
-          "repo_name": "cs371p-fall-2015/collatz-tests",
-          "u": 170,
-          "stars": 0
+          "u": 172
         },
         {
           "repo_name": "githubteacher/github-for-developers-sept-2015",
-          "u": 170,
-          "stars": 0
+          "u": 170
+        },
+        {
+          "repo_name": "cs371p-fall-2015/collatz-tests",
+          "u": 170
         },
         {
           "repo_name": "becodeorg/La-Veille",
-          "u": 161,
-          "stars": 0
+          "u": 161
         },
         {
           "repo_name": "flutter/flutter",
-          "u": 112,
-          "stars": 0
+          "u": 112
         },
         {
           "repo_name": "cs371p-fall-2015/allocator-tests",
-          "u": 107,
-          "stars": 0
+          "u": 107
         },
         {
           "repo_name": "edx/edx-platform",
-          "u": 106,
-          "stars": 0
+          "u": 106
         },
         {
           "repo_name": "cs371p-fall-2015/voting-tests",
-          "u": 105,
-          "stars": 0
-        },
-        {
-          "repo_name": "cs371p-fall-2015/life-tests",
-          "u": 101,
-          "stars": 0
+          "u": 105
         }
       ],
       "meta": [
@@ -2188,19 +1826,15 @@
         {
           "name": "u",
           "type": "UInt64"
-        },
-        {
-          "name": "stars",
-          "type": "UInt64"
         }
       ],
       "statistics": {
-        "elapsed": 1.136705011,
-        "rows_read": 82807796,
-        "bytes_read": 2646119992
+        "elapsed": 1.087089553,
+        "rows_read": 82975620,
+        "bytes_read": 2651509833
       },
-      "executionTime": 1.296,
-      "requestId": "01JTJEQ2JH3GS920Z1V9HHZ1JH"
+      "executionTime": 1.247,
+      "requestId": "01JTMVKA2VFT24XJGG7XXNJCB1"
     },
     "model": "human",
     "provider": "human",
@@ -2283,12 +1917,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 1.038358016,
+        "elapsed": 1.015680498,
         "rows_read": 82807796,
         "bytes_read": 2646119992
       },
-      "executionTime": 1.091,
-      "requestId": "01JTJEQ4PYV6TJV8ZJRVKX5CKY"
+      "executionTime": 1.062,
+      "requestId": "01JTMVKC5KACTAT072MS4234VK"
     },
     "model": "human",
     "provider": "human",
@@ -2299,61 +1933,51 @@
     "name": "pipe_31.pipe",
     "question": {
       "name": "pipe_31.pipe",
-      "content": "top 10 Repositories with the maximum number of accepted invitations"
+      "content": "Top 10 repositories by maximum number of new added members"
     },
-    "sql": "SELECT repo_name, sum(event_type = 'MemberEvent') AS invitations, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('MemberEvent', 'WatchEvent') GROUP BY repo_name HAVING stars >= 100 ORDER BY invitations DESC LIMIT 10",
+    "sql": "SELECT repo_name, count() AS invitations FROM github_events WHERE event_type = 'MemberEvent' AND action = 'added' GROUP BY repo_name ORDER BY invitations DESC LIMIT 10",
     "sqlResult": {
       "success": true,
       "data": [
         {
-          "repo_name": "technomancy/leiningen",
-          "invitations": 7,
-          "stars": 732
+          "repo_name": "/",
+          "invitations": 2995
         },
         {
-          "repo_name": "zatosource/zato",
-          "invitations": 6,
-          "stars": 129
+          "repo_name": "astro/gitpop",
+          "invitations": 935
         },
         {
-          "repo_name": "sikuli/sikuli",
-          "invitations": 6,
-          "stars": 301
+          "repo_name": "jeresig/thunderhub",
+          "invitations": 445
         },
         {
-          "repo_name": "sferik/rails_admin",
-          "invitations": 5,
-          "stars": 525
+          "repo_name": "matthewmccullough/hellogitworld",
+          "invitations": 128
         },
         {
-          "repo_name": "scottjehl/Respond",
-          "invitations": 5,
-          "stars": 850
+          "repo_name": "buhtip/buhtip-repo",
+          "invitations": 55
         },
         {
-          "repo_name": "shogun-toolbox/shogun",
-          "invitations": 5,
-          "stars": 615
+          "repo_name": "braitsch/client1",
+          "invitations": 44
         },
         {
-          "repo_name": "xueruini/thuthesis",
-          "invitations": 4,
-          "stars": 468
+          "repo_name": "societies/SOCIETIES-Platform",
+          "invitations": 37
         },
         {
-          "repo_name": "scalaz/scalaz",
-          "invitations": 4,
-          "stars": 772
+          "repo_name": "dm4/IntroCS-2011-Fall-Homework6",
+          "invitations": 32
         },
         {
-          "repo_name": "unclebob/fitnesse",
-          "invitations": 4,
-          "stars": 218
+          "repo_name": "rperlinski/zpi-basic",
+          "invitations": 32
         },
         {
-          "repo_name": "xianyi/OpenBLAS",
-          "invitations": 3,
-          "stars": 1165
+          "repo_name": "tjhickey724/OctaveBat",
+          "invitations": 32
         }
       ],
       "meta": [
@@ -2364,19 +1988,15 @@
         {
           "name": "invitations",
           "type": "UInt64"
-        },
-        {
-          "name": "stars",
-          "type": "UInt64"
         }
       ],
       "statistics": {
-        "elapsed": 0.062814047,
-        "rows_read": 7779031,
-        "bytes_read": 22645782
+        "elapsed": 0.031401185,
+        "rows_read": 459796,
+        "bytes_read": 803860
       },
-      "executionTime": 0.108,
-      "requestId": "01JTJEQ6RB2KG00AN9MSZ0AS4V"
+      "executionTime": 0.077,
+      "requestId": "01JTMVKE61RBKDBTNTDHSCET9P"
     },
     "model": "human",
     "provider": "human",
@@ -2445,12 +2065,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.073534301,
+        "elapsed": 0.067528569,
         "rows_read": 5953720,
         "bytes_read": 17262692
       },
-      "executionTime": 0.12,
-      "requestId": "01JTJEQ7V2G6A6J6RN9KTE7VF5"
+      "executionTime": 0.112,
+      "requestId": "01JTMVKF7SNB191NNMVZV3MDYD"
     },
     "model": "human",
     "provider": "human",
@@ -2547,12 +2167,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.126382071,
+        "elapsed": 0.117805221,
         "rows_read": 13272955,
         "bytes_read": 39320346
       },
-      "executionTime": 0.173,
-      "requestId": "01JTJEQ8Y5WDHRDNPDMF79XZWJ"
+      "executionTime": 0.164,
+      "requestId": "01JTMVKGAM6P155R7XEBM0BP3K"
     },
     "model": "human",
     "provider": "human",
@@ -2590,12 +2210,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.016735237,
+        "elapsed": 0.01527481,
         "rows_read": 13272955,
         "bytes_read": 13272955
       },
-      "executionTime": 0.061,
-      "requestId": "01JTJEQA2WFSQZ963EB5TJQFRA"
+      "executionTime": 0.059,
+      "requestId": "01JTMVKHF2Q5120MNECW1C8Q2M"
     },
     "model": "human",
     "provider": "human",
@@ -2633,12 +2253,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.01601709,
+        "elapsed": 0.015823966,
         "rows_read": 13272955,
         "bytes_read": 13272955
       },
-      "executionTime": 0.061,
-      "requestId": "01JTJEQB431202BJ3MTMZFSYZ0"
+      "executionTime": 0.063,
+      "requestId": "01JTMVKJGCV16MESHENZ7PHEYE"
     },
     "model": "human",
     "provider": "human",
@@ -2666,12 +2286,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.006387942,
+        "elapsed": 0.005412836,
         "rows_read": 358842,
         "bytes_read": 358857
       },
-      "executionTime": 0.056,
-      "requestId": "01JTJEQC5EPK6A15MH7A2AM32F"
+      "executionTime": 0.053,
+      "requestId": "01JTMVKKHM3TR13DEY17SC3TF0"
     },
     "model": "human",
     "provider": "human",
@@ -2740,12 +2360,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.027377543,
+        "elapsed": 0.027480127,
         "rows_read": 1250141,
         "bytes_read": 3081893
       },
-      "executionTime": 0.075,
-      "requestId": "01JTJEQD6E9A0GAQV8Z2CY765Z"
+      "executionTime": 0.074,
+      "requestId": "01JTMVKMJJTZVV58TY183XP37Q"
     },
     "model": "human",
     "provider": "human",
@@ -2842,12 +2462,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.036343337,
+        "elapsed": 0.031760048,
         "rows_read": 1250141,
         "bytes_read": 6745397
       },
-      "executionTime": 0.084,
-      "requestId": "01JTJEQE8484JPT92P2SFBW1FJ"
+      "executionTime": 0.081,
+      "requestId": "01JTMVKNMCFTVE9WY0NWAVM8TP"
     },
     "model": "human",
     "provider": "human",
@@ -2930,12 +2550,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.031356733,
+        "elapsed": 0.027452763,
         "rows_read": 1250141,
         "bytes_read": 7661273
       },
-      "executionTime": 0.077,
-      "requestId": "01JTJEQFA2KSC6ZZZ3RVWYJ1DJ"
+      "executionTime": 0.073,
+      "requestId": "01JTMVKPP4CZNEVKPM3DDZ6PDA"
     },
     "model": "human",
     "provider": "human",
@@ -3018,12 +2638,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.032063797,
+        "elapsed": 0.029350757,
         "rows_read": 1250141,
         "bytes_read": 7661273
       },
-      "executionTime": 0.077,
-      "requestId": "01JTJEQGBTBFE038SCEJ2ERQ4F"
+      "executionTime": 0.073,
+      "requestId": "01JTMVKQQQRSDM20PE3WK57JZ1"
     },
     "model": "human",
     "provider": "human",
@@ -3120,12 +2740,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.043829136,
+        "elapsed": 0.036885051,
         "rows_read": 1250141,
         "bytes_read": 9493025
       },
-      "executionTime": 0.09,
-      "requestId": "01JTJEQHDJEFST8YRKJQ2RX1CS"
+      "executionTime": 0.081,
+      "requestId": "01JTMVKRSC8WRYKN50YX7SXEY5"
     },
     "model": "human",
     "provider": "human",
@@ -3201,12 +2821,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.096444264,
+        "elapsed": 0.098385951,
         "rows_read": 8569376,
         "bytes_read": 31412102
       },
       "executionTime": 0.145,
-      "requestId": "01JTJEQJFQNHH74X3S90560GVQ"
+      "requestId": "01JTMVKSV5F03GDS5DMB6V23N6"
     },
     "model": "human",
     "provider": "human",
@@ -3289,12 +2909,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.123408239,
+        "elapsed": 0.117812216,
         "rows_read": 6806781,
         "bytes_read": 33881496
       },
-      "executionTime": 0.213,
-      "requestId": "01JTJEQKMX6S1S4KEG9T1448K1"
+      "executionTime": 0.234,
+      "requestId": "01JTMVKTZ0T2MCKFNDFAPR5NYZ"
     },
     "model": "human",
     "provider": "human",
@@ -3377,12 +2997,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.276297463,
+        "elapsed": 0.253416486,
         "rows_read": 6806781,
         "bytes_read": 315403702
       },
-      "executionTime": 0.328,
-      "requestId": "01JTJEQMSNB1TSD6MHD0855DBT"
+      "executionTime": 0.299,
+      "requestId": "01JTMVKW5M0S7TT81AHCKBYR6N"
     },
     "model": "human",
     "provider": "human",
@@ -3416,15 +3036,7 @@
           "authors": 16
         },
         {
-          "URL": "https://github.com/tgstation/tgstation/pull/40312",
-          "authors": 16
-        },
-        {
           "URL": "https://github.com/symfony/symfony/pull/24411",
-          "authors": 16
-        },
-        {
-          "URL": "https://github.com/symfony/recipes/pull/466",
           "authors": 16
         },
         {
@@ -3432,7 +3044,15 @@
           "authors": 16
         },
         {
-          "URL": "https://github.com/ManageIQ/manageiq/pull/7517",
+          "URL": "https://github.com/tgstation/tgstation/pull/40312",
+          "authors": 16
+        },
+        {
+          "URL": "https://github.com/symfony/recipes/pull/466",
+          "authors": 16
+        },
+        {
+          "URL": "https://github.com/zephyrproject-rtos/zephyr/pull/27185",
           "authors": 15
         },
         {
@@ -3451,12 +3071,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.071393522,
+        "elapsed": 0.066883893,
         "rows_read": 4172440,
         "bytes_read": 39109886
       },
-      "executionTime": 0.118,
-      "requestId": "01JTJEQP35VH3FWFCS0N7EKZ0N"
+      "executionTime": 0.115,
+      "requestId": "01JTMVKXED05Q0Z7FDZEGYCH0Y"
     },
     "model": "human",
     "provider": "human",
@@ -3539,12 +3159,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.398441533,
+        "elapsed": 0.386053491,
         "rows_read": 75689153,
         "bytes_read": 370942756
       },
-      "executionTime": 0.444,
-      "requestId": "01JTJEQQ64JDGPZEYW25E8639M"
+      "executionTime": 0.431,
+      "requestId": "01JTMVKYH8PBVJ2Z4S1GJA0T93"
     },
     "model": "human",
     "provider": "human",
@@ -3567,7 +3187,7 @@
           "repos": 0,
           "issues": 2,
           "stars": 22,
-          "anyHeavy(repo_name)": "spf13/hugo"
+          "anyHeavy(repo_name)": "thoughtbot/dotfiles"
         },
         {
           "actor_login": "cabbage89",
@@ -3575,7 +3195,7 @@
           "repos": 0,
           "issues": 4,
           "stars": 32,
-          "anyHeavy(repo_name)": "zTree/zTree_v3"
+          "anyHeavy(repo_name)": "yarnpkg/yarn"
         },
         {
           "actor_login": "shenliuyang",
@@ -3599,7 +3219,7 @@
           "repos": 0,
           "issues": 2,
           "stars": 17,
-          "anyHeavy(repo_name)": "yarolegovich/DiscreteScrollView"
+          "anyHeavy(repo_name)": "scwang90/SmartRefreshLayout"
         },
         {
           "actor_login": "shogo4405",
@@ -3615,7 +3235,7 @@
           "repos": 0,
           "issues": 4,
           "stars": 6,
-          "anyHeavy(repo_name)": "scrapy/parsel"
+          "anyHeavy(repo_name)": "sinall/ShiPanE-Python-SDK"
         },
         {
           "actor_login": "antage",
@@ -3623,7 +3243,7 @@
           "repos": 0,
           "issues": 2,
           "stars": 17,
-          "anyHeavy(repo_name)": "sfackler/r2d2"
+          "anyHeavy(repo_name)": "solvespace/solvespace"
         },
         {
           "actor_login": "zhang98722",
@@ -3639,7 +3259,7 @@
           "repos": 0,
           "issues": 2,
           "stars": 3,
-          "anyHeavy(repo_name)": "stoeffel/awesome-fp-js"
+          "anyHeavy(repo_name)": "rtfeldman/elm-spa-example"
         }
       ],
       "meta": [
@@ -3669,12 +3289,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.42807273,
+        "elapsed": 0.380599642,
         "rows_read": 20140133,
         "bytes_read": 85338800
       },
-      "executionTime": 0.475,
-      "requestId": "01JTJEQRKA7PE3N5C3H7M88K9M"
+      "executionTime": 0.428,
+      "requestId": "01JTMVKZY2XENJHQWS2RMHFTXX"
     },
     "model": "human",
     "provider": "human",
@@ -3743,12 +3363,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.057206163,
+        "elapsed": 0.053659064,
         "rows_read": 7319235,
         "bytes_read": 21919077
       },
-      "executionTime": 0.103,
-      "requestId": "01JTJEQT1F2VJWD7CXR9SNS3J0"
+      "executionTime": 0.098,
+      "requestId": "01JTMVM1APA7Z7CDRQ9N6F2QE9"
     },
     "model": "human",
     "provider": "human",
@@ -3798,11 +3418,11 @@
           "repos": 88
         },
         {
-          "org": "uber/",
+          "org": "spring-projects/",
           "repos": 84
         },
         {
-          "org": "spring-projects/",
+          "org": "uber/",
           "repos": 84
         }
       ],
@@ -3817,12 +3437,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.059956612,
+        "elapsed": 0.051991189,
         "rows_read": 7319235,
         "bytes_read": 21919077
       },
-      "executionTime": 0.107,
-      "requestId": "01JTJEQV43C1N76FVH45VWKM03"
+      "executionTime": 0.095,
+      "requestId": "01JTMVM2D2BN2M3NY0G0DN4NJP"
     },
     "model": "human",
     "provider": "human",
@@ -3961,12 +3581,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 1.36122481,
+        "elapsed": 1.262084303,
         "rows_read": 113921805,
         "bytes_read": 561663376
       },
-      "executionTime": 1.548,
-      "requestId": "01JTJEQW9TSQCGVM42E88ZG50H"
+      "executionTime": 1.407,
+      "requestId": "01JTMVM3JDFPVHPWN9WZSQD6AP"
     },
     "model": "human",
     "provider": "human",
@@ -4077,12 +3697,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.183074788,
+        "elapsed": 0.166074855,
         "rows_read": 18564759,
         "bytes_read": 256392615
       },
-      "executionTime": 0.229,
-      "requestId": "01JTJEQYPHSWFN8R3B1TDA03GF"
+      "executionTime": 0.27,
+      "requestId": "01JTMVM5TP4CD0776DNSXY1G62"
     },
     "model": "human",
     "provider": "human",
@@ -4165,12 +3785,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.081780525,
+        "elapsed": 0.076661246,
         "rows_read": 7903551,
         "bytes_read": 23503597
       },
-      "executionTime": 0.128,
-      "requestId": "01JTJEQZX0A17Y7S6768693VNT"
+      "executionTime": 0.136,
+      "requestId": "01JTMVM72WDMJ3V5K33CJFD0EC"
     },
     "model": "human",
     "provider": "human",
@@ -4206,7 +3826,7 @@
           "count()": 31784,
           "repos": 216,
           "prs": 1680,
-          "comment": "![Codacy](https://app.codacy.com/assets/images/favicon.png) Issue found: [Method could be a function"
+          "comment": "![Codacy](https://app.codacy.com/assets/images/favicon.png) Issue found: [Use explicit scoping inste"
         },
         {
           "actor_login": "dieunb",
@@ -4220,14 +3840,14 @@
           "count()": 5158,
           "repos": 9,
           "prs": 873,
-          "comment": "This shouldn't be necessary.  If it is, it's a product bug we should fix."
+          "comment": "Definitely agree.  If this isn't needed in most cases, it should definitely be opt-in and/or simply "
         },
         {
           "actor_login": "hound[bot]",
           "count()": 5041,
           "repos": 46,
           "prs": 389,
-          "comment": "Line should be indented 2 spaces, but was indented 4 spaces"
+          "comment": "Style/StringLiterals: Prefer double-quoted strings unless you need single quotes to avoid extra back"
         },
         {
           "actor_login": "codeschool-kiddo",
@@ -4241,21 +3861,21 @@
           "count()": 4760,
           "repos": 37,
           "prs": 831,
-          "comment": "![CRITICAL](https://sonarsource.github.io/sonar-github/severity-critical.png 'Severity: CRITICAL') R"
+          "comment": "![CRITICAL](https://sonarsource.github.io/sonar-github/severity-critical.png 'Severity: CRITICAL') D"
         },
         {
           "actor_login": "github-actions[bot]",
           "count()": 4721,
           "repos": 38,
           "prs": 227,
-          "comment": "**[eslint]** <sub>reported by [reviewdog](https://github.com/reviewdog/reviewdog) :dog:</sub> Identi"
+          "comment": "<table data-meta=\"generated_by_danger\">   <tbody>     <tr>       <td>:warning:</td>       <td width="
         },
         {
           "actor_login": "timabbott",
           "count()": 4704,
           "repos": 10,
           "prs": 1095,
-          "comment": "It might cleaner to have this set `operation = event['operation']` or `operation = event['op']` and "
+          "comment": "Generally, it's not great to do potentially dozens/hundreds of API queries to the server like this; "
         }
       ],
       "meta": [
@@ -4281,12 +3901,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.166185744,
+        "elapsed": 0.162758648,
         "rows_read": 4172440,
         "bytes_read": 583609045
       },
-      "executionTime": 0.215,
-      "requestId": "01JTJER10BJ1KZ76DWR8BTTXJC"
+      "executionTime": 0.207,
+      "requestId": "01JTMVM861QFWFKCGBDENCY5YZ"
     },
     "model": "human",
     "provider": "human",
@@ -4355,12 +3975,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.133842234,
+        "elapsed": 0.143703358,
         "rows_read": 34589909,
         "bytes_read": 359810736
       },
-      "executionTime": 0.182,
-      "requestId": "01JTJER26CTWERS7EYG7T6XY0J"
+      "executionTime": 0.187,
+      "requestId": "01JTMVM9BTMTMRHFPA3V7HAC3C"
     },
     "model": "human",
     "provider": "human",
@@ -4429,12 +4049,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.159247588,
+        "elapsed": 0.162740047,
         "rows_read": 34589909,
         "bytes_read": 359807332
       },
-      "executionTime": 0.273,
-      "requestId": "01JTJER3BD5EKJAMRJ06H63B0W"
+      "executionTime": 0.206,
+      "requestId": "01JTMVMAGZDR4WPSMQ6M869V80"
     },
     "model": "human",
     "provider": "human",
@@ -4460,12 +4080,12 @@
           "repo_name": "rajpalsinghus/Netgear-tech-support-number-1-844-234-9752-Netgear-Router-tech-support-phone-Number-for-phone-Netgea"
         },
         {
-          "count()": 2,
-          "repo_name": "wanlonghenry/Facial-Emotion-Expression-Recognition-with-Developed-Convolutional-Neural-Networks-in-Representation"
-        },
-        {
           "count()": 1,
           "repo_name": "xy1377660586/Fine-tuning-a-pre-trained-CNN-for-first-year-sea-ice-and-multi-year-sea-ice-cp-imagery-classificatio"
+        },
+        {
+          "count()": 2,
+          "repo_name": "wanlonghenry/Facial-Emotion-Expression-Recognition-with-Developed-Convolutional-Neural-Networks-in-Representation"
         },
         {
           "count()": 3,
@@ -4474,10 +4094,6 @@
         {
           "count()": 3,
           "repo_name": "standardebooks/hermann-hesse_siddhartha_gunther-olesch_anke-dreher_amy-coulter_stefan-langer_semyon-chaichenets"
-        },
-        {
-          "count()": 7,
-          "repo_name": "ucdavis-bioinformatics-training/A-Primer-on-Using-the-Bioinformatics-Core-Administrated-Servers-and-Cluster-s-"
         },
         {
           "count()": 1,
@@ -4490,6 +4106,10 @@
         {
           "count()": 1,
           "repo_name": "shahed-jamal/magento-coupon-exclude-products-dynamically-by-sku-depending-on-special-price-discount-percentage"
+        },
+        {
+          "count()": 1,
+          "repo_name": "reevesangie/https-nid.naver.com-nidlogin.login-svctype-262144-url-http-3A-2F-2Fm.cafe.naver.com-2FSectionMyCaf"
         }
       ],
       "meta": [
@@ -4503,12 +4123,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.052320776,
+        "elapsed": 0.047825045,
         "rows_read": 7319235,
         "bytes_read": 21919077
       },
-      "executionTime": 0.104,
-      "requestId": "01JTJER4KDCFPKV1YTKFY1FXNW"
+      "executionTime": 0.093,
+      "requestId": "01JTMVMBPS94FATW4NYBY5WF7M"
     },
     "model": "human",
     "provider": "human",
@@ -4530,6 +4150,18 @@
           "count()": 2783
         },
         {
+          "repo_name": "tj/v8",
+          "count()": 1
+        },
+        {
+          "repo_name": "sjl/d",
+          "count()": 8
+        },
+        {
+          "repo_name": "sjl/t",
+          "count()": 104
+        },
+        {
           "repo_name": "z/kbx",
           "count()": 1
         },
@@ -4538,23 +4170,7 @@
           "count()": 2
         },
         {
-          "repo_name": "tj/go",
-          "count()": 106
-        },
-        {
-          "repo_name": "rf/nd",
-          "count()": 4
-        },
-        {
-          "repo_name": "ry/v8",
-          "count()": 4
-        },
-        {
-          "repo_name": "qt/qt",
-          "count()": 103
-        },
-        {
-          "repo_name": "wg/kr",
+          "repo_name": "z/nst",
           "count()": 1
         },
         {
@@ -4562,8 +4178,12 @@
           "count()": 4
         },
         {
-          "repo_name": "xo/xo",
-          "count()": 127
+          "repo_name": "sn/sn",
+          "count()": 2
+        },
+        {
+          "repo_name": "tj/bm",
+          "count()": 23
         }
       ],
       "meta": [
@@ -4577,12 +4197,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.057399866,
+        "elapsed": 0.054795541,
         "rows_read": 7319235,
         "bytes_read": 21919077
       },
-      "executionTime": 0.105,
-      "requestId": "01JTJER5NWCGYRGN6HQDF5WXVT"
+      "executionTime": 0.099,
+      "requestId": "01JTMVMCS187K8489VGP422YYH"
     },
     "model": "human",
     "provider": "human",
@@ -4651,12 +4271,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 4.429148165,
+        "elapsed": 4.553582819,
         "rows_read": 200000000,
-        "bytes_read": 29767743722
+        "bytes_read": 29767742676
       },
-      "executionTime": 4.557,
-      "requestId": "01JTJER6V0TW3W21ZKSPA06KJM"
+      "executionTime": 4.688,
+      "requestId": "01JTMVMDY7W6K94SBRMCPV8VWY"
     },
     "model": "human",
     "provider": "human",
@@ -4739,12 +4359,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 5.167624378,
+        "elapsed": 4.942143441,
         "rows_read": 200000000,
-        "bytes_read": 29982360803
+        "bytes_read": 29982357101
       },
-      "executionTime": 5.215,
-      "requestId": "01JTJERC67B95EQEADE1CQD4HF"
+      "executionTime": 4.987,
+      "requestId": "01JTMVMKD8GK34QYY4F6TJF070"
     },
     "model": "human",
     "provider": "human",
@@ -4813,12 +4433,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 3.123720396,
+        "elapsed": 2.860318735,
         "rows_read": 200000000,
         "bytes_read": 29737163637
       },
-      "executionTime": 3.174,
-      "requestId": "01JTJERJ8MCQK29FKDQEHJPX89"
+      "executionTime": 2.908,
+      "requestId": "01JTMVMS8D7F3HJ3MJ06HHB8A6"
     },
     "model": "human",
     "provider": "human",
