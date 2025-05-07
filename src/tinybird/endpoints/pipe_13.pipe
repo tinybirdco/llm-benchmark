@@ -1,5 +1,5 @@
 DESCRIPTION >
-    top 10 Repositories with the highest growth YoY 2016 and 2017
+    top 10 Repositories with the highest growth YoY 2016 and 2017 starting from 1 star
 
 NODE endpoint
 SQL >
@@ -8,8 +8,7 @@ SQL >
         repo_name,
         sum(year = 2017) AS stars2017,
         sum(year = 2016) AS stars2016,
-        round(stars2017 / stars2016, 3) AS yoy,
-        min(created_at) AS first_seen
+        round((stars2017 - stars2016) / stars2016 * 100, 2) as yoy
     FROM github_events
     WHERE event_type = 'WatchEvent'
     GROUP BY repo_name
