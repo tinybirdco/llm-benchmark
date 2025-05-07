@@ -2,7 +2,9 @@
 
 A tool for benchmarking various Large Language Models (LLMs) on their ability to generate correct analytical SQL queries for Tinybird.
 
-- See results: https://llm-benchmark.tinybird.live/
+See results: https://llm-benchmark.tinybird.live/
+
+![LLM SQL Benchmark](src/public/llm-sql-benchmark.png)
 
 ## Overview
 
@@ -26,7 +28,7 @@ The benchmark currently supports the following providers and models through [Ope
 - **Mistral**: Ministral 8B, Mistral Small 3.1, Mistral Nemo
 - **OpenAI**: GPT-4.1, GPT-4.1 Nano, GPT-4o Mini, O3/O4 Mini
 
-It can be extended to other models, see how to benchmark a new model
+It can be extended to other models, see [how to benchmark a new model](#how-to-benchmark-a-new-model)
 
 ## Methodology
 
