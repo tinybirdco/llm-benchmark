@@ -117,10 +117,27 @@ export const Header = ({
           <h1 className="text-3xl">AI SQL Generation Benchmark Results</h1>
 
           <div className="flex gap-2 items-center">
-            <Button variant="secondary" size="lg" className="cursor-pointer">
+            <Button
+              onClick={() => {
+                window.open(
+                  "https://github.com/tinybirdco/llm-benchmark",
+                  "_blank"
+                );
+              }}
+              variant="secondary"
+              size="lg"
+              className="cursor-pointer"
+            >
               GitHub <GithubIcon />
             </Button>
-            <Button variant="default" size="lg" className="cursor-pointer">
+            <Button
+              onClick={() => {
+                window.open("https://tbrd.co/LKHKD7c", "_blank");
+              }}
+              variant="default"
+              size="lg"
+              className="cursor-pointer"
+            >
               Methodology <ClipboardListIcon />
             </Button>
           </div>
