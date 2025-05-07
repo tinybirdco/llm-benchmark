@@ -114,7 +114,7 @@ export const Header = ({
     <header>
       <div className="space-y-5 mb-8">
         <div className="flex items-center justify-between flex-wrap gap-4 mb-5">
-          <h1 className="text-3xl">AI SQL Generation Benchmark Results</h1>
+          <h1 className="text-3xl">LLM SQL Generation Benchmark Results</h1>
 
           <div className="flex gap-2 items-center">
             <Button

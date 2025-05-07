@@ -122,13 +122,12 @@ export default function Home() {
         return (
           <div className="inline-flex items-center">
             <div
-              className={`w-2 h-2 rounded-full mr-2 ${
-                row.score > 75
+              className={`w-2 h-2 rounded-full mr-2 ${row.score > 75
                   ? "bg-[#27F795]"
                   : row.score >= 60
-                  ? "bg-[#F7D727]"
-                  : "bg-[#F72727]"
-              }`}
+                    ? "bg-[#F7D727]"
+                    : "bg-[#F72727]"
+                }`}
             />
             <span className="font-mono">{row.score.toFixed(2)}</span>
           </div>
@@ -148,13 +147,12 @@ export default function Home() {
         return (
           <div className="inline-flex items-center">
             <div
-              className={`w-2 h-2 rounded-full mr-2 ${
-                row.efficiencyScore > 75
+              className={`w-2 h-2 rounded-full mr-2 ${row.efficiencyScore > 75
                   ? "bg-[#27F795]"
                   : row.efficiencyScore >= 50
-                  ? "bg-[#F7D727]"
-                  : "bg-[#F72727]"
-              }`}
+                    ? "bg-[#F7D727]"
+                    : "bg-[#F72727]"
+                }`}
             />
             <span className="font-mono">{row.efficiencyScore.toFixed(2)}</span>
           </div>
@@ -174,13 +172,12 @@ export default function Home() {
         return (
           <div className="inline-flex items-center">
             <div
-              className={`w-2 h-2 rounded-full mr-2 ${
-                row.exactnessScore > 75
+              className={`w-2 h-2 rounded-full mr-2 ${row.exactnessScore > 75
                   ? "bg-[#27F795]"
                   : row.exactnessScore >= 50
-                  ? "bg-[#F7D727]"
-                  : "bg-[#F72727]"
-              }`}
+                    ? "bg-[#F7D727]"
+                    : "bg-[#F72727]"
+                }`}
             />
             <span className="font-mono">{row.exactnessScore.toFixed(2)}</span>
           </div>
