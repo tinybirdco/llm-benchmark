@@ -106,7 +106,7 @@ npm run benchmark
 This will:
 1. Load the configured models from `benchmark-config.json`
 2. Run each model against a set of predefined questions
-3. Execute generated SQL queries against your Tinybird database
+3. Execute generated SQL queries against your Tinybird workspace
 4. Store results in `benchmark/results.json`
 
 ### Test a new model
