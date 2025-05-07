@@ -1,5 +1,5 @@
 DESCRIPTION >
-    top 10 authors who have made at least 10 PRs?
+    top 10 repos with authors who have made at least 10 PRs?
 
 NODE endpoint
 SQL >

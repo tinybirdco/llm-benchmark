@@ -1,13 +1,8 @@
 DESCRIPTION >
-     ratio between stars and forks
+    The top 10 repositories by issue comment events
 
 NODE endpoint
 SQL >
-    SELECT
-        sum(event_type = 'ForkEvent') AS forks,
-        sum(event_type = 'WatchEvent') AS stars,
-        round(stars / forks, 2) AS ratio
-    FROM github_events
-    WHERE event_type IN ('ForkEvent', 'WatchEvent')
+    SELECT repo_name, count() FROM github_events WHERE event_type = 'IssueCommentEvent' GROUP BY repo_name ORDER BY count() DESC LIMIT 10
 
 TYPE endpoint

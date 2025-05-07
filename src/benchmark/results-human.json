@@ -1,16 +1,22 @@
 [
   {
+<<<<<<< HEAD
+    "name": "pipe_58.pipe",
+    "question": {
+      "name": "pipe_58.pipe",
+      "content": "Top 10 Repositories with most events talking about tensorflow. Return the repository name and the number of events matching."
+=======
     "name": "pipe_01.pipe",
     "question": {
       "name": "pipe_01.pipe",
-      "content": "Counting stars\n    The WatchEvent is the event when someone gives a star to a repo."
+      "content": "Count all stars"
     },
     "sql": "SELECT count() FROM github_events WHERE event_type = 'WatchEvent'",
     "sqlResult": {
       "success": true,
       "data": [
         {
-          "count()": 232118474
+          "count()": 7305112
         }
       ],
       "meta": [
@@ -20,12 +26,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.004554573,
-        "rows_read": 154254,
-        "bytes_read": 154269
+        "elapsed": 0.003474005,
+        "rows_read": 32769,
+        "bytes_read": 32784
       },
       "executionTime": 0.052,
-      "requestId": "01JSXXM5GDM290CXGZPM8R2AJA"
+      "requestId": "01JTMVJ9HM8SVX3TZ0ERDBZ6M9"
     },
     "model": "human",
     "provider": "human",
@@ -43,44 +49,44 @@
       "success": true,
       "data": [
         {
-          "repo_name": "996icu/996.ICU",
-          "stars": 354850
-        },
-        {
-          "repo_name": "FreeCodeCamp/FreeCodeCamp",
-          "stars": 225490
+          "repo_name": "tensorflow/tensorflow",
+          "stars": 49278
         },
         {
           "repo_name": "vuejs/vue",
-          "stars": 199731
+          "stars": 48185
         },
         {
-          "repo_name": "facebook/react",
-          "stars": 188575
-        },
-        {
-          "repo_name": "tensorflow/tensorflow",
-          "stars": 173681
+          "repo_name": "yarnpkg/yarn",
+          "stars": 31023
         },
         {
           "repo_name": "sindresorhus/awesome",
-          "stars": 160542
+          "stars": 29084
         },
         {
-          "repo_name": "kamranahmedse/developer-roadmap",
-          "stars": 147561
+          "repo_name": "thedaviddias/Front-End-Checklist",
+          "stars": 24745
         },
         {
-          "repo_name": "getify/You-Dont-Know-JS",
-          "stars": 144146
-        },
-        {
-          "repo_name": "freeCodeCamp/freeCodeCamp",
-          "stars": 140027
+          "repo_name": "sdmg15/Best-websites-a-programmer-should-visit",
+          "stars": 21764
         },
         {
           "repo_name": "twbs/bootstrap",
-          "stars": 126371
+          "stars": 21157
+        },
+        {
+          "repo_name": "toddmotto/public-apis",
+          "stars": 20881
+        },
+        {
+          "repo_name": "robbyrussell/oh-my-zsh",
+          "stars": 19325
+        },
+        {
+          "repo_name": "vuejs/awesome-vue",
+          "stars": 18499
         }
       ],
       "meta": [
@@ -94,12 +100,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 1.237861118,
-        "rows_read": 232206874,
-        "bytes_read": 696284381
+        "elapsed": 0.041911526,
+        "rows_read": 7319235,
+        "bytes_read": 21919077
       },
-      "executionTime": 1.362,
-      "requestId": "01JSXXM6KRTX0J22WV65W12YMY"
+      "executionTime": 0.1,
+      "requestId": "01JTMVJAJG9TNKHBG5DRK5Z7RA"
     },
     "model": "human",
     "provider": "human",
@@ -110,35 +116,31 @@
     "name": "pipe_03.pipe",
     "question": {
       "name": "pipe_03.pipe",
-      "content": "what is the distribution of repositories by stars? from 1 to 100000 in multiples of 10"
+      "content": "For each power of 10 (1, 10, 100, 1000, etc.), count how many GitHub repositories have approximately that many stars. Order the results from smallest to largest star count"
     },
-    "sql": "SELECT\n        exp10(floor(log10(c))) AS stars,\n        uniq(k)\n    FROM\n    (\n        SELECT\n            repo_name AS k,\n            count() AS c\n        FROM github_events\n        WHERE event_type = 'WatchEvent'\n        GROUP BY k\n    )\n    GROUP BY stars\n    ORDER BY stars ASC",
+    "sql": "SELECT\n        exp10(floor(log10(c))) AS stars,\n        uniqExact(k)\n    FROM\n    (\n        SELECT\n            repo_name AS k,\n            count() AS c\n        FROM github_events\n        WHERE event_type = 'WatchEvent'\n        GROUP BY k\n    )\n    GROUP BY stars\n    ORDER BY stars ASC",
     "sqlResult": {
       "success": true,
       "data": [
         {
           "stars": 1,
-          "uniq(k)": 14946505
+          "uniqExact(k)": 537389
         },
         {
           "stars": 10,
-          "uniq(k)": 1196622
+          "uniqExact(k)": 49995
         },
         {
           "stars": 100,
-          "uniq(k)": 213026
+          "uniqExact(k)": 8578
         },
         {
           "stars": 1000,
-          "uniq(k)": 28944
+          "uniqExact(k)": 902
         },
         {
           "stars": 10000,
-          "uniq(k)": 1847
-        },
-        {
-          "stars": 100000,
-          "uniq(k)": 20
+          "uniqExact(k)": 31
         }
       ],
       "meta": [
@@ -147,17 +149,17 @@
           "type": "Float64"
         },
         {
-          "name": "uniq(k)",
+          "name": "uniqExact(k)",
           "type": "UInt64"
         }
       ],
       "statistics": {
-        "elapsed": 1.315777895,
-        "rows_read": 232206874,
-        "bytes_read": 696284381
+        "elapsed": 0.091554491,
+        "rows_read": 7319235,
+        "bytes_read": 21919077
       },
-      "executionTime": 1.377,
-      "requestId": "01JSXXM8V8PFHM6QFRBQQ19GGZ"
+      "executionTime": 0.15,
+      "requestId": "01JTMVJBMYE2WGRK1S6ZT0VENY"
     },
     "model": "human",
     "provider": "human",
@@ -170,13 +172,27 @@
       "name": "pipe_04.pipe",
       "content": "The total number of repositories on GitHub"
     },
-    "sql": "SELECT uniq(repo_name) FROM github_events",
+    "sql": "SELECT uniqExact(repo_name) FROM github_events",
     "sqlResult": {
-      "success": false,
-      "data": [],
-      "executionTime": 10.109,
-      "requestId": "01JSXXMB5M8A088HAKRT3PBY9Z",
-      "error": "{\"error\": \"[Error] Timeout exceeded: elapsed 10.002818483 seconds, maximum: 10. Upgrade your plan for higher capacity, ensure your cluster isn't overloaded (dedicated infrastructure only), or optimize your query with filters.\", \"documentation\": \"https://docs.tinybird.co/get-started/plans/limits\"}"
+      "success": true,
+      "data": [
+        {
+          "uniqExact(repo_name)": 25138721
+        }
+      ],
+      "meta": [
+        {
+          "name": "uniqExact(repo_name)",
+          "type": "UInt64"
+        }
+      ],
+      "statistics": {
+        "elapsed": 1.303885173,
+        "rows_read": 200000000,
+        "bytes_read": 394943756
+      },
+      "executionTime": 1.475,
+      "requestId": "01JTMVJCWFNWRGBT7X1VQK2MDC"
     },
     "model": "human",
     "provider": "human",
@@ -189,309 +205,59 @@
       "name": "pipe_05.pipe",
       "content": "How has the list of top repositories changed over the years from 2015"
     },
-    "sql": "SELECT\n        year,\n        lower(repo_name) AS repo,\n        count()\n    FROM github_events\n    WHERE (event_type = 'WatchEvent') AND (year >= 2015)\n    GROUP BY\n        repo,\n        toYear(created_at) AS year\n    ORDER BY\n        year ASC,\n        count() DESC\n    LIMIT 10 BY year",
+    "sql": "SELECT\n        year,\n        lower(repo_name) AS repo,\n        count()\n    FROM github_events\n    WHERE (event_type = 'WatchEvent') AND (year >= 2015)\n    GROUP BY\n        repo,\n        toYear(created_at) AS year\n    ORDER BY\n        year ASC,\n        count() DESC\n    LIMIT 10",
     "sqlResult": {
       "success": true,
       "data": [
-        {
-          "year": 2015,
-          "repo": "freecodecamp/freecodecamp",
-          "count()": 53806
-        },
-        {
-          "year": 2015,
-          "repo": "facebook/react-native",
-          "count()": 25888
-        },
-        {
-          "year": 2015,
-          "repo": "apple/swift",
-          "count()": 25834
-        },
-        {
-          "year": 2015,
-          "repo": "sindresorhus/awesome",
-          "count()": 24420
-        },
-        {
-          "year": 2015,
-          "repo": "facebook/react",
-          "count()": 22977
-        },
-        {
-          "year": 2015,
-          "repo": "jlevy/the-art-of-command-line",
-          "count()": 22105
-        },
-        {
-          "year": 2015,
-          "repo": "narkoz/hacker-scripts",
-          "count()": 20450
-        },
-        {
-          "year": 2015,
-          "repo": "twbs/bootstrap",
-          "count()": 19775
-        },
-        {
-          "year": 2015,
-          "repo": "google/material-design-lite",
-          "count()": 17904
-        },
-        {
-          "year": 2015,
-          "repo": "airbnb/javascript",
-          "count()": 17586
-        },
-        {
-          "year": 2016,
-          "repo": "freecodecamp/freecodecamp",
-          "count()": 182203
-        },
-        {
-          "year": 2016,
-          "repo": "jwasham/google-interview-university",
-          "count()": 31522
-        },
-        {
-          "year": 2016,
-          "repo": "vhf/free-programming-books",
-          "count()": 28870
-        },
-        {
-          "year": 2016,
-          "repo": "vuejs/vue",
-          "count()": 28831
-        },
-        {
-          "year": 2016,
-          "repo": "tensorflow/tensorflow",
-          "count()": 28282
-        },
-        {
-          "year": 2016,
-          "repo": "facebook/react",
-          "count()": 26046
-        },
-        {
-          "year": 2016,
-          "repo": "getify/you-dont-know-js",
-          "count()": 24975
-        },
-        {
-          "year": 2016,
-          "repo": "sindresorhus/awesome",
-          "count()": 24829
-        },
-        {
-          "year": 2016,
-          "repo": "chrislgarry/apollo-11",
-          "count()": 23483
-        },
         {
           "year": 2016,
           "repo": "yarnpkg/yarn",
           "count()": 21518
         },
         {
-          "year": 2017,
-          "repo": "freecodecamp/freecodecamp",
-          "count()": 96359
+          "year": 2016,
+          "repo": "zeit/hyperterm",
+          "count()": 9086
         },
         {
-          "year": 2017,
-          "repo": "tensorflow/tensorflow",
-          "count()": 49278
+          "year": 2016,
+          "repo": "zeit/next.js",
+          "count()": 7877
         },
         {
-          "year": 2017,
-          "repo": "vuejs/vue",
-          "count()": 48185
+          "year": 2016,
+          "repo": "xitu/gold-miner",
+          "count()": 6022
         },
         {
-          "year": 2017,
-          "repo": "facebook/react",
-          "count()": 34524
+          "year": 2016,
+          "repo": "zenorocha/clipboard.js",
+          "count()": 5594
         },
         {
-          "year": 2017,
-          "repo": "mr-mig/every-programmer-should-know",
-          "count()": 30991
+          "year": 2016,
+          "repo": "yelouafi/redux-saga",
+          "count()": 5463
         },
         {
-          "year": 2017,
-          "repo": "kamranahmedse/developer-roadmap",
-          "count()": 30497
+          "year": 2016,
+          "repo": "yhatt/marp",
+          "count()": 5254
         },
         {
-          "year": 2017,
-          "repo": "sindresorhus/awesome",
-          "count()": 29084
+          "year": 2016,
+          "repo": "zyedidia/micro",
+          "count()": 4952
         },
         {
-          "year": 2017,
-          "repo": "getify/you-dont-know-js",
-          "count()": 28902
+          "year": 2016,
+          "repo": "zeit/hyper",
+          "count()": 4926
         },
         {
-          "year": 2017,
-          "repo": "thedaviddias/front-end-checklist",
-          "count()": 24745
-        },
-        {
-          "year": 2017,
-          "repo": "facebookincubator/create-react-app",
-          "count()": 24479
-        },
-        {
-          "year": 2018,
-          "repo": "vuejs/vue",
-          "count()": 51515
-        },
-        {
-          "year": 2018,
-          "repo": "trekhleb/javascript-algorithms",
-          "count()": 39249
-        },
-        {
-          "year": 2018,
-          "repo": "facebook/react",
-          "count()": 38817
-        },
-        {
-          "year": 2018,
-          "repo": "flutter/flutter",
-          "count()": 38357
-        },
-        {
-          "year": 2018,
-          "repo": "danistefanovic/build-your-own-x",
-          "count()": 37815
-        },
-        {
-          "year": 2018,
-          "repo": "tensorflow/tensorflow",
-          "count()": 36976
-        },
-        {
-          "year": 2018,
-          "repo": "kamranahmedse/developer-roadmap",
-          "count()": 35278
-        },
-        {
-          "year": 2018,
-          "repo": "x64dbg/x64dbg",
-          "count()": 32381
-        },
-        {
-          "year": 2018,
-          "repo": "donnemartin/system-design-primer",
-          "count()": 31384
-        },
-        {
-          "year": 2018,
-          "repo": "cyc2018/interview-notebook",
-          "count()": 29941
-        },
-        {
-          "year": 2019,
-          "repo": "996icu/996.icu",
-          "count()": 344825
-        },
-        {
-          "year": 2019,
-          "repo": "jackfrued/python-100-days",
-          "count()": 76845
-        },
-        {
-          "year": 2019,
-          "repo": "m4cs/babysploit",
-          "count()": 71013
-        },
-        {
-          "year": 2019,
-          "repo": "microsoft/terminal",
-          "count()": 56844
-        },
-        {
-          "year": 2019,
-          "repo": "snailclimb/javaguide",
-          "count()": 53444
-        },
-        {
-          "year": 2019,
-          "repo": "thealgorithms/python",
-          "count()": 48859
-        },
-        {
-          "year": 2019,
-          "repo": "cyc2018/cs-notes",
-          "count()": 46609
-        },
-        {
-          "year": 2019,
-          "repo": "misterbooo/leetcodeanimation",
-          "count()": 41526
-        },
-        {
-          "year": 2019,
-          "repo": "vuejs/vue",
-          "count()": 39159
-        },
-        {
-          "year": 2019,
-          "repo": "flutter/flutter",
-          "count()": 38733
-        },
-        {
-          "year": 2020,
-          "repo": "labuladong/fucking-algorithm",
-          "count()": 77568
-        },
-        {
-          "year": 2020,
-          "repo": "jwasham/coding-interview-university",
-          "count()": 54591
-        },
-        {
-          "year": 2020,
-          "repo": "kamranahmedse/developer-roadmap",
-          "count()": 50944
-        },
-        {
-          "year": 2020,
-          "repo": "donnemartin/system-design-primer",
-          "count()": 37384
-        },
-        {
-          "year": 2020,
-          "repo": "ebookfoundation/free-programming-books",
-          "count()": 36686
-        },
-        {
-          "year": 2020,
-          "repo": "public-apis/public-apis",
-          "count()": 36405
-        },
-        {
-          "year": 2020,
-          "repo": "thealgorithms/python",
-          "count()": 33837
-        },
-        {
-          "year": 2020,
-          "repo": "cyc2018/cs-notes",
-          "count()": 33517
-        },
-        {
-          "year": 2020,
-          "repo": "danistefanovic/build-your-own-x",
-          "count()": 33283
-        },
-        {
-          "year": 2020,
-          "repo": "microsoft/powertoys",
-          "count()": 33137
+          "year": 2016,
+          "repo": "zxing/zxing",
+          "count()": 4890
         }
       ],
       "meta": [
@@ -509,12 +275,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 5.322238983,
-        "rows_read": 206893429,
-        "bytes_read": 1447743065
+        "elapsed": 0.068587485,
+        "rows_read": 7319235,
+        "bytes_read": 51225945
       },
-      "executionTime": 5.447,
-      "requestId": "01JSXXMP0X5PYCJ3GHZEPEPZGZ"
+      "executionTime": 0.114,
+      "requestId": "01JTMVJF6HQD64RSRFFAQA1R2M"
     },
     "model": "human",
     "provider": "human",
@@ -525,51 +291,19 @@
     "name": "pipe_06.pipe",
     "question": {
       "name": "pipe_06.pipe",
-      "content": "How has the total number of stars changed over time?"
+      "content": "How has the total number of stars changed over time by year?"
     },
     "sql": "SELECT toYear(created_at) AS year, count() AS stars FROM github_events WHERE event_type = 'WatchEvent' GROUP BY year ORDER BY year",
     "sqlResult": {
       "success": true,
       "data": [
         {
-          "year": 2011,
-          "stars": 1831742
-        },
-        {
-          "year": 2012,
-          "stars": 4048676
-        },
-        {
-          "year": 2013,
-          "stars": 7432800
-        },
-        {
-          "year": 2014,
-          "stars": 11952935
-        },
-        {
-          "year": 2015,
-          "stars": 18994833
-        },
-        {
           "year": 2016,
-          "stars": 26166310
+          "stars": 814207
         },
         {
           "year": 2017,
-          "stars": 32640040
-        },
-        {
-          "year": 2018,
-          "stars": 37068153
-        },
-        {
-          "year": 2019,
-          "stars": 46118187
-        },
-        {
-          "year": 2020,
-          "stars": 45864798
+          "stars": 6490905
         }
       ],
       "meta": [
@@ -583,12 +317,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.239116804,
-        "rows_read": 232206874,
-        "bytes_read": 1161034370
+        "elapsed": 0.016079002,
+        "rows_read": 7319235,
+        "bytes_read": 36596175
       },
-      "executionTime": 0.288,
-      "requestId": "01JSXXMWAGNW2SA7BCYBZBXANX"
+      "executionTime": 0.063,
+      "requestId": "01JTMVJG9ETEQ1J6DM91PMGZS3"
     },
     "model": "human",
     "provider": "human",
@@ -606,44 +340,44 @@
       "success": true,
       "data": [
         {
-          "actor_login": "4148",
-          "stars": 232492
+          "actor_login": "baslr",
+          "stars": 11953
         },
         {
-          "actor_login": "salifm",
-          "stars": 202534
+          "actor_login": "korolr",
+          "stars": 6428
         },
         {
-          "actor_login": "x0rzkov",
-          "stars": 73531
+          "actor_login": "roscopecoltran",
+          "stars": 3625
+        },
+        {
+          "actor_login": "AlexxNica",
+          "stars": 2637
+        },
+        {
+          "actor_login": "maoabc1818",
+          "stars": 2348
         },
         {
           "actor_login": "fly51fly",
-          "stars": 57756
+          "stars": 2171
         },
         {
-          "actor_login": "PCOffline",
-          "stars": 56725
+          "actor_login": "jenniemanphonsy",
+          "stars": 1930
         },
         {
-          "actor_login": "baslr",
-          "stars": 50363
+          "actor_login": "pranavlathigara",
+          "stars": 1885
         },
         {
-          "actor_login": "gkze",
-          "stars": 49078
+          "actor_login": "aidan-n",
+          "stars": 1882
         },
         {
-          "actor_login": "StarTheWorld",
-          "stars": 45691
-        },
-        {
-          "actor_login": "thanhtoan1196",
-          "stars": 44715
-        },
-        {
-          "actor_login": "mcanthony",
-          "stars": 44331
+          "actor_login": "bestwpw",
+          "stars": 1740
         }
       ],
       "meta": [
@@ -657,12 +391,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 6.143577887,
-        "rows_read": 232206874,
-        "bytes_read": 696620622
+        "elapsed": 0.169384277,
+        "rows_read": 7319235,
+        "bytes_read": 21957705
       },
-      "executionTime": 6.204,
-      "requestId": "01JSXXMXJT9QC974DH32BJ1VTJ"
+      "executionTime": 0.216,
+      "requestId": "01JTMVJHAVPN89EPZ3019H4T7M"
     },
     "model": "human",
     "provider": "human",
@@ -673,12 +407,53 @@
     "name": "pipe_08.pipe",
     "question": {
       "name": "pipe_08.pipe",
-      "content": "what are the top 10 repositories sorted by the number of stars from people who starred the freecodecamp/freecodecamp repository?"
+      "content": "what are the top 10 repositories sorted by the number of stars from people who starred the tensorflow/tensorflow repository?"
     },
-    "sql": "SELECT\n        repo_name,\n        count() AS stars\n    FROM github_events\n    WHERE (event_type = 'WatchEvent') AND (actor_login IN\n    (\n        SELECT actor_login\n        FROM github_events\n        WHERE (event_type = 'WatchEvent') AND (repo_name IN ('freecodecamp/freecodecamp'))\n    )) AND (repo_name NOT IN ('freecodecamp/freecodecamp'))\n    GROUP BY repo_name\n    ORDER BY stars DESC\n    LIMIT 10",
+    "sql": "SELECT\n        repo_name,\n        count() AS stars\n    FROM github_events\n    WHERE (event_type = 'WatchEvent') AND (actor_login IN\n    (\n        SELECT actor_login\n        FROM github_events\n        WHERE (event_type = 'WatchEvent') AND (repo_name IN ('tensorflow/tensorflow'))\n    )) AND (repo_name NOT IN ('tensorflow/tensorflow'))\n    GROUP BY repo_name\n    ORDER BY stars DESC\n    LIMIT 10",
     "sqlResult": {
       "success": true,
-      "data": [],
+      "data": [
+        {
+          "repo_name": "tensorflow/models",
+          "stars": 6088
+        },
+        {
+          "repo_name": "vuejs/vue",
+          "stars": 5399
+        },
+        {
+          "repo_name": "sindresorhus/awesome",
+          "stars": 4613
+        },
+        {
+          "repo_name": "scikit-learn/scikit-learn",
+          "stars": 3781
+        },
+        {
+          "repo_name": "torvalds/linux",
+          "stars": 3698
+        },
+        {
+          "repo_name": "twbs/bootstrap",
+          "stars": 3453
+        },
+        {
+          "repo_name": "vinta/awesome-python",
+          "stars": 2948
+        },
+        {
+          "repo_name": "robbyrussell/oh-my-zsh",
+          "stars": 2887
+        },
+        {
+          "repo_name": "yarnpkg/yarn",
+          "stars": 2774
+        },
+        {
+          "repo_name": "webpack/webpack",
+          "stars": 2774
+        }
+      ],
       "meta": [
         {
           "name": "repo_name",
@@ -690,12 +465,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 2.220355017,
-        "rows_read": 232341684,
-        "bytes_read": 696998922
+        "elapsed": 0.137978878,
+        "rows_read": 7360195,
+        "bytes_read": 36693147
       },
-      "executionTime": 2.273,
-      "requestId": "01JSXXN4M6E3TTTX9V8DVZAN3T"
+      "executionTime": 0.184,
+      "requestId": "01JTMVJJGYDNKQ1B8PBDZMDQRX"
     },
     "model": "human",
     "provider": "human",
@@ -706,71 +481,71 @@
     "name": "pipe_09.pipe",
     "question": {
       "name": "pipe_09.pipe",
-      "content": "top 10 \"friends\" to javisantana through counting stars"
+      "content": "Find the top 10 GitHub users who have the highest proportion of their stars given to repositories owned by 'javisantana' compared to all other repositories they've starred. Show each user's name, the number of stars they gave to javisantana's repos, the number of stars they gave to other repos, and the ratio of javisantana stars to total stars."
     },
     "sql": "WITH repo_name IN\n    (\n        SELECT repo_name\n        FROM github_events\n        WHERE (event_type = 'WatchEvent') AND (actor_login IN ('javisantana'))\n    ) AS is_my_repo\n    SELECT\n        actor_login,\n        sum(is_my_repo) AS stars_my,\n        sum(NOT is_my_repo) AS stars_other,\n        round(stars_my / (stars_my + stars_other), 3) AS ratio\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY actor_login\n    ORDER BY ratio DESC\n    LIMIT 10",
     "sqlResult": {
       "success": true,
       "data": [
         {
-          "actor_login": "gearfreak",
-          "stars_my": 1,
-          "stars_other": 0,
-          "ratio": 1
+          "actor_login": "TeknoMatik",
+          "stars_my": 0,
+          "stars_other": 1,
+          "ratio": 0
         },
         {
-          "actor_login": "erik-h11",
-          "stars_my": 1,
-          "stars_other": 0,
-          "ratio": 1
+          "actor_login": "ukautz",
+          "stars_my": 0,
+          "stars_other": 21,
+          "ratio": 0
         },
         {
-          "actor_login": "kingwide",
-          "stars_my": 2,
-          "stars_other": 0,
-          "ratio": 1
+          "actor_login": "artofspeed",
+          "stars_my": 0,
+          "stars_other": 4,
+          "ratio": 0
         },
         {
-          "actor_login": "klh0306tw",
-          "stars_my": 1,
-          "stars_other": 0,
-          "ratio": 1
+          "actor_login": "wzsh",
+          "stars_my": 0,
+          "stars_other": 5,
+          "ratio": 0
         },
         {
-          "actor_login": "dstra",
-          "stars_my": 1,
-          "stars_other": 0,
-          "ratio": 1
+          "actor_login": "dochead",
+          "stars_my": 0,
+          "stars_other": 2,
+          "ratio": 0
         },
         {
-          "actor_login": "hackerboy725",
-          "stars_my": 1,
-          "stars_other": 0,
-          "ratio": 1
+          "actor_login": "MatthewFreeman",
+          "stars_my": 0,
+          "stars_other": 1,
+          "ratio": 0
         },
         {
-          "actor_login": "simba163",
-          "stars_my": 1,
-          "stars_other": 0,
-          "ratio": 1
+          "actor_login": "dejon97",
+          "stars_my": 0,
+          "stars_other": 1,
+          "ratio": 0
         },
         {
-          "actor_login": "shuwaiee",
-          "stars_my": 1,
-          "stars_other": 0,
-          "ratio": 1
+          "actor_login": "yonidej",
+          "stars_my": 0,
+          "stars_other": 3,
+          "ratio": 0
         },
         {
-          "actor_login": "20180430Zhang",
-          "stars_my": 1,
-          "stars_other": 0,
-          "ratio": 1
+          "actor_login": "SarahMagdalena",
+          "stars_my": 0,
+          "stars_other": 1,
+          "ratio": 0
         },
         {
-          "actor_login": "doughslz",
-          "stars_my": 1,
-          "stars_other": 0,
-          "ratio": 1
+          "actor_login": "sugitaka64",
+          "stars_my": 0,
+          "stars_other": 1,
+          "ratio": 0
         }
       ],
       "meta": [
@@ -792,12 +567,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 9.707393586,
-        "rows_read": 464413748,
-        "bytes_read": 1857829909
+        "elapsed": 0.282397582,
+        "rows_read": 14638470,
+        "bytes_read": 58515252
       },
-      "executionTime": 9.761,
-      "requestId": "01JSXXN7TG2NS6BNTQNJDKCQSP"
+      "executionTime": 0.341,
+      "requestId": "01JTMVJKP0HDDA1VEMQ1AJHKMT"
     },
     "model": "human",
     "provider": "human",
@@ -808,61 +583,51 @@
     "name": "pipe_10.pipe",
     "question": {
       "name": "pipe_10.pipe",
-      "content": "top 10 Authors that contributed to freecodecamp also contributed to what repositories?"
+      "content": "Find the top 10 non-TensorFlow repositories that received the most pull requests from TensorFlow contributors, ranked by the number of unique contributors."
     },
-    "sql": "SELECT\n        repo_name,\n        count() AS prs,\n        uniq(actor_login) AS authors\n    FROM github_events\n    WHERE (event_type = 'PullRequestEvent') AND (action = 'opened') AND (actor_login IN\n    (\n        SELECT actor_login\n        FROM github_events\n        WHERE (event_type = 'PullRequestEvent') AND (action = 'opened') AND (repo_name IN ('yandex/ClickHouse', 'ClickHouse/ClickHouse'))\n    )) AND (repo_name NOT ILIKE '%ClickHouse%')\n    GROUP BY repo_name\n    ORDER BY authors DESC\n    LIMIT 10",
+    "sql": "SELECT\n        repo_name,\n        uniqExact(actor_login) AS authors\n    FROM github_events\n    WHERE (event_type = 'PullRequestEvent') AND (action = 'opened') AND (actor_login IN\n    (\n        SELECT actor_login\n        FROM github_events\n        WHERE (event_type = 'PullRequestEvent') AND (action = 'opened') AND (repo_name like '%tensorflow%')\n    )) AND (repo_name NOT ILIKE '%tensorflow%')\n    GROUP BY repo_name\n    ORDER BY authors DESC\n    LIMIT 10",
     "sqlResult": {
       "success": true,
       "data": [
         {
-          "repo_name": "Homebrew/homebrew-core",
-          "prs": 33,
-          "authors": 15
+          "repo_name": "fchollet/keras",
+          "authors": 31
         },
         {
-          "repo_name": "pocoproject/poco",
-          "prs": 28,
-          "authors": 14
+          "repo_name": "scikit-learn/scikit-learn",
+          "authors": 25
         },
         {
-          "repo_name": "saltstack/salt",
-          "prs": 38,
-          "authors": 13
+          "repo_name": "pytorch/pytorch",
+          "authors": 25
         },
         {
-          "repo_name": "apache/flink",
-          "prs": 54,
-          "authors": 12
+          "repo_name": "tflearn/tflearn",
+          "authors": 18
         },
         {
-          "repo_name": "ansible/ansible",
-          "prs": 42,
-          "authors": 12
-        },
-        {
-          "repo_name": "grafana/grafana",
-          "prs": 87,
+          "repo_name": "openai/gym",
           "authors": 10
         },
         {
-          "repo_name": "helm/charts",
-          "prs": 35,
+          "repo_name": "google/protobuf",
           "authors": 10
         },
         {
-          "repo_name": "avelino/awesome-go",
-          "prs": 33,
-          "authors": 10
-        },
-        {
-          "repo_name": "getredash/redash",
-          "prs": 20,
+          "repo_name": "kubernetes/kubernetes",
           "authors": 9
         },
         {
-          "repo_name": "apache/spark",
-          "prs": 18,
+          "repo_name": "python/cpython",
           "authors": 9
+        },
+        {
+          "repo_name": "kubernetes/kubernetes.github.io",
+          "authors": 8
+        },
+        {
+          "repo_name": "syl20bnr/spacemacs",
+          "authors": 7
         }
       ],
       "meta": [
@@ -871,21 +636,17 @@
           "type": "LowCardinality(String)"
         },
         {
-          "name": "prs",
-          "type": "UInt64"
-        },
-        {
           "name": "authors",
           "type": "UInt64"
         }
       ],
       "statistics": {
-        "elapsed": 0.921608373,
-        "rows_read": 215000847,
-        "bytes_read": 1181144848
+        "elapsed": 0.166759687,
+        "rows_read": 37129518,
+        "bytes_read": 184711487
       },
-      "executionTime": 0.972,
-      "requestId": "01JSXXNJAT8PXSTBMDVEWNRMXM"
+      "executionTime": 0.302,
+      "requestId": "01JTMVJN02ZP429ATNS3G91G98"
     },
     "model": "human",
     "provider": "human",
@@ -896,12 +657,63 @@
     "name": "pipe_11.pipe",
     "question": {
       "name": "pipe_11.pipe",
-      "content": "top 10 Authors that filed an issue in freecodecamp also filed issues in what repositories?"
+      "content": "top 10 repositories with most issues from users who also opened issues in tensorflow/tensorflow, rank by author."
     },
-    "sql": "SELECT\n        repo_name,\n        count() AS prs,\n        uniq(actor_login) AS authors\n    FROM github_events\n    WHERE (event_type = 'IssuesEvent') AND (action = 'opened') AND (actor_login IN\n    (\n        SELECT actor_login\n        FROM github_events\n        WHERE (event_type = 'IssuesEvent') AND (action = 'opened') AND (repo_name IN ('freecodecamp/freecodecamp'))\n    )) AND (repo_name NOT ILIKE '%freecodecamp%')\n    GROUP BY repo_name\n    ORDER BY authors DESC\n    LIMIT 10",
+    "sql": "SELECT\n        repo_name,\n        count() AS prs,\n        uniq(actor_login) AS authors\n    FROM github_events\n    WHERE (event_type = 'IssuesEvent') AND (action = 'opened') AND (actor_login IN\n    (\n        SELECT actor_login\n        FROM github_events\n        WHERE (event_type = 'IssuesEvent') AND (action = 'opened') AND (repo_name IN ('tensorflow/tensorflow'))\n    )) AND (repo_name NOT ILIKE '%tensorflow%')\n    GROUP BY repo_name\n    ORDER BY authors DESC\n    LIMIT 10",
     "sqlResult": {
       "success": true,
-      "data": [],
+      "data": [
+        {
+          "repo_name": "pytorch/pytorch",
+          "prs": 1071,
+          "authors": 140
+        },
+        {
+          "repo_name": "opencv/opencv",
+          "prs": 214,
+          "authors": 64
+        },
+        {
+          "repo_name": "numpy/numpy",
+          "prs": 114,
+          "authors": 44
+        },
+        {
+          "repo_name": "scikit-learn/scikit-learn",
+          "prs": 153,
+          "authors": 43
+        },
+        {
+          "repo_name": "ray-project/ray",
+          "prs": 244,
+          "authors": 42
+        },
+        {
+          "repo_name": "ultralytics/yolov5",
+          "prs": 75,
+          "authors": 32
+        },
+        {
+          "repo_name": "pandas-dev/pandas",
+          "prs": 178,
+          "authors": 31
+        },
+        {
+          "repo_name": "fchollet/keras",
+          "prs": 111,
+          "authors": 28
+        },
+        {
+          "repo_name": "onnx/onnx",
+          "prs": 76,
+          "authors": 26
+        },
+        {
+          "repo_name": "pytorch/vision",
+          "prs": 120,
+          "authors": 23
+        }
+      ],
       "meta": [
         {
           "name": "repo_name",
@@ -917,12 +729,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.309603181,
-        "rows_read": 111592167,
-        "bytes_read": 445625035
+        "elapsed": 0.096735232,
+        "rows_read": 15857078,
+        "bytes_read": 85431490
       },
-      "executionTime": 0.362,
-      "requestId": "01JSXXNM8NXMRER4100FSXGMRA"
+      "executionTime": 0.142,
+      "requestId": "01JTMVJP8VW77J7T4ASEG1C107"
     },
     "model": "human",
     "provider": "human",
@@ -933,15 +745,84 @@
     "name": "pipe_12.pipe",
     "question": {
       "name": "pipe_12.pipe",
-      "content": "top 10 Repositories with the most stars over one day"
+      "content": "top uniq 10 Repositories with the most stars over one full day at any instant. Limit to 10 results do not repeat repository names"
     },
     "sql": "SELECT\n        repo_name,\n        toDate(created_at) AS day,\n        count() AS stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY\n        repo_name,\n        day\n    ORDER BY count() DESC\n    LIMIT 1 BY repo_name\n    LIMIT 10",
     "sqlResult": {
-      "success": false,
-      "data": [],
-      "executionTime": 10.396,
-      "requestId": "01JSXXNNK43JHRZZ6VPCJSQ5SM",
-      "error": "{\"error\": \"[Error] Timeout exceeded: elapsed 10.007327902 seconds, maximum: 10. Upgrade your plan for higher capacity, ensure your cluster isn't overloaded (dedicated infrastructure only), or optimize your query with filters.\", \"documentation\": \"https://docs.tinybird.co/get-started/plans/limits\"}"
+      "success": true,
+      "data": [
+        {
+          "repo_name": "yarnpkg/yarn",
+          "day": "2016-10-12",
+          "stars": 5823
+        },
+        {
+          "repo_name": "sdmg15/Best-websites-a-programmer-should-visit",
+          "day": "2017-06-07",
+          "stars": 4056
+        },
+        {
+          "repo_name": "tipsy/github-profile-summary",
+          "day": "2017-12-21",
+          "stars": 2458
+        },
+        {
+          "repo_name": "zeit/next.js",
+          "day": "2016-10-26",
+          "stars": 1982
+        },
+        {
+          "repo_name": "warner/magic-wormhole",
+          "day": "2017-06-28",
+          "stars": 1935
+        },
+        {
+          "repo_name": "shengxinjing/programmer-job-blacklist",
+          "day": "2017-02-23",
+          "stars": 1842
+        },
+        {
+          "repo_name": "toddmotto/public-apis",
+          "day": "2017-07-26",
+          "stars": 1825
+        },
+        {
+          "repo_name": "wearehive/project-guidelines",
+          "day": "2017-07-05",
+          "stars": 1805
+        },
+        {
+          "repo_name": "thedaviddias/Front-End-Checklist",
+          "day": "2017-10-19",
+          "stars": 1786
+        },
+        {
+          "repo_name": "vahidk/EffectiveTensorflow",
+          "day": "2017-08-14",
+          "stars": 1661
+        }
+      ],
+      "meta": [
+        {
+          "name": "repo_name",
+          "type": "LowCardinality(String)"
+        },
+        {
+          "name": "day",
+          "type": "Date"
+        },
+        {
+          "name": "stars",
+          "type": "UInt64"
+        }
+      ],
+      "statistics": {
+        "elapsed": 0.228439988,
+        "rows_read": 7319235,
+        "bytes_read": 51196017
+      },
+      "executionTime": 0.277,
+      "requestId": "01JTMVJQCG7Y81CVN31M7CG2EW"
     },
     "model": "human",
     "provider": "human",
@@ -952,81 +833,71 @@
     "name": "pipe_13.pipe",
     "question": {
       "name": "pipe_13.pipe",
-      "content": "top 10 Repositories with the highest growth YoY 2019 and 2020"
+      "content": "top 10 Repositories with the highest growth YoY 2016 and 2017 starting from 1 star"
     },
-    "sql": "WITH toYear(created_at) AS year\n    SELECT\n        repo_name,\n        sum(year = 2020) AS stars2020,\n        sum(year = 2019) AS stars2019,\n        round(stars2020 / stars2019, 3) AS yoy,\n        min(created_at) AS first_seen\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n    HAVING (min(created_at) <= '2019-01-01 00:00:00') AND (stars2019 >= 1000)\n    ORDER BY yoy DESC\n    LIMIT 10",
+    "sql": "WITH toYear(created_at) AS year\n    SELECT\n        repo_name,\n        sum(year = 2017) AS stars2017,\n        sum(year = 2016) AS stars2016,\n        round((stars2017 - stars2016) / stars2016 * 100, 2) as yoy\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n    HAVING stars2016 >= 1\n    ORDER BY yoy DESC\n    LIMIT 10",
     "sqlResult": {
       "success": true,
       "data": [
         {
-          "repo_name": "puppeteer/puppeteer",
-          "stars2020": 11310,
-          "stars2019": 1255,
-          "yoy": 9.012,
-          "first_seen": "2014-03-14 12:01:39"
+          "repo_name": "xuset/planktos",
+          "stars2017": 392,
+          "stars2016": 2,
+          "yoy": 19500
         },
         {
-          "repo_name": "ohmyzsh/ohmyzsh",
-          "stars2020": 21705,
-          "stars2019": 2529,
-          "yoy": 8.582,
-          "first_seen": "2017-03-22 16:44:20"
+          "repo_name": "zyphs21/HSStockChart",
+          "stars2017": 319,
+          "stars2016": 2,
+          "yoy": 15850
         },
         {
-          "repo_name": "halfrost/LeetCode-Go",
-          "stars2020": 8887,
-          "stars2019": 1191,
-          "yoy": 7.462,
-          "first_seen": "2018-04-16 09:29:48"
+          "repo_name": "xinglie/gameboy",
+          "stars2017": 153,
+          "stars2016": 1,
+          "yoy": 15200
         },
         {
-          "repo_name": "jitsi/jitsi-meet",
-          "stars2020": 10451,
-          "stars2019": 1548,
-          "yoy": 6.751,
-          "first_seen": "2014-03-31 20:41:15"
+          "repo_name": "xulayen/WeChat",
+          "stars2017": 147,
+          "stars2016": 1,
+          "yoy": 14600
         },
         {
-          "repo_name": "desktop/desktop",
-          "stars2020": 12512,
-          "stars2019": 2600,
-          "yoy": 4.812,
-          "first_seen": "2017-05-16 17:10:37"
+          "repo_name": "yacy/yacybot",
+          "stars2017": 136,
+          "stars2016": 1,
+          "yoy": 13500
         },
         {
-          "repo_name": "TheAlgorithms/Javascript",
-          "stars2020": 6009,
-          "stars2019": 1312,
-          "yoy": 4.58,
-          "first_seen": "2017-08-03 16:27:42"
+          "repo_name": "yenchenlin/awesome-adversarial-machine-learning",
+          "stars2017": 518,
+          "stars2016": 4,
+          "yoy": 12850
         },
         {
-          "repo_name": "iamadamdev/bypass-paywalls-chrome",
-          "stars2020": 9503,
-          "stars2019": 2246,
-          "yoy": 4.231,
-          "first_seen": "2018-04-07 23:54:45"
+          "repo_name": "xuexb/learn-nginx",
+          "stars2017": 227,
+          "stars2016": 2,
+          "yoy": 11250
         },
         {
-          "repo_name": "r-spacex/SpaceX-API",
-          "stars2020": 4020,
-          "stars2019": 1083,
-          "yoy": 3.712,
-          "first_seen": "2017-06-26 07:00:38"
+          "repo_name": "xlab/treeprint",
+          "stars2017": 112,
+          "stars2016": 1,
+          "yoy": 11100
         },
         {
-          "repo_name": "loadimpact/k6",
-          "stars2020": 5018,
-          "stars2019": 1352,
-          "yoy": 3.712,
-          "first_seen": "2017-01-18 18:26:09"
+          "repo_name": "yaozs/YzsBaseActivity",
+          "stars2017": 176,
+          "stars2016": 2,
+          "yoy": 8700
         },
         {
-          "repo_name": "openspug/spug",
-          "stars2020": 4086,
-          "stars2019": 1116,
-          "yoy": 3.661,
-          "first_seen": "2018-02-10 11:01:08"
+          "repo_name": "zvovov/whatsapp-web",
+          "stars2017": 84,
+          "stars2016": 1,
+          "yoy": 8300
         }
       ],
       "meta": [
@@ -1035,29 +906,25 @@
           "type": "LowCardinality(String)"
         },
         {
-          "name": "stars2020",
+          "name": "stars2017",
           "type": "UInt64"
         },
         {
-          "name": "stars2019",
+          "name": "stars2016",
           "type": "UInt64"
         },
         {
           "name": "yoy",
           "type": "Float64"
-        },
-        {
-          "name": "first_seen",
-          "type": "DateTime"
         }
       ],
       "statistics": {
-        "elapsed": 1.650037888,
-        "rows_read": 232206874,
-        "bytes_read": 1625111877
+        "elapsed": 0.057200895,
+        "rows_read": 7319235,
+        "bytes_read": 51196017
       },
-      "executionTime": 1.706,
-      "requestId": "01JSXXP0QC2W9ZCAADFK8550CD"
+      "executionTime": 0.104,
+      "requestId": "01JTMVJRMGZYVC8B5BKYCV37KE"
     },
     "model": "human",
     "provider": "human",
@@ -1068,81 +935,71 @@
     "name": "pipe_14.pipe",
     "question": {
       "name": "pipe_14.pipe",
-      "content": "top 10 Repositories with the worst stagnation in 2019 vs 2020"
+      "content": "top 10 Repositories with the worst stagnation in 2017 vs 2016. Repos with at least one star in 2017"
     },
-    "sql": "WITH toYear(created_at) AS year\n    SELECT\n        repo_name,\n        sum(year = 2020) AS stars2020,\n        sum(year = 2019) AS stars2019,\n        round(stars2020 / stars2019, 3) AS yoy,\n        min(created_at) AS first_seen\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n    HAVING (min(created_at) <= '2019-01-01 00:00:00') AND (max(created_at) >= '2020-06-01 00:00:00') AND (stars2019 >= 1000)\n    ORDER BY yoy ASC\n    LIMIT 10",
+    "sql": "WITH toYear(created_at) AS year\n    SELECT\n        repo_name,\n        sum(year = 2017) AS stars2017,\n        sum(year = 2016) AS stars2016,\n        round((stars2017 - stars2016) / stars2016 * 100, 2) as yoy\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n    HAVING (stars2017 >= 1)\n    ORDER BY yoy ASC\n    LIMIT 10",
     "sqlResult": {
       "success": true,
       "data": [
         {
-          "repo_name": "arpitjindal97/technology_books",
-          "stars2020": 1,
-          "stars2019": 4001,
-          "yoy": 0,
-          "first_seen": "2017-08-16 19:08:59"
+          "repo_name": "zymtom/DidIStealThis",
+          "stars2017": 2,
+          "stars2016": 514,
+          "yoy": -99.61
         },
         {
-          "repo_name": "DoubleLabyrinth/navicat-keygen",
-          "stars2020": 1,
-          "stars2019": 6459,
-          "yoy": 0,
-          "first_seen": "2017-12-08 02:04:48"
+          "repo_name": "zverok/wheretz",
+          "stars2017": 1,
+          "stars2016": 73,
+          "yoy": -98.63
         },
         {
-          "repo_name": "b3log/pipe",
-          "stars2020": 2,
-          "stars2019": 2380,
-          "yoy": 0.001,
-          "first_seen": "2017-12-20 05:08:15"
+          "repo_name": "zzz40500/AndroidSweetBehavior",
+          "stars2017": 2,
+          "stars2016": 134,
+          "yoy": -98.51
         },
         {
-          "repo_name": "energicryptocurrency/energi",
-          "stars2020": 12,
-          "stars2019": 6720,
-          "yoy": 0.002,
-          "first_seen": "2017-07-14 16:01:39"
+          "repo_name": "zyqf/DNS",
+          "stars2017": 16,
+          "stars2016": 1022,
+          "yoy": -98.43
         },
         {
-          "repo_name": "M4cs/BabySploit",
-          "stars2020": 126,
-          "stars2019": 71013,
-          "yoy": 0.002,
-          "first_seen": "2018-11-11 10:10:30"
+          "repo_name": "xyproto/simplehstore",
+          "stars2017": 1,
+          "stars2016": 49,
+          "yoy": -97.96
         },
         {
-          "repo_name": "AioiLight/TJAPlayer3",
-          "stars2020": 29,
-          "stars2019": 5308,
-          "yoy": 0.005,
-          "first_seen": "2018-01-17 19:59:10"
+          "repo_name": "zuzuleinen/dave",
+          "stars2017": 1,
+          "stars2016": 48,
+          "yoy": -97.92
         },
         {
-          "repo_name": "everitoken/evt",
-          "stars2020": 8,
-          "stars2019": 1366,
-          "yoy": 0.006,
-          "first_seen": "2018-04-23 03:57:30"
+          "repo_name": "xjbeta/AppleDNS-GUI",
+          "stars2017": 1,
+          "stars2016": 47,
+          "yoy": -97.87
         },
         {
-          "repo_name": "SqueezerIO/squeezer",
-          "stars2020": 41,
-          "stars2019": 3307,
-          "yoy": 0.012,
-          "first_seen": "2017-05-15 07:31:14"
+          "repo_name": "zzarcon/psaux",
+          "stars2017": 2,
+          "stars2016": 94,
+          "yoy": -97.87
         },
         {
-          "repo_name": "dengyuhan/magnetW",
-          "stars2020": 54,
-          "stars2019": 4215,
-          "yoy": 0.013,
-          "first_seen": "2018-03-09 09:18:23"
+          "repo_name": "xxycode/NELivePlayer",
+          "stars2017": 2,
+          "stars2016": 90,
+          "yoy": -97.78
         },
         {
-          "repo_name": "react-native-training/react-native-elements",
-          "stars2020": 48,
-          "stars2019": 3341,
-          "yoy": 0.014,
-          "first_seen": "2017-04-03 04:27:02"
+          "repo_name": "zzarcon/animotion",
+          "stars2017": 1,
+          "stars2016": 43,
+          "yoy": -97.67
         }
       ],
       "meta": [
@@ -1151,29 +1008,25 @@
           "type": "LowCardinality(String)"
         },
         {
-          "name": "stars2020",
+          "name": "stars2017",
           "type": "UInt64"
         },
         {
-          "name": "stars2019",
+          "name": "stars2016",
           "type": "UInt64"
         },
         {
           "name": "yoy",
           "type": "Float64"
-        },
-        {
-          "name": "first_seen",
-          "type": "DateTime"
         }
       ],
       "statistics": {
-        "elapsed": 1.777434547,
-        "rows_read": 232206874,
-        "bytes_read": 1625111877
+        "elapsed": 0.054401053,
+        "rows_read": 7319235,
+        "bytes_read": 51196017
       },
-      "executionTime": 1.916,
-      "requestId": "01JSXXP3C0MYCGYXCTKC3GSB17"
+      "executionTime": 0.1,
+      "requestId": "01JTMVJSQ4RWG40BG2BCFMKYKX"
     },
     "model": "human",
     "provider": "human",
@@ -1184,15 +1037,98 @@
     "name": "pipe_15.pipe",
     "question": {
       "name": "pipe_15.pipe",
-      "content": "top 10 Repositories with the most steady growth over time"
+      "content": "top 10 Repositories with the most steady star growth rate over time"
     },
     "sql": "SELECT\n        repo_name,\n        max(stars) AS daily_stars,\n        sum(stars) AS total_stars,\n        total_stars / daily_stars AS rate\n    FROM\n    (\n        SELECT\n            repo_name,\n            toDate(created_at) AS day,\n            count() AS stars\n        FROM github_events\n        WHERE event_type = 'WatchEvent'\n        GROUP BY\n            repo_name,\n            day\n    )\n    GROUP BY repo_name\n    ORDER BY rate DESC\n    LIMIT 10",
     "sqlResult": {
-      "success": false,
-      "data": [],
-      "executionTime": 10.774,
-      "requestId": "01JSXXP677NAAQSEHFB49TXB00",
-      "error": "{\"error\": \"[Error] Timeout exceeded: elapsed 10.229022145 seconds, maximum: 10. Upgrade your plan for higher capacity, ensure your cluster isn't overloaded (dedicated infrastructure only), or optimize your query with filters.\", \"documentation\": \"https://docs.tinybird.co/get-started/plans/limits\"}"
+      "success": true,
+      "data": [
+        {
+          "repo_name": "zurb/foundation-sites",
+          "daily_stars": 24,
+          "total_stars": 6165,
+          "rate": 256.875
+        },
+        {
+          "repo_name": "yannickcr/eslint-plugin-react",
+          "daily_stars": 12,
+          "total_stars": 2909,
+          "rate": 242.41666666666666
+        },
+        {
+          "repo_name": "zxing/zxing",
+          "daily_stars": 46,
+          "total_stars": 10708,
+          "rate": 232.7826086956522
+        },
+        {
+          "repo_name": "xgrommx/awesome-redux",
+          "daily_stars": 35,
+          "total_stars": 7793,
+          "rate": 222.65714285714284
+        },
+        {
+          "repo_name": "zzzeek/sqlalchemy",
+          "daily_stars": 7,
+          "total_stars": 1508,
+          "rate": 215.42857142857142
+        },
+        {
+          "repo_name": "reactjs/redux",
+          "daily_stars": 56,
+          "total_stars": 11414,
+          "rate": 203.82142857142858
+        },
+        {
+          "repo_name": "robbyrussell/oh-my-zsh",
+          "daily_stars": 99,
+          "total_stars": 19325,
+          "rate": 195.2020202020202
+        },
+        {
+          "repo_name": "yasserg/crawler4j",
+          "daily_stars": 11,
+          "total_stars": 2053,
+          "rate": 186.63636363636363
+        },
+        {
+          "repo_name": "reactjs/react-redux",
+          "daily_stars": 27,
+          "total_stars": 5013,
+          "rate": 185.66666666666666
+        },
+        {
+          "repo_name": "twbs/bootstrap",
+          "daily_stars": 114,
+          "total_stars": 21157,
+          "rate": 185.58771929824562
+        }
+      ],
+      "meta": [
+        {
+          "name": "repo_name",
+          "type": "LowCardinality(String)"
+        },
+        {
+          "name": "daily_stars",
+          "type": "UInt64"
+        },
+        {
+          "name": "total_stars",
+          "type": "UInt64"
+        },
+        {
+          "name": "rate",
+          "type": "Float64"
+        }
+      ],
+      "statistics": {
+        "elapsed": 0.214248584,
+        "rows_read": 7319235,
+        "bytes_read": 51196017
+      },
+      "executionTime": 0.262,
+      "requestId": "01JTMVJTSNS3J9S4ZDJQ393CR5"
     },
     "model": "human",
     "provider": "human",
@@ -1211,31 +1147,31 @@
       "data": [
         {
           "day": 1,
-          "stars": 36491986
+          "stars": 1142998
         },
         {
           "day": 2,
-          "stars": 38094378
+          "stars": 1202453
         },
         {
           "day": 3,
-          "stars": 37570733
+          "stars": 1205364
         },
         {
           "day": 4,
-          "stars": 37208005
+          "stars": 1192271
         },
         {
           "day": 5,
-          "stars": 34924484
+          "stars": 1113820
         },
         {
           "day": 6,
-          "stars": 23726322
+          "stars": 722911
         },
         {
           "day": 7,
-          "stars": 24102566
+          "stars": 725295
         }
       ],
       "meta": [
@@ -1249,12 +1185,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.185358662,
-        "rows_read": 232206874,
-        "bytes_read": 1161034370
+        "elapsed": 0.01350127,
+        "rows_read": 7319235,
+        "bytes_read": 36596175
       },
-      "executionTime": 0.233,
-      "requestId": "01JSXXPHQ6J1VPXXX7ZT1DCD6A"
+      "executionTime": 0.059,
+      "requestId": "01JTMVJW15BPW631JPYGCKP0V1"
     },
     "model": "human",
     "provider": "human",
@@ -1272,7 +1208,7 @@
       "success": true,
       "data": [
         {
-          "uniq(actor_login)": 34138551
+          "uniq(actor_login)": 9427060
         }
       ],
       "meta": [
@@ -1282,12 +1218,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 8.806175531,
-        "rows_read": 3124889133,
-        "bytes_read": 6244747853
+        "elapsed": 0.476106729,
+        "rows_read": 200000000,
+        "bytes_read": 394865005
       },
-      "executionTime": 8.925,
-      "requestId": "01JSXXPJXSJ3N2DE6FRP5TW8QQ"
+      "executionTime": 0.521,
+      "requestId": "01JTMVJX29BXRVQM9N9AT919EP"
     },
     "model": "human",
     "provider": "human",
@@ -1305,7 +1241,7 @@
       "success": true,
       "data": [
         {
-          "uniq(actor_login)": 10176170
+          "uniq(actor_login)": 1241335
         }
       ],
       "meta": [
@@ -1315,12 +1251,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 2.705166735,
-        "rows_read": 232206874,
-        "bytes_read": 696620622
+        "elapsed": 0.116142681,
+        "rows_read": 7319235,
+        "bytes_read": 21957705
       },
-      "executionTime": 2.787,
-      "requestId": "01JSXXPWM10AJHH6JJBXCWKZFB"
+      "executionTime": 0.159,
+      "requestId": "01JTMVJYHW8H0Y0NZQBG3AWP9S"
     },
     "model": "human",
     "provider": "human",
@@ -1338,7 +1274,7 @@
       "success": true,
       "data": [
         {
-          "uniq(actor_login)": 18796966
+          "uniq(actor_login)": 1724999
         }
       ],
       "meta": [
@@ -1348,12 +1284,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 2.26152953,
-        "rows_read": 1601467785,
-        "bytes_read": 4801468604
+        "elapsed": 0.145877421,
+        "rows_read": 75689153,
+        "bytes_read": 223381427
       },
-      "executionTime": 2.376,
-      "requestId": "01JSXXQ0AJ6S2BKG0EK5F1W0ZJ"
+      "executionTime": 0.189,
+      "requestId": "01JTMVJZP5RRNFH1TQB8HNDEJT"
     },
     "model": "human",
     "provider": "human",
@@ -1371,7 +1307,7 @@
       "success": true,
       "data": [
         {
-          "uniq(actor_login)": 6407734
+          "uniq(actor_login)": 914672
         }
       ],
       "meta": [
@@ -1381,12 +1317,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.727300086,
-        "rows_read": 214758704,
-        "bytes_read": 858481247
+        "elapsed": 0.08583335,
+        "rows_read": 18564759,
+        "bytes_read": 73368008
       },
-      "executionTime": 0.779,
-      "requestId": "01JSXXQ3M4ENCXZSRKA222V72N"
+      "executionTime": 0.128,
+      "requestId": "01JTMVK0VCM2CEBAC9SVTZKVRS"
     },
     "model": "human",
     "provider": "human",
@@ -1404,44 +1340,44 @@
       "success": true,
       "data": [
         {
-          "repo_name": "facebook/react",
-          "count()": 121976
+          "repo_name": "yarnpkg/yarn",
+          "count()": 15414
         },
         {
           "repo_name": "vuejs/vue",
-          "count()": 109518
+          "count()": 10698
         },
         {
-          "repo_name": "996icu/996.ICU",
-          "count()": 109244
-        },
-        {
-          "repo_name": "sindresorhus/awesome",
-          "count()": 106729
-        },
-        {
-          "repo_name": "getify/You-Dont-Know-JS",
-          "count()": 102997
+          "repo_name": "tipsy/github-profile-summary",
+          "count()": 10572
         },
         {
           "repo_name": "tensorflow/tensorflow",
-          "count()": 96960
+          "count()": 10072
         },
         {
-          "repo_name": "kamranahmedse/developer-roadmap",
-          "count()": 93499
+          "repo_name": "thedaviddias/Front-End-Checklist",
+          "count()": 9339
         },
         {
-          "repo_name": "FreeCodeCamp/FreeCodeCamp",
-          "count()": 89246
+          "repo_name": "sindresorhus/awesome",
+          "count()": 8207
         },
         {
-          "repo_name": "airbnb/javascript",
-          "count()": 81594
+          "repo_name": "toddmotto/public-apis",
+          "count()": 8104
         },
         {
-          "repo_name": "donnemartin/system-design-primer",
-          "count()": 79909
+          "repo_name": "sdmg15/Best-websites-a-programmer-should-visit",
+          "count()": 7799
+        },
+        {
+          "repo_name": "ryanmcdermott/clean-code-javascript",
+          "count()": 7573
+        },
+        {
+          "repo_name": "yangshun/tech-interview-handbook",
+          "count()": 6530
         }
       ],
       "meta": [
@@ -1455,12 +1391,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 8.305857673,
-        "rows_read": 446965578,
-        "bytes_read": 2019062015
+        "elapsed": 0.425138636,
+        "rows_read": 25883994,
+        "bytes_read": 109955483
       },
-      "executionTime": 8.38,
-      "requestId": "01JSXXQ5BTFM2NGCP8EPQXGKK5"
+      "executionTime": 0.474,
+      "requestId": "01JTMVK1YTAH9KTP8CD1RZCNR8"
     },
     "model": "human",
     "provider": "human",
@@ -1471,51 +1407,51 @@
     "name": "pipe_22.pipe",
     "question": {
       "name": "pipe_22.pipe",
-      "content": "top 10 authors who have made at least 10 PRs?"
+      "content": "top 10 repos with authors who have made at least 10 PRs?"
     },
     "sql": "SELECT\n        repo_name,\n        count()\n    FROM github_events\n    WHERE (event_type = 'WatchEvent') AND (actor_login IN\n    (\n        SELECT actor_login\n        FROM github_events\n        WHERE (event_type = 'PullRequestEvent') AND (action = 'opened')\n        GROUP BY actor_login\n        HAVING count() >= 10\n    ))\n    GROUP BY repo_name\n    ORDER BY count() DESC\n    LIMIT 10",
     "sqlResult": {
       "success": true,
       "data": [
         {
-          "repo_name": "facebook/react",
-          "count()": 56889
+          "repo_name": "yarnpkg/yarn",
+          "count()": 5414
         },
         {
-          "repo_name": "getify/You-Dont-Know-JS",
-          "count()": 49496
+          "repo_name": "tipsy/github-profile-summary",
+          "count()": 4186
         },
         {
-          "repo_name": "sindresorhus/awesome",
-          "count()": 48750
+          "repo_name": "thedaviddias/Front-End-Checklist",
+          "count()": 2669
         },
         {
           "repo_name": "vuejs/vue",
-          "count()": 43864
+          "count()": 2515
         },
         {
-          "repo_name": "airbnb/javascript",
-          "count()": 40277
+          "repo_name": "ryanmcdermott/clean-code-javascript",
+          "count()": 2356
         },
         {
-          "repo_name": "kamranahmedse/developer-roadmap",
-          "count()": 39809
+          "repo_name": "toddmotto/public-apis",
+          "count()": 2300
         },
         {
           "repo_name": "tensorflow/tensorflow",
-          "count()": 38087
+          "count()": 2163
+        },
+        {
+          "repo_name": "sdmg15/Best-websites-a-programmer-should-visit",
+          "count()": 2068
         },
         {
           "repo_name": "resume/resume.github.com",
-          "count()": 37815
+          "count()": 1955
         },
         {
-          "repo_name": "robbyrussell/oh-my-zsh",
-          "count()": 37015
-        },
-        {
-          "repo_name": "donnemartin/system-design-primer",
-          "count()": 36259
+          "repo_name": "sindresorhus/awesome",
+          "count()": 1937
         }
       ],
       "meta": [
@@ -1529,12 +1465,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 6.044791336,
-        "rows_read": 446965578,
-        "bytes_read": 2018974825
+        "elapsed": 0.248137044,
+        "rows_read": 25883994,
+        "bytes_read": 109955483
       },
-      "executionTime": 6.097,
-      "requestId": "01JSXXQEGXMZVBRCH7NA1NK37Z"
+      "executionTime": 0.293,
+      "requestId": "01JTMVK3CVGWF6PSTEX169N6NC"
     },
     "model": "human",
     "provider": "human",
@@ -1547,59 +1483,49 @@
       "name": "pipe_23.pipe",
       "content": "top 10 Repositories with the maximum amount of pull requests"
     },
-    "sql": "SELECT repo_name, count(), uniq(actor_login) FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' GROUP BY repo_name ORDER BY count() DESC LIMIT 10",
+    "sql": "SELECT repo_name, count() FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' GROUP BY repo_name ORDER BY count() DESC LIMIT 10",
     "sqlResult": {
       "success": true,
       "data": [
         {
+          "repo_name": "sauron-demo/sauron",
+          "count()": 109608
+        },
+        {
           "repo_name": "google-test/signcla-probe-repo",
-          "count()": 351806,
-          "uniq(actor_login)": 4
+          "count()": 43435
+        },
+        {
+          "repo_name": "sauron-demo/sauron-demo",
+          "count()": 31288
+        },
+        {
+          "repo_name": "rust-lang/rust",
+          "count()": 13365
         },
         {
           "repo_name": "everypolitician/everypolitician-data",
-          "count()": 158134,
-          "uniq(actor_login)": 18
+          "count()": 13277
         },
         {
-          "repo_name": "brianchandotcom/liferay-portal",
-          "count()": 93222,
-          "uniq(actor_login)": 338
+          "repo_name": "ros/rosdistro",
+          "count()": 12932
         },
         {
-          "repo_name": "NixOS/nixpkgs",
-          "count()": 84557,
-          "uniq(actor_login)": 3816
+          "repo_name": "jlord/patchwork",
+          "count()": 12708
         },
         {
-          "repo_name": "Homebrew/homebrew-core",
-          "count()": 60457,
-          "uniq(actor_login)": 5852
+          "repo_name": "kubernetes/kubernetes",
+          "count()": 11347
         },
         {
-          "repo_name": "sauron-demo/sauron",
-          "count()": 54806,
-          "uniq(actor_login)": 1
+          "repo_name": "saltstack/salt",
+          "count()": 10494
         },
         {
-          "repo_name": "elastic/kibana",
-          "count()": 52317,
-          "uniq(actor_login)": 832
-        },
-        {
-          "repo_name": "test-organization-kkjeer/bot-validation",
-          "count()": 51409,
-          "uniq(actor_login)": 4
-        },
-        {
-          "repo_name": "SmartThingsCommunity/SmartThingsPublic",
-          "count()": 51280,
-          "uniq(actor_login)": 716
-        },
-        {
-          "repo_name": "test-organization-kkjeer/app-test",
-          "count()": 51006,
-          "uniq(actor_login)": 6
+          "repo_name": "nodejs/node",
+          "count()": 9708
         }
       ],
       "meta": [
@@ -1610,19 +1536,15 @@
         {
           "name": "count()",
           "type": "UInt64"
-        },
-        {
-          "name": "uniq(actor_login)",
-          "type": "UInt64"
         }
       ],
       "statistics": {
-        "elapsed": 2.877830978,
-        "rows_read": 214758704,
-        "bytes_read": 1287855735
+        "elapsed": 0.088973848,
+        "rows_read": 18564759,
+        "bytes_read": 73326053
       },
-      "executionTime": 2.93,
-      "requestId": "01JSXXQNER5AWMETDMNTSJJP60"
+      "executionTime": 0.137,
+      "requestId": "01JTMVK4NDN5V5F031BMNP0RCM"
     },
     "model": "human",
     "provider": "human",
@@ -1635,59 +1557,49 @@
       "name": "pipe_24.pipe",
       "content": "top 10 Repositories with the maximum amount of pull request contributors"
     },
-    "sql": "SELECT repo_name, count(), uniq(actor_login) AS u FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' GROUP BY repo_name ORDER BY u DESC LIMIT 10",
+    "sql": "SELECT repo_name, uniqExact(actor_login) AS u FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' GROUP BY repo_name ORDER BY u DESC LIMIT 10",
     "sqlResult": {
       "success": true,
       "data": [
         {
           "repo_name": "jlord/patchwork",
-          "count()": 36787,
-          "u": 31919
+          "u": 5802
         },
         {
-          "repo_name": "firstcontributions/first-contributions",
-          "count()": 27015,
-          "u": 24995
+          "repo_name": "githubschool/open-enrollment-classes-introduction-to-github",
+          "u": 3586
         },
         {
-          "repo_name": "octocat/Spoon-Knife",
-          "count()": 20116,
-          "u": 18204
+          "repo_name": "learn-co-students/javascript-intro-to-functions-lab-bootcamp-prep-000",
+          "u": 3027
         },
         {
-          "repo_name": "DefinitelyTyped/DefinitelyTyped",
-          "count()": 36240,
-          "u": 13826
+          "repo_name": "learn-co-students/js-functions-lab-bootcamp-prep-000",
+          "u": 2899
         },
         {
-          "repo_name": "deadlyvipers/dojo_rules",
-          "count()": 15925,
-          "u": 9751
+          "repo_name": "learn-co-students/js-from-dom-to-node-bootcamp-prep-000",
+          "u": 2860
         },
         {
-          "repo_name": "google/it-cert-automation-practice",
-          "count()": 10132,
-          "u": 9749
+          "repo_name": "learn-co-students/javascript-arithmetic-lab-bootcamp-prep-000",
+          "u": 2681
         },
         {
           "repo_name": "udacity/create-your-own-adventure",
-          "count()": 10423,
-          "u": 8839
+          "u": 2622
         },
         {
-          "repo_name": "JetBrains/swot",
-          "count()": 9866,
-          "u": 8291
+          "repo_name": "learn-co-students/js-node-practice-lab-bootcamp-prep-000",
+          "u": 2594
         },
         {
-          "repo_name": "udacity/course-collaboration-travel-plans",
-          "count()": 8417,
-          "u": 8132
+          "repo_name": "freeCodeCamp/guides",
+          "u": 2587
         },
         {
-          "repo_name": "zero-to-mastery/start-here-guidelines",
-          "count()": 8940,
-          "u": 8112
+          "repo_name": "learn-co-students/js-if-else-files-lab-bootcamp-prep-000",
+          "u": 2581
         }
       ],
       "meta": [
@@ -1696,21 +1608,17 @@
           "type": "LowCardinality(String)"
         },
         {
-          "name": "count()",
-          "type": "UInt64"
-        },
-        {
           "name": "u",
           "type": "UInt64"
         }
       ],
       "statistics": {
-        "elapsed": 2.571208101,
-        "rows_read": 214758704,
-        "bytes_read": 1287855735
+        "elapsed": 0.161494156,
+        "rows_read": 18564759,
+        "bytes_read": 109818681
       },
-      "executionTime": 2.621,
-      "requestId": "01JSXXQS9J8YY2ZJ46929ESXZD"
+      "executionTime": 0.211,
+      "requestId": "01JTMVK5S1FZFYG4XR2491NPAD"
     },
     "model": "human",
     "provider": "human",
@@ -1723,59 +1631,49 @@
       "name": "pipe_25.pipe",
       "content": "top 10 Repositories with the maximum amount of issues"
     },
-    "sql": "SELECT repo_name, count() AS c, uniq(actor_login) AS u FROM github_events WHERE event_type = 'IssuesEvent' AND action = 'opened' GROUP BY repo_name ORDER BY c DESC LIMIT 10",
+    "sql": "SELECT repo_name, count() AS c FROM github_events WHERE event_type = 'IssuesEvent' AND action = 'opened' GROUP BY repo_name ORDER BY c DESC LIMIT 10",
     "sqlResult": {
       "success": true,
       "data": [
-        {
-          "repo_name": "koorellasuresh/UKRegionTest",
-          "c": 379379,
-          "u": 4
-        },
         {
           "repo_name": "pddemo/demo",
-          "c": 216215,
-          "u": 1
+          "c": 432430
         },
         {
-          "repo_name": "lstjsuperman/fabric",
-          "c": 173986,
-          "u": 1
+          "repo_name": "support-ops/sit-repo",
+          "c": 59634
         },
         {
-          "repo_name": "Khan/khan-exercises",
-          "c": 157016,
-          "u": 462
+          "repo_name": "nainardev/tamil-dubbed",
+          "c": 58392
         },
         {
-          "repo_name": "No-CQRT/GooGuns",
-          "c": 149264,
-          "u": 1
+          "repo_name": "bippybop/iitest",
+          "c": 41581
         },
         {
-          "repo_name": "Khan/khan-i18n",
-          "c": 130920,
-          "u": 3
+          "repo_name": "test-organization-kkjeer/app-test",
+          "c": 35864
         },
         {
-          "repo_name": "jlippold/tweakCompatible",
-          "c": 127029,
-          "u": 11243
+          "repo_name": "test-organization-kkjeer/bot-validation",
+          "c": 35850
         },
         {
-          "repo_name": "Ramos-dev/jniwebshell",
-          "c": 108096,
-          "u": 1
+          "repo_name": "theapache64/movie-monk-creator",
+          "c": 34666
         },
         {
-          "repo_name": "ron190/jsql-injection",
-          "c": 91086,
-          "u": 30
+          "repo_name": "ouyanxia2/hgmgmg",
+          "c": 29922
         },
         {
-          "repo_name": "debricked/debricked-test-integration",
-          "c": 83341,
-          "u": 1
+          "repo_name": "pavlo-byshovets/Tutorials",
+          "c": 23302
+        },
+        {
+          "repo_name": "ruben-archisketch/tinkerbell-template",
+          "c": 23268
         }
       ],
       "meta": [
@@ -1786,223 +1684,15 @@
         {
           "name": "c",
           "type": "UInt64"
-        },
-        {
-          "name": "u",
-          "type": "UInt64"
         }
       ],
       "statistics": {
-        "elapsed": 0.945650736,
-        "rows_read": 111436382,
-        "bytes_read": 667828265
+        "elapsed": 0.075749045,
+        "rows_read": 15470766,
+        "bytes_read": 61143811
       },
-      "executionTime": 0.994,
-      "requestId": "01JSXXQWTVGATNJQXGWE6HMXNB"
-    },
-    "model": "human",
-    "provider": "human",
-    "error": null,
-    "attempts": []
-  },
-  {
-    "name": "pipe_26.pipe",
-    "question": {
-      "name": "pipe_26.pipe",
-      "content": "top 10 Repositories with the maximum amount of issues, distinguish real issues from robot ones, add a cutoff at 1000 stars"
-    },
-    "sql": "WITH (event_type = 'IssuesEvent') AND (action = 'opened') AS issue_created\n    SELECT\n        repo_name,\n        sum(issue_created) AS c,\n        uniqIf(actor_login, issue_created) AS u,\n        sum(event_type = 'WatchEvent') AS stars\n    FROM github_events\n    WHERE event_type IN ('IssuesEvent', 'WatchEvent')\n    GROUP BY repo_name\n    HAVING stars >= 1000\n    ORDER BY c DESC\n    LIMIT 10",
-    "sqlResult": {
-      "success": true,
-      "data": [
-        {
-          "repo_name": "Khan/khan-exercises",
-          "c": 157016,
-          "u": 462,
-          "stars": 1749
-        },
-        {
-          "repo_name": "Microsoft/vscode",
-          "c": 65122,
-          "u": 27038,
-          "stars": 82043
-        },
-        {
-          "repo_name": "flutter/flutter",
-          "c": 45920,
-          "u": 16677,
-          "stars": 116303
-        },
-        {
-          "repo_name": "MicrosoftDocs/azure-docs",
-          "c": 44131,
-          "u": 21036,
-          "stars": 4888
-        },
-        {
-          "repo_name": "microsoft/vscode",
-          "c": 34798,
-          "u": 19479,
-          "stars": 38395
-        },
-        {
-          "repo_name": "kubernetes/kubernetes",
-          "c": 31644,
-          "u": 8615,
-          "stars": 68644
-        },
-        {
-          "repo_name": "golang/go",
-          "c": 31443,
-          "u": 10190,
-          "stars": 92407
-        },
-        {
-          "repo_name": "hq450/fancyss",
-          "c": 31124,
-          "u": 778,
-          "stars": 7921
-        },
-        {
-          "repo_name": "cockroachdb/cockroach",
-          "c": 28390,
-          "u": 1049,
-          "stars": 21147
-        },
-        {
-          "repo_name": "tensorflow/tensorflow",
-          "c": 28380,
-          "u": 16377,
-          "stars": 173681
-        }
-      ],
-      "meta": [
-        {
-          "name": "repo_name",
-          "type": "LowCardinality(String)"
-        },
-        {
-          "name": "c",
-          "type": "UInt64"
-        },
-        {
-          "name": "u",
-          "type": "UInt64"
-        },
-        {
-          "name": "stars",
-          "type": "UInt64"
-        }
-      ],
-      "statistics": {
-        "elapsed": 6.826356785,
-        "rows_read": 343590366,
-        "bytes_read": 2060836035
-      },
-      "executionTime": 6.884,
-      "requestId": "01JSXXQYS7A29807Q6V5D4FGE4"
-    },
-    "model": "human",
-    "provider": "human",
-    "error": null,
-    "attempts": []
-  },
-  {
-    "name": "pipe_27.pipe",
-    "question": {
-      "name": "pipe_27.pipe",
-      "content": "top 10 Repositories with the maximum amount of issues, distinguish real issues from robot ones, add a cutoff at 1000 stars sort by the number of issue authors"
-    },
-    "sql": "WITH (event_type = 'IssuesEvent') AND (action = 'opened') AS issue_created\n    SELECT\n        repo_name,\n        sum(issue_created) AS c,\n        uniqIf(actor_login, issue_created) AS u,\n        sum(event_type = 'WatchEvent') AS stars\n    FROM github_events\n    WHERE event_type IN ('IssuesEvent', 'WatchEvent')\n    GROUP BY repo_name\n    ORDER BY u DESC\n    LIMIT 10",
-    "sqlResult": {
-      "success": true,
-      "data": [
-        {
-          "repo_name": "Microsoft/vscode",
-          "c": 65122,
-          "u": 27038,
-          "stars": 82043
-        },
-        {
-          "repo_name": "MicrosoftDocs/azure-docs",
-          "c": 44131,
-          "u": 21036,
-          "stars": 4888
-        },
-        {
-          "repo_name": "microsoft/vscode",
-          "c": 34798,
-          "u": 19479,
-          "stars": 38395
-        },
-        {
-          "repo_name": "flutter/flutter",
-          "c": 45920,
-          "u": 16677,
-          "stars": 116303
-        },
-        {
-          "repo_name": "tensorflow/tensorflow",
-          "c": 28380,
-          "u": 16377,
-          "stars": 173681
-        },
-        {
-          "repo_name": "ansible/ansible",
-          "c": 27774,
-          "u": 13050,
-          "stars": 51144
-        },
-        {
-          "repo_name": "996icu/996.ICU",
-          "c": 22791,
-          "u": 12818,
-          "stars": 354850
-        },
-        {
-          "repo_name": "FortAwesome/Font-Awesome",
-          "c": 16438,
-          "u": 12745,
-          "stars": 75924
-        },
-        {
-          "repo_name": "facebook/react-native",
-          "c": 19926,
-          "u": 11861,
-          "stars": 105346
-        },
-        {
-          "repo_name": "npm/npm",
-          "c": 14494,
-          "u": 11403,
-          "stars": 16774
-        }
-      ],
-      "meta": [
-        {
-          "name": "repo_name",
-          "type": "LowCardinality(String)"
-        },
-        {
-          "name": "c",
-          "type": "UInt64"
-        },
-        {
-          "name": "u",
-          "type": "UInt64"
-        },
-        {
-          "name": "stars",
-          "type": "UInt64"
-        }
-      ],
-      "statistics": {
-        "elapsed": 6.535916352,
-        "rows_read": 343590366,
-        "bytes_read": 2060836035
-      },
-      "executionTime": 6.589,
-      "requestId": "01JSXXR6FQCNN3JXD950RZSXD0"
+      "executionTime": 0.124,
+      "requestId": "01JTMVK6YVBY9FG73S78EKBCHZ"
     },
     "model": "human",
     "provider": "human",
@@ -2015,13 +1705,68 @@
       "name": "pipe_28.pipe",
       "content": "top 10 Repositories with the most people who have push access"
     },
-    "sql": "SELECT repo_name, uniqIf(actor_login, event_type = 'PushEvent') AS u, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('PushEvent', 'WatchEvent') AND repo_name != '/' GROUP BY repo_name ORDER BY u DESC LIMIT 10",
+    "sql": "SELECT repo_name, uniqIf(actor_login, event_type = 'PushEvent') AS u FROM github_events WHERE event_type IN ('PushEvent', 'WatchEvent') GROUP BY repo_name ORDER BY u DESC LIMIT 10",
     "sqlResult": {
-      "success": false,
-      "data": [],
-      "executionTime": 10.453,
-      "requestId": "01JSXXRDX0FXZ2CN1AZJ9MTA9X",
-      "error": "{\"error\": \"[Error] Timeout exceeded: elapsed 10.011285601 seconds, maximum: 10. Upgrade your plan for higher capacity, ensure your cluster isn't overloaded (dedicated infrastructure only), or optimize your query with filters.\", \"documentation\": \"https://docs.tinybird.co/get-started/plans/limits\"}"
+      "success": true,
+      "data": [
+        {
+          "repo_name": "/",
+          "u": 18290
+        },
+        {
+          "repo_name": "bioconda/bioconda-recipes",
+          "u": 269
+        },
+        {
+          "repo_name": "githubteacher/github-for-developers-sept-2015",
+          "u": 189
+        },
+        {
+          "repo_name": "Automattic/wp-calypso",
+          "u": 184
+        },
+        {
+          "repo_name": "eecs183/lecture_practice",
+          "u": 176
+        },
+        {
+          "repo_name": "cs371p-fall-2015/collatz-tests",
+          "u": 170
+        },
+        {
+          "repo_name": "becodeorg/La-Veille",
+          "u": 161
+        },
+        {
+          "repo_name": "gatsbyjs/gatsby",
+          "u": 144
+        },
+        {
+          "repo_name": "flutter/flutter",
+          "u": 118
+        },
+        {
+          "repo_name": "edx/edx-platform",
+          "u": 118
+        }
+      ],
+      "meta": [
+        {
+          "name": "repo_name",
+          "type": "LowCardinality(String)"
+        },
+        {
+          "name": "u",
+          "type": "UInt64"
+        }
+      ],
+      "statistics": {
+        "elapsed": 0.846246075,
+        "rows_read": 82975620,
+        "bytes_read": 407391602
+      },
+      "executionTime": 0.957,
+      "requestId": "01JTMVK821ATE7PNYF6VNVS5P4"
     },
     "model": "human",
     "provider": "human",
@@ -2034,13 +1779,68 @@
       "name": "pipe_29.pipe",
       "content": "top 10 Repositories with the most people who have push access to the main branch"
     },
-    "sql": "SELECT\n        repo_name,\n        uniqIf(actor_login, (event_type = 'PushEvent') AND match(ref, '/(main|master)$')) AS u,\n        sum(event_type = 'WatchEvent') AS stars\n    FROM github_events\n    WHERE (event_type IN ('PushEvent', 'WatchEvent')) AND (repo_name != '/')\n    GROUP BY repo_name\n    ORDER BY u DESC\n    LIMIT 10",
+    "sql": "SELECT\n        repo_name,\n        uniqIf(actor_login, (event_type = 'PushEvent') AND match(ref, '/(main|master)$')) AS u\n    FROM github_events\n    WHERE (event_type IN ('PushEvent', 'WatchEvent'))\n    GROUP BY repo_name\n    ORDER BY u DESC\n    LIMIT 10",
     "sqlResult": {
-      "success": false,
-      "data": [],
-      "executionTime": 10.531,
-      "requestId": "01JSXXRS3411EFMEQSG1JBS7Z6",
-      "error": "{\"error\": \"[Error] Timeout exceeded: elapsed 10.292419069 seconds, maximum: 10. Upgrade your plan for higher capacity, ensure your cluster isn't overloaded (dedicated infrastructure only), or optimize your query with filters.\", \"documentation\": \"https://docs.tinybird.co/get-started/plans/limits\"}"
+      "success": true,
+      "data": [
+        {
+          "repo_name": "/",
+          "u": 17366
+        },
+        {
+          "repo_name": "bioconda/bioconda-recipes",
+          "u": 244
+        },
+        {
+          "repo_name": "Automattic/wp-calypso",
+          "u": 172
+        },
+        {
+          "repo_name": "githubteacher/github-for-developers-sept-2015",
+          "u": 170
+        },
+        {
+          "repo_name": "cs371p-fall-2015/collatz-tests",
+          "u": 170
+        },
+        {
+          "repo_name": "becodeorg/La-Veille",
+          "u": 161
+        },
+        {
+          "repo_name": "flutter/flutter",
+          "u": 112
+        },
+        {
+          "repo_name": "cs371p-fall-2015/allocator-tests",
+          "u": 107
+        },
+        {
+          "repo_name": "edx/edx-platform",
+          "u": 106
+        },
+        {
+          "repo_name": "cs371p-fall-2015/voting-tests",
+          "u": 105
+        }
+      ],
+      "meta": [
+        {
+          "name": "repo_name",
+          "type": "LowCardinality(String)"
+        },
+        {
+          "name": "u",
+          "type": "UInt64"
+        }
+      ],
+      "statistics": {
+        "elapsed": 1.087089553,
+        "rows_read": 82975620,
+        "bytes_read": 2651509833
+      },
+      "executionTime": 1.247,
+      "requestId": "01JTMVKA2VFT24XJGG7XXNJCB1"
     },
     "model": "human",
     "provider": "human",
@@ -2055,11 +1855,80 @@
     },
     "sql": "SELECT\n        repo_name,\n        uniqIf(actor_login, (event_type = 'PushEvent') AND match(ref, '/(main|master)$')) AS u,\n        sum(event_type = 'WatchEvent') AS stars\n    FROM github_events\n    WHERE (event_type IN ('PushEvent', 'WatchEvent')) AND (repo_name != '/')\n    GROUP BY repo_name\n    HAVING stars >= 100\n    ORDER BY u DESC\n    LIMIT 10",
     "sqlResult": {
-      "success": false,
-      "data": [],
-      "executionTime": 10.267,
-      "requestId": "01JSXXS4BT23ZG1KRJ6XX6BFKV",
-      "error": "{\"error\": \"[Error] Timeout exceeded: elapsed 10.002360639 seconds, maximum: 10. Upgrade your plan for higher capacity, ensure your cluster isn't overloaded (dedicated infrastructure only), or optimize your query with filters.\", \"documentation\": \"https://docs.tinybird.co/get-started/plans/limits\"}"
+      "success": true,
+      "data": [
+        {
+          "repo_name": "tj/should.js",
+          "u": 0,
+          "stars": 221
+        },
+        {
+          "repo_name": "tuner24/django-cms",
+          "u": 0,
+          "stars": 205
+        },
+        {
+          "repo_name": "transmission/transmission",
+          "u": 0,
+          "stars": 1060
+        },
+        {
+          "repo_name": "vkhorikov/CSharpFunctionalExtensions",
+          "u": 0,
+          "stars": 129
+        },
+        {
+          "repo_name": "radu-matei/websocket-manager",
+          "u": 0,
+          "stars": 181
+        },
+        {
+          "repo_name": "spatie/laravel-responsecache",
+          "u": 0,
+          "stars": 300
+        },
+        {
+          "repo_name": "wycm/zhihu-crawler",
+          "u": 0,
+          "stars": 366
+        },
+        {
+          "repo_name": "zeit/next.js",
+          "u": 0,
+          "stars": 7877
+        },
+        {
+          "repo_name": "x0rz/EQGRP_Lost_in_Translation",
+          "u": 0,
+          "stars": 1335
+        },
+        {
+          "repo_name": "websockets/wscat",
+          "u": 0,
+          "stars": 151
+        }
+      ],
+      "meta": [
+        {
+          "name": "repo_name",
+          "type": "LowCardinality(String)"
+        },
+        {
+          "name": "u",
+          "type": "UInt64"
+        },
+        {
+          "name": "stars",
+          "type": "UInt64"
+        }
+      ],
+      "statistics": {
+        "elapsed": 1.015680498,
+        "rows_read": 82807796,
+        "bytes_read": 2646119992
+      },
+      "executionTime": 1.062,
+      "requestId": "01JTMVKC5KACTAT072MS4234VK"
     },
     "model": "human",
     "provider": "human",
@@ -2070,61 +1939,51 @@
     "name": "pipe_31.pipe",
     "question": {
       "name": "pipe_31.pipe",
-      "content": "top 10 Repositories with the maximum number of accepted invitations"
+      "content": "Top 10 repositories by maximum number of new added members"
     },
-    "sql": "SELECT repo_name, sum(event_type = 'MemberEvent') AS invitations, sum(event_type = 'WatchEvent') AS stars FROM github_events WHERE event_type IN ('MemberEvent', 'WatchEvent') GROUP BY repo_name HAVING stars >= 100 ORDER BY invitations DESC LIMIT 10",
+    "sql": "SELECT repo_name, count() AS invitations FROM github_events WHERE event_type = 'MemberEvent' AND action = 'added' GROUP BY repo_name ORDER BY invitations DESC LIMIT 10",
     "sqlResult": {
       "success": true,
       "data": [
         {
-          "repo_name": "githubschool/open-enrollment-classes-introduction-to-github",
-          "invitations": 10453,
-          "stars": 921
-        },
-        {
-          "repo_name": "gatsbyjs/gatsby",
-          "invitations": 3161,
-          "stars": 51589
-        },
-        {
           "repo_name": "/",
-          "invitations": 3144,
-          "stars": 5496
+          "invitations": 2995
         },
         {
-          "repo_name": "openjournals/joss-reviews",
-          "invitations": 1733,
-          "stars": 411
+          "repo_name": "astro/gitpop",
+          "invitations": 935
         },
         {
-          "repo_name": "InfiniteFlightAirportEditing/Airports",
-          "invitations": 684,
-          "stars": 192
+          "repo_name": "jeresig/thunderhub",
+          "invitations": 445
         },
         {
-          "repo_name": "zulip/zulip",
-          "invitations": 644,
-          "stars": 14027
+          "repo_name": "matthewmccullough/hellogitworld",
+          "invitations": 128
         },
         {
-          "repo_name": "tencentyun/qcloud-documents",
-          "invitations": 446,
-          "stars": 1032
+          "repo_name": "buhtip/buhtip-repo",
+          "invitations": 55
         },
         {
-          "repo_name": "w3c/web-platform-tests",
-          "invitations": 343,
-          "stars": 1662
+          "repo_name": "braitsch/client1",
+          "invitations": 44
         },
         {
-          "repo_name": "llvm/llvm-project",
-          "invitations": 322,
-          "stars": 7228
+          "repo_name": "societies/SOCIETIES-Platform",
+          "invitations": 37
         },
         {
-          "repo_name": "koppi/iso-country-flags-svg-collection",
-          "invitations": 318,
-          "stars": 408
+          "repo_name": "dm4/IntroCS-2011-Fall-Homework6",
+          "invitations": 32
+        },
+        {
+          "repo_name": "rperlinski/zpi-basic",
+          "invitations": 32
+        },
+        {
+          "repo_name": "tjhickey724/OctaveBat",
+          "invitations": 32
         }
       ],
       "meta": [
@@ -2135,19 +1994,15 @@
         {
           "name": "invitations",
           "type": "UInt64"
-        },
-        {
-          "name": "stars",
-          "type": "UInt64"
         }
       ],
       "statistics": {
-        "elapsed": 2.531254992,
-        "rows_read": 246586238,
-        "bytes_read": 739323095
+        "elapsed": 0.031401185,
+        "rows_read": 459796,
+        "bytes_read": 803860
       },
-      "executionTime": 2.583,
-      "requestId": "01JSXXSFC9SYJWHGJRXA2CVZ2J"
+      "executionTime": 0.077,
+      "requestId": "01JTMVKE61RBKDBTNTDHSCET9P"
     },
     "model": "human",
     "provider": "human",
@@ -2165,44 +2020,44 @@
       "success": true,
       "data": [
         {
-          "repo_name": "jtleek/datasharing",
-          "forks": 262926
+          "repo_name": "996icu/996.ICU",
+          "forks": 25886
         },
         {
-          "repo_name": "octocat/Spoon-Knife",
-          "forks": 198031
+          "repo_name": "Snailclimb/JavaGuide",
+          "forks": 18449
         },
         {
-          "repo_name": "rdpeng/ProgrammingAssignment2",
-          "forks": 160794
+          "repo_name": "Pierian-Data/Complete-Python-3-Bootcamp",
+          "forks": 16599
         },
         {
-          "repo_name": "tensorflow/tensorflow",
-          "forks": 98226
+          "repo_name": "CyC2018/CS-Notes",
+          "forks": 15413
         },
         {
-          "repo_name": "twbs/bootstrap",
-          "forks": 92878
-        },
-        {
-          "repo_name": "github/gitignore",
-          "forks": 84075
+          "repo_name": "TheAlgorithms/Python",
+          "forks": 15212
         },
         {
           "repo_name": "SmartThingsCommunity/SmartThingsPublic",
-          "forks": 78551
+          "forks": 14790
+        },
+        {
+          "repo_name": "PanJiaChen/vue-element-admin",
+          "forks": 9940
         },
         {
           "repo_name": "barryclark/jekyll-now",
-          "forks": 68601
+          "forks": 9155
         },
         {
-          "repo_name": "rdpeng/ExData_Plotting1",
-          "forks": 67182
+          "repo_name": "ant-design/ant-design",
+          "forks": 8592
         },
         {
-          "repo_name": "nightscout/cgm-remote-monitor",
-          "forks": 59420
+          "repo_name": "ServiceNow/devtraining-needit-madrid",
+          "forks": 8297
         }
       ],
       "meta": [
@@ -2216,12 +2071,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.814754615,
-        "rows_read": 84878767,
-        "bytes_read": 254421046
+        "elapsed": 0.067528569,
+        "rows_read": 5953720,
+        "bytes_read": 17262692
       },
-      "executionTime": 0.862,
-      "requestId": "01JSXXSJW81KX034YCK36P2AKQ"
+      "executionTime": 0.112,
+      "requestId": "01JTMVKF7SNB191NNMVZV3MDYD"
     },
     "model": "human",
     "provider": "human",
@@ -2239,64 +2094,64 @@
       "success": true,
       "data": [
         {
-          "repo_name": "jtleek/datasharing",
-          "forks": 262926,
-          "stars": 6364,
-          "ratio": 0.024
+          "repo_name": "996icu/996.ICU",
+          "forks": 25886,
+          "stars": 0,
+          "ratio": 0
         },
         {
-          "repo_name": "octocat/Spoon-Knife",
-          "forks": 198031,
-          "stars": 4601,
-          "ratio": 0.023
+          "repo_name": "Snailclimb/JavaGuide",
+          "forks": 18449,
+          "stars": 0,
+          "ratio": 0
         },
         {
-          "repo_name": "rdpeng/ProgrammingAssignment2",
-          "forks": 160794,
-          "stars": 990,
-          "ratio": 0.006
+          "repo_name": "Pierian-Data/Complete-Python-3-Bootcamp",
+          "forks": 16599,
+          "stars": 0,
+          "ratio": 0
         },
         {
-          "repo_name": "tensorflow/tensorflow",
-          "forks": 98226,
-          "stars": 173681,
-          "ratio": 1.768
+          "repo_name": "CyC2018/CS-Notes",
+          "forks": 15413,
+          "stars": 0,
+          "ratio": 0
         },
         {
-          "repo_name": "twbs/bootstrap",
-          "forks": 92878,
-          "stars": 126371,
-          "ratio": 1.361
-        },
-        {
-          "repo_name": "github/gitignore",
-          "forks": 84075,
-          "stars": 119322,
-          "ratio": 1.419
+          "repo_name": "TheAlgorithms/Python",
+          "forks": 15212,
+          "stars": 0,
+          "ratio": 0
         },
         {
           "repo_name": "SmartThingsCommunity/SmartThingsPublic",
-          "forks": 78551,
-          "stars": 2073,
-          "ratio": 0.026
+          "forks": 14790,
+          "stars": 0,
+          "ratio": 0
+        },
+        {
+          "repo_name": "PanJiaChen/vue-element-admin",
+          "forks": 9940,
+          "stars": 0,
+          "ratio": 0
         },
         {
           "repo_name": "barryclark/jekyll-now",
-          "forks": 68601,
-          "stars": 8185,
-          "ratio": 0.119
+          "forks": 9155,
+          "stars": 0,
+          "ratio": 0
         },
         {
-          "repo_name": "rdpeng/ExData_Plotting1",
-          "forks": 67182,
-          "stars": 271,
-          "ratio": 0.004
+          "repo_name": "ant-design/ant-design",
+          "forks": 8592,
+          "stars": 0,
+          "ratio": 0
         },
         {
-          "repo_name": "nightscout/cgm-remote-monitor",
-          "forks": 59420,
-          "stars": 1784,
-          "ratio": 0.03
+          "repo_name": "ServiceNow/devtraining-needit-madrid",
+          "forks": 8297,
+          "stars": 0,
+          "ratio": 0
         }
       ],
       "meta": [
@@ -2318,12 +2173,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 2.720693399,
-        "rows_read": 317052873,
-        "bytes_read": 950662186
+        "elapsed": 0.117805221,
+        "rows_read": 13272955,
+        "bytes_read": 39320346
       },
-      "executionTime": 2.773,
-      "requestId": "01JSXXSMPFQAJR53CG6AT10N8B"
+      "executionTime": 0.164,
+      "requestId": "01JTMVKGAM6P155R7XEBM0BP3K"
     },
     "model": "human",
     "provider": "human",
@@ -2334,78 +2189,19 @@
     "name": "pipe_34.pipe",
     "question": {
       "name": "pipe_34.pipe",
-      "content": "find out top 10 repositories are the most \"for forks\" and \"for stars\""
+      "content": "ratio between stars and forks"
     },
-    "sql": "SELECT\n        repo_name,\n        sum(event_type = 'ForkEvent') AS forks,\n        sum(event_type = 'WatchEvent') AS stars,\n        round(stars / forks, 2) AS ratio\n    FROM github_events\n    WHERE event_type IN ('ForkEvent', 'WatchEvent')\n    GROUP BY repo_name\n    HAVING (stars > 100) AND (forks > 100)\n    ORDER BY ratio DESC\n    LIMIT 10",
+    "sql": "SELECT\n        sum(event_type = 'ForkEvent') AS forks,\n        sum(event_type = 'WatchEvent') AS stars,\n        round(stars / forks, 2) AS ratio\n    FROM github_events\n    WHERE event_type IN ('ForkEvent', 'WatchEvent')",
     "sqlResult": {
       "success": true,
       "data": [
         {
-          "repo_name": "M4cs/BabySploit",
-          "forks": 147,
-          "stars": 71572,
-          "ratio": 486.88
-        },
-        {
-          "repo_name": "tipsy/github-profile-summary",
-          "forks": 330,
-          "stars": 22397,
-          "ratio": 67.87
-        },
-        {
-          "repo_name": "doctrine/inflector",
-          "forks": 155,
-          "stars": 10236,
-          "ratio": 66.04
-        },
-        {
-          "repo_name": "phpDocumentor/ReflectionDocBlock",
-          "forks": 143,
-          "stars": 8547,
-          "ratio": 59.77
-        },
-        {
-          "repo_name": "pakastin/open-source-flash",
-          "forks": 128,
-          "stars": 7326,
-          "ratio": 57.23
-        },
-        {
-          "repo_name": "egulias/EmailValidator",
-          "forks": 177,
-          "stars": 9835,
-          "ratio": 55.56
-        },
-        {
-          "repo_name": "symfony/var-dumper",
-          "forks": 127,
-          "stars": 6770,
-          "ratio": 53.31
-        },
-        {
-          "repo_name": "laravel/tinker",
-          "forks": 129,
-          "stars": 6773,
-          "ratio": 52.5
-        },
-        {
-          "repo_name": "guzzle/promises",
-          "forks": 126,
-          "stars": 6596,
-          "ratio": 52.35
-        },
-        {
-          "repo_name": "paragonie/random_compat",
-          "forks": 157,
-          "stars": 7941,
-          "ratio": 50.58
+          "forks": 5595482,
+          "stars": 7305112,
+          "ratio": 1.31
         }
       ],
       "meta": [
-        {
-          "name": "repo_name",
-          "type": "LowCardinality(String)"
-        },
         {
           "name": "forks",
           "type": "UInt64"
@@ -2420,12 +2216,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 2.662997221,
-        "rows_read": 317052873,
-        "bytes_read": 950662186
+        "elapsed": 0.01527481,
+        "rows_read": 13272955,
+        "bytes_read": 13272955
       },
-      "executionTime": 2.769,
-      "requestId": "01JSXXSRCFP223X19FBKD31NZG"
+      "executionTime": 0.059,
+      "requestId": "01JTMVKHF2Q5120MNECW1C8Q2M"
     },
     "model": "human",
     "provider": "human",
@@ -2436,78 +2232,19 @@
     "name": "pipe_35.pipe",
     "question": {
       "name": "pipe_35.pipe",
-      "content": "find out top 10 repositories have more forks and less stars"
+      "content": "overall proportion between stars and forks"
     },
-    "sql": "SELECT\n        repo_name,\n        sum(event_type = 'ForkEvent') AS forks,\n        sum(event_type = 'WatchEvent') AS stars,\n        round(forks / stars, 2) AS ratio\n    FROM github_events\n    WHERE event_type IN ('ForkEvent', 'WatchEvent')\n    GROUP BY repo_name\n    HAVING (stars > 100) AND (forks > 100)\n    ORDER BY ratio DESC\n    LIMIT 10",
+    "sql": "SELECT sum(event_type = 'ForkEvent') AS forks, sum(event_type = 'WatchEvent') AS stars, round(stars / forks, 2) AS ratio FROM github_events WHERE event_type IN ('ForkEvent', 'WatchEvent')",
     "sqlResult": {
       "success": true,
       "data": [
         {
-          "repo_name": "rdpeng/RepData_PeerAssessment1",
-          "forks": 44449,
-          "stars": 124,
-          "ratio": 358.46
-        },
-        {
-          "repo_name": "rdpeng/ExData_Plotting1",
-          "forks": 67182,
-          "stars": 271,
-          "ratio": 247.9
-        },
-        {
-          "repo_name": "LarryMad/recipes",
-          "forks": 38317,
-          "stars": 170,
-          "ratio": 225.39
-        },
-        {
-          "repo_name": "rdpeng/ProgrammingAssignment2",
-          "forks": 160794,
-          "stars": 990,
-          "ratio": 162.42
-        },
-        {
-          "repo_name": "jenkins-docs/simple-java-maven-app",
-          "forks": 14484,
-          "stars": 222,
-          "ratio": 65.24
-        },
-        {
-          "repo_name": "deadlyvipers/dojo_rules",
-          "forks": 13600,
-          "stars": 213,
-          "ratio": 63.85
-        },
-        {
-          "repo_name": "google/it-cert-automation-practice",
-          "forks": 15163,
-          "stars": 288,
-          "ratio": 52.65
-        },
-        {
-          "repo_name": "jleetutorial/maven-project",
-          "forks": 8191,
-          "stars": 171,
-          "ratio": 47.9
-        },
-        {
-          "repo_name": "jenkins-docs/simple-node-js-react-npm-app",
-          "forks": 5946,
-          "stars": 128,
-          "ratio": 46.45
-        },
-        {
-          "repo_name": "udacity/fullstack-nanodegree-vm",
-          "forks": 16782,
-          "stars": 373,
-          "ratio": 44.99
+          "forks": 5595482,
+          "stars": 7305112,
+          "ratio": 1.31
         }
       ],
       "meta": [
-        {
-          "name": "repo_name",
-          "type": "LowCardinality(String)"
-        },
         {
           "name": "forks",
           "type": "UInt64"
@@ -2522,12 +2259,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 2.673073638,
-        "rows_read": 317052873,
-        "bytes_read": 950662186
+        "elapsed": 0.015823966,
+        "rows_read": 13272955,
+        "bytes_read": 13272955
       },
-      "executionTime": 2.721,
-      "requestId": "01JSXXSW2A0198FFZK2KM8QK0X"
+      "executionTime": 0.063,
+      "requestId": "01JTMVKJGCV16MESHENZ7PHEYE"
     },
     "model": "human",
     "provider": "human",
@@ -2538,39 +2275,29 @@
     "name": "pipe_36.pipe",
     "question": {
       "name": "pipe_36.pipe",
-      "content": "overall proportion between stars and forks"
+      "content": "Total number of issues on GitHub"
     },
-    "sql": "SELECT sum(event_type = 'ForkEvent') AS forks, sum(event_type = 'WatchEvent') AS stars, round(stars / forks, 2) AS ratio FROM github_events WHERE event_type IN ('ForkEvent', 'WatchEvent')",
+    "sql": "SELECT count() FROM github_events WHERE event_type = 'IssueCommentEvent'",
     "sqlResult": {
       "success": true,
       "data": [
         {
-          "forks": 84709181,
-          "stars": 232118474,
-          "ratio": 2.74
+          "count()": 909436
         }
       ],
       "meta": [
         {
-          "name": "forks",
+          "name": "count()",
           "type": "UInt64"
-        },
-        {
-          "name": "stars",
-          "type": "UInt64"
-        },
-        {
-          "name": "ratio",
-          "type": "Float64"
         }
       ],
       "statistics": {
-        "elapsed": 0.103133913,
-        "rows_read": 317052873,
-        "bytes_read": 317052873
+        "elapsed": 0.005412836,
+        "rows_read": 358842,
+        "bytes_read": 358857
       },
-      "executionTime": 0.156,
-      "requestId": "01JSXXSZPRBEA0QH6NK4FZ2HYR"
+      "executionTime": 0.053,
+      "requestId": "01JTMVKKHM3TR13DEY17SC3TF0"
     },
     "model": "human",
     "provider": "human",
@@ -2581,39 +2308,6 @@
     "name": "pipe_37.pipe",
     "question": {
       "name": "pipe_37.pipe",
-      "content": "Total number of issues on GitHub"
-    },
-    "sql": "SELECT count() FROM github_events WHERE event_type = 'IssueCommentEvent'",
-    "sqlResult": {
-      "success": true,
-      "data": [
-        {
-          "count()": 218460262
-        }
-      ],
-      "meta": [
-        {
-          "name": "count()",
-          "type": "UInt64"
-        }
-      ],
-      "statistics": {
-        "elapsed": 0.004760166,
-        "rows_read": 238599,
-        "bytes_read": 238614
-      },
-      "executionTime": 0.066,
-      "requestId": "01JSXXT0VFEWW44799VAHXPT5A"
-    },
-    "model": "human",
-    "provider": "human",
-    "error": null,
-    "attempts": []
-  },
-  {
-    "name": "pipe_38.pipe",
-    "question": {
-      "name": "pipe_38.pipe",
       "content": "The top 10 repositories by issue comments"
     },
     "sql": "SELECT repo_name, count() FROM github_events WHERE event_type = 'IssueCommentEvent' GROUP BY repo_name ORDER BY count() DESC LIMIT 10",
@@ -2621,44 +2315,44 @@
       "success": true,
       "data": [
         {
-          "repo_name": "kubernetes/kubernetes",
-          "count()": 1450081
+          "repo_name": "rails/rails",
+          "count()": 14225
         },
         {
-          "repo_name": "apache/spark",
-          "count()": 790480
+          "repo_name": "contao/test",
+          "count()": 13481
         },
         {
-          "repo_name": "rust-lang/rust",
-          "count()": 502960
+          "repo_name": "mxcl/homebrew",
+          "count()": 12690
         },
         {
-          "repo_name": "cms-sw/cmssw",
-          "count()": 478607
+          "repo_name": "contao/import",
+          "count()": 12494
         },
         {
-          "repo_name": "google-test/signcla-probe-repo",
-          "count()": 477302
+          "repo_name": "symfony/symfony",
+          "count()": 7375
         },
         {
-          "repo_name": "openshift/origin",
-          "count()": 445639
+          "repo_name": "jquery/jquery-mobile",
+          "count()": 6944
         },
         {
-          "repo_name": "brianchandotcom/liferay-portal",
-          "count()": 392474
+          "repo_name": "joyent/node",
+          "count()": 6562
         },
         {
-          "repo_name": "NixOS/nixpkgs",
-          "count()": 349733
+          "repo_name": "sympy/sympy",
+          "count()": 6532
         },
         {
-          "repo_name": "elastic/kibana",
-          "count()": 330168
+          "repo_name": "spotweb/spotweb",
+          "count()": 6313
         },
         {
-          "repo_name": "ansible/ansible",
-          "count()": 312424
+          "repo_name": "diaspora/diaspora",
+          "count()": 5164
         }
       ],
       "meta": [
@@ -2672,12 +2366,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.521633262,
-        "rows_read": 218616677,
-        "bytes_read": 655163665
+        "elapsed": 0.027480127,
+        "rows_read": 1250141,
+        "bytes_read": 3081893
       },
-      "executionTime": 0.613,
-      "requestId": "01JSXXT1XVTKT009VBGK1HCEXX"
+      "executionTime": 0.074,
+      "requestId": "01JTMVKMJJTZVV58TY183XP37Q"
     },
     "model": "human",
     "provider": "human",
@@ -2685,9 +2379,9 @@
     "attempts": []
   },
   {
-    "name": "pipe_39.pipe",
+    "name": "pipe_38.pipe",
     "question": {
-      "name": "pipe_39.pipe",
+      "name": "pipe_38.pipe",
       "content": "top 10 repositories by ratio between issue comments and issues"
     },
     "sql": "SELECT\n        repo_name,\n        count() AS comments,\n        uniq(number) AS issues,\n        round(comments / issues, 2) AS ratio\n    FROM github_events\n    WHERE event_type = 'IssueCommentEvent'\n    GROUP BY repo_name\n    ORDER BY count() DESC\n    LIMIT 10",
@@ -2695,64 +2389,64 @@
       "success": true,
       "data": [
         {
-          "repo_name": "kubernetes/kubernetes",
-          "comments": 1450081,
-          "issues": 85379,
-          "ratio": 16.98
+          "repo_name": "rails/rails",
+          "comments": 14225,
+          "issues": 886,
+          "ratio": 16.06
         },
         {
-          "repo_name": "apache/spark",
-          "comments": 790480,
-          "issues": 26868,
-          "ratio": 29.42
+          "repo_name": "contao/test",
+          "comments": 13481,
+          "issues": 2376,
+          "ratio": 5.67
         },
         {
-          "repo_name": "rust-lang/rust",
-          "comments": 502960,
-          "issues": 58464,
-          "ratio": 8.6
+          "repo_name": "mxcl/homebrew",
+          "comments": 12690,
+          "issues": 1403,
+          "ratio": 9.04
         },
         {
-          "repo_name": "cms-sw/cmssw",
-          "comments": 478607,
-          "issues": 25416,
-          "ratio": 18.83
+          "repo_name": "contao/import",
+          "comments": 12494,
+          "issues": 2925,
+          "ratio": 4.27
         },
         {
-          "repo_name": "google-test/signcla-probe-repo",
-          "comments": 477302,
-          "issues": 353981,
-          "ratio": 1.35
+          "repo_name": "symfony/symfony",
+          "comments": 7375,
+          "issues": 541,
+          "ratio": 13.63
         },
         {
-          "repo_name": "openshift/origin",
-          "comments": 445639,
-          "issues": 24421,
-          "ratio": 18.25
+          "repo_name": "jquery/jquery-mobile",
+          "comments": 6944,
+          "issues": 699,
+          "ratio": 9.93
         },
         {
-          "repo_name": "brianchandotcom/liferay-portal",
-          "comments": 392474,
-          "issues": 75732,
-          "ratio": 5.18
+          "repo_name": "joyent/node",
+          "comments": 6562,
+          "issues": 732,
+          "ratio": 8.96
         },
         {
-          "repo_name": "NixOS/nixpkgs",
-          "comments": 349733,
-          "issues": 75080,
-          "ratio": 4.66
+          "repo_name": "sympy/sympy",
+          "comments": 6532,
+          "issues": 308,
+          "ratio": 21.21
         },
         {
-          "repo_name": "elastic/kibana",
-          "comments": 330168,
-          "issues": 75118,
-          "ratio": 4.4
+          "repo_name": "spotweb/spotweb",
+          "comments": 6313,
+          "issues": 324,
+          "ratio": 19.48
         },
         {
-          "repo_name": "ansible/ansible",
-          "comments": 312424,
-          "issues": 56428,
-          "ratio": 5.54
+          "repo_name": "diaspora/diaspora",
+          "comments": 5164,
+          "issues": 449,
+          "ratio": 11.5
         }
       ],
       "meta": [
@@ -2774,12 +2468,100 @@
         }
       ],
       "statistics": {
-        "elapsed": 1.109403921,
-        "rows_read": 218616677,
-        "bytes_read": 1529333938
+        "elapsed": 0.031760048,
+        "rows_read": 1250141,
+        "bytes_read": 6745397
       },
-      "executionTime": 1.917,
-      "requestId": "01JSXXT42103NG0N04XHZDKYV8"
+      "executionTime": 0.081,
+      "requestId": "01JTMVKNMCFTVE9WY0NWAVM8TP"
+    },
+    "model": "human",
+    "provider": "human",
+    "error": null,
+    "attempts": []
+  },
+  {
+    "name": "pipe_39.pipe",
+    "question": {
+      "name": "pipe_39.pipe",
+      "content": "find top 10 repositories by the most active issues"
+    },
+    "sql": "SELECT\n        repo_name,\n        number,\n        count() AS comments\n    FROM github_events\n    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created')\n    GROUP BY\n        repo_name,\n        number\n    ORDER BY count() DESC\n    LIMIT 10",
+    "sqlResult": {
+      "success": true,
+      "data": [
+        {
+          "repo_name": "contao/issues",
+          "number": 1,
+          "comments": 169
+        },
+        {
+          "repo_name": "plamoni/SiriProxy",
+          "number": 226,
+          "comments": 161
+        },
+        {
+          "repo_name": "rails/rails",
+          "number": 505,
+          "comments": 130
+        },
+        {
+          "repo_name": "mangosR2/mangos",
+          "number": 456,
+          "comments": 125
+        },
+        {
+          "repo_name": "symphonycms/symphony-2",
+          "number": 849,
+          "comments": 113
+        },
+        {
+          "repo_name": "robotlegs/robotlegs-framework",
+          "number": 43,
+          "comments": 110
+        },
+        {
+          "repo_name": "spotweb/spotweb",
+          "number": 1133,
+          "comments": 103
+        },
+        {
+          "repo_name": "jashkenas/coffee-script",
+          "number": 1495,
+          "comments": 101
+        },
+        {
+          "repo_name": "phaed420/SimpleClans",
+          "number": 87,
+          "comments": 99
+        },
+        {
+          "repo_name": "nose-devs/nose",
+          "number": 125,
+          "comments": 97
+        }
+      ],
+      "meta": [
+        {
+          "name": "repo_name",
+          "type": "LowCardinality(String)"
+        },
+        {
+          "name": "number",
+          "type": "Int32"
+        },
+        {
+          "name": "comments",
+          "type": "UInt64"
+        }
+      ],
+      "statistics": {
+        "elapsed": 0.027452763,
+        "rows_read": 1250141,
+        "bytes_read": 7661273
+      },
+      "executionTime": 0.073,
+      "requestId": "01JTMVKPP4CZNEVKPM3DDZ6PDA"
     },
     "model": "human",
     "provider": "human",
@@ -2790,61 +2572,61 @@
     "name": "pipe_40.pipe",
     "question": {
       "name": "pipe_40.pipe",
-      "content": "find top 10 repositories by the most active issues"
+      "content": "find top 10 repositories with \"epic bugs\", filter out by issue number"
     },
-    "sql": "SELECT\n        repo_name,\n        number,\n        count() AS comments\n    FROM github_events\n    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created')\n    GROUP BY\n        repo_name,\n        number\n    ORDER BY count() DESC\n    LIMIT 10",
+    "sql": "SELECT\n        repo_name,\n        number,\n        count() AS comments\n    FROM github_events\n    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created') AND (number > 10)\n    GROUP BY\n        repo_name,\n        number\n    ORDER BY count() DESC\n    LIMIT 10",
     "sqlResult": {
       "success": true,
       "data": [
         {
-          "repo_name": "sauron-demo/sauron",
-          "number": 1,
-          "comments": 21297
+          "repo_name": "plamoni/SiriProxy",
+          "number": 226,
+          "comments": 161
         },
         {
-          "repo_name": "gafusion/regression_notifications",
-          "number": 1,
-          "comments": 15677
+          "repo_name": "rails/rails",
+          "number": 505,
+          "comments": 130
         },
         {
-          "repo_name": "odoo-mergebot-testing-org/repo",
-          "number": 1,
-          "comments": 13315
+          "repo_name": "mangosR2/mangos",
+          "number": 456,
+          "comments": 125
         },
         {
-          "repo_name": "zeit-github-test/github-utils-test",
-          "number": 1,
-          "comments": 9260
+          "repo_name": "symphonycms/symphony-2",
+          "number": 849,
+          "comments": 113
         },
         {
-          "repo_name": "odoo-mergebot-testing-org/proj",
-          "number": 1,
-          "comments": 7681
+          "repo_name": "robotlegs/robotlegs-framework",
+          "number": 43,
+          "comments": 110
         },
         {
-          "repo_name": "tphongio/elasticbox-plugin",
-          "number": 1,
-          "comments": 6167
+          "repo_name": "spotweb/spotweb",
+          "number": 1133,
+          "comments": 103
         },
         {
-          "repo_name": "openshift/oc",
-          "number": 270,
-          "comments": 5917
+          "repo_name": "jashkenas/coffee-script",
+          "number": 1495,
+          "comments": 101
         },
         {
-          "repo_name": "openfoodfacts/openfoodfacts-server",
-          "number": 3767,
-          "comments": 5098
+          "repo_name": "phaed420/SimpleClans",
+          "number": 87,
+          "comments": 99
         },
         {
-          "repo_name": "codecov/ci-repo",
-          "number": 4,
-          "comments": 5078
+          "repo_name": "nose-devs/nose",
+          "number": 125,
+          "comments": 97
         },
         {
-          "repo_name": "openshift/cluster-resource-override-admission-operator",
-          "number": 29,
-          "comments": 4562
+          "repo_name": "rgladwell/m2e-android",
+          "number": 45,
+          "comments": 97
         }
       ],
       "meta": [
@@ -2862,12 +2644,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 5.558877367,
-        "rows_read": 218616677,
-        "bytes_read": 1631789770
+        "elapsed": 0.029350757,
+        "rows_read": 1250141,
+        "bytes_read": 7661273
       },
-      "executionTime": 5.645,
-      "requestId": "01JSXXT6B9NHXM62QCVD6NE5VZ"
+      "executionTime": 0.073,
+      "requestId": "01JTMVKQQQRSDM20PE3WK57JZ1"
     },
     "model": "human",
     "provider": "human",
@@ -2878,61 +2660,71 @@
     "name": "pipe_41.pipe",
     "question": {
       "name": "pipe_41.pipe",
-      "content": "find top 10 repositories with \"epic bugs\", filter out by issue number"
+      "content": "find top 10 repositories with \"epic bugs\", filter out by issue number. Let's also count the number of comment authors and add a threshold"
     },
-    "sql": "SELECT\n        repo_name,\n        number,\n        count() AS comments\n    FROM github_events\n    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created') AND (number > 10)\n    GROUP BY\n        repo_name,\n        number\n    ORDER BY count() DESC\n    LIMIT 10",
+    "sql": "SELECT\n        repo_name,\n        number,\n        count() AS comments,\n        uniq(actor_login) AS authors\n    FROM github_events\n    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created') AND (number > 10)\n    GROUP BY\n        repo_name,\n        number\n    HAVING authors >= 10\n    ORDER BY count() DESC\n    LIMIT 10",
     "sqlResult": {
       "success": true,
       "data": [
         {
-          "repo_name": "openshift/oc",
-          "number": 270,
-          "comments": 5917
+          "repo_name": "plamoni/SiriProxy",
+          "number": 226,
+          "comments": 161,
+          "authors": 11
         },
         {
-          "repo_name": "openfoodfacts/openfoodfacts-server",
-          "number": 3767,
-          "comments": 5098
+          "repo_name": "rails/rails",
+          "number": 505,
+          "comments": 130,
+          "authors": 17
         },
         {
-          "repo_name": "openshift/cluster-resource-override-admission-operator",
-          "number": 29,
-          "comments": 4562
+          "repo_name": "symphonycms/symphony-2",
+          "number": 849,
+          "comments": 113,
+          "authors": 12
         },
         {
-          "repo_name": "ingvagabund/kubernetes",
-          "number": 58,
-          "comments": 4136
+          "repo_name": "robotlegs/robotlegs-framework",
+          "number": 43,
+          "comments": 110,
+          "authors": 12
         },
         {
-          "repo_name": "Kitware/CDash",
-          "number": 80,
-          "comments": 4005
+          "repo_name": "jashkenas/coffee-script",
+          "number": 1495,
+          "comments": 101,
+          "authors": 24
         },
         {
-          "repo_name": "cockpit-project/cockpit",
-          "number": 7636,
-          "comments": 3330
+          "repo_name": "rgladwell/m2e-android",
+          "number": 45,
+          "comments": 97,
+          "authors": 15
         },
         {
-          "repo_name": "openshift/tektoncd-pipeline-operator",
-          "number": 494,
-          "comments": 3303
+          "repo_name": "plamoni/SiriProxy",
+          "number": 210,
+          "comments": 90,
+          "authors": 11
         },
         {
-          "repo_name": "xbrianlee/liferay-portal",
-          "number": 369,
-          "comments": 3201
+          "repo_name": "midgetspy/Sick-Beard",
+          "number": 185,
+          "comments": 87,
+          "authors": 24
         },
         {
-          "repo_name": "D00Med/farlands",
-          "number": 77,
-          "comments": 3183
+          "repo_name": "diaspora/diaspora",
+          "number": 1750,
+          "comments": 78,
+          "authors": 22
         },
         {
-          "repo_name": "getlantern/forum",
-          "number": 313,
-          "comments": 3123
+          "repo_name": "chriseppstein/compass",
+          "number": 516,
+          "comments": 72,
+          "authors": 10
         }
       ],
       "meta": [
@@ -2947,15 +2739,19 @@
         {
           "name": "comments",
           "type": "UInt64"
+        },
+        {
+          "name": "authors",
+          "type": "UInt64"
         }
       ],
       "statistics": {
-        "elapsed": 4.190501977,
-        "rows_read": 218616677,
-        "bytes_read": 1631469386
+        "elapsed": 0.036885051,
+        "rows_read": 1250141,
+        "bytes_read": 9493025
       },
-      "executionTime": 4.399,
-      "requestId": "01JSXXTCSZM9JXYYMM4S8J7ZR1"
+      "executionTime": 0.081,
+      "requestId": "01JTMVKRSC8WRYKN50YX7SXEY5"
     },
     "model": "human",
     "provider": "human",
@@ -2966,98 +2762,77 @@
     "name": "pipe_42.pipe",
     "question": {
       "name": "pipe_42.pipe",
-      "content": "find top 10 repositories with \"epic bugs\", filter out by issue number. Let's also count the number of comment authors and add a threshold"
+      "content": "Top 10 commented issues for the top repositories"
     },
-    "sql": "SELECT\n        repo_name,\n        number,\n        count() AS comments,\n        uniq(actor_login) AS authors\n    FROM github_events\n    WHERE (event_type = 'IssueCommentEvent') AND (action = 'created') AND (number > 10)\n    GROUP BY\n        repo_name,\n        number\n    HAVING authors >= 10\n    ORDER BY count() DESC\n    LIMIT 10",
+    "sql": "SELECT\n        concat('https://github.com/', repo_name, '/issues/', toString(number)) AS URL,\n        max(comments),\n        argMax(authors, comments) AS authors,\n        argMax(number, comments) AS number,\n        sum(stars) AS stars\n    FROM\n    (\n        SELECT *\n        FROM\n        (\n            SELECT\n                repo_name,\n                number,\n                count() AS comments,\n                uniq(actor_login) AS authors\n            FROM github_events\n            WHERE (event_type = 'IssueCommentEvent') AND (action = 'created') AND (number > 10)\n            GROUP BY\n                repo_name,\n                number\n            HAVING authors >= 10\n        ) AS t1\n        INNER JOIN\n        (\n            SELECT\n                repo_name,\n                count() AS stars\n            FROM github_events\n            WHERE event_type = 'WatchEvent'\n            GROUP BY repo_name\n            HAVING stars > 100\n        ) AS t2 USING (repo_name)\n    )\n    GROUP BY repo_name\n    ORDER BY stars DESC\n    LIMIT 10",
     "sqlResult": {
       "success": true,
       "data": [
         {
-          "repo_name": "getlantern/forum",
-          "number": 313,
-          "comments": 3123,
-          "authors": 1658
+          "URL": "https://github.com/rails/rails/issues/505",
+          "max(comments)": 130,
+          "authors": 17,
+          "number": 505,
+          "stars": 62172
         },
         {
-          "repo_name": "githubschool/open-enrollment-classes-introduction-to-github",
-          "number": 927,
-          "comments": 3005,
-          "authors": 1362
+          "URL": "https://github.com/sebastianbergmann/phpunit/issues/390",
+          "max(comments)": 22,
+          "authors": 12,
+          "number": 390,
+          "stars": 2612
         },
         {
-          "repo_name": "OpenKore/openkore",
-          "number": 628,
-          "comments": 2574,
-          "authors": 373
+          "URL": "https://github.com/rembo10/headphones/issues/386",
+          "max(comments)": 14,
+          "authors": 11,
+          "number": 386,
+          "stars": 412
         },
         {
-          "repo_name": "D00Med/farlands",
-          "number": 108,
-          "comments": 2554,
-          "authors": 11
+          "URL": "https://github.com/scrod/nv/issues/240",
+          "max(comments)": 11,
+          "authors": 10,
+          "number": 240,
+          "stars": 153
         },
         {
-          "repo_name": "ros-infrastructure/roswiki",
-          "number": 139,
-          "comments": 2483,
-          "authors": 1427
-        },
-        {
-          "repo_name": "Kodi-vStream/venom-xbmc-addons",
-          "number": 2908,
-          "comments": 2374,
-          "authors": 12
-        },
-        {
-          "repo_name": "gcp/leela-zero",
-          "number": 78,
-          "comments": 1978,
-          "authors": 97
-        },
-        {
-          "repo_name": "andreiw/RaspberryPiPkg",
-          "number": 12,
-          "comments": 1940,
-          "authors": 137
-        },
-        {
-          "repo_name": "ValveSoftware/halflife",
-          "number": 387,
-          "comments": 1716,
-          "authors": 60
-        },
-        {
-          "repo_name": "MarlinFirmware/Marlin",
-          "number": 7076,
-          "comments": 1695,
-          "authors": 120
+          "URL": "https://github.com/rails/jquery-rails/issues/30",
+          "max(comments)": 17,
+          "authors": 10,
+          "number": 30,
+          "stars": 111
         }
       ],
       "meta": [
         {
-          "name": "repo_name",
-          "type": "LowCardinality(String)"
+          "name": "URL",
+          "type": "String"
+        },
+        {
+          "name": "max(comments)",
+          "type": "UInt64"
+        },
+        {
+          "name": "authors",
+          "type": "UInt64"
         },
         {
           "name": "number",
           "type": "Int32"
         },
         {
-          "name": "comments",
-          "type": "UInt64"
-        },
-        {
-          "name": "authors",
+          "name": "stars",
           "type": "UInt64"
         }
       ],
       "statistics": {
-        "elapsed": 5.733604757,
-        "rows_read": 218616677,
-        "bytes_read": 2029929014
+        "elapsed": 0.098385951,
+        "rows_read": 8569376,
+        "bytes_read": 31412102
       },
-      "executionTime": 5.849,
-      "requestId": "01JSXXTJ43KVTGM7DX54ZBA6HA"
+      "executionTime": 0.145,
+      "requestId": "01JTMVKSV5F03GDS5DMB6V23N6"
     },
     "model": "human",
     "provider": "human",
@@ -3068,25 +2843,6 @@
     "name": "pipe_43.pipe",
     "question": {
       "name": "pipe_43.pipe",
-      "content": "Top 10 commented issues for the top repositories"
-    },
-    "sql": "SELECT\n        concat('https://github.com/', repo_name, '/issues/', toString(number)) AS URL,\n        max(comments),\n        argMax(authors, comments) AS authors,\n        argMax(number, comments) AS number,\n        sum(stars) AS stars\n    FROM\n    (\n        SELECT *\n        FROM\n        (\n            SELECT\n                repo_name,\n                number,\n                count() AS comments,\n                uniq(actor_login) AS authors\n            FROM github_events\n            WHERE (event_type = 'IssueCommentEvent') AND (action = 'created') AND (number > 10)\n            GROUP BY\n                repo_name,\n                number\n            HAVING authors >= 10\n        ) AS t1\n        INNER JOIN\n        (\n            SELECT\n                repo_name,\n                count() AS stars\n            FROM github_events\n            WHERE event_type = 'WatchEvent'\n            GROUP BY repo_name\n            HAVING stars > 10000\n        ) AS t2 USING (repo_name)\n    )\n    GROUP BY repo_name\n    ORDER BY stars DESC\n    LIMIT 10",
-    "sqlResult": {
-      "success": false,
-      "data": [],
-      "executionTime": 10.431,
-      "requestId": "01JSXXTRS6M51QQKN1ZVHKR8QB",
-      "error": "{\"error\": \"[Error] Timeout exceeded: elapsed 10.115518416 seconds, maximum: 10. Upgrade your plan for higher capacity, ensure your cluster isn't overloaded (dedicated infrastructure only), or optimize your query with filters.\", \"documentation\": \"https://docs.tinybird.co/get-started/plans/limits\"}"
-    },
-    "model": "human",
-    "provider": "human",
-    "error": null,
-    "attempts": []
-  },
-  {
-    "name": "pipe_44.pipe",
-    "question": {
-      "name": "pipe_44.pipe",
       "content": "top 10 repositories by the number of commit comments"
     },
     "sql": "SELECT\n        repo_name,\n        count() AS comments,\n        uniq(actor_login) AS authors\n    FROM github_events\n    WHERE event_type = 'CommitCommentEvent'\n    GROUP BY repo_name\n    ORDER BY count() DESC\n    LIMIT 10",
@@ -3095,18 +2851,8 @@
       "data": [
         {
           "repo_name": "dcos/dcos",
-          "comments": 99251,
-          "authors": 16
-        },
-        {
-          "repo_name": "NREL/EnergyPlus",
-          "comments": 74922,
-          "authors": 41
-        },
-        {
-          "repo_name": "miabot/galleries.csv",
-          "comments": 52634,
-          "authors": 2
+          "comments": 99250,
+          "authors": 15
         },
         {
           "repo_name": "siggetest/githubtest",
@@ -3114,34 +2860,44 @@
           "authors": 1
         },
         {
+          "repo_name": "NREL/EnergyPlus",
+          "comments": 47886,
+          "authors": 35
+        },
+        {
           "repo_name": "bambootest-bot/githubtest",
           "comments": 46876,
           "authors": 1
         },
         {
-          "repo_name": "mozilla/rust",
-          "comments": 33708,
-          "authors": 82
-        },
-        {
-          "repo_name": "TrinityCore/TrinityCore",
-          "comments": 24386,
-          "authors": 1550
-        },
-        {
-          "repo_name": "kubernetes/kubernetes",
-          "comments": 21406,
-          "authors": 268
+          "repo_name": "w4ctech/front-end-rss",
+          "comments": 35958,
+          "authors": 1
         },
         {
           "repo_name": "xamarin/xamarin-macios",
-          "comments": 18893,
-          "authors": 28
+          "comments": 30631,
+          "authors": 21
         },
         {
-          "repo_name": "w4ctech/front-end-rss",
-          "comments": 17979,
-          "authors": 1
+          "repo_name": "zeit-github-test/github-e2e-tests-dev",
+          "comments": 28463,
+          "authors": 3
+        },
+        {
+          "repo_name": "miabot/galleries.csv",
+          "comments": 18622,
+          "authors": 2
+        },
+        {
+          "repo_name": "zeit-github-test/github-e2e-tests-dev-alias-v2-without-alias",
+          "comments": 16107,
+          "authors": 3
+        },
+        {
+          "repo_name": "zeit-github-test/github-e2e-tests-dev-alias-v2-with-alias",
+          "comments": 16077,
+          "authors": 3
         }
       ],
       "meta": [
@@ -3159,12 +2915,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.181046581,
-        "rows_read": 9974466,
-        "bytes_read": 49868298
+        "elapsed": 0.117812216,
+        "rows_read": 6806781,
+        "bytes_read": 33881496
       },
-      "executionTime": 0.228,
-      "requestId": "01JSXXV3YB6BCWT3RKV7YXR5W5"
+      "executionTime": 0.234,
+      "requestId": "01JTMVKTZ0T2MCKFNDFAPR5NYZ"
     },
     "model": "human",
     "provider": "human",
@@ -3172,9 +2928,9 @@
     "attempts": []
   },
   {
-    "name": "pipe_45.pipe",
+    "name": "pipe_44.pipe",
     "question": {
-      "name": "pipe_45.pipe",
+      "name": "pipe_44.pipe",
       "content": "top 10 \"hottest\" commits"
     },
     "sql": "SELECT\n        concat('https://github.com/', repo_name, '/commit/', commit_id) AS URL,\n        count() AS comments,\n        uniq(actor_login) AS authors\n    FROM github_events\n    WHERE (event_type = 'CommitCommentEvent') AND notEmpty(commit_id)\n    GROUP BY\n        repo_name,\n        commit_id\n    HAVING authors >= 10\n    ORDER BY count() DESC\n    LIMIT 10",
@@ -3182,13 +2938,8 @@
       "success": true,
       "data": [
         {
-          "URL": "https://github.com/nixxquality/WebMConverter/commit/c1ac0baac06fa7175677a4a1bf65860a84708d67",
-          "comments": 467,
-          "authors": 156
-        },
-        {
           "URL": "https://github.com/torvalds/linux/commit/8a104f8b5867c682d994ffa7a74093c54469c11f",
-          "comments": 410,
+          "comments": 411,
           "authors": 181
         },
         {
@@ -3197,39 +2948,44 @@
           "authors": 31
         },
         {
-          "URL": "https://github.com/goagent/goagent/commit/e492ed0283f5cde7cf71d7ac47429f64aa48cd13",
-          "comments": 378,
-          "authors": 346
-        },
-        {
-          "URL": "https://github.com/apple/swift/commit/18844bc65229786b96b89a9fc7739c0fc897905e",
-          "comments": 345,
-          "authors": 331
-        },
-        {
-          "URL": "https://github.com/shadowsocks/shadowsocks/commit/938bba32a4008bdde9c064dda6a0597987ddef54",
-          "comments": 309,
-          "authors": 258
+          "URL": "https://github.com/zhaohmng/-21-/commit/0cc2b2a546ad51fb360ba800c67b057ea3270869",
+          "comments": 376,
+          "authors": 187
         },
         {
           "URL": "https://github.com/mosh-hamedani/vidly-mvc-5/commit/b727a26e1b4b88abe84a8b48208fec537db2ed43",
-          "comments": 283,
-          "authors": 157
+          "comments": 262,
+          "authors": 140
+        },
+        {
+          "URL": "https://github.com/mlouielu/cn_constitution_2018/commit/646c76a573ad49414e708c091393ddb7c437f286",
+          "comments": 245,
+          "authors": 181
+        },
+        {
+          "URL": "https://github.com/yuuwill/1024app-android/commit/0b02f1815686fa657d7b4a9583019fe4d203b80a",
+          "comments": 230,
+          "authors": 142
+        },
+        {
+          "URL": "https://github.com/iride2020/iRide-Token/commit/8f810b3700a24de0ee4f945ef84be7b2f1605610",
+          "comments": 228,
+          "authors": 183
         },
         {
           "URL": "https://github.com/hklcf/myTV-api/commit/375fa7520455b53fad622c0149a473ebee048e15",
-          "comments": 272,
-          "authors": 26
+          "comments": 198,
+          "authors": 23
         },
         {
-          "URL": "https://github.com/NecronomiconCoding/NecroBot/commit/26e57d9feac57ab372ac466ef6cd66218faa475c",
-          "comments": 262,
-          "authors": 75
+          "URL": "https://github.com/mosh-hamedani/vidly-mvc-5/commit/93f39efe3ef0ce9c25ef09ebef60ad2dfc1fe7f3",
+          "comments": 176,
+          "authors": 104
         },
         {
-          "URL": "https://github.com/zhaohmng/-21-/commit/0cc2b2a546ad51fb360ba800c67b057ea3270869",
-          "comments": 249,
-          "authors": 187
+          "URL": "https://github.com/udacity/ud843-QuakeReport/commit/14541da929b771249ea8209698d324b61bbeee7e",
+          "comments": 169,
+          "authors": 87
         }
       ],
       "meta": [
@@ -3247,12 +3003,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.350050131,
-        "rows_read": 9974466,
-        "bytes_read": 439430972
+        "elapsed": 0.253416486,
+        "rows_read": 6806781,
+        "bytes_read": 315403702
       },
-      "executionTime": 0.408,
-      "requestId": "01JSXXV54SK3Z2R9K8FRFMD1NS"
+      "executionTime": 0.299,
+      "requestId": "01JTMVKW5M0S7TT81AHCKBYR6N"
     },
     "model": "human",
     "provider": "human",
@@ -3260,9 +3016,9 @@
     "attempts": []
   },
   {
-    "name": "pipe_46.pipe",
+    "name": "pipe_45.pipe",
     "question": {
-      "name": "pipe_46.pipe",
+      "name": "pipe_45.pipe",
       "content": "top 10 most tough code reviews"
     },
     "sql": "SELECT\n        concat('https://github.com/', repo_name, '/pull/', toString(number)) AS URL,\n        uniq(actor_login) AS authors\n    FROM github_events\n    WHERE (event_type = 'PullRequestReviewCommentEvent') AND (action = 'created')\n    GROUP BY\n        repo_name,\n        number\n    ORDER BY authors DESC\n    LIMIT 10",
@@ -3270,44 +3026,44 @@
       "success": true,
       "data": [
         {
-          "URL": "https://github.com/torvalds/linux/pull/684",
-          "authors": 66
+          "URL": "https://github.com/tc39/ecma262/pull/1062",
+          "authors": 30
         },
         {
-          "URL": "https://github.com/sunpy/sunpy/pull/3391",
-          "authors": 52
+          "URL": "https://github.com/iojs/io.js/pull/1457",
+          "authors": 19
         },
         {
-          "URL": "https://github.com/NixOS/rfcs/pull/49",
-          "authors": 52
+          "URL": "https://github.com/JuliaLang/julialang.github.com/pull/437",
+          "authors": 17
         },
         {
-          "URL": "https://github.com/dashbitco/mix_phx_gen_auth_demo/pull/1",
-          "authors": 51
+          "URL": "https://github.com/zephyrproject-rtos/zephyr/pull/24152",
+          "authors": 16
         },
         {
-          "URL": "https://github.com/reactjs/rfcs/pull/2",
-          "authors": 44
+          "URL": "https://github.com/symfony/symfony/pull/24411",
+          "authors": 16
         },
         {
-          "URL": "https://github.com/php/php-rfcs/pull/1",
-          "authors": 40
+          "URL": "https://github.com/tgstation/tgstation/pull/34916",
+          "authors": 16
         },
         {
-          "URL": "https://github.com/danielmiessler/SecLists/pull/155",
-          "authors": 38
+          "URL": "https://github.com/tgstation/tgstation/pull/40312",
+          "authors": 16
         },
         {
-          "URL": "https://github.com/symfony/symfony/pull/33553",
-          "authors": 35
+          "URL": "https://github.com/symfony/recipes/pull/466",
+          "authors": 16
         },
         {
-          "URL": "https://github.com/kubernetes/community/pull/306",
-          "authors": 34
+          "URL": "https://github.com/zephyrproject-rtos/zephyr/pull/27185",
+          "authors": 15
         },
         {
-          "URL": "https://github.com/rust-lang/rfcs/pull/2850",
-          "authors": 33
+          "URL": "https://github.com/tgstation/tgstation/pull/35440",
+          "authors": 15
         }
       ],
       "meta": [
@@ -3321,12 +3077,100 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.646426642,
-        "rows_read": 56090777,
-        "bytes_read": 551370613
+        "elapsed": 0.066883893,
+        "rows_read": 4172440,
+        "bytes_read": 39109886
       },
-      "executionTime": 0.698,
-      "requestId": "01JSXXV6GX9MP0MTMSTPGP298S"
+      "executionTime": 0.115,
+      "requestId": "01JTMVKXED05Q0Z7FDZEGYCH0Y"
+    },
+    "model": "human",
+    "provider": "human",
+    "error": null,
+    "attempts": []
+  },
+  {
+    "name": "pipe_46.pipe",
+    "question": {
+      "name": "pipe_46.pipe",
+      "content": "top 10 authors with the most pushes"
+    },
+    "sql": "SELECT\n        actor_login,\n        count() AS c,\n        uniq(repo_name) AS repos\n    FROM github_events\n    WHERE event_type = 'PushEvent'\n    GROUP BY actor_login\n    ORDER BY c DESC\n    LIMIT 10",
+    "sqlResult": {
+      "success": true,
+      "data": [
+        {
+          "actor_login": "LombiqBot",
+          "c": 3507260,
+          "repos": 37
+        },
+        {
+          "actor_login": "frankbaele",
+          "c": 369489,
+          "repos": 4
+        },
+        {
+          "actor_login": "chuan12",
+          "c": 356449,
+          "repos": 3
+        },
+        {
+          "actor_login": "ItzLevvie",
+          "c": 276592,
+          "repos": 13
+        },
+        {
+          "actor_login": "geos4s",
+          "c": 262170,
+          "repos": 1
+        },
+        {
+          "actor_login": "applepaper",
+          "c": 257240,
+          "repos": 94
+        },
+        {
+          "actor_login": "github-actions[bot]",
+          "c": 232538,
+          "repos": 3101
+        },
+        {
+          "actor_login": "datarods-svc",
+          "c": 198853,
+          "repos": 3
+        },
+        {
+          "actor_login": "c1d5dc29-94f0-4b46-bc0a-397a2885eade",
+          "c": 180627,
+          "repos": 1
+        },
+        {
+          "actor_login": "renovate[bot]",
+          "c": 171382,
+          "repos": 1616
+        }
+      ],
+      "meta": [
+        {
+          "name": "actor_login",
+          "type": "LowCardinality(String)"
+        },
+        {
+          "name": "c",
+          "type": "UInt64"
+        },
+        {
+          "name": "repos",
+          "type": "UInt64"
+        }
+      ],
+      "statistics": {
+        "elapsed": 0.386053491,
+        "rows_read": 75689153,
+        "bytes_read": 370942756
+      },
+      "executionTime": 0.431,
+      "requestId": "01JTMVKYH8PBVJ2Z4S1GJA0T93"
     },
     "model": "human",
     "provider": "human",
@@ -3337,15 +3181,126 @@
     "name": "pipe_47.pipe",
     "question": {
       "name": "pipe_47.pipe",
-      "content": "top 10 authors with the most pushes"
+      "content": "top 10 authors with the most pushes, filter out bots. Add a threshold on the number of repositories. Also count only those who created at least two issues and gave at least two stars. And also output the favorite repository for every user. And also count only across the top 10k repositories."
     },
-    "sql": "SELECT\n        actor_login,\n        count() AS c,\n        uniq(repo_name) AS repos\n    FROM github_events\n    WHERE event_type = 'PushEvent'\n    GROUP BY actor_login\n    ORDER BY c DESC\n    LIMIT 10",
+    "sql": "SELECT\n        actor_login,\n        sum(event_type = 'PushEvent') AS c,\n        uniqIf(repo_name, event_type = 'PushEvent') AS repos,\n        sum(event_type = 'IssuesEvent') AS issues,\n        sum(event_type = 'WatchEvent') AS stars,\n        anyHeavy(repo_name)\n    FROM github_events\n    WHERE (event_type IN ('PushEvent', 'IssuesEvent', 'WatchEvent')) AND (repo_name IN\n    (\n        SELECT repo_name\n        FROM github_events\n        WHERE event_type = 'WatchEvent'\n        GROUP BY repo_name\n        ORDER BY count() DESC\n        LIMIT 10000\n    ))\n    GROUP BY actor_login\n    HAVING (repos < 10000) AND (issues > 1) AND (stars > 1)\n    ORDER BY c DESC\n    LIMIT 10",
     "sqlResult": {
-      "success": false,
-      "data": [],
-      "executionTime": 10.301,
-      "requestId": "01JSXXV88S7YFFM4QDADGSE5CC",
-      "error": "{\"error\": \"[Error] Timeout exceeded: elapsed 10.029287507 seconds, maximum: 10. Upgrade your plan for higher capacity, ensure your cluster isn't overloaded (dedicated infrastructure only), or optimize your query with filters.\", \"documentation\": \"https://docs.tinybird.co/get-started/plans/limits\"}"
+      "success": true,
+      "data": [
+        {
+          "actor_login": "AnthonyWC",
+          "c": 0,
+          "repos": 0,
+          "issues": 2,
+          "stars": 22,
+          "anyHeavy(repo_name)": "thoughtbot/dotfiles"
+        },
+        {
+          "actor_login": "cabbage89",
+          "c": 0,
+          "repos": 0,
+          "issues": 4,
+          "stars": 32,
+          "anyHeavy(repo_name)": "yarnpkg/yarn"
+        },
+        {
+          "actor_login": "shenliuyang",
+          "c": 0,
+          "repos": 0,
+          "issues": 2,
+          "stars": 2,
+          "anyHeavy(repo_name)": "spring-projects/spring-boot"
+        },
+        {
+          "actor_login": "dgautsch",
+          "c": 0,
+          "repos": 0,
+          "issues": 4,
+          "stars": 5,
+          "anyHeavy(repo_name)": "sheerun/prettier-standard"
+        },
+        {
+          "actor_login": "YiiGuxing",
+          "c": 0,
+          "repos": 0,
+          "issues": 2,
+          "stars": 17,
+          "anyHeavy(repo_name)": "scwang90/SmartRefreshLayout"
+        },
+        {
+          "actor_login": "shogo4405",
+          "c": 0,
+          "repos": 0,
+          "issues": 202,
+          "stars": 9,
+          "anyHeavy(repo_name)": "shogo4405/HaishinKit.swift"
+        },
+        {
+          "actor_login": "hillerliao",
+          "c": 0,
+          "repos": 0,
+          "issues": 4,
+          "stars": 6,
+          "anyHeavy(repo_name)": "sinall/ShiPanE-Python-SDK"
+        },
+        {
+          "actor_login": "antage",
+          "c": 0,
+          "repos": 0,
+          "issues": 2,
+          "stars": 17,
+          "anyHeavy(repo_name)": "solvespace/solvespace"
+        },
+        {
+          "actor_login": "zhang98722",
+          "c": 0,
+          "repos": 0,
+          "issues": 2,
+          "stars": 2,
+          "anyHeavy(repo_name)": "raphw/byte-buddy"
+        },
+        {
+          "actor_login": "t3ndai",
+          "c": 0,
+          "repos": 0,
+          "issues": 2,
+          "stars": 3,
+          "anyHeavy(repo_name)": "rtfeldman/elm-spa-example"
+        }
+      ],
+      "meta": [
+        {
+          "name": "actor_login",
+          "type": "LowCardinality(String)"
+        },
+        {
+          "name": "c",
+          "type": "UInt64"
+        },
+        {
+          "name": "repos",
+          "type": "UInt64"
+        },
+        {
+          "name": "issues",
+          "type": "UInt64"
+        },
+        {
+          "name": "stars",
+          "type": "UInt64"
+        },
+        {
+          "name": "anyHeavy(repo_name)",
+          "type": "String"
+        }
+      ],
+      "statistics": {
+        "elapsed": 0.380599642,
+        "rows_read": 20140133,
+        "bytes_read": 85338800
+      },
+      "executionTime": 0.428,
+      "requestId": "01JTMVKZY2XENJHQWS2RMHFTXX"
     },
     "model": "human",
     "provider": "human",
@@ -3356,25 +3311,6 @@
     "name": "pipe_48.pipe",
     "question": {
       "name": "pipe_48.pipe",
-      "content": "top 10 authors with the most pushes, filter out bots. Add a threshold on the number of repositories. Also count only those who created at least two issues and gave at least two stars. And also output the favorite repository for every user. And also count only across the top 10k repositories."
-    },
-    "sql": "SELECT\n        actor_login,\n        sum(event_type = 'PushEvent') AS c,\n        uniqIf(repo_name, event_type = 'PushEvent') AS repos,\n        sum(event_type = 'IssuesEvent') AS issues,\n        sum(event_type = 'WatchEvent') AS stars,\n        anyHeavy(repo_name)\n    FROM github_events\n    WHERE (event_type IN ('PushEvent', 'IssuesEvent', 'WatchEvent')) AND (repo_name IN\n    (\n        SELECT repo_name\n        FROM github_events\n        WHERE event_type = 'WatchEvent'\n        GROUP BY repo_name\n        ORDER BY count() DESC\n        LIMIT 10000\n    ))\n    GROUP BY actor_login\n    HAVING (repos < 10000) AND (issues > 1) AND (stars > 1)\n    ORDER BY c DESC\n    LIMIT 10",
-    "sqlResult": {
-      "success": false,
-      "data": [],
-      "executionTime": 10.234,
-      "requestId": "01JSXXVK7B2DJGA0YH60SN58P8",
-      "error": "{\"error\": \"[Error] Timeout exceeded: elapsed 10.006796082 seconds, maximum: 10. Upgrade your plan for higher capacity, ensure your cluster isn't overloaded (dedicated infrastructure only), or optimize your query with filters.\", \"documentation\": \"https://docs.tinybird.co/get-started/plans/limits\"}"
-    },
-    "model": "human",
-    "provider": "human",
-    "error": null,
-    "attempts": []
-  },
-  {
-    "name": "pipe_49.pipe",
-    "question": {
-      "name": "pipe_49.pipe",
       "content": "top 10 Organizations by the number of stars"
     },
     "sql": "SELECT\n        lower(substring(repo_name, 1, position(repo_name, '/'))) AS org,\n        count() AS stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY org\n    ORDER BY stars DESC\n    LIMIT 10",
@@ -3382,44 +3318,44 @@
       "success": true,
       "data": [
         {
-          "org": "google/",
-          "stars": 1414877
-        },
-        {
-          "org": "microsoft/",
-          "stars": 1361303
-        },
-        {
-          "org": "facebook/",
-          "stars": 1123380
-        },
-        {
-          "org": "alibaba/",
-          "stars": 580707
+          "org": "vuejs/",
+          "stars": 108982
         },
         {
           "org": "sindresorhus/",
-          "stars": 565535
-        },
-        {
-          "org": "apache/",
-          "stars": 553204
-        },
-        {
-          "org": "vuejs/",
-          "stars": 494824
+          "stars": 93511
         },
         {
           "org": "tensorflow/",
-          "stars": 425613
+          "stars": 86682
         },
         {
-          "org": "freecodecamp/",
-          "stars": 407610
+          "org": "shadowsocks/",
+          "stars": 47997
         },
         {
-          "org": "fossasia/",
-          "stars": 398255
+          "org": "square/",
+          "stars": 46713
+        },
+        {
+          "org": "reactjs/",
+          "stars": 39799
+        },
+        {
+          "org": "yahoo/",
+          "stars": 36455
+        },
+        {
+          "org": "yarnpkg/",
+          "stars": 31480
+        },
+        {
+          "org": "spring-projects/",
+          "stars": 30189
+        },
+        {
+          "org": "zeit/",
+          "stars": 27822
         }
       ],
       "meta": [
@@ -3433,12 +3369,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 1.224035994,
-        "rows_read": 232206874,
-        "bytes_read": 696284381
+        "elapsed": 0.053659064,
+        "rows_read": 7319235,
+        "bytes_read": 21919077
       },
-      "executionTime": 1.359,
-      "requestId": "01JSXXVY6CQC79M0E6R46DYHNN"
+      "executionTime": 0.098,
+      "requestId": "01JTMVM1APA7Z7CDRQ9N6F2QE9"
     },
     "model": "human",
     "provider": "human",
@@ -3446,9 +3382,9 @@
     "attempts": []
   },
   {
-    "name": "pipe_50.pipe",
+    "name": "pipe_49.pipe",
     "question": {
-      "name": "pipe_50.pipe",
+      "name": "pipe_49.pipe",
       "content": "top 10 Organizations by the number of repositories"
     },
     "sql": "SELECT\n        lower(substring(repo_name, 1, position(repo_name, '/'))) AS org,\n        uniq(repo_name) AS repos\n    FROM\n    (\n        SELECT repo_name\n        FROM github_events\n        WHERE event_type = 'WatchEvent'\n        GROUP BY repo_name\n        HAVING count() >= 10\n    )\n    GROUP BY org\n    ORDER BY repos DESC\n    LIMIT 10",
@@ -3456,44 +3392,44 @@
       "success": true,
       "data": [
         {
-          "org": "microsoft/",
-          "repos": 3359
-        },
-        {
-          "org": "google/",
-          "repos": 1599
-        },
-        {
-          "org": "openstack/",
-          "repos": 1412
-        },
-        {
-          "org": "packtpublishing/",
-          "repos": 1381
-        },
-        {
-          "org": "apache/",
-          "repos": 1017
-        },
-        {
           "org": "sindresorhus/",
-          "repos": 1016
+          "repos": 438
         },
         {
-          "org": "azure/",
-          "repos": 818
+          "org": "udacity/",
+          "repos": 172
         },
         {
-          "org": "aws-samples/",
-          "repos": 761
+          "org": "spatie/",
+          "repos": 147
         },
         {
-          "org": "mozilla/",
-          "repos": 727
+          "org": "yahoo/",
+          "repos": 117
         },
         {
-          "org": "googlecloudplatform/",
-          "repos": 718
+          "org": "w3c/",
+          "repos": 107
+        },
+        {
+          "org": "tj/",
+          "repos": 98
+        },
+        {
+          "org": "square/",
+          "repos": 94
+        },
+        {
+          "org": "twitter/",
+          "repos": 88
+        },
+        {
+          "org": "spring-projects/",
+          "repos": 84
+        },
+        {
+          "org": "uber/",
+          "repos": 84
         }
       ],
       "meta": [
@@ -3507,12 +3443,156 @@
         }
       ],
       "statistics": {
-        "elapsed": 1.41032104,
-        "rows_read": 232206874,
-        "bytes_read": 696284381
+        "elapsed": 0.051991189,
+        "rows_read": 7319235,
+        "bytes_read": 21919077
       },
-      "executionTime": 1.461,
-      "requestId": "01JSXXW0G5FWWBYB3FQ9CJD6H1"
+      "executionTime": 0.095,
+      "requestId": "01JTMVM2D2BN2M3NY0G0DN4NJP"
+    },
+    "model": "human",
+    "provider": "human",
+    "error": null,
+    "attempts": []
+  },
+  {
+    "name": "pipe_50.pipe",
+    "question": {
+      "name": "pipe_50.pipe",
+      "content": "top 10 Organizations by the size of community"
+    },
+    "sql": "SELECT\n        lower(substring(repo_name, 1, position(repo_name, '/'))) AS org,\n        uniq(actor_login) AS authors,\n        uniqIf(actor_login, event_type = 'PullRequestEvent') AS pr_authors,\n        uniqIf(actor_login, event_type = 'IssuesEvent') AS issue_authors,\n        uniqIf(actor_login, event_type = 'IssueCommentEvent') AS comment_authors,\n        uniqIf(actor_login, event_type = 'PullRequestReviewCommentEvent') AS review_authors,\n        uniqIf(actor_login, event_type = 'PushEvent') AS push_authors\n    FROM github_events\n    WHERE event_type IN ('PullRequestEvent', 'IssuesEvent', 'IssueCommentEvent', 'PullRequestReviewCommentEvent', 'PushEvent')\n    GROUP BY org\n    ORDER BY authors DESC\n    LIMIT 10",
+    "sqlResult": {
+      "success": true,
+      "data": [
+        {
+          "org": "/",
+          "authors": 18767,
+          "pr_authors": 632,
+          "issue_authors": 867,
+          "comment_authors": 0,
+          "review_authors": 0,
+          "push_authors": 18290
+        },
+        {
+          "org": "facebook/",
+          "authors": 14607,
+          "pr_authors": 4376,
+          "issue_authors": 10036,
+          "comment_authors": 1017,
+          "review_authors": 787,
+          "push_authors": 274
+        },
+        {
+          "org": "google/",
+          "authors": 13049,
+          "pr_authors": 4192,
+          "issue_authors": 8176,
+          "comment_authors": 0,
+          "review_authors": 795,
+          "push_authors": 1390
+        },
+        {
+          "org": "learn-co-students/",
+          "authors": 11499,
+          "pr_authors": 11499,
+          "issue_authors": 0,
+          "comment_authors": 0,
+          "review_authors": 0,
+          "push_authors": 0
+        },
+        {
+          "org": "tensorflow/",
+          "authors": 9525,
+          "pr_authors": 944,
+          "issue_authors": 8218,
+          "comment_authors": 0,
+          "review_authors": 660,
+          "push_authors": 0
+        },
+        {
+          "org": "docker/",
+          "authors": 7861,
+          "pr_authors": 0,
+          "issue_authors": 7480,
+          "comment_authors": 0,
+          "review_authors": 585,
+          "push_authors": 0
+        },
+        {
+          "org": "githubschool/",
+          "authors": 7192,
+          "pr_authors": 4548,
+          "issue_authors": 1352,
+          "comment_authors": 0,
+          "review_authors": 62,
+          "push_authors": 1311
+        },
+        {
+          "org": "nextcloud/",
+          "authors": 6179,
+          "pr_authors": 548,
+          "issue_authors": 5751,
+          "comment_authors": 0,
+          "review_authors": 0,
+          "push_authors": 0
+        },
+        {
+          "org": "jlord/",
+          "authors": 5940,
+          "pr_authors": 5848,
+          "issue_authors": 88,
+          "comment_authors": 0,
+          "review_authors": 8,
+          "push_authors": 0
+        },
+        {
+          "org": "terraform-providers/",
+          "authors": 5421,
+          "pr_authors": 0,
+          "issue_authors": 4985,
+          "comment_authors": 0,
+          "review_authors": 539,
+          "push_authors": 0
+        }
+      ],
+      "meta": [
+        {
+          "name": "org",
+          "type": "String"
+        },
+        {
+          "name": "authors",
+          "type": "UInt64"
+        },
+        {
+          "name": "pr_authors",
+          "type": "UInt64"
+        },
+        {
+          "name": "issue_authors",
+          "type": "UInt64"
+        },
+        {
+          "name": "comment_authors",
+          "type": "UInt64"
+        },
+        {
+          "name": "review_authors",
+          "type": "UInt64"
+        },
+        {
+          "name": "push_authors",
+          "type": "UInt64"
+        }
+      ],
+      "statistics": {
+        "elapsed": 1.262084303,
+        "rows_read": 113921805,
+        "bytes_read": 561663376
+      },
+      "executionTime": 1.407,
+      "requestId": "01JTMVM3JDFPVHPWN9WZSQD6AP"
     },
     "model": "human",
     "provider": "human",
@@ -3523,25 +3603,6 @@
     "name": "pipe_51.pipe",
     "question": {
       "name": "pipe_51.pipe",
-      "content": "top 10 Organizations by the size of community"
-    },
-    "sql": "SELECT\n        lower(substring(repo_name, 1, position(repo_name, '/'))) AS org,\n        uniq(actor_login) AS authors,\n        uniqIf(actor_login, event_type = 'PullRequestEvent') AS pr_authors,\n        uniqIf(actor_login, event_type = 'IssuesEvent') AS issue_authors,\n        uniqIf(actor_login, event_type = 'IssueCommentEvent') AS comment_authors,\n        uniqIf(actor_login, event_type = 'PullRequestReviewCommentEvent') AS review_authors,\n        uniqIf(actor_login, event_type = 'PushEvent') AS push_authors\n    FROM github_events\n    WHERE event_type IN ('PullRequestEvent', 'IssuesEvent', 'IssueCommentEvent', 'PullRequestReviewCommentEvent', 'PushEvent')\n    GROUP BY org\n    ORDER BY authors DESC\n    LIMIT 10",
-    "sqlResult": {
-      "success": false,
-      "data": [],
-      "executionTime": 10.38,
-      "requestId": "01JSXXW2X8PXGZPGZGMX0ZD7JP",
-      "error": "{\"error\": \"[Error] Timeout exceeded: elapsed 10.003651432 seconds, maximum: 10. Upgrade your plan for higher capacity, ensure your cluster isn't overloaded (dedicated infrastructure only), or optimize your query with filters.\", \"documentation\": \"https://docs.tinybird.co/get-started/plans/limits\"}"
-    },
-    "model": "human",
-    "provider": "human",
-    "error": null,
-    "attempts": []
-  },
-  {
-    "name": "pipe_52.pipe",
-    "question": {
-      "name": "pipe_52.pipe",
       "content": "top 10 Repositories by amount of modified code\n    I want to get the repositories with the most added and removed code over time"
     },
     "sql": "SELECT\n        repo_name,\n        count() AS prs,\n        uniq(actor_login) AS authors,\n        sum(additions) AS adds,\n        sum(deletions) AS dels\n    FROM github_events\n    WHERE (event_type = 'PullRequestEvent') AND (action = 'opened') AND (additions < 10000) AND (deletions < 10000)\n    GROUP BY repo_name\n    HAVING (adds / dels) < 10\n    ORDER BY adds + dels DESC\n    LIMIT 10",
@@ -3550,73 +3611,73 @@
       "data": [
         {
           "repo_name": "everypolitician/everypolitician-data",
-          "prs": 150531,
-          "authors": 18,
-          "adds": 66782324,
-          "dels": 71203492
-        },
-        {
-          "repo_name": "brianchandotcom/liferay-portal",
-          "prs": 91962,
-          "authors": 337,
-          "adds": 29304605,
-          "dels": 13799025
-        },
-        {
-          "repo_name": "googleapis/google-api-java-client-services",
-          "prs": 4689,
-          "authors": 17,
-          "adds": 12184021,
-          "dels": 9874444
-        },
-        {
-          "repo_name": "code-dot-org/code-dot-org",
-          "prs": 35776,
-          "authors": 125,
-          "adds": 14329448,
-          "dels": 6810679
-        },
-        {
-          "repo_name": "elastic/kibana",
-          "prs": 51783,
-          "authors": 798,
-          "adds": 12478455,
-          "dels": 6092002
-        },
-        {
-          "repo_name": "dotnet/roslyn",
-          "prs": 23642,
-          "authors": 580,
-          "adds": 12112106,
-          "dels": 5703835
+          "prs": 12848,
+          "authors": 3,
+          "adds": 5215610,
+          "dels": 5332897
         },
         {
           "repo_name": "shuyangzhou/liferay-portal",
-          "prs": 7334,
-          "authors": 140,
-          "adds": 11510525,
-          "dels": 6287677
+          "prs": 2674,
+          "authors": 41,
+          "adds": 4593360,
+          "dels": 2703679
         },
         {
-          "repo_name": "cms-sw/cmssw",
-          "prs": 28087,
-          "authors": 947,
-          "adds": 9488742,
-          "dels": 5076486
+          "repo_name": "sergiogonzalez/liferay-portal",
+          "prs": 1696,
+          "authors": 69,
+          "adds": 2097746,
+          "dels": 1234784
         },
         {
-          "repo_name": "Azure/azure-sdk-for-python",
-          "prs": 10323,
-          "authors": 339,
-          "adds": 10692004,
-          "dels": 3691779
+          "repo_name": "tensorflow/tensorflow",
+          "prs": 4544,
+          "authors": 715,
+          "adds": 2308746,
+          "dels": 847016
         },
         {
-          "repo_name": "Azure/azure-sdk-for-net",
-          "prs": 9775,
-          "authors": 935,
-          "adds": 9759909,
-          "dels": 3188655
+          "repo_name": "rust-lang/rust",
+          "prs": 13344,
+          "authors": 703,
+          "adds": 1933149,
+          "dels": 1153554
+        },
+        {
+          "repo_name": "kubernetes/kubernetes",
+          "prs": 11188,
+          "authors": 1034,
+          "adds": 1976945,
+          "dels": 1014334
+        },
+        {
+          "repo_name": "swagger-api/swagger-codegen",
+          "prs": 4194,
+          "authors": 376,
+          "adds": 1706982,
+          "dels": 874887
+        },
+        {
+          "repo_name": "nd-team/goddess-java",
+          "prs": 898,
+          "authors": 13,
+          "adds": 2034112,
+          "dels": 358878
+        },
+        {
+          "repo_name": "sharonchoi/liferay-portal",
+          "prs": 1396,
+          "authors": 14,
+          "adds": 1355604,
+          "dels": 862262
+        },
+        {
+          "repo_name": "nus-cs2103-AY1617S2/addressbook-level4",
+          "prs": 372,
+          "authors": 100,
+          "adds": 1102196,
+          "dels": 847524
         }
       ],
       "meta": [
@@ -3642,12 +3703,100 @@
         }
       ],
       "statistics": {
-        "elapsed": 2.312119214,
-        "rows_read": 214758704,
-        "bytes_read": 3005344217
+        "elapsed": 0.166074855,
+        "rows_read": 18564759,
+        "bytes_read": 256392615
       },
-      "executionTime": 2.378,
-      "requestId": "01JSXXWE0TACY8C6D23NA8ETBC"
+      "executionTime": 0.27,
+      "requestId": "01JTMVM5TP4CD0776DNSXY1G62"
+    },
+    "model": "human",
+    "provider": "human",
+    "error": null,
+    "attempts": []
+  },
+  {
+    "name": "pipe_52.pipe",
+    "question": {
+      "name": "pipe_52.pipe",
+      "content": "top 10 Repositories by the number of issue comments"
+    },
+    "sql": "SELECT\n        repo_name,\n        count() AS comments,\n        uniq(actor_login) AS authors\n    FROM github_events\n    WHERE (event_type = 'IssueCommentEvent') AND (repo_name IN\n    (\n        SELECT repo_name\n        FROM github_events\n        WHERE event_type = 'WatchEvent'\n        GROUP BY repo_name\n        ORDER BY count() DESC\n        LIMIT 10000\n    ))\n    GROUP BY repo_name\n    ORDER BY count() DESC\n    LIMIT 10",
+    "sqlResult": {
+      "success": true,
+      "data": [
+        {
+          "repo_name": "rails/rails",
+          "comments": 14225,
+          "authors": 1919
+        },
+        {
+          "repo_name": "scikit-learn/scikit-learn",
+          "comments": 3321,
+          "authors": 84
+        },
+        {
+          "repo_name": "quicksilver/Quicksilver",
+          "comments": 2479,
+          "authors": 166
+        },
+        {
+          "repo_name": "xbmc/xbmc",
+          "comments": 2274,
+          "authors": 121
+        },
+        {
+          "repo_name": "rembo10/headphones",
+          "comments": 2198,
+          "authors": 196
+        },
+        {
+          "repo_name": "sferik/rails_admin",
+          "comments": 1725,
+          "authors": 306
+        },
+        {
+          "repo_name": "spree/spree",
+          "comments": 1229,
+          "authors": 133
+        },
+        {
+          "repo_name": "robbyrussell/oh-my-zsh",
+          "comments": 1220,
+          "authors": 270
+        },
+        {
+          "repo_name": "thoughtbot/paperclip",
+          "comments": 1174,
+          "authors": 303
+        },
+        {
+          "repo_name": "travis-ci/travis-ci",
+          "comments": 980,
+          "authors": 120
+        }
+      ],
+      "meta": [
+        {
+          "name": "repo_name",
+          "type": "LowCardinality(String)"
+        },
+        {
+          "name": "comments",
+          "type": "UInt64"
+        },
+        {
+          "name": "authors",
+          "type": "UInt64"
+        }
+      ],
+      "statistics": {
+        "elapsed": 0.076661246,
+        "rows_read": 7903551,
+        "bytes_read": 23503597
+      },
+      "executionTime": 0.136,
+      "requestId": "01JTMVM72WDMJ3V5K33CJFD0EC"
     },
     "model": "human",
     "provider": "human",
@@ -3658,94 +3807,6 @@
     "name": "pipe_53.pipe",
     "question": {
       "name": "pipe_53.pipe",
-      "content": "top 10 Repositories by the number of pushes"
-    },
-    "sql": "SELECT\n        repo_name,\n        count() AS pushes,\n        uniq(actor_login) AS authors\n    FROM github_events\n    WHERE (event_type = 'PushEvent') AND (repo_name IN\n    (\n        SELECT repo_name\n        FROM github_events\n        WHERE event_type = 'WatchEvent'\n        GROUP BY repo_name\n        ORDER BY count() DESC\n        LIMIT 10000\n    ))\n    GROUP BY repo_name\n    ORDER BY count() DESC\n    LIMIT 10",
-    "sqlResult": {
-      "success": true,
-      "data": [
-        {
-          "repo_name": "CocoaPods/Specs",
-          "pushes": 516861,
-          "authors": 375
-        },
-        {
-          "repo_name": "odoo/odoo",
-          "pushes": 239208,
-          "authors": 95
-        },
-        {
-          "repo_name": "docker-library/docs",
-          "pushes": 237496,
-          "authors": 6
-        },
-        {
-          "repo_name": "openstack/openstack",
-          "pushes": 202003,
-          "authors": 2
-        },
-        {
-          "repo_name": "greatfire/wiki",
-          "pushes": 169566,
-          "authors": 4
-        },
-        {
-          "repo_name": "pytorch/pytorch",
-          "pushes": 147447,
-          "authors": 212
-        },
-        {
-          "repo_name": "/",
-          "pushes": 145675,
-          "authors": 18546
-        },
-        {
-          "repo_name": "NixOS/nixpkgs",
-          "pushes": 125285,
-          "authors": 177
-        },
-        {
-          "repo_name": "Automattic/wp-calypso",
-          "pushes": 120883,
-          "authors": 432
-        },
-        {
-          "repo_name": "edx/edx-platform",
-          "pushes": 118395,
-          "authors": 330
-        }
-      ],
-      "meta": [
-        {
-          "name": "repo_name",
-          "type": "LowCardinality(String)"
-        },
-        {
-          "name": "pushes",
-          "type": "UInt64"
-        },
-        {
-          "name": "authors",
-          "type": "UInt64"
-        }
-      ],
-      "statistics": {
-        "elapsed": 4.517432619,
-        "rows_read": 633733397,
-        "bytes_read": 2278162451
-      },
-      "executionTime": 4.567,
-      "requestId": "01JSXXWHAFEYX2Z2VY3PEDMY7E"
-    },
-    "model": "human",
-    "provider": "human",
-    "error": null,
-    "attempts": []
-  },
-  {
-    "name": "pipe_54.pipe",
-    "question": {
-      "name": "pipe_54.pipe",
       "content": "top 10 Authors with the most code reviews"
     },
     "sql": "SELECT\n        actor_login,\n        count(),\n        uniq(repo_name) AS repos,\n        uniq(repo_name, number) AS prs,\n        replaceRegexpAll(substringUTF8(anyHeavy(body), 1, 100), '[\\r\\n]', ' ') AS comment\n    FROM github_events\n    WHERE (event_type = 'PullRequestReviewCommentEvent') AND (action = 'created')\n    GROUP BY actor_login\n    ORDER BY count() DESC\n    LIMIT 10",
@@ -3754,73 +3815,73 @@
       "data": [
         {
           "actor_login": "houndci-bot",
-          "count()": 991954,
-          "repos": 5877,
-          "prs": 78600,
-          "comment": "Prefer double-quoted strings unless you need single quotes to avoid extra backslashes for escaping."
+          "count()": 62390,
+          "repos": 530,
+          "prs": 5115,
+          "comment": "Trailing Whitespace Violation: Lines should not have trailing whitespace. (trailing_whitespace)"
         },
         {
           "actor_login": "houndci",
-          "count()": 342114,
-          "repos": 3102,
-          "prs": 28679,
-          "comment": "Selector should have depth of applicability no greater than 2, but was 3"
+          "count()": 54995,
+          "repos": 639,
+          "prs": 5204,
+          "comment": "Prefer double-quoted strings unless you need single quotes to avoid extra backslashes for escaping."
         },
         {
           "actor_login": "codacy-bot",
-          "count()": 327712,
-          "repos": 2313,
-          "prs": 21581,
-          "comment": "![Codacy](https://app.codacy.com/assets/images/favicon.png) Issue found: [Usage of get on optional t"
+          "count()": 31784,
+          "repos": 216,
+          "prs": 1680,
+          "comment": "![Codacy](https://app.codacy.com/assets/images/favicon.png) Issue found: [Use explicit scoping inste"
+        },
+        {
+          "actor_login": "dieunb",
+          "count()": 6265,
+          "repos": 131,
+          "prs": 1388,
+          "comment": "Function này để làm gì?"
+        },
+        {
+          "actor_login": "stephentoub",
+          "count()": 5158,
+          "repos": 9,
+          "prs": 873,
+          "comment": "Definitely agree.  If this isn't needed in most cases, it should definitely be opt-in and/or simply "
         },
         {
           "actor_login": "hound[bot]",
-          "count()": 224854,
-          "repos": 1734,
-          "prs": 13812,
-          "comment": "Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or speci"
+          "count()": 5041,
+          "repos": 46,
+          "prs": 389,
+          "comment": "Style/StringLiterals: Prefer double-quoted strings unless you need single quotes to avoid extra back"
         },
         {
-          "actor_login": "codeclimate[bot]",
-          "count()": 90778,
-          "repos": 1424,
-          "prs": 11589,
-          "comment": "Similar blocks of code found in 2 locations. Consider refactoring."
+          "actor_login": "codeschool-kiddo",
+          "count()": 5005,
+          "repos": 983,
+          "prs": 4883,
+          "comment": "Looks good! Could you also please mention your favorite Code School path in your introduction? This "
         },
         {
-          "actor_login": "github-learning-lab[bot]",
-          "count()": 64453,
-          "repos": 15296,
-          "prs": 27480,
-          "comment": "Thanks for opening this pull request, @swaroop1.   ```suggestion You can play the game at: https://s"
-        },
-        {
-          "actor_login": "stickler-ci",
-          "count()": 56022,
-          "repos": 457,
-          "prs": 7757,
-          "comment": "E1601 print statement used"
-        },
-        {
-          "actor_login": "golangcibot",
-          "count()": 40329,
-          "repos": 885,
-          "prs": 8305,
-          "comment": "ineffectual assignment to `err` (from `ineffassign`)"
+          "actor_login": "vaadin-bot",
+          "count()": 4760,
+          "repos": 37,
+          "prs": 831,
+          "comment": "![CRITICAL](https://sonarsource.github.io/sonar-github/severity-critical.png 'Severity: CRITICAL') D"
         },
         {
           "actor_login": "github-actions[bot]",
-          "count()": 38216,
-          "repos": 733,
-          "prs": 3321,
-          "comment": "W504: line break after binary operator  <!-- Automatically posted by Lintly -->"
+          "count()": 4721,
+          "repos": 38,
+          "prs": 227,
+          "comment": "<table data-meta=\"generated_by_danger\">   <tbody>     <tr>       <td>:warning:</td>       <td width="
         },
         {
-          "actor_login": "accesslint[bot]",
-          "count()": 37459,
-          "repos": 1121,
-          "prs": 3889,
-          "comment": "This image is missing a text alternative (`alt` attribute). This is a problem for people using scree"
+          "actor_login": "timabbott",
+          "count()": 4704,
+          "repos": 10,
+          "prs": 1095,
+          "comment": "Generally, it's not great to do potentially dozens/hundreds of API queries to the server like this; "
         }
       ],
       "meta": [
@@ -3846,12 +3907,86 @@
         }
       ],
       "statistics": {
-        "elapsed": 1.916517822,
-        "rows_read": 56090777,
-        "bytes_read": 8399967278
+        "elapsed": 0.162758648,
+        "rows_read": 4172440,
+        "bytes_read": 583609045
       },
-      "executionTime": 1.971,
-      "requestId": "01JSXXWPRM0ZBNB36XDVJ3TNV7"
+      "executionTime": 0.207,
+      "requestId": "01JTMVM861QFWFKCGBDENCY5YZ"
+    },
+    "model": "human",
+    "provider": "human",
+    "error": null,
+    "attempts": []
+  },
+  {
+    "name": "pipe_54.pipe",
+    "question": {
+      "name": "pipe_54.pipe",
+      "content": "top 10 most popular labels for issues and pull requests"
+    },
+    "sql": "SELECT\n        arrayJoin(labels) AS label,\n        count() AS c\n    FROM github_events\n    WHERE (event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')) AND (action IN ('created', 'opened', 'labeled'))\n    GROUP BY label\n    ORDER BY c DESC\n    LIMIT 10",
+    "sqlResult": {
+      "success": true,
+      "data": [
+        {
+          "label": "enhancement",
+          "c": 388865
+        },
+        {
+          "label": "bug",
+          "c": 343621
+        },
+        {
+          "label": "FP: Pending Review",
+          "c": 43256
+        },
+        {
+          "label": "feature",
+          "c": 43123
+        },
+        {
+          "label": "question",
+          "c": 41538
+        },
+        {
+          "label": "help wanted",
+          "c": 40516
+        },
+        {
+          "label": "Bug",
+          "c": 37575
+        },
+        {
+          "label": "movie",
+          "c": 34451
+        },
+        {
+          "label": "Gitalk",
+          "c": 33432
+        },
+        {
+          "label": "Feature",
+          "c": 32506
+        }
+      ],
+      "meta": [
+        {
+          "name": "label",
+          "type": "LowCardinality(String)"
+        },
+        {
+          "name": "c",
+          "type": "UInt64"
+        }
+      ],
+      "statistics": {
+        "elapsed": 0.143703358,
+        "rows_read": 34589909,
+        "bytes_read": 359810736
+      },
+      "executionTime": 0.187,
+      "requestId": "01JTMVM9BTMTMRHFPA3V7HAC3C"
     },
     "model": "human",
     "provider": "human",
@@ -3862,51 +3997,51 @@
     "name": "pipe_55.pipe",
     "question": {
       "name": "pipe_55.pipe",
-      "content": "top 10 most popular labels for issues and pull requests"
+      "content": "top 10 most popular labels for issues and pull requests? filter by bugs and features"
     },
-    "sql": "SELECT\n        arrayJoin(labels) AS label,\n        count() AS c\n    FROM github_events\n    WHERE (event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')) AND (action IN ('created', 'opened', 'labeled'))\n    GROUP BY label\n    ORDER BY c DESC\n    LIMIT 10",
+    "sql": "SELECT\n        arrayJoin(labels) AS label,\n        count() AS c\n    FROM github_events\n    WHERE (event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')) AND (action IN ('created', 'opened', 'labeled')) AND ((label ILIKE '%bug%') OR (label ILIKE '%feature%'))\n    GROUP BY label\n    ORDER BY c DESC\n    LIMIT 10",
     "sqlResult": {
       "success": true,
       "data": [
         {
           "label": "bug",
-          "c": 11193148
+          "c": 343621
         },
         {
-          "label": "enhancement",
-          "c": 10885289
+          "label": "feature",
+          "c": 43123
         },
         {
-          "label": "dependencies",
-          "c": 7752896
+          "label": "Bug",
+          "c": 37575
         },
         {
-          "label": "question",
-          "c": 3086354
+          "label": "Feature",
+          "c": 32506
         },
         {
-          "label": "help wanted",
-          "c": 2280160
+          "label": "feature request",
+          "c": 11630
         },
         {
-          "label": "greenkeeper",
-          "c": 2225510
+          "label": "BigBug",
+          "c": 9610
         },
         {
-          "label": "approved",
-          "c": 1880281
+          "label": "kind/bug",
+          "c": 9224
         },
         {
-          "label": "cla: yes",
-          "c": 1802662
+          "label": "type:bug",
+          "c": 9120
         },
         {
-          "label": "cncf-cla: yes",
-          "c": 1541233
+          "label": "C-bug",
+          "c": 7844
         },
         {
-          "label": "lgtm",
-          "c": 1526217
+          "label": "type/bug",
+          "c": 7655
         }
       ],
       "meta": [
@@ -3920,12 +4055,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 1.494029157,
-        "rows_read": 544588009,
-        "bytes_read": 5743760831
+        "elapsed": 0.162740047,
+        "rows_read": 34589909,
+        "bytes_read": 359807332
       },
-      "executionTime": 1.587,
-      "requestId": "01JSXXWSNHYTRW60051CCN72MA"
+      "executionTime": 0.206,
+      "requestId": "01JTMVMAGZDR4WPSMQ6M869V80"
     },
     "model": "human",
     "provider": "human",
@@ -3936,70 +4071,70 @@
     "name": "pipe_56.pipe",
     "question": {
       "name": "pipe_56.pipe",
-      "content": "top 10 most popular labels for issues and pull requests? filter by bugs and features"
+      "content": "top 10 longest repository names"
     },
-    "sql": "SELECT\n        arrayJoin(labels) AS label,\n        count() AS c\n    FROM github_events\n    WHERE (event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')) AND (action IN ('created', 'opened', 'labeled')) AND ((label ILIKE '%bug%') OR (label ILIKE '%feature%'))\n    GROUP BY label\n    ORDER BY c DESC\n    LIMIT 10",
+    "sql": "SELECT count(), repo_name FROM github_events WHERE event_type = 'WatchEvent' GROUP BY repo_name ORDER BY length(repo_name) DESC LIMIT 10",
     "sqlResult": {
       "success": true,
       "data": [
         {
-          "label": "bug",
-          "c": 11193148
+          "count()": 3,
+          "repo_name": "vintagegamingsystems/Disk-Low-Level-Discovery-for-Physical-Disk-within-Windows-Performance-Monitoring-in-Zabbix-2.0"
         },
         {
-          "label": "feature",
-          "c": 1198997
+          "count()": 1,
+          "repo_name": "rajpalsinghus/Netgear-tech-support-number-1-844-234-9752-Netgear-Router-tech-support-phone-Number-for-phone-Netgea"
         },
         {
-          "label": "Bug",
-          "c": 1186836
+          "count()": 1,
+          "repo_name": "xy1377660586/Fine-tuning-a-pre-trained-CNN-for-first-year-sea-ice-and-multi-year-sea-ice-cp-imagery-classificatio"
         },
         {
-          "label": "kind/bug",
-          "c": 709181
+          "count()": 2,
+          "repo_name": "wanlonghenry/Facial-Emotion-Expression-Recognition-with-Developed-Convolutional-Neural-Networks-in-Representation"
         },
         {
-          "label": "Feature",
-          "c": 475471
+          "count()": 3,
+          "repo_name": "shubham-singla01/All-basic-Computer-Science-knowledge-you-will-need-to-work-in-big-4---amazon-fb-google-microsoft"
         },
         {
-          "label": "feature request",
-          "c": 428393
+          "count()": 3,
+          "repo_name": "standardebooks/hermann-hesse_siddhartha_gunther-olesch_anke-dreher_amy-coulter_stefan-langer_semyon-chaichenets"
         },
         {
-          "label": "type: bug",
-          "c": 346937
+          "count()": 1,
+          "repo_name": "wakayama-pref-org/s_social_security_physical_disability_certificate_issued_situation_national_health_insurance"
         },
         {
-          "label": "kind/feature",
-          "c": 336981
+          "count()": 3,
+          "repo_name": "ucdavis-bioinformatics-training/Bioinformatics-Genome-Assembly-and-Analysis-Workshop-Pac-Bio-and-10x-Genomics-"
         },
         {
-          "label": "bugzilla/valid-bug",
-          "c": 319332
+          "count()": 1,
+          "repo_name": "shahed-jamal/magento-coupon-exclude-products-dynamically-by-sku-depending-on-special-price-discount-percentage"
         },
         {
-          "label": "Type: Bug",
-          "c": 247042
+          "count()": 1,
+          "repo_name": "reevesangie/https-nid.naver.com-nidlogin.login-svctype-262144-url-http-3A-2F-2Fm.cafe.naver.com-2FSectionMyCaf"
         }
       ],
       "meta": [
         {
-          "name": "label",
-          "type": "LowCardinality(String)"
+          "name": "count()",
+          "type": "UInt64"
         },
         {
-          "name": "c",
-          "type": "UInt64"
+          "name": "repo_name",
+          "type": "LowCardinality(String)"
         }
       ],
       "statistics": {
-        "elapsed": 2.117133551,
-        "rows_read": 544588009,
-        "bytes_read": 5743524225
+        "elapsed": 0.047825045,
+        "rows_read": 7319235,
+        "bytes_read": 21919077
       },
-      "executionTime": 2.17,
-      "requestId": "01JSXXWW6E0C4XZGQGSSS6WEV4"
+      "executionTime": 0.093,
+      "requestId": "01JTMVMBPS94FATW4NYBY5WF7M"
     },
     "model": "human",
     "provider": "human",
@@ -4010,70 +4145,70 @@
     "name": "pipe_57.pipe",
     "question": {
       "name": "pipe_57.pipe",
-      "content": "top 10 longest repository names"
+      "content": "top 10 shortest repository names"
     },
-    "sql": "SELECT count(), repo_name FROM github_events WHERE event_type = 'WatchEvent' GROUP BY repo_name ORDER BY length(repo_name) DESC LIMIT 10",
+    "sql": "SELECT repo_name, count() FROM github_events WHERE event_type = 'WatchEvent' AND repo_name LIKE '%_/_%' GROUP BY repo_name ORDER BY length(repo_name) ASC LIMIT 10",
     "sqlResult": {
       "success": true,
       "data": [
         {
-          "count()": 1,
-          "repo_name": "JonathanJonathanJonathanJonathanJonatha/JonathanJonathanJonathanJonathanJonathanJonathanJonathanJonathanJonathanJonathanJonathanJonathanJona"
+          "repo_name": "tj/n",
+          "count()": 2783
         },
         {
-          "count()": 1,
-          "repo_name": "dldadnasjndfsjafajnsdfadnfadfkoafasdklk/fjkdasifjasdiofasiodfasjdogasdgajsdpgasdpgasjkdgo-askdpgspkdgvjaspgpasjidpgjiajisdgpjioasdpigasgpjia"
+          "repo_name": "tj/v8",
+          "count()": 1
         },
         {
-          "count()": 15,
-          "repo_name": "fkdjfkdkfjskfjsldkfjvndkslakfjgkdlskfjg/fksfekgkslgkkdjfkdlskfjkfkdlslakdjfkekjlklfkjdkslkjfojksjdfaskdjfsalkdfj-laskfjls-kdajfoasjfpoawefjk"
+          "repo_name": "sjl/d",
+          "count()": 8
         },
         {
-          "count()": 1,
-          "repo_name": "UDtUf4aRyjv7nU3YTg056xCJw1ghAJYXgad7oB5/hJJRB7rpa3IXwX8HRsA1B4jCDmlZBY9fAzXZWNPyhrsXYG5kCeC4RPFqKQ4I9sAu1aNzX2G6wAkBjm8BjPfKjdubEqkmeAIkIwgu"
+          "repo_name": "sjl/t",
+          "count()": 104
         },
         {
-          "count()": 3,
-          "repo_name": "uwuwuwuwuwuwuwuwuwuwuwuwuwuwuwuwuwuwuwu/uwuwuwuwuwuwuwuwuwuwuwuwuwuwuwuwuwuwuwuuwuwuwuwuwuwuwuwuwuwuwuwuwuwuwuwuwuwuwuuwuwuwuwuwuwuwuwuwuwuw"
+          "repo_name": "z/kbx",
+          "count()": 1
         },
         {
-          "count()": 1,
-          "repo_name": "accounts-inheritance-finders-of-america/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+          "repo_name": "s4/s4",
+          "count()": 2
         },
         {
-          "count()": 1,
-          "repo_name": "joooooooooooooooooooooooooooooooooooooj/jooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo"
+          "repo_name": "z/nst",
+          "count()": 1
         },
         {
-          "count()": 4,
-          "repo_name": "joooooooooooooooooooooooooooooooooooooj/jooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooj"
+          "repo_name": "sm/sm",
+          "count()": 4
         },
         {
-          "count()": 1,
-          "repo_name": "a-a-a-a-a-a-a-a-a-a-a-a-a-a-a-a-a-a-a-a/a-a-a-a-a-a-a-a-a-a-a-a-a-a-a-a-a-a-a-a-a-a-a-a-a-a-a-a-a-a-a-a-a-a-a-a-a-a-a-a-a-a-a-a-a-a-a-a-a-a-"
+          "repo_name": "sn/sn",
+          "count()": 2
         },
         {
-          "count()": 2,
-          "repo_name": "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy/yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+          "repo_name": "tj/bm",
+          "count()": 23
         }
       ],
       "meta": [
         {
-          "name": "count()",
-          "type": "UInt64"
-        },
-        {
           "name": "repo_name",
           "type": "LowCardinality(String)"
+        },
+        {
+          "name": "count()",
+          "type": "UInt64"
         }
       ],
       "statistics": {
-        "elapsed": 1.312527222,
-        "rows_read": 232206874,
-        "bytes_read": 696284381
+        "elapsed": 0.054795541,
+        "rows_read": 7319235,
+        "bytes_read": 21919077
       },
-      "executionTime": 1.386,
-      "requestId": "01JSXXWZ9DPVYWPAESYPGD75E5"
+      "executionTime": 0.099,
+      "requestId": "01JTMVMCS187K8489VGP422YYH"
     },
     "model": "human",
     "provider": "human",
@@ -4084,51 +4219,52 @@
     "name": "pipe_58.pipe",
     "question": {
       "name": "pipe_58.pipe",
-      "content": "top 10 shortest repository names"
+      "content": "top 10 Repositories with tensorflow related comments"
+>>>>>>> 0dd4f45fa247171b2577e2e79328ca8ee0d2fb11
     },
-    "sql": "SELECT repo_name, count() FROM github_events WHERE event_type = 'WatchEvent' AND repo_name LIKE '%_/_%' GROUP BY repo_name ORDER BY length(repo_name) ASC LIMIT 10",
+    "sql": "SELECT repo_name, count() FROM github_events WHERE body ILIKE '%tensorflow%' GROUP BY repo_name ORDER BY count() DESC LIMIT 10",
     "sqlResult": {
       "success": true,
       "data": [
         {
-          "repo_name": "2/t",
-          "count()": 1
+          "repo_name": "tensorflow/tensorflow",
+          "count()": 27049
         },
         {
-          "repo_name": "f/f",
-          "count()": 7
+          "repo_name": "tensorflow/models",
+          "count()": 5254
         },
         {
-          "repo_name": "e/m",
-          "count()": 1
+          "repo_name": "ray-project/ray",
+          "count()": 3028
         },
         {
-          "repo_name": "s/s",
-          "count()": 1
+          "repo_name": "tensorflow/tfjs",
+          "count()": 3003
         },
         {
-          "repo_name": "19/x",
-          "count()": 2
+          "repo_name": "tensorflow/addons",
+          "count()": 1289
         },
         {
-          "repo_name": "as/a",
-          "count()": 289
+          "repo_name": "tensorflow/datasets",
+          "count()": 1139
         },
         {
-          "repo_name": "Xe/h",
-          "count()": 7
+          "repo_name": "huggingface/transformers",
+          "count()": 824
         },
         {
-          "repo_name": "f/r3",
-          "count()": 6
+          "repo_name": "tensorflow/tensorboard",
+          "count()": 752
         },
         {
-          "repo_name": "nd/e",
-          "count()": 1
+          "repo_name": "onnx/tensorflow-onnx",
+          "count()": 732
         },
         {
-          "repo_name": "69/a",
-          "count()": 3
+          "repo_name": "tensorflow/probability",
+          "count()": 730
         }
       ],
       "meta": [
@@ -4142,12 +4278,20 @@
         }
       ],
       "statistics": {
-        "elapsed": 1.323960459,
-        "rows_read": 232206874,
-        "bytes_read": 696032609
+<<<<<<< HEAD
+        "elapsed": 4.650784303,
+        "rows_read": 200000000,
+        "bytes_read": 29767739554
       },
-      "executionTime": 1.431,
-      "requestId": "01JSXXX1MCEJJAE6X8S8B7AZEQ"
+      "executionTime": 4.801,
+      "requestId": "01JTN18F7T4EGHF5SZ8Z4C95VN"
+=======
+        "elapsed": 4.553582819,
+        "rows_read": 200000000,
+        "bytes_read": 29767742676
+      },
+      "executionTime": 4.688,
+      "requestId": "01JTMVMDY7W6K94SBRMCPV8VWY"
     },
     "model": "human",
     "provider": "human",
@@ -4158,15 +4302,84 @@
     "name": "pipe_59.pipe",
     "question": {
       "name": "pipe_59.pipe",
-      "content": "top 10 Repositories with freecodecamp related comments"
+      "content": "top 10 Repositories with tensorflow-related comments, sorted by stars"
     },
-    "sql": "SELECT repo_name, count() FROM github_events WHERE body ILIKE '%freecodecamp%' GROUP BY repo_name ORDER BY count() DESC LIMIT 10",
+    "sql": "SELECT\n        repo_name,\n        sum(event_type = 'WatchEvent') AS num_stars,\n        sum(body ILIKE '%tensorflow%') AS num_comments\n    FROM github_events\n    WHERE (body ILIKE '%tensorflow%') OR (event_type = 'WatchEvent')\n    GROUP BY repo_name\n    HAVING num_comments > 0\n    ORDER BY num_stars DESC\n    LIMIT 10",
     "sqlResult": {
-      "success": false,
-      "data": [],
-      "executionTime": 10.15,
-      "requestId": "01JSXXX40A9J1NWW3GSFD6Z6ZX",
-      "error": "{\"error\": \"[Error] Timeout exceeded: elapsed 10.057148165 seconds, maximum: 10. Upgrade your plan for higher capacity, ensure your cluster isn't overloaded (dedicated infrastructure only), or optimize your query with filters.\", \"documentation\": \"https://docs.tinybird.co/get-started/plans/limits\"}"
+      "success": true,
+      "data": [
+        {
+          "repo_name": "tensorflow/tensorflow",
+          "num_stars": 49278,
+          "num_comments": 27049
+        },
+        {
+          "repo_name": "sindresorhus/awesome",
+          "num_stars": 29084,
+          "num_comments": 5
+        },
+        {
+          "repo_name": "vinta/awesome-python",
+          "num_stars": 17254,
+          "num_comments": 8
+        },
+        {
+          "repo_name": "tensorflow/models",
+          "num_stars": 17066,
+          "num_comments": 5254
+        },
+        {
+          "repo_name": "vhf/free-programming-books",
+          "num_stars": 14304,
+          "num_comments": 4
+        },
+        {
+          "repo_name": "xitu/gold-miner",
+          "num_stars": 11764,
+          "num_comments": 8
+        },
+        {
+          "repo_name": "scikit-learn/scikit-learn",
+          "num_stars": 9724,
+          "num_comments": 71
+        },
+        {
+          "repo_name": "racaljk/hosts",
+          "num_stars": 8624,
+          "num_comments": 2
+        },
+        {
+          "repo_name": "tesseract-ocr/tesseract",
+          "num_stars": 7769,
+          "num_comments": 7
+        },
+        {
+          "repo_name": "vsouza/awesome-ios",
+          "num_stars": 6815,
+          "num_comments": 8
+        }
+      ],
+      "meta": [
+        {
+          "name": "repo_name",
+          "type": "LowCardinality(String)"
+        },
+        {
+          "name": "num_stars",
+          "type": "UInt64"
+        },
+        {
+          "name": "num_comments",
+          "type": "Nullable(UInt64)"
+        }
+      ],
+      "statistics": {
+        "elapsed": 4.942143441,
+        "rows_read": 200000000,
+        "bytes_read": 29982357101
+      },
+      "executionTime": 4.987,
+      "requestId": "01JTMVMKD8GK34QYY4F6TJF070"
     },
     "model": "human",
     "provider": "human",
@@ -4177,34 +4390,71 @@
     "name": "pipe_60.pipe",
     "question": {
       "name": "pipe_60.pipe",
-      "content": "top 10 Repositories with freecodecamp-related comments, sorted by stars"
-    },
-    "sql": "SELECT\n        repo_name,\n        sum(event_type = 'WatchEvent') AS num_stars,\n        sum(body ILIKE '%freecodecamp%') AS num_comments\n    FROM github_events\n    WHERE (body ILIKE '%freecodecamp%') OR (event_type = 'WatchEvent')\n    GROUP BY repo_name\n    HAVING num_comments > 0\n    ORDER BY num_stars DESC\n    LIMIT 10",
-    "sqlResult": {
-      "success": false,
-      "data": [],
-      "executionTime": 10.066,
-      "requestId": "01JSXXXEWVGY98CYS5K28V69F2",
-      "error": "{\"error\": \"[Error] Timeout exceeded: elapsed 10.010073177 seconds, maximum: 10. Upgrade your plan for higher capacity, ensure your cluster isn't overloaded (dedicated infrastructure only), or optimize your query with filters.\", \"documentation\": \"https://docs.tinybird.co/get-started/plans/limits\"}"
-    },
-    "model": "human",
-    "provider": "human",
-    "error": null,
-    "attempts": []
-  },
-  {
-    "name": "pipe_61.pipe",
-    "question": {
-      "name": "pipe_61.pipe",
       "content": "top 10 Most popular comments on GitHub"
     },
     "sql": "SELECT body, count() FROM github_events WHERE notEmpty(body) AND length(body) < 100 GROUP BY body ORDER BY count() DESC LIMIT 10",
     "sqlResult": {
-      "success": false,
-      "data": [],
-      "executionTime": 10.383,
-      "requestId": "01JSXXXSPNF852Z9ACCDSGH2NK",
-      "error": "{\"error\": \"[Error] Timeout exceeded: elapsed 10.217150521 seconds, maximum: 10. Upgrade your plan for higher capacity, ensure your cluster isn't overloaded (dedicated infrastructure only), or optimize your query with filters.\", \"documentation\": \"https://docs.tinybird.co/get-started/plans/limits\"}"
+      "success": true,
+      "data": [
+        {
+          "body": "testing-sauron-webhooks",
+          "count()": 224352
+        },
+        {
+          "body": "LGTM",
+          "count()": 141843
+        },
+        {
+          "body": "Body of PR",
+          "count()": 86989
+        },
+        {
+          "body": "I'm having a problem with this.",
+          "count()": 56641
+        },
+        {
+          "body": "👍 ",
+          "count()": 36742
+        },
+        {
+          "body": "test",
+          "count()": 27002
+        },
+        {
+          "body": "done",
+          "count()": 24705
+        },
+        {
+          "body": "lgtm",
+          "count()": 24303
+        },
+        {
+          "body": "# 양재 ~ 양시숲: 0개\n",
+          "count()": 23172
+        },
+        {
+          "body": "Test",
+          "count()": 22964
+        }
+      ],
+      "meta": [
+        {
+          "name": "body",
+          "type": "Nullable(String)"
+        },
+        {
+          "name": "count()",
+          "type": "UInt64"
+        }
+      ],
+      "statistics": {
+        "elapsed": 2.860318735,
+        "rows_read": 200000000,
+        "bytes_read": 29737163637
+      },
+      "executionTime": 2.908,
+      "requestId": "01JTMVMS8D7F3HJ3MJ06HHB8A6"
+>>>>>>> 0dd4f45fa247171b2577e2e79328ca8ee0d2fb11
     },
     "model": "human",
     "provider": "human",

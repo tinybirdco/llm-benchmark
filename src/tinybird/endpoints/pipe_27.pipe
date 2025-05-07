@@ -1,16 +1,13 @@
 DESCRIPTION >
-    top 10 Repositories with the maximum amount of issues, distinguish real issues from robot ones, add a cutoff at 1000 stars sort by the number of issue authors
+    top 10 Repositories with the most people who have push access to the main branch
 
 NODE endpoint
 SQL >
-    WITH (event_type = 'IssuesEvent') AND (action = 'opened') AS issue_created
     SELECT
         repo_name,
-        sum(issue_created) AS c,
-        uniqIf(actor_login, issue_created) AS u,
-        sum(event_type = 'WatchEvent') AS stars
+        uniqIf(actor_login, (event_type = 'PushEvent') AND match(ref, '/(main|master)$')) AS u
     FROM github_events
-    WHERE event_type IN ('IssuesEvent', 'WatchEvent')
+    WHERE (event_type IN ('PushEvent', 'WatchEvent'))
     GROUP BY repo_name
     ORDER BY u DESC
     LIMIT 10

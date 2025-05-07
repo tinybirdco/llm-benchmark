@@ -1,11 +1,11 @@
 DESCRIPTION >
-    what is the distribution of repositories by stars? from 1 to 100000 in multiples of 10
+    For each power of 10 (1, 10, 100, 1000, etc.), count how many GitHub repositories have approximately that many stars. Order the results from smallest to largest star count
 
 NODE endpoint
 SQL >
     SELECT
         exp10(floor(log10(c))) AS stars,
-        uniq(k)
+        uniqExact(k)
     FROM
     (
         SELECT
