@@ -2,6 +2,8 @@
 
 A tool for benchmarking various Large Language Models (LLMs) on their ability to generate correct analytical SQL queries for Tinybird.
 
+https://llm-benchmark.tinybird.live/
+
 ## Overview
 
 This benchmark evaluates how well different LLMs can generate analytical SQL queries based on natural language questions about data in Tinybird. It measures:
