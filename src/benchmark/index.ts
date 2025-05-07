@@ -1,7 +1,7 @@
 import { writeFileSync, readFileSync, existsSync } from "fs";
 import { getClient } from "./client";
 import { getConfig } from "./config";
-import { getEndpointQuestion, getEndpointQuestions } from "./resources";
+import { getEndpointQuestions } from "./resources";
 import { ChatResponse } from "./types";
 import { compareResults } from "./result-validator";
 
@@ -179,28 +179,25 @@ function getCompletedQuestionsForModel(
 }
 
 async function main() {
-  await runHumanQueries("pipe_58.pipe");
+  await runHumanQueries();
   await runBenchmark();
 
   const results = readExistingResults();
   console.log("Validating results against human baseline...");
-  const validation = validateResults(results);
+  
+  validateResults(results);
   console.log(
     "Validation complete. Results saved to benchmark/validation-results.json"
   );
 }
 
-async function runHumanQueries(filter: string) {
+async function runHumanQueries() {
   const client = getClient();
   const endpoints = getEndpointQuestions();
 
   const results = [];
 
   for (const endpoint of endpoints) {
-    if (filter && endpoint.name !== filter) {
-      continue;
-    }
-
     console.log(`Running ${endpoint.name}`);
 
     const sql = endpoint.content
@@ -275,8 +272,7 @@ async function runModelBenchmark(
   completedQuestions: Set<string>
 ) {
   const client = getClient();
-  const question = getEndpointQuestion("pipe_58.pipe");
-  const questions = [question];
+  const questions = getEndpointQuestions();
 
   const results: ChatResponse[] = [];
 
