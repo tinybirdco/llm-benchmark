@@ -44,3 +44,13 @@ export function getEndpointQuestions() {
     };
   });
 }
+
+export function getEndpointQuestion(name: string) {
+  const endpoint = getEndpointQuestions().find((endpoint) => endpoint.name === name);
+  if (!endpoint) {
+    throw new Error(`Endpoint ${name} not found`);
+  }
+
+  return endpoint;
+}
+

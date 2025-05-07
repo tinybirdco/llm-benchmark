@@ -1,5 +1,5 @@
 DESCRIPTION >
-    top 10 Authors that filed an issue in tensorflow/tensorflow also filed issues in what repositories?
+    top 10 repositories with most issues from users who also opened issues in tensorflow/tensorflow, rank by author.
 
 NODE endpoint
 SQL >
