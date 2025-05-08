@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 
 import humanResults from "../../benchmark/results-human.json";
 
@@ -32,9 +33,24 @@ const ModelCell = ({ model }: { model: string }) => {
 
 export default function Home() {
   const results = useResults();
-  const [showRelative, setShowRelative] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [selectedModels, setSelectedModels] = useState<string[]>([]);
   const [selectedProviders, setSelectedProviders] = useState<string[]>([]);
+  
+  // Read showRelative from URL query param
+  const showRelative = searchParams.get("relative") === "1";
+  
+  // Update showRelative by updating URL
+  const setShowRelative = (checked: boolean) => {
+    const params = new URLSearchParams(searchParams);
+    if (checked) {
+      params.set("relative", "1");
+    } else {
+      params.delete("relative");
+    }
+    router.push(`/?${params.toString()}`);
+  };
 
   const modelMetrics = useMemo(() => {
     const modelGroups = results.reduce(

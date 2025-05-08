@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import benchmarkResults from "../../../../benchmark/results.json";
 import humanResults from "../../../../benchmark/results-human.json";
@@ -81,10 +81,23 @@ const ModelCell = ({ metric }: { metric: ModelMetrics }) => {
 
 export default function QuestionDetail() {
   const params = useParams();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const pipeName = decodeURIComponent(params.pipename as string);
   const [selectedModels, setSelectedModels] = useState<string[]>([]);
   const [selectedProviders, setSelectedProviders] = useState<string[]>([]);
-  const [showRelative, setShowRelative] = useState(false);
+  
+  const showRelative = searchParams.get("relative") === "1";
+  
+  const setShowRelative = (checked: boolean) => {
+    const params = new URLSearchParams(searchParams);
+    if (checked) {
+      params.set("relative", "1");
+    } else {
+      params.delete("relative");
+    }
+    router.push(`/questions/${encodeURIComponent(pipeName)}?${params.toString()}`);
+  };
 
   const modelResults = useMemo(() => {
     const questionResults = typedBenchmarkResults.filter(
