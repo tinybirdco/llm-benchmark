@@ -1,5 +1,6 @@
 import { streamText } from "ai";
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
+import { wrapModel } from "@tinybirdco/ai/ai-sdk";
 import { getConfig } from "./config";
 import { getDatasources, getEndpointQuestions } from "./resources";
 import { getSystemPrompt } from "./prompt";
@@ -97,7 +98,10 @@ export function getClient() {
     let isFirstToken = true;
 
     const { fullStream, usage } = streamText({
-      model: router(`${provider}/${model}`),
+      model: wrapModel(router(`${provider}/${model}`), {
+        host: process.env.TINYBIRD_HOST!,
+        token: process.env.TINYBIRD_TOKEN!,
+      }),
       system: systemPromptContent,
       messages,
     });

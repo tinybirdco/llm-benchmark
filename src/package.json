@@ -15,6 +15,7 @@
     "@radix-ui/react-dialog": "^1.1.11",
     "@radix-ui/react-popover": "^1.1.11",
     "@radix-ui/react-tooltip": "^1.2.6",
+    "@tinybirdco/ai": "^0.0.6",
     "@types/react-syntax-highlighter": "^15.5.13",
     "ai": "^4.3.13",
     "class-variance-authority": "^0.7.1",
@@ -23,9 +24,9 @@
     "lucide-react": "^0.507.0",
     "next": "15.3.1",
     "openai": "^4.96.2",
+    "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-syntax-highlighter": "^15.6.1",
-    "react": "^19.0.0",
     "tailwind-merge": "^3.2.0",
     "zod": "^3.24.3"
   },
