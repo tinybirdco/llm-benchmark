@@ -1,9 +1,5 @@
 import { cn } from "@/lib/utils";
-import {
-  ArrowDown,
-  ArrowUp,
-  HelpCircle,
-} from "lucide-react";
+import { ArrowDown, ArrowUp, HelpCircle } from "lucide-react";
 import React from "react";
 import {
   Tooltip,
@@ -79,13 +75,11 @@ export const Table = <T extends Record<string, any>>({
   const getSortIcon = (column: ColumnDefinition<T>) => {
     if (!column.sortable) return null;
     if (!sortConfig || sortConfig.key !== column.accessorKey)
-      return (
-        <ArrowUp className="w-4 h-4 group-hover:opacity-50 opacity-0" />
-      );
+      return <ArrowUp className="w-4 h-4 hover:opacity-100 hover:text-accent opacity-50" />;
     return sortConfig.direction === "asc" ? (
-      <ArrowUp className="w-4 h-4" />
+      <ArrowUp className="w-4 h-4 hover:opacity-100 hover:text-accent" />
     ) : (
-      <ArrowDown className="w-4 h-4" />
+      <ArrowDown className="w-4 h-4 hover:opacity-100 hover:text-accent" />
     );
   };
 
@@ -125,6 +119,7 @@ export const Table = <T extends Record<string, any>>({
                     )}
                   >
                     <div className="flex items-center gap-2">
+                      <HelpCircle className="w-3 h-3 -ml-0.5 text-white group-hover:opacity-100 opacity-50 hidden lg:block" />
                       <span
                         className={cn(
                           column.accessorKey === "rank"
@@ -134,8 +129,7 @@ export const Table = <T extends Record<string, any>>({
                       >
                         {column.name}
                       </span>
-                      <div className="flex items-center gap-1.5 bg-transparent pl-2 group-hover:bg-background-secondary -ml-1.5">
-                        <HelpCircle className="w-3 h-3 group-hover:opacity-100 opacity-50 hidden lg:block" />
+                      <div className="bg-transparent pl-2 -ml-1.5 -mr-0.5">
                         {getSortIcon(column)}
                       </div>
                     </div>
