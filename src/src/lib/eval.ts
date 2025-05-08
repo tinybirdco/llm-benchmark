@@ -104,18 +104,6 @@ export function calculateModelMetrics(
     bytesPerRowPenalty *
     failurePenalty;
 
-  console.log({
-    model: modelResults[0].model,
-    penalty,
-    C,
-    successRate,
-    execTimePenalty,
-    genTimePenalty,
-    firstAttemptRate,
-    failurePenalty,
-    efficiency: Math.log(penalty / C)
-  });
-
   const rawEfficiencyScore = Math.sqrt(penalty / C);
 
   /** `efficiencyScore` will be filled in later when we min‑max / log‑scale
