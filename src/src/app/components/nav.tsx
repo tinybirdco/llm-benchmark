@@ -1,7 +1,7 @@
 import humanResults from "../../../benchmark/results-human.json";
 import { useMemo } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { ChevronDownIcon } from "./icons";
 import Link from "next/link";
 import { GithubIcon, ClipboardListIcon } from "lucide-react";
@@ -24,6 +24,7 @@ type HeaderProps = {
 export const QuestionSelect = () => {
   const router = useRouter();
   const { pipename } = useParams();
+  const searchParams = useSearchParams();
 
   // Build question options from humanResults
   const questionOptions = useMemo(() => {
@@ -48,10 +49,12 @@ export const QuestionSelect = () => {
 
   // Handle select change: redirect if not All
   const handleQuestionChange = (value: string) => {
+    // Preserve existing query parameters
+    const params = new URLSearchParams(searchParams);
     if (value) {
-      router.push(`/questions/${encodeURIComponent(value)}`);
+      router.push(`/questions/${encodeURIComponent(value)}?${params.toString()}`);
     } else {
-      router.push("/");
+      router.push(`/?${params.toString()}`);
     }
   };
 
