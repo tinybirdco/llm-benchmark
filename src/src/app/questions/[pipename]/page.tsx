@@ -11,6 +11,7 @@ import { ArrowLeftIcon, ChevronDownIcon } from "@/app/components/icons";
 import { Header } from "@/app/components/nav";
 import { PreviewModal } from "@/app/components/code-preview";
 import { getExactnessScore, ModelMetrics } from "@/lib/eval";
+import { cn } from "@/lib/utils";
 
 const typedBenchmarkResults = benchmarkResults as any[];
 const typedHumanResults = humanResults as any[];
@@ -388,7 +389,7 @@ export default function QuestionDetail() {
           className="text-sm text-[#27F795] hover:text-[#1ac177] whitespace-nowrap flex items-center gap-1"
         >
           Show human code
-          <ChevronDownIcon />
+            <ChevronDownIcon className={cn(isExpanded ? "rotate-180" : "", "transition-transform duration-200")} />
         </button>
 
         {isExpanded ? (

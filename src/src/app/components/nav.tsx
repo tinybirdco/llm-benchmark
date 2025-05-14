@@ -63,13 +63,12 @@ export const QuestionSelect = () => {
       <PopoverTrigger asChild>
         <button
           className={cn(
-            "bg-[#353535] lg:w-[415px] w-full sm:w-full font-sans text-sm text-left border-1 border-transparent hover:border-white data-[state=open]:border-white !outline-none p-4 hover:text-white flex items-center justify-between cursor-pointer"
+            "bg-[#353535] w-full font-sans text-sm text-left hover:bg-[#454545] p-4 hover:text-white border-1 border-transparent hover:border-white data-[state=open]:border-white !outline-none flex items-center justify-between cursor-pointer group",
+            "sm:w-[240px]"
           )}
         >
-          <span className="truncate">
-            {selectedQuestionLabel || "All Questions"}
-          </span>
-          <ChevronDownIcon className="flex-shrink-0 ml-2" />
+          <span className="truncate">{selectedQuestionLabel}</span>
+          <ChevronDownIcon className="flex-shrink-0 ml-2 group-data-[state=open]:rotate-180 transition-transform" />
         </button>
       </PopoverTrigger>
       <PopoverContent
@@ -167,7 +166,7 @@ export const Header = ({
           </Link>
           , we asked the LLMs to generate SQL based on{" "}
           <Link
-            className="text-[#27F795]"
+            className="text-[#27F795] hover:underline hover:underline-offset-2"
             href="https://ghe.clickhouse.tech/"
             target="_blank"
           >

@@ -25,12 +25,12 @@ export function Filter({ label, options, selected, onChange }: FilterProps) {
       <PopoverTrigger asChild>
         <button
           className={cn(
-            "bg-[#353535] w-full font-sans text-sm text-left hover:bg-[#454545] p-4 hover:text-white border-1 border-transparent hover:border-white data-[state=open]:border-white !outline-none flex items-center justify-between cursor-pointer",
+            "bg-[#353535] w-full font-sans text-sm text-left hover:bg-[#454545] p-4 hover:text-white border-1 border-transparent hover:border-white data-[state=open]:border-white !outline-none flex items-center justify-between cursor-pointer group",
             label === "Providers" ? "sm:w-[192px]" : "sm:w-[240px]"
           )}
         >
           <span className="truncate">{selectedLabel}</span>
-          <ChevronDownIcon className="flex-shrink-0 ml-2" />
+          <ChevronDownIcon className="flex-shrink-0 ml-2 group-data-[state=open]:rotate-180 transition-transform" />
         </button>
       </PopoverTrigger>
       <PopoverContent
