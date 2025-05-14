@@ -185,6 +185,7 @@ export default function ModelDetail() {
           </div>
         );
       },
+      type: "right" as const,
     },
     {
       name: "Query Latency",

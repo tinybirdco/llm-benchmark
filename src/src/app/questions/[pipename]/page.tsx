@@ -221,6 +221,7 @@ export default function QuestionDetail() {
           </div>
         );
       },
+      type: "right" as const,
     },
     {
       name: "Avg Query Latency",

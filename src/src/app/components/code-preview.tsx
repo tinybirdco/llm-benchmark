@@ -20,7 +20,7 @@ export function PreviewModal({ metric }: { metric: ModelMetrics }) {
   const pathname = usePathname();
 
   const classNames =
-    "text-sm text-accent hover:text-hover-accent inline-flex items-center gap-x-1 cursor-pointer";
+    "text-sm text-accent hover:underline hover:underline-offset-2 inline-flex items-center gap-x-1 cursor-pointer";
 
   return (
     <>
@@ -72,7 +72,7 @@ export function PreviewModal({ metric }: { metric: ModelMetrics }) {
 
           <h3 className="text-lg font-medium mt-4">Results</h3>
           {result?.sqlResult && (
-            <div className="bg-background-secondary p-2 text-sm w-full overflow-x-auto">
+            <div className={cn("p-2 text-sm w-full overflow-x-auto", result.sqlResult?.error ? "bg-[#FF0000]/40 text-white" : "bg-background-secondary")}>
               <GenericTable
                 data={result.sqlResult.data}
                 meta={result.sqlResult.meta}
@@ -103,10 +103,8 @@ export default function GenericTable({
   if (!data || !meta)
     return (
       <div className="space-y-4 overflow-x-auto">
-        <p className="text-sm">No valid query generated, or query failed.</p>
-
         {error && (
-          <pre className="p-4 bg-[#f00]/10 text-[#f00] text-sm w-full overflow-x-auto">
+          <pre className="p-4 text-white text-sm w-full overflow-x-auto">
             {error}
           </pre>
         )}

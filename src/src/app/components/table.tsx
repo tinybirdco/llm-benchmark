@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { ArrowDown, ArrowUp, HelpCircle } from "lucide-react";
+import { ArrowDown, ArrowUp } from "lucide-react";
 import React from "react";
 import {
   Tooltip,
@@ -7,6 +7,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "./tooltip";
+import { TooltipArrow } from "@radix-ui/react-tooltip";
 
 type ColumnDefinition<T> = {
   name: string;
@@ -75,11 +76,13 @@ export const Table = <T extends Record<string, any>>({
   const getSortIcon = (column: ColumnDefinition<T>) => {
     if (!column.sortable) return null;
     if (!sortConfig || sortConfig.key !== column.accessorKey)
-      return <ArrowUp className="w-4 h-4 hover:opacity-100 hover:text-accent opacity-50" />;
+      return (
+        <ArrowUp className="w-4 h-4 hover:opacity-100 hover:text-accent opacity-50 group-hover:text-white" />
+      );
     return sortConfig.direction === "asc" ? (
-      <ArrowUp className="w-4 h-4 hover:opacity-100 hover:text-accent" />
+      <ArrowUp className="w-4 h-4 text-accent" />
     ) : (
-      <ArrowDown className="w-4 h-4 hover:opacity-100 hover:text-accent" />
+      <ArrowDown className="w-4 h-4 text-accent" />
     );
   };
 
@@ -108,23 +111,29 @@ export const Table = <T extends Record<string, any>>({
           >
             <TooltipProvider key={column.name}>
               <Tooltip>
-                <TooltipTrigger disabled={!column.description}>
+                <TooltipTrigger
+                  disabled={!column.description}
+                  className="!outline-none"
+                >
                   <div
                     onClick={() => handleSort(column)}
                     className={cn(
-                      "p-2.5 lg:p-4 align-middle text-sm text-nowrap whitespace-nowrap",
+                      "p-2.5 lg:p-4 align-middle text-sm text-nowrap whitespace-nowrap group !outline-none",
                       column.type === "right" ? "text-right" : "text-left",
                       sortConfig?.key === column.accessorKey ? "font-bold" : "",
                       column.sortable ? "cursor-pointer" : ""
                     )}
                   >
                     <div className="flex items-center gap-2">
-                      <HelpCircle className="w-3 h-3 -ml-0.5 text-white group-hover:opacity-100 opacity-50 hidden lg:block" />
                       <span
                         className={cn(
                           column.accessorKey === "rank"
-                            ? "w-0 overflow-hidden lg:overflow-auto lg:w-auto"
-                            : ""
+                            ? "w-0 overflow-hidden lg:overflow-auto lg:w-auto group-hover:text-accent"
+                            : "",
+                          !!column.description
+                            ? "decoration-dotted underline underline-offset-2 decoration-text/50"
+                            : "",
+                          "group-hover:text-accent"
                         )}
                       >
                         {column.name}
@@ -135,7 +144,10 @@ export const Table = <T extends Record<string, any>>({
                     </div>
                   </div>
                 </TooltipTrigger>
-                <TooltipContent>{column.description}</TooltipContent>
+                <TooltipContent>
+                  {column.description}{" "}
+                  <TooltipArrow className="fill-[#262626]" />
+                </TooltipContent>
               </Tooltip>
             </TooltipProvider>
           </div>

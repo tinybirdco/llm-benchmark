@@ -23,7 +23,7 @@ const ModelCell = ({ model }: { model: string }) => {
     <div className="max-w-[475px]">
       <Link
         href={`/models/${encodeURIComponent(model)}`}
-        className="text-accent hover:text-hover-accent text-sm"
+        className="text-accent hover:underline hover:underline-offset-2 text-sm"
       >
         <div className="truncate">{model}</div>
       </Link>

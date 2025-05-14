@@ -47,6 +47,8 @@
 
   --color-background-secondary: var(--background2);
   --color-foreground-secondary: var(--foreground2);
+  --color-text: var(--text-color);
+  --color-secondary-text: var(--text-color-secondary);
   --color-accent: var(--accent);
   --color-hover-accent: var(--hover-accent);
   --color-main-button-text: var(--background);

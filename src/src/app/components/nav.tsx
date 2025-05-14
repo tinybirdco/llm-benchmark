@@ -151,7 +151,7 @@ export const Header = ({
           efficient SQL from natural language prompts. Using a 200 million
           record dataset from the{" "}
           <Link
-            className="text-accent hover:text-hover-accent"
+            className="text-accent hover:underline hover:underline-offset-2"
             href="https://www.gharchive.org/"
             target="_blank"
           >
@@ -159,7 +159,7 @@ export const Header = ({
           </Link>{" "}
           uploaded to{" "}
           <Link
-            className="text-accent hover:text-hover-accent"
+            className="text-accent hover:underline hover:underline-offset-2"
             href="https://tinybird.co/"
             target="_blank"
           >
