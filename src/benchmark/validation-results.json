@@ -266,6 +266,48 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count(*) AS stars_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10"
+      },
+      "anthropic/claude-opus-4": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(*) AS total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(*) as total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT count(*) AS total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -282,12 +324,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.003389542,
-        "rows_read": 32769,
-        "bytes_read": 32784
+        "elapsed": 0.003507203,
+        "rows_read": 24577,
+        "bytes_read": 24592
       },
-      "executionTime": 0.04,
-      "requestId": "01JTN5KGZGVXR4S8EJE9JSPK5H"
+      "executionTime": 0.066,
+      "requestId": "01JVWGV5WNRQDKBJA6YKJWYNVX"
     }
   },
   "pipe_02.pipe": {
@@ -557,6 +599,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  count() stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY\n  repo_name\nORDER BY\n  stars DESC\nLIMIT 10"
+      },
+      "anthropic/claude-opus-4": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    COUNT(*) AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    count() as stars\nFROM github_events \nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -614,12 +698,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.048980833,
-        "rows_read": 7319235,
-        "bytes_read": 21919077
+        "elapsed": 0.048932135,
+        "rows_read": 7321600,
+        "bytes_read": 21926172
       },
-      "executionTime": 0.087,
-      "requestId": "01JTN5KJ01M99QDZXYDY1QM184"
+      "executionTime": 0.099,
+      "requestId": "01JVWGV6Y27PZGBC1C99DB91D3"
     }
   },
   "pipe_03.pipe": {
@@ -889,6 +973,48 @@
         "humanRowCount": 5,
         "llmRowCount": 5,
         "sql": "SELECT pow(10, floor(log10(repo_stars))) AS star_bucket, count(*) AS repo_count\nFROM (\n  SELECT repo_name, sum(CAST(event_type = 'WatchEvent' AS UInt8)) AS repo_stars\n  FROM github_events\n  GROUP BY repo_name\n)\nWHERE repo_stars > 0\nGROUP BY star_bucket\nORDER BY star_bucket\nLIMIT 10"
+      },
+      "anthropic/claude-opus-4": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 5,
+        "llmRowCount": 5,
+        "sql": "\nSELECT \n    floor(log10(star_count + 1)) AS power_of_10,\n    pow(10, floor(log10(star_count + 1))) AS star_range,\n    count(DISTINCT repo_name) AS repo_count\nFROM (\n    SELECT \n        repo_name,\n        countIf(event_type = 'WatchEvent') AS star_count\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n)\nWHERE star_count > 0\nGROUP BY power_of_10, star_range\nORDER BY star_range\nLIMIT 20\n"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 5,
+        "llmRowCount": 5,
+        "sql": "SELECT \n    CASE \n        WHEN star_count = 0 THEN 0\n        WHEN star_count >= 1 AND star_count < 10 THEN 1\n        WHEN star_count >= 10 AND star_count < 100 THEN 10\n        WHEN star_count >= 100 AND star_count < 1000 THEN 100\n        WHEN star_count >= 1000 AND star_count < 10000 THEN 1000\n        WHEN star_count >= 10000 AND star_count < 100000 THEN 10000\n        WHEN star_count >= 100000 AND star_count < 1000000 THEN 100000\n        ELSE 1000000\n    END AS power_of_10,\n    count(DISTINCT repo_name) AS repo_count\nFROM (\n    SELECT \n        repo_name,\n        count(*) AS star_count\n    FROM github_events \n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n) \nGROUP BY power_of_10\nORDER BY power_of_10\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 5,
+        "llmRowCount": 5,
+        "sql": "SELECT\n    power_of_10,\n    count() AS repo_count\nFROM (\n    SELECT\n        repo_name,\n        floor(log10(count())) AS power_of_10\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n)\nGROUP BY power_of_10\nORDER BY power_of_10 ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -926,12 +1052,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.088803963,
-        "rows_read": 7319235,
-        "bytes_read": 21919077
+        "elapsed": 0.094334929,
+        "rows_read": 7321600,
+        "bytes_read": 21926172
       },
-      "executionTime": 0.109,
-      "requestId": "01JTN5KK246DXY7QCTNWXP8EY1"
+      "executionTime": 0.137,
+      "requestId": "01JVWGV80B60XW5KZYK7G4N5HZ"
     }
   },
   "pipe_04.pipe": {
@@ -1201,6 +1327,48 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count(DISTINCT repo_name) total_repositories\nFROM github_events\nLIMIT 10"
+      },
+      "anthropic/claude-opus-4": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(DISTINCT repo_name) AS total_repositories\nFROM github_events\nLIMIT 10"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(DISTINCT repo_name) as total_repositories\nFROM github_events\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(DISTINCT repo_name) AS total_repositories FROM github_events LIMIT 10"
       }
     },
     "humanResults": {
@@ -1217,12 +1385,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 1.315251897,
+        "elapsed": 1.417853311,
         "rows_read": 200000000,
-        "bytes_read": 394943756
+        "bytes_read": 399454533
       },
-      "executionTime": 1.358,
-      "requestId": "01JTN5KM5HA71G4WX41M4KD79B"
+      "executionTime": 1.586,
+      "requestId": "01JVWGV978XD6M1KSY6YMMXKMX"
     }
   },
   "pipe_05.pipe": {
@@ -1492,6 +1660,48 @@
         "humanRowCount": 10,
         "llmRowCount": 2,
         "sql": "SELECT toYear(created_at) year, approx_top_count(10)(repo_name) top_repos\nFROM github_events\nWHERE event_type = 'WatchEvent' AND toYear(created_at) >= 2015\nGROUP BY year\nORDER BY year\nLIMIT 10"
+      },
+      "anthropic/claude-opus-4": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 60,
+        "sql": "SELECT \n    toYear(created_at) AS year,\n    repo_name,\n    count() AS total_events\nFROM github_events\nWHERE created_at >= '2015-01-01'\nGROUP BY year, repo_name\nORDER BY year, total_events DESC\nLIMIT 10 BY year"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    toYear(created_at) as year,\n    repo_name,\n    count() as total_events\nFROM github_events \nWHERE toYear(created_at) >= 2015\nGROUP BY year, repo_name\nORDER BY year ASC, total_events DESC\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    toYear(created_at) AS year,\n    repo_name,\n    count() AS total_events\nFROM github_events\nWHERE toYear(created_at) >= 2015\nGROUP BY\n    year,\n    repo_name\nORDER BY\n    year ASC,\n    total_events DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -1563,12 +1773,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.076035367,
-        "rows_read": 7319235,
-        "bytes_read": 51225945
+        "elapsed": 0.068744261,
+        "rows_read": 7321600,
+        "bytes_read": 51241738
       },
-      "executionTime": 0.096,
-      "requestId": "01JTN5KPEKKWQ9MQMXW0V65D06"
+      "executionTime": 0.134,
+      "requestId": "01JVWGVBMXX5FA5K0SXTKBHS9Z"
     }
   },
   "pipe_06.pipe": {
@@ -1838,6 +2048,48 @@
         "humanRowCount": 2,
         "llmRowCount": 2,
         "sql": "SELECT year(created_at) year, count(*) total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year\nLIMIT 10"
+      },
+      "anthropic/claude-opus-4": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 2,
+        "llmRowCount": 2,
+        "sql": "\nSELECT \n    toYear(created_at) AS year,\n    count() AS total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year\n"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 2,
+        "llmRowCount": 2,
+        "sql": "SELECT \n    toYear(created_at) as year,\n    count() as total_stars\nFROM github_events \nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 2,
+        "llmRowCount": 2,
+        "sql": "SELECT\n    toYear(created_at) AS year,\n    count() AS total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -1863,12 +2115,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.016956088,
-        "rows_read": 7319235,
-        "bytes_read": 36596175
+        "elapsed": 0.013957991,
+        "rows_read": 7321600,
+        "bytes_read": 36608000
       },
-      "executionTime": 0.035,
-      "requestId": "01JTN5KQGWHG1NJ4C7MJH27X13"
+      "executionTime": 0.062,
+      "requestId": "01JVWGVCRF8DDK626NG0H2H122"
     }
   },
   "pipe_07.pipe": {
@@ -2138,6 +2390,34 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  actor_login,\n  count() star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    actor_login,\n    COUNT(*) as stars_given\nFROM github_events \nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY stars_given DESC\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    actor_login,\n    COUNT(*) AS stars_given\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY stars_given DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -2195,12 +2475,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.19022966,
-        "rows_read": 7319235,
-        "bytes_read": 21957705
+        "elapsed": 0.192919694,
+        "rows_read": 7321600,
+        "bytes_read": 21964800
       },
-      "executionTime": 0.209,
-      "requestId": "01JTN5KRH98XCWP54XH3MHJMT7"
+      "executionTime": 0.237,
+      "requestId": "01JVWGVDSPJ6T4YNYGJ4QSEN27"
     }
   },
   "pipe_08.pipe": {
@@ -2470,6 +2750,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT ge2.repo_name, count() AS stars\nFROM github_events AS ge1\nINNER JOIN github_events AS ge2\n  ON ge1.actor_login = ge2.actor_login\nWHERE ge1.event_type = 'WatchEvent'\n  AND ge1.repo_name = 'tensorflow/tensorflow'\n  AND ge2.event_type = 'WatchEvent'\n  AND ge2.repo_name != 'tensorflow/tensorflow'\nGROUP BY ge2.repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "anthropic/claude-opus-4": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    COUNT(*) AS star_count\nFROM github_events\nWHERE \n    event_type = 'WatchEvent'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login\n        FROM github_events\n        WHERE \n            event_type = 'WatchEvent'\n            AND repo_name = 'tensorflow/tensorflow'\n    )\n    AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.18181818181818177,
+          "numeric": 0.530949015185979,
+          "fScore": 0.9
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    COUNT(*) as star_count\nFROM github_events \nWHERE event_type = 'WatchEvent' \n    AND actor_login IN (\n        SELECT actor_login \n        FROM github_events \n        WHERE event_type = 'WatchEvent' \n            AND repo_name = 'tensorflow/tensorflow'\n    )\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    COUNT(*) AS stars_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND actor_login IN (\n      SELECT actor_login\n      FROM github_events\n      WHERE event_type = 'WatchEvent'\n        AND repo_name = 'tensorflow/tensorflow'\n  )\n  AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name\nORDER BY stars_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -2527,12 +2849,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.151749218,
-        "rows_read": 7360195,
-        "bytes_read": 36693147
+        "elapsed": 0.140968453,
+        "rows_read": 7354368,
+        "bytes_read": 36680650
       },
-      "executionTime": 0.186,
-      "requestId": "01JTN5KSQ3Z0M8R1NCZHFZ91KW"
+      "executionTime": 0.185,
+      "requestId": "01JVWGVF0E7K383CH54C9PKK15"
     }
   },
   "pipe_09.pipe": {
@@ -2802,6 +3124,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  actor_login,\n  countIf(substring_index(repo_name, '/', 1) = 'javisantana') javisantana_stars,\n  countIf(substring_index(repo_name, '/', 1) != 'javisantana') other_stars,\n  countIf(substring_index(repo_name, '/', 1) = 'javisantana')*1.0/count() ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "anthropic/claude-opus-4": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT \n    actor_login,\n    countIf(repo_name LIKE 'javisantana/%') AS stars_to_javisantana,\n    countIf(repo_name NOT LIKE 'javisantana/%') AS stars_to_others,\n    stars_to_javisantana / (stars_to_javisantana + stars_to_others) AS ratio_javisantana_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND actor_login != ''\n    AND actor_login != 'javisantana'\nGROUP BY actor_login\nHAVING stars_to_javisantana > 0\nORDER BY ratio_javisantana_stars DESC, stars_to_javisantana DESC\nLIMIT 10\n"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT \n    actor_login,\n    countIf(repo_name LIKE 'javisantana/%') as javisantana_stars,\n    countIf(repo_name NOT LIKE 'javisantana/%') as other_stars,\n    countIf(repo_name LIKE 'javisantana/%') / count(*) as javisantana_ratio\nFROM github_events \nWHERE event_type = 'WatchEvent'\n    AND actor_login != ''\nGROUP BY actor_login\nHAVING javisantana_stars > 0\nORDER BY javisantana_ratio DESC, javisantana_stars DESC\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT\n    actor_login,\n    countIf(repo_name LIKE 'javisantana/%') AS stars_to_javisantana,\n    countIf(repo_name NOT LIKE 'javisantana/%') AS stars_to_others,\n    stars_to_javisantana / (stars_to_javisantana + stars_to_others) AS ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nHAVING stars_to_javisantana > 0\nORDER BY ratio DESC, stars_to_javisantana DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -2887,12 +3251,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.306655873,
-        "rows_read": 14638470,
-        "bytes_read": 58515252
+        "elapsed": 0.300338384,
+        "rows_read": 14643200,
+        "bytes_read": 58534172
       },
-      "executionTime": 0.326,
-      "requestId": "01JTN5KTW6T3D79MZVEWTS67BN"
+      "executionTime": 0.348,
+      "requestId": "01JVWGVG5RACGH1V0JJPKJYJ83"
     }
   },
   "pipe_10.pipe": {
@@ -3162,6 +3526,34 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  ev2.repo_name,\n  uniqExact(ev2.actor_login) AS unique_contributors\nFROM github_events AS ev1\nINNER JOIN github_events AS ev2\n  ON ev2.actor_login = ev1.actor_login\n  AND ev1.event_type = 'PullRequestEvent'\n  AND ev1.action = 'opened'\n  AND ev1.repo_name LIKE 'tensorflow/%'\n  AND ev2.event_type = 'PullRequestEvent'\n  AND ev2.action = 'opened'\n  AND ev2.repo_name NOT LIKE 'tensorflow/%'\nGROUP BY\n  ev2.repo_name\nORDER BY\n  unique_contributors DESC\nLIMIT 10"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.6420945035773395,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    COUNT(DISTINCT actor_login) as unique_tensorflow_contributors,\n    COUNT(*) as total_pull_requests\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\n    AND repo_name NOT LIKE '%tensorflow%'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login \n        FROM github_events \n        WHERE repo_name LIKE '%tensorflow%' \n        AND event_type = 'PullRequestEvent'\n        AND action = 'opened'\n    )\nGROUP BY repo_name\nORDER BY unique_tensorflow_contributors DESC, total_pull_requests DESC\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.7609239644154207,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) unique_contributors,\n    COUNT(*) total_pull_requests\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND actor_login IN (\n      SELECT DISTINCT actor_login\n      FROM github_events\n      WHERE event_type = 'PullRequestEvent'\n        AND action = 'opened'\n        AND repo_name = 'tensorflow/tensorflow'\n  )\n  AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name\nORDER BY unique_contributors DESC, total_pull_requests DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -3172,11 +3564,11 @@
           "authors": 31
         },
         {
-          "repo_name": "pytorch/pytorch",
+          "repo_name": "scikit-learn/scikit-learn",
           "authors": 25
         },
         {
-          "repo_name": "scikit-learn/scikit-learn",
+          "repo_name": "pytorch/pytorch",
           "authors": 25
         },
         {
@@ -3192,11 +3584,11 @@
           "authors": 10
         },
         {
-          "repo_name": "python/cpython",
+          "repo_name": "kubernetes/kubernetes",
           "authors": 9
         },
         {
-          "repo_name": "kubernetes/kubernetes",
+          "repo_name": "python/cpython",
           "authors": 9
         },
         {
@@ -3204,7 +3596,7 @@
           "authors": 8
         },
         {
-          "repo_name": "numpy/numpy",
+          "repo_name": "syl20bnr/spacemacs",
           "authors": 7
         }
       ],
@@ -3219,12 +3611,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.155141698,
-        "rows_read": 37129518,
-        "bytes_read": 184711487
+        "elapsed": 0.130524407,
+        "rows_read": 36680352,
+        "bytes_read": 181426612
       },
-      "executionTime": 0.174,
-      "requestId": "01JTN5KW5PV21DHPG4TEZGD154"
+      "executionTime": 0.177,
+      "requestId": "01JVWGVHFWYVFMBE0Y3DJNXHK6"
     }
   },
   "pipe_11.pipe": {
@@ -3494,6 +3886,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  e.repo_name repo_name,\n  COUNT(*) issues_count\nFROM github_events AS e\nANY INNER JOIN github_events AS tf\n  ON e.actor_login = tf.actor_login\n  AND tf.event_type = 'IssuesEvent'\n  AND tf.action = 'opened'\n  AND tf.repo_name = 'tensorflow/tensorflow'\nWHERE\n  e.event_type = 'IssuesEvent'\n  AND e.action = 'opened'\nGROUP BY\n  e.repo_name\nORDER BY\n  issues_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-opus-4": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.8235294117647058,
+          "numeric": 1,
+          "fScore": 0.30000000000000004
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    COUNT(DISTINCT actor_login) AS unique_authors,\n    COUNT(*) AS total_issues\nFROM github_events\nWHERE \n    event_type = 'IssuesEvent'\n    AND action = 'opened'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login\n        FROM github_events\n        WHERE \n            event_type = 'IssuesEvent'\n            AND action = 'opened'\n            AND repo_name = 'tensorflow/tensorflow'\n    )\n    AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name\nORDER BY unique_authors DESC\nLIMIT 10\n"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    actor_login,\n    COUNT(*) as issue_count\nFROM github_events \nWHERE event_type = 'IssuesEvent' \n    AND action = 'opened'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login \n        FROM github_events \n        WHERE event_type = 'IssuesEvent' \n            AND action = 'opened' \n            AND repo_name = 'tensorflow/tensorflow'\n    )\n    AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name, actor_login\nORDER BY issue_count DESC, actor_login\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.8669949501128696,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    COUNT(*) AS issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n  AND action = 'opened'\n  AND actor_login IN (\n      SELECT DISTINCT actor_login\n      FROM github_events\n      WHERE event_type = 'IssuesEvent'\n        AND action = 'opened'\n        AND repo_name = 'tensorflow/tensorflow'\n  )\n  AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -3545,8 +3979,8 @@
           "authors": 26
         },
         {
-          "repo_name": "scipy/scipy",
-          "prs": 81,
+          "repo_name": "pytorch/vision",
+          "prs": 120,
           "authors": 23
         }
       ],
@@ -3565,12 +3999,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.108104252,
-        "rows_read": 15857078,
-        "bytes_read": 85431490
+        "elapsed": 0.092943076,
+        "rows_read": 15342355,
+        "bytes_read": 82457064
       },
-      "executionTime": 0.128,
-      "requestId": "01JTN5KXAFGGKTZAGS0YB1C8M7"
+      "executionTime": 0.165,
+      "requestId": "01JVWGVJMWKRSS7RQJ6AK42Q8W"
     }
   },
   "pipe_12.pipe": {
@@ -3840,6 +4274,48 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "SELECT \n  repo_name, \n  count() AS stars_last_24h \nFROM github_events \nWHERE event_type = 'WatchEvent' \n  AND created_at >= utc_timestamp() - INTERVAL 1 day \nGROUP BY repo_name \nORDER BY stars_last_24h DESC \nLIMIT 10"
+      },
+      "anthropic/claude-opus-4": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT \n    repo_name,\n    COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND created_at >= today() - 1\n    AND created_at < today()\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    count() as stars\nFROM github_events \nWHERE event_type = 'WatchEvent'\n    AND toDate(created_at) = (\n        SELECT toDate(created_at) as day\n        FROM github_events \n        WHERE event_type = 'WatchEvent'\n        GROUP BY day\n        ORDER BY count() DESC\n        LIMIT 1\n    )\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    COUNT() AS stars_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name, DATE(created_at)\nORDER BY stars_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -3911,12 +4387,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.185731401,
-        "rows_read": 7319235,
-        "bytes_read": 51196017
+        "elapsed": 0.201811096,
+        "rows_read": 7321600,
+        "bytes_read": 51212572
       },
-      "executionTime": 0.21,
-      "requestId": "01JTN5KYDSH90R3J44Z1MWAXJ6"
+      "executionTime": 0.25,
+      "requestId": "01JVWGVKS7EV1025FCDANCSXRC"
     }
   },
   "pipe_13.pipe": {
@@ -4186,6 +4662,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  countIf(created_at >= '2016-01-01' AND created_at < '2017-01-01') AS stars_2016,\n  countIf(created_at >= '2017-01-01' AND created_at < '2018-01-01') AS stars_2017,\n  stars_2017 / stars_2016 AS growth_ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND created_at >= '2016-01-01'\n  AND created_at < '2018-01-01'\nGROUP BY repo_name\nHAVING stars_2016 >= 1\nORDER BY growth_ratio DESC\nLIMIT 10"
+      },
+      "anthropic/claude-opus-4": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nWITH stars_2016 AS (\n    SELECT \n        repo_name,\n        COUNT(*) AS stars_2016\n    FROM github_events\n    WHERE event_type = 'WatchEvent' \n        AND toYear(created_at) = 2016\n    GROUP BY repo_name\n),\nstars_2017 AS (\n    SELECT \n        repo_name,\n        COUNT(*) AS stars_2017\n    FROM github_events\n    WHERE event_type = 'WatchEvent' \n        AND toYear(created_at) = 2017\n    GROUP BY repo_name\n)\nSELECT \n    s2017.repo_name,\n    s2016.stars_2016,\n    s2017.stars_2017,\n    s2017.stars_2017 - s2016.stars_2016 AS absolute_growth,\n    round((s2017.stars_2017 - s2016.stars_2016) / s2016.stars_2016 * 100, 2) AS growth_percentage\nFROM stars_2017 s2017\nINNER JOIN stars_2016 s2016 ON s2017.repo_name = s2016.repo_name\nWHERE s2016.stars_2016 >= 1\nORDER BY growth_percentage DESC\nLIMIT 10\n"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2016) as stars_2016,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2017) as stars_2017,\n    stars_2017 - stars_2016 as growth_absolute,\n    CASE \n        WHEN stars_2016 > 0 THEN (stars_2017 - stars_2016) / stars_2016 * 100\n        ELSE 0\n    END as growth_percentage\nFROM github_events\nWHERE event_type = 'WatchEvent' \n    AND toYear(created_at) IN (2016, 2017)\n    AND repo_name != ''\nGROUP BY repo_name\nHAVING stars_2016 >= 1 AND stars_2017 > stars_2016\nORDER BY growth_absolute DESC\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    COUNTIf(event_type = 'WatchEvent' AND created_at >= '2017-01-01' AND created_at < '2018-01-01') AS stars_2017,\n    COUNTIf(event_type = 'WatchEvent' AND created_at >= '2016-01-01' AND created_at < '2017-01-01') AS stars_2016,\n    (stars_2017 - stars_2016) AS growth,\n    ((stars_2017 - stars_2016) / stars_2016) * 100 AS growth_percentage\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING stars_2016 >= 1\nORDER BY growth_percentage DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -4271,12 +4789,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.056378255,
-        "rows_read": 7319235,
-        "bytes_read": 51196017
+        "elapsed": 0.052805445,
+        "rows_read": 7321600,
+        "bytes_read": 51212572
       },
-      "executionTime": 0.092,
-      "requestId": "01JTN5KZKNEM5PJP8FNVC5R4GQ"
+      "executionTime": 0.098,
+      "requestId": "01JVWGVN0CQS4DEVX6XY629A6P"
     }
   },
   "pipe_14.pipe": {
@@ -4546,6 +5064,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n  repo_name,\n  sum(YEAR(created_at)=2016) stars_2016,\n  sum(YEAR(created_at)=2017) stars_2017,\n  sum(YEAR(created_at)=2017)-sum(YEAR(created_at)=2016) diff\nFROM github_events\nWHERE event_type='WatchEvent'\n  AND YEAR(created_at) IN (2016,2017)\nGROUP BY repo_name\nHAVING sum(YEAR(created_at)=2017)>0\nORDER BY diff ASC\nLIMIT 10"
+      },
+      "anthropic/claude-opus-4": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2016) AS stars_2016,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2017) AS stars_2017,\n    stars_2016 - stars_2017 AS star_decline,\n    round((stars_2016 - stars_2017) * 100.0 / stars_2016, 2) AS decline_percentage\nFROM github_events\nWHERE \n    event_type = 'WatchEvent' \n    AND toYear(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING \n    stars_2017 >= 1 \n    AND stars_2016 > stars_2017\nORDER BY decline_percentage DESC\nLIMIT 10"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2016) as stars_2016,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2017) as stars_2017,\n    stars_2016 - stars_2017 as stagnation_score\nFROM github_events\nWHERE event_type = 'WatchEvent' \n    AND toYear(created_at) IN (2016, 2017)\n    AND repo_name != ''\nGROUP BY repo_name\nHAVING stars_2017 >= 1\nORDER BY stagnation_score DESC\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    COUNTIf(event_type = 'WatchEvent' AND toYear(created_at) = 2016) AS stars_2016,\n    COUNTIf(event_type = 'WatchEvent' AND toYear(created_at) = 2017) AS stars_2017,\n    (stars_2017 - stars_2016) AS star_diff\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING stars_2017 >= 1\nORDER BY star_diff ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -4631,12 +5191,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.055668621,
-        "rows_read": 7319235,
-        "bytes_read": 51196017
+        "elapsed": 0.04994782,
+        "rows_read": 7321600,
+        "bytes_read": 51212572
       },
-      "executionTime": 0.075,
-      "requestId": "01JTN5M0NVHHGMQAKXKT8RG7NJ"
+      "executionTime": 0.093,
+      "requestId": "01JVWGVP2RT3YH7AGZCW1Y5T4W"
     }
   },
   "pipe_15.pipe": {
@@ -4906,6 +5466,34 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  stddevPop(stars) stddev_daily_stars,\n  avg(stars) avg_daily_stars,\n  avg(stars)/nullIf(stddevPop(stars),0) stability_score\nFROM\n(\n  SELECT\n    repo_name,\n    toDate(created_at) AS day,\n    count(*) AS stars\n  FROM github_events\n  WHERE event_type = 'WatchEvent'\n  GROUP BY repo_name, day\n)\nGROUP BY repo_name\nORDER BY stability_score DESC\nLIMIT 10"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT \n    repo_name,\n    count(*) as total_stars,\n    min(created_at) as first_star_date,\n    max(created_at) as last_star_date,\n    dateDiff('day', min(created_at), max(created_at)) + 1 as days_active,\n    count(*) / (dateDiff('day', min(created_at), max(created_at)) + 1) as stars_per_day,\n    stddevPop(count(*)) as star_growth_volatility\nFROM github_events \nWHERE event_type = 'WatchEvent'\nAND created_at >= '2020-01-01'\nAND repo_name != ''\nGROUP BY repo_name\nHAVING total_stars >= 100 AND days_active >= 30\nORDER BY star_growth_volatility ASC, stars_per_day DESC\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    COUNT(*) AS total_stars,\n    STDDEV_POP(toUnixTimestamp(created_at)) AS star_time_stddev\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY star_time_stddev ASC, total_stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -4991,12 +5579,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.240157008,
-        "rows_read": 7319235,
-        "bytes_read": 51196017
+        "elapsed": 0.207672954,
+        "rows_read": 7321600,
+        "bytes_read": 51212572
       },
-      "executionTime": 0.26,
-      "requestId": "01JTN5M1QFATAVT5Y6VG1NHMZ3"
+      "executionTime": 0.253,
+      "requestId": "01JVWGVQ51HQSMWCH6CT6MAS3Z"
     }
   },
   "pipe_16.pipe": {
@@ -5044,7 +5632,7 @@
         "sql": "SELECT \n    toDayOfWeek(created_at) AS day_of_week,\n    count() AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY star_count DESC\nLIMIT 10"
       },
       "deepseek/deepseek-chat-v3-0324:free": {
-       "matches": true,
+        "matches": true,
         "exactMatches": false,
         "numericMatches": false,
         "distance": {
@@ -5266,6 +5854,48 @@
         "humanRowCount": 7,
         "llmRowCount": 1,
         "sql": "SELECT date_format(created_at, '%W') day, count() star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day\nORDER BY star_count DESC\nLIMIT 1"
+      },
+      "anthropic/claude-opus-4": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 7,
+        "llmRowCount": 7,
+        "sql": "\nSELECT \n    toDayOfWeek(created_at) as day_of_week,\n    count() as stars_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY stars_count DESC\nLIMIT 10\n"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 7,
+        "llmRowCount": 7,
+        "sql": "SELECT \n    dayOfWeek(created_at) as day_of_week,\n    count() as star_count\nFROM github_events \nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 7,
+        "llmRowCount": 7,
+        "sql": "SELECT\n    toDayOfWeek(created_at) AS day_of_week,\n    count() AS stars_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY stars_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -5311,12 +5941,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.013890286,
-        "rows_read": 7319235,
-        "bytes_read": 36596175
+        "elapsed": 0.013581645,
+        "rows_read": 7321600,
+        "bytes_read": 36608000
       },
-      "executionTime": 0.032,
-      "requestId": "01JTN5M2YVN49KQS9ZEQW0Z4XH"
+      "executionTime": 0.057,
+      "requestId": "01JVWGVRC8YTGW2XGXFJFY9V51"
     }
   },
   "pipe_17.pipe": {
@@ -5327,7 +5957,7 @@
         "numericMatches": true,
         "distance": {
           "exact": 1,
-          "numeric": 0.000052934128674804696,
+          "numeric": 5.2934128674804696e-05,
           "fScore": 0
         },
         "details": "Results match within numeric threshold",
@@ -5341,7 +5971,7 @@
         "numericMatches": true,
         "distance": {
           "exact": 1,
-          "numeric": 0.000052934128674804696,
+          "numeric": 5.2934128674804696e-05,
           "fScore": 0
         },
         "details": "Results match within numeric threshold",
@@ -5355,7 +5985,7 @@
         "numericMatches": true,
         "distance": {
           "exact": 1,
-          "numeric": 0.00005304021190625461,
+          "numeric": 5.304021190625461e-05,
           "fScore": 0
         },
         "details": "Results match within numeric threshold",
@@ -5369,7 +5999,7 @@
         "numericMatches": true,
         "distance": {
           "exact": 1,
-          "numeric": 0.000052934128674804696,
+          "numeric": 5.2934128674804696e-05,
           "fScore": 0
         },
         "details": "Results match within numeric threshold",
@@ -5383,7 +6013,7 @@
         "numericMatches": true,
         "distance": {
           "exact": 1,
-          "numeric": 0.000052934128674804696,
+          "numeric": 5.2934128674804696e-05,
           "fScore": 0
         },
         "details": "Results match within numeric threshold",
@@ -5397,7 +6027,7 @@
         "numericMatches": true,
         "distance": {
           "exact": 1,
-          "numeric": 0.000052934128674804696,
+          "numeric": 5.2934128674804696e-05,
           "fScore": 0
         },
         "details": "Results match within numeric threshold",
@@ -5411,7 +6041,7 @@
         "numericMatches": true,
         "distance": {
           "exact": 1,
-          "numeric": 0.000052934128674804696,
+          "numeric": 5.2934128674804696e-05,
           "fScore": 0
         },
         "details": "Results match within numeric threshold",
@@ -5425,7 +6055,7 @@
         "numericMatches": true,
         "distance": {
           "exact": 1,
-          "numeric": 0.000052934128674804696,
+          "numeric": 5.2934128674804696e-05,
           "fScore": 0
         },
         "details": "Results match within numeric threshold",
@@ -5439,7 +6069,7 @@
         "numericMatches": true,
         "distance": {
           "exact": 1,
-          "numeric": 0.000052934128674804696,
+          "numeric": 5.2934128674804696e-05,
           "fScore": 0
         },
         "details": "Results match within numeric threshold",
@@ -5453,7 +6083,7 @@
         "numericMatches": true,
         "distance": {
           "exact": 1,
-          "numeric": 0.000052934128674804696,
+          "numeric": 5.2934128674804696e-05,
           "fScore": 0
         },
         "details": "Results match within numeric threshold",
@@ -5467,7 +6097,7 @@
         "numericMatches": true,
         "distance": {
           "exact": 1,
-          "numeric": 0.000052934128674804696,
+          "numeric": 5.2934128674804696e-05,
           "fScore": 0
         },
         "details": "Results match within numeric threshold",
@@ -5481,7 +6111,7 @@
         "numericMatches": true,
         "distance": {
           "exact": 1,
-          "numeric": 0.000052934128674804696,
+          "numeric": 5.2934128674804696e-05,
           "fScore": 0
         },
         "details": "Results match within numeric threshold",
@@ -5495,7 +6125,7 @@
         "numericMatches": true,
         "distance": {
           "exact": 1,
-          "numeric": 0.000052934128674804696,
+          "numeric": 5.2934128674804696e-05,
           "fScore": 0
         },
         "details": "Results match within numeric threshold",
@@ -5509,7 +6139,7 @@
         "numericMatches": true,
         "distance": {
           "exact": 1,
-          "numeric": 0.000052934128674804696,
+          "numeric": 5.2934128674804696e-05,
           "fScore": 0
         },
         "details": "Results match within numeric threshold",
@@ -5523,7 +6153,7 @@
         "numericMatches": true,
         "distance": {
           "exact": 1,
-          "numeric": 0.000052934128674804696,
+          "numeric": 5.2934128674804696e-05,
           "fScore": 0
         },
         "details": "Results match within numeric threshold",
@@ -5537,7 +6167,7 @@
         "numericMatches": true,
         "distance": {
           "exact": 1,
-          "numeric": 0.000052934128674804696,
+          "numeric": 5.2934128674804696e-05,
           "fScore": 0
         },
         "details": "Results match within numeric threshold",
@@ -5551,7 +6181,7 @@
         "numericMatches": true,
         "distance": {
           "exact": 1,
-          "numeric": 0.000052934128674804696,
+          "numeric": 5.2934128674804696e-05,
           "fScore": 0
         },
         "details": "Results match within numeric threshold",
@@ -5565,7 +6195,7 @@
         "numericMatches": true,
         "distance": {
           "exact": 1,
-          "numeric": 0.000052934128674804696,
+          "numeric": 5.2934128674804696e-05,
           "fScore": 0
         },
         "details": "Results match within numeric threshold",
@@ -5579,13 +6209,55 @@
         "numericMatches": true,
         "distance": {
           "exact": 1,
-          "numeric": 0.000052934128674804696,
+          "numeric": 5.2934128674804696e-05,
           "fScore": 0
         },
         "details": "Results match within numeric threshold",
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniqExact(actor_login) total_users\nFROM github_events\nLIMIT 10"
+      },
+      "anthropic/claude-opus-4": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 5.2934128674804696e-05,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(DISTINCT actor_login) AS total_users FROM github_events LIMIT 1"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 5.2934128674804696e-05,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(DISTINCT actor_login) as total_users\nFROM github_events\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT uniq(actor_login) AS total_users FROM github_events LIMIT 10"
       }
     },
     "humanResults": {
@@ -5602,12 +6274,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.493136245,
+        "elapsed": 0.458891055,
         "rows_read": 200000000,
-        "bytes_read": 394865005
+        "bytes_read": 399455549
       },
       "executionTime": 0.512,
-      "requestId": "01JTN5M3Z4GGQK6GVE4XR95W0C"
+      "requestId": "01JVWGVSDDC22E6S4QG9XEQ2Z6"
     }
   },
   "pipe_18.pipe": {
@@ -5877,6 +6549,48 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniqExact(actor_login) total_users\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10"
+      },
+      "anthropic/claude-opus-4": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0014793406252330366,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(DISTINCT actor_login) AS total_users_with_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0014793406252330366,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(DISTINCT actor_login) as total_users_with_stars\nFROM github_events \nWHERE event_type = 'WatchEvent'\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT uniq(actor_login) total_users\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -5893,12 +6607,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.110345661,
-        "rows_read": 7319235,
-        "bytes_read": 21957705
+        "elapsed": 0.121904477,
+        "rows_read": 7321600,
+        "bytes_read": 21964800
       },
-      "executionTime": 0.128,
-      "requestId": "01JTN5M5EDXH7CVCFCP03ZSZ18"
+      "executionTime": 0.165,
+      "requestId": "01JVWGVTWRQ111GPHWC19APGXH"
     }
   },
   "pipe_19.pipe": {
@@ -6168,6 +6882,34 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniqExact(actor_login) total_users\nFROM github_events\nWHERE event_type = 'PushEvent'\nLIMIT 10"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0018759619527295886,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(DISTINCT actor_login) as total_users_with_push\nFROM github_events \nWHERE event_type = 'PushEvent'\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0018759619527295886,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT\n    COUNT(DISTINCT actor_login) AS total_users_with_push\nFROM github_events\nWHERE event_type = 'PushEvent'\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -6184,12 +6926,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.154536048,
-        "rows_read": 75689153,
-        "bytes_read": 223381427
+        "elapsed": 0.130978206,
+        "rows_read": 75572830,
+        "bytes_read": 226238267
       },
-      "executionTime": 0.173,
-      "requestId": "01JTN5M6HQ2GWF3AN58E00R9JB"
+      "executionTime": 0.176,
+      "requestId": "01JVWGVW17Y5RSZJREDGZMWZ0M"
     }
   },
   "pipe_20.pipe": {
@@ -6459,6 +7201,34 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count(DISTINCT actor_login) total_users_with_prs\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\nLIMIT 10"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0017507922334856522,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(DISTINCT actor_login) as total_users\nFROM github_events \nWHERE event_type = 'PullRequestEvent' \nAND action = 'opened'\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT\n    uniq(actor_login) AS total_users\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -6475,12 +7245,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.086800121,
-        "rows_read": 18564759,
-        "bytes_read": 73368008
+        "elapsed": 0.080440809,
+        "rows_read": 18340176,
+        "bytes_read": 73167486
       },
-      "executionTime": 0.105,
-      "requestId": "01JTN5M7PERXYAAKH77D5GKTJ6"
+      "executionTime": 0.126,
+      "requestId": "01JVWGVX62HYF03XVB4W7BSZFN"
     }
   },
   "pipe_21.pipe": {
@@ -6750,6 +7520,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  g2.repo_name,\n  count() AS star_count\nFROM github_events AS g2\nANY INNER JOIN github_events AS g1\n  ON (\n    g2.actor_login = g1.actor_login\n    AND g1.event_type = 'PullRequestEvent'\n    AND g1.action = 'opened'\n  )\nWHERE g2.event_type = 'WatchEvent'\nGROUP BY g2.repo_name\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-opus-4": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.062278712339204734,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    count() AS star_count\nFROM github_events\nWHERE \n    event_type = 'WatchEvent'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login\n        FROM github_events\n        WHERE event_type = 'PullRequestEvent'\n    )\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    count(*) as stars\nFROM github_events \nWHERE event_type = 'WatchEvent' \n    AND actor_login IN (\n        SELECT DISTINCT actor_login \n        FROM github_events \n        WHERE event_type = 'PullRequestEvent' \n            AND action = 'opened'\n    )\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    COUNT() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND actor_login IN (\n      SELECT DISTINCT actor_login\n      FROM github_events\n      WHERE event_type = 'PullRequestEvent'\n        AND action = 'opened'\n  )\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -6807,12 +7619,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.465112267,
-        "rows_read": 25883994,
-        "bytes_read": 109955483
+        "elapsed": 0.411671512,
+        "rows_read": 25661776,
+        "bytes_read": 109766024
       },
-      "executionTime": 0.484,
-      "requestId": "01JTN5M8S15KG1DRPZ8A5FKS8V"
+      "executionTime": 0.469,
+      "requestId": "01JVWGVY9RSC0G0G8MD1W2MEVA"
     }
   },
   "pipe_22.pipe": {
@@ -7082,6 +7894,34 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  actor_login,\n  count(*) AS pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\nGROUP BY\n  repo_name,\n  actor_login\nHAVING\n  pr_count >= 10\nORDER BY\n  pr_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.2281446469078486,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    COUNT(DISTINCT actor_login) as authors_with_10plus_prs,\n    COUNT(*) as total_prs\nFROM github_events \nWHERE event_type = 'PullRequestEvent' \n    AND action = 'opened'\n    AND actor_login IN (\n        SELECT actor_login \n        FROM github_events \n        WHERE event_type = 'PullRequestEvent' \n            AND action = 'opened'\n        GROUP BY actor_login \n        HAVING COUNT(*) >= 10\n    )\nGROUP BY repo_name\nORDER BY authors_with_10plus_prs DESC, total_prs DESC\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    COUNT(DISTINCT number) AS total_prs\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\nGROUP BY repo_name, actor_login\nHAVING COUNT(DISTINCT number) >= 10\nORDER BY total_prs DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -7139,12 +7979,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.235189344,
-        "rows_read": 25883994,
-        "bytes_read": 109955483
+        "elapsed": 0.211675689,
+        "rows_read": 25661776,
+        "bytes_read": 109766024
       },
-      "executionTime": 0.256,
-      "requestId": "01JTN5MA7E6X5D3QGFJKFCEMHK"
+      "executionTime": 0.276,
+      "requestId": "01JVWGVZQEPCY2XR3H730B0ZSN"
     }
   },
   "pipe_23.pipe": {
@@ -7414,6 +8254,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  count() pull_request_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\nGROUP BY repo_name\nORDER BY pull_request_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-opus-4": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, count() as pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY pr_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    count() as pull_request_count\nFROM github_events \nWHERE event_type = 'PullRequestEvent' \n    AND action = 'opened'\nGROUP BY repo_name \nORDER BY pull_request_count DESC \nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    COUNT(*) AS pull_request_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY pull_request_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -7471,12 +8353,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.095280679,
-        "rows_read": 18564759,
-        "bytes_read": 73326053
+        "elapsed": 0.081256986,
+        "rows_read": 18340176,
+        "bytes_read": 73167486
       },
-      "executionTime": 0.114,
-      "requestId": "01JTN5MBEQ0071XM4TC8WQNM1V"
+      "executionTime": 0.141,
+      "requestId": "01JVWGW0Z91YP5TP7K5CQQSN7P"
     }
   },
   "pipe_24.pipe": {
@@ -7746,6 +8628,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n  repo_name, \n  uniqExact(actor_login) contributors \nFROM github_events \nWHERE event_type = 'PullRequestEvent' \n  AND action = 'opened' \nGROUP BY repo_name \nORDER BY contributors DESC \nLIMIT 10"
+      },
+      "anthropic/claude-opus-4": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    count(DISTINCT actor_login) AS contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\nGROUP BY repo_name\nORDER BY contributors DESC\nLIMIT 10"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    uniq(actor_login) as unique_contributors\nFROM github_events \nWHERE event_type = 'PullRequestEvent' \n    AND action = 'opened'\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0.9473684210526316,
+          "numeric": 0.007013121364457529,
+          "fScore": 0.09999999999999998
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    uniq(actor_login) AS contributors_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\nGROUP BY repo_name\nORDER BY contributors_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -7803,12 +8727,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.161992541,
-        "rows_read": 18564759,
-        "bytes_read": 109818681
+        "elapsed": 0.142820937,
+        "rows_read": 18340176,
+        "bytes_read": 109719026
       },
-      "executionTime": 0.181,
-      "requestId": "01JTN5MCHKXAKAEDXB8KGTPM9B"
+      "executionTime": 0.187,
+      "requestId": "01JVWGW231HXZXV7V540YJVD9T"
     }
   },
   "pipe_25.pipe": {
@@ -8078,6 +9002,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  count() issues_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n  AND action = 'opened'\nGROUP BY repo_name\nORDER BY issues_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-opus-4": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, count() as issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    count(*) as total_issues\nFROM github_events \nWHERE event_type = 'IssuesEvent' \n    AND action = 'opened'\nGROUP BY repo_name \nORDER BY total_issues DESC \nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    COUNT(*) AS issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -8135,12 +9101,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.078165991,
-        "rows_read": 15470766,
-        "bytes_read": 61143811
+        "elapsed": 0.06346087,
+        "rows_read": 15208764,
+        "bytes_read": 60638448
       },
-      "executionTime": 0.097,
-      "requestId": "01JTN5MDPHZWD3KE20N0WDZ8JK"
+      "executionTime": 0.127,
+      "requestId": "01JVWGW38VMB7MTK9V21C4FRD0"
     }
   },
   "pipe_26.pipe": {
@@ -8410,6 +9376,34 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  uniqExact(actor_login) pushers_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY repo_name\nORDER BY pushers_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    uniq(actor_login) as unique_pushers\nFROM github_events \nWHERE event_type = 'PushEvent'\nGROUP BY repo_name\nORDER BY unique_pushers DESC\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    uniq(actor_login) AS push_access_users\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY repo_name\nORDER BY push_access_users DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -8467,12 +9461,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.91293473,
-        "rows_read": 82975620,
-        "bytes_read": 407391602
+        "elapsed": 0.606857659,
+        "rows_read": 82869854,
+        "bytes_read": 413340569
       },
-      "executionTime": 0.932,
-      "requestId": "01JTN5MERV7JQKJKZ7VQJ6XDPE"
+      "executionTime": 0.687,
+      "requestId": "01JVWGW4BFNVWYND5NX07BBA6T"
     }
   },
   "pipe_27.pipe": {
@@ -8742,6 +9736,34 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n  repo_name, \n  countDistinct(actor_login) pushers_count \nFROM github_events \nWHERE event_type = 'PushEvent' \n  AND ref = 'refs/heads/main' \nGROUP BY repo_name \nORDER BY pushers_count DESC \nLIMIT 10"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0.18181818181818177,
+          "numeric": 0.00016392880189796628,
+          "fScore": 0.9
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    uniq(actor_login) as unique_pushers\nFROM github_events \nWHERE event_type = 'PushEvent' \n    AND (ref = 'refs/heads/main' OR ref = 'refs/heads/master')\nGROUP BY repo_name \nORDER BY unique_pushers DESC \nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS push_access_users\nFROM github_events\nWHERE event_type = 'PushEvent'\n  AND ref = 'refs/heads/main'\nGROUP BY repo_name\nORDER BY push_access_users DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -8760,11 +9782,11 @@
           "u": 172
         },
         {
-          "repo_name": "cs371p-fall-2015/collatz-tests",
+          "repo_name": "githubteacher/github-for-developers-sept-2015",
           "u": 170
         },
         {
-          "repo_name": "githubteacher/github-for-developers-sept-2015",
+          "repo_name": "cs371p-fall-2015/collatz-tests",
           "u": 170
         },
         {
@@ -8799,12 +9821,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 1.120833113,
-        "rows_read": 82975620,
-        "bytes_read": 2651509833
+        "elapsed": 0.921372541,
+        "rows_read": 82869854,
+        "bytes_read": 2657268304
       },
-      "executionTime": 1.191,
-      "requestId": "01JTN5MGPTXX9M6FZPHGBH2CJP"
+      "executionTime": 1.059,
+      "requestId": "01JVWGW630XCPZKTS2GEDRAYH8"
     }
   },
   "pipe_28.pipe": {
@@ -9074,6 +10096,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  uniqExactIf(actor_login, event_type = 'PushEvent' AND ref = 'refs/heads/main') AS push_access_users\nFROM github_events\nGROUP BY repo_name\nHAVING countIf(event_type = 'WatchEvent') > 99\nORDER BY push_access_users DESC\nLIMIT 10"
+      },
+      "anthropic/claude-opus-4": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    count(DISTINCT actor_login) as push_users,\n    count(DISTINCT IF(event_type = 'WatchEvent', actor_login, NULL)) as stars\nFROM github_events\nWHERE event_type IN ('PushEvent', 'WatchEvent')\nGROUP BY repo_name\nHAVING stars > 99\nORDER BY push_users DESC\nLIMIT 10"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    uniq(actor_login) as unique_pushers,\n    uniqIf(actor_login, event_type = 'WatchEvent') as stars\nFROM github_events \nWHERE event_type IN ('PushEvent', 'WatchEvent')\n    AND (event_type != 'PushEvent' OR ref = 'refs/heads/main' OR ref = 'refs/heads/master')\nGROUP BY repo_name\nHAVING stars > 99\nORDER BY unique_pushers DESC\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS push_access_users\nFROM github_events\nWHERE event_type = 'PushEvent'\n  AND base_ref = 'main'\n  AND repo_name IN (\n      SELECT repo_name\n      FROM github_events\n      WHERE event_type = 'WatchEvent'\n      GROUP BY repo_name\n      HAVING COUNT(*) > 99\n  )\nGROUP BY repo_name\nORDER BY push_access_users DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -9145,12 +10209,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 1.020207635,
-        "rows_read": 82807796,
-        "bytes_read": 2646119992
+        "elapsed": 0.849359775,
+        "rows_read": 82702030,
+        "bytes_read": 2651712234
       },
-      "executionTime": 1.04,
-      "requestId": "01JTN5MJSRGB8RMDP857RHCZPS"
+      "executionTime": 0.895,
+      "requestId": "01JVWGW80R52QJWDCYFE29QJX6"
     }
   },
   "pipe_29.pipe": {
@@ -9420,6 +10484,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  count() invite_count\nFROM github_events\nWHERE event_type = 'MemberEvent'\n  AND action = 'added'\nGROUP BY repo_name\nORDER BY invite_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-opus-4": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    count() as member_invitations\nFROM github_events\nWHERE event_type = 'MemberEvent'\nGROUP BY repo_name\nORDER BY member_invitations DESC\nLIMIT 10\n"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    count(*) as member_invitations\nFROM github_events \nWHERE event_type = 'MemberEvent' \n    AND action = 'added'\nGROUP BY repo_name \nORDER BY member_invitations DESC \nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    COUNT(*) AS invitation_count\nFROM github_events\nWHERE event_type = 'MemberEvent' AND action = 'added'\nGROUP BY repo_name\nORDER BY invitation_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -9477,12 +10583,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.026145805,
-        "rows_read": 459796,
-        "bytes_read": 803860
+        "elapsed": 0.028201816,
+        "rows_read": 219443,
+        "bytes_read": 563507
       },
-      "executionTime": 0.044,
-      "requestId": "01JTN5MMSK2DG2T7GTJRKBEA51"
+      "executionTime": 0.072,
+      "requestId": "01JVWGW9W1Z837EBRACE637TD8"
     }
   },
   "pipe_30.pipe": {
@@ -9752,6 +10858,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  count() forks_count\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY forks_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-opus-4": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, count() as fork_count\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY fork_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    count() as fork_count\nFROM github_events \nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY fork_count DESC\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    COUNT(*) AS fork_count\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY fork_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -9809,12 +10957,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.066701573,
-        "rows_read": 5953720,
-        "bytes_read": 17262692
+        "elapsed": 0.060886116,
+        "rows_read": 5708062,
+        "bytes_read": 16969176
       },
-      "executionTime": 0.085,
-      "requestId": "01JTN5MNT9RPASHFVRH49HZPED"
+      "executionTime": 0.104,
+      "requestId": "01JVWGWAXKQKWKQJ42ZGF81TK0"
     }
   },
   "pipe_31.pipe": {
@@ -10084,6 +11232,34 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    sum(cast(event_type = 'WatchEvent' AS UInt8)) stars,\n    sum(cast(event_type = 'ForkEvent' AS UInt8)) forks,\n    sum(cast(event_type = 'WatchEvent' AS UInt8)) / sum(cast(event_type = 'ForkEvent' AS UInt8)) ratio\nFROM github_events\nGROUP BY repo_name\nHAVING sum(cast(event_type = 'ForkEvent' AS UInt8)) > 0\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    countIf(event_type = 'WatchEvent') as stars,\n    countIf(event_type = 'ForkEvent') as forks,\n    stars / nullIf(forks, 0) as star_fork_ratio\nFROM github_events \nWHERE event_type IN ('WatchEvent', 'ForkEvent')\nGROUP BY repo_name\nHAVING forks > 0\nORDER BY star_fork_ratio DESC\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    COUNTIf(event_type = 'WatchEvent') / COUNTIf(event_type = 'ForkEvent') AS stars_to_forks_ratio\nFROM github_events\nWHERE event_type IN ('WatchEvent', 'ForkEvent')\nGROUP BY repo_name\nHAVING COUNTIf(event_type = 'ForkEvent') > 0\nORDER BY stars_to_forks_ratio DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -10169,12 +11345,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.112963876,
-        "rows_read": 13272955,
-        "bytes_read": 39320346
+        "elapsed": 0.113772876,
+        "rows_read": 13029662,
+        "bytes_read": 38925655
       },
-      "executionTime": 0.132,
-      "requestId": "01JTN5MPW6G7233FFMVGPDABEB"
+      "executionTime": 0.168,
+      "requestId": "01JVWGWC0FGPH8MBGZSV6XB878"
     }
   },
   "pipe_32.pipe": {
@@ -10430,6 +11606,48 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT\ncountIf(event_type = 'WatchEvent') stars,\ncountIf(event_type = 'ForkEvent') forks,\nround(countIf(event_type = 'WatchEvent')/countIf(event_type = 'ForkEvent'), 2) ratio\nFROM github_events\nLIMIT 10"
+      },
+      "anthropic/claude-opus-4": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT \n    countIf(event_type = 'WatchEvent') as total_stars,\n    countIf(event_type = 'ForkEvent') as total_forks,\n    round(countIf(event_type = 'WatchEvent') / countIf(event_type = 'ForkEvent'), 2) as stars_to_forks_ratio\nFROM github_events\nWHERE event_type IN ('WatchEvent', 'ForkEvent')"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT \n    countIf(event_type = 'WatchEvent') AS total_stars,\n    countIf(event_type = 'ForkEvent') AS total_forks,\n    ROUND(countIf(event_type = 'WatchEvent') / countIf(event_type = 'ForkEvent'), 2) AS stars_to_forks_ratio\nFROM github_events\nWHERE event_type IN ('WatchEvent', 'ForkEvent')\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    countIf(event_type = 'WatchEvent') AS total_stars,\n    countIf(event_type = 'ForkEvent') AS total_forks,\n    round(total_stars / if(total_forks = 0, 1, total_forks), 2) AS stars_to_forks_ratio\nFROM github_events\nGROUP BY repo_name\nORDER BY total_stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -10456,12 +11674,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.015556008,
-        "rows_read": 13272955,
-        "bytes_read": 13272955
+        "elapsed": 0.011895106,
+        "rows_read": 13029662,
+        "bytes_read": 13029662
       },
-      "executionTime": 0.033,
-      "requestId": "01JTN5MQZKNGASBE4MNTF9K2QA"
+      "executionTime": 0.056,
+      "requestId": "01JVWGWD4R8852X1J4FHGA59A8"
     }
   },
   "pipe_33.pipe": {
@@ -10717,6 +11935,34 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count() total_issues_opened \nFROM github_events \nWHERE event_type = 'IssuesEvent' \n  AND action = 'opened' \nLIMIT 10"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(*) as total_issues_opened\nFROM github_events \nWHERE event_type = 'IssuesEvent' \nAND action = 'opened'\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT count(*) AS total_issues_opened\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -10733,12 +11979,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.019233222,
-        "rows_read": 15470766,
-        "bytes_read": 30701134
+        "elapsed": 0.014815488,
+        "rows_read": 15208764,
+        "bytes_read": 30351992
       },
-      "executionTime": 0.038,
-      "requestId": "01JTN5MRZZXAPTXMTR9XXS0A2T"
+      "executionTime": 0.058,
+      "requestId": "01JVWGWE5TM0N6PT1MNGSGVRR6"
     }
   },
   "pipe_34.pipe": {
@@ -11008,6 +12254,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  count(*) issue_comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY issue_comment_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-opus-4": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    count() as comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY comment_count DESC\nLIMIT 10\n"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    count() as issue_comment_count\nFROM github_events \nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY issue_comment_count DESC\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    COUNT(*) AS issue_comment_events\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY issue_comment_events DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -11065,12 +12353,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.027085342,
-        "rows_read": 1250141,
-        "bytes_read": 3081893
+        "elapsed": 0.021554734,
+        "rows_read": 1017530,
+        "bytes_read": 2856068
       },
-      "executionTime": 0.046,
-      "requestId": "01JTN5MT0EGTHSXQ9DGYN4NAQM"
+      "executionTime": 0.066,
+      "requestId": "01JVWGWF70529AJ0DP4WGFKDZB"
     }
   },
   "pipe_35.pipe": {
@@ -11326,6 +12614,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  sum(event_type = 'IssueCommentEvent' AND action = 'created') AS comments,\n  sum(event_type = 'IssuesEvent' AND action = 'opened') AS issues,\n  sum(event_type = 'IssueCommentEvent' AND action = 'created')*1.0 / sum(event_type = 'IssuesEvent' AND action = 'opened') AS ratio\nFROM github_events\nGROUP BY repo_name\nHAVING issues > 0\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "anthropic/claude-opus-4": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    countIf(event_type = 'IssueCommentEvent') AS comment_count,\n    countIf(event_type = 'IssuesEvent' AND action = 'opened') AS issue_count,\n    comment_count / issue_count AS comment_to_issue_ratio\nFROM github_events\nWHERE event_type IN ('IssueCommentEvent', 'IssuesEvent')\nGROUP BY repo_name\nHAVING issue_count > 0\nORDER BY comment_to_issue_ratio DESC\nLIMIT 10\n"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    countIf(event_type = 'IssuesEvent' AND action = 'opened') as issues_count,\n    countIf(event_type = 'IssueCommentEvent') as issue_comments_count,\n    CASE \n        WHEN issues_count > 0 \n        THEN issue_comments_count / issues_count \n        ELSE 0 \n    END as comment_to_issue_ratio\nFROM github_events\nWHERE event_type IN ('IssuesEvent', 'IssueCommentEvent')\nGROUP BY repo_name\nHAVING issues_count > 0\nORDER BY comment_to_issue_ratio DESC\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    COUNTIf(event_type = 'IssueCommentEvent') / COUNTIf(event_type = 'IssuesEvent' AND action = 'opened') AS issue_comment_to_issue_ratio\nFROM github_events\nWHERE event_type IN ('IssueCommentEvent', 'IssuesEvent')\nGROUP BY repo_name\nHAVING COUNTIf(event_type = 'IssuesEvent' AND action = 'opened') > 0\nORDER BY issue_comment_to_issue_ratio DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -11411,12 +12741,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.034001688,
-        "rows_read": 1250141,
-        "bytes_read": 6745397
+        "elapsed": 0.030065179,
+        "rows_read": 1017530,
+        "bytes_read": 6533144
       },
-      "executionTime": 0.054,
-      "requestId": "01JTN5MV16KBD9CABW3X0W78F1"
+      "executionTime": 0.075,
+      "requestId": "01JVWGWG8EKQ56DP5YQXDQG45G"
     }
   },
   "pipe_36.pipe": {
@@ -11686,6 +13016,34 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  number issue_number,\n  count() comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\n  AND action = 'created'\nGROUP BY\n  repo_name,\n  number\nORDER BY\n  comment_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    number,\n    comments\nFROM github_events \nWHERE event_type = 'IssuesEvent' \n    AND action = 'opened'\n    AND comments > 0\nORDER BY comments DESC\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    number AS issue_number,\n    MAX(comments) AS total_comments\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nGROUP BY repo_name, issue_number\nORDER BY total_comments DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -11737,8 +13095,8 @@
           "comments": 99
         },
         {
-          "repo_name": "nose-devs/nose",
-          "number": 125,
+          "repo_name": "contao/issues",
+          "number": 2,
           "comments": 97
         }
       ],
@@ -11757,12 +13115,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.027527006,
-        "rows_read": 1250141,
-        "bytes_read": 7661273
+        "elapsed": 0.030422924,
+        "rows_read": 1017530,
+        "bytes_read": 7452413
       },
-      "executionTime": 0.046,
-      "requestId": "01JTN5MW26Y7ZK616P0E0W2ASQ"
+      "executionTime": 0.074,
+      "requestId": "01JVWGWHA2BTFY8N5SQQA2VAVJ"
     }
   },
   "pipe_37.pipe": {
@@ -12032,6 +13390,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  number,\n  count(*) comment_count,\n  uniq(actor_login) comment_authors\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\n  AND action = 'created'\n  AND number > 10\nGROUP BY\n  repo_name,\n  number\nHAVING\n  comment_authors >= 10\nORDER BY\n  comment_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-opus-4": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.5714285714285714,
+          "numeric": 0.7633203615228886,
+          "fScore": 0.6
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    number AS issue_number,\n    COUNT(*) AS comment_count,\n    COUNT(DISTINCT actor_login) AS unique_comment_authors\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\n    AND number > 10\nGROUP BY repo_name, number\nHAVING comment_count >= 10\nORDER BY comment_count DESC\nLIMIT 10\n"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    number,\n    title,\n    COUNT(*) as total_comments,\n    uniq(actor_login) as unique_comment_authors\nFROM github_events \nWHERE event_type = 'IssueCommentEvent' \n    AND number > 10\nGROUP BY repo_name, number, title\nHAVING total_comments >= 10\nORDER BY total_comments DESC\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.5714285714285714,
+          "numeric": 0.7633203615228886,
+          "fScore": 0.6
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    number AS issue_number,\n    COUNT(*) AS total_comments,\n    COUNT(DISTINCT actor_login) AS unique_comment_authors\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name, issue_number\nHAVING total_comments >= 10 AND issue_number > 10\nORDER BY total_comments DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -12117,12 +13517,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.041129198,
-        "rows_read": 1250141,
-        "bytes_read": 9493025
+        "elapsed": 0.031696684,
+        "rows_read": 1017530,
+        "bytes_read": 9290951
       },
-      "executionTime": 0.06,
-      "requestId": "01JTN5MX2YVMNFTE199MJXDABQ"
+      "executionTime": 0.076,
+      "requestId": "01JVWGWJBQREAXHD0JWB7019CE"
     }
   },
   "pipe_38.pipe": {
@@ -12392,6 +13792,34 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n  repo_name, \n  count() event_count \nFROM github_events \nWHERE \n  (REGEXP_MATCHES(body, '(?i)tensorflow') \n   OR REGEXP_MATCHES(title, '(?i)tensorflow')) \nGROUP BY repo_name \nORDER BY event_count DESC \nLIMIT 10"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    count() as event_count\nFROM github_events \nWHERE lower(body) LIKE '%tensorflow%' \n   OR lower(title) LIKE '%tensorflow%'\n   OR lower(repo_name) LIKE '%tensorflow%'\nGROUP BY repo_name \nORDER BY event_count DESC \nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    count() AS event_count\nFROM github_events\nWHERE body ILIKE '%tensorflow%'\nGROUP BY repo_name\nORDER BY event_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -12449,12 +13877,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 4.751203294,
+        "elapsed": 3.501476424,
         "rows_read": 200000000,
-        "bytes_read": 29767745212
+        "bytes_read": 29763252736
       },
-      "executionTime": 4.796,
-      "requestId": "01JTN5MY4X7W1730JS77XDHZE2"
+      "executionTime": 3.716,
+      "requestId": "01JVWGWKJQ3WJXJ055PCGMSV0V"
     }
   },
   "pipe_39.pipe": {
@@ -12724,6 +14152,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  count() commit_comments\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY commit_comments DESC\nLIMIT 10"
+      },
+      "anthropic/claude-opus-4": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    count() AS commit_comments\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY commit_comments DESC\nLIMIT 10\n"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    count() as commit_comments_count\nFROM github_events \nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY commit_comments_count DESC\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    COUNT(*) AS commit_comment_count\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY commit_comment_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -12781,12 +14251,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.074816732,
-        "rows_read": 6806781,
-        "bytes_read": 20333343
+        "elapsed": 0.077063453,
+        "rows_read": 6792623,
+        "bytes_read": 20377869
       },
-      "executionTime": 0.094,
-      "requestId": "01JTN5N3SAPFRBRPXFRBD4TS8E"
+      "executionTime": 0.122,
+      "requestId": "01JVWGWR0W7TMJVXNFQFWGY3JG"
     }
   },
   "pipe_40.pipe": {
@@ -13056,6 +14526,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT concat('https://github.com/',repo_name,'/commit/',commit_id) commit_url, count() total_comments, uniqExact(actor_login) unique_authors\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name, commit_id\nHAVING uniqExact(actor_login) >= 10\nORDER BY total_comments DESC\nLIMIT 10"
+      },
+      "anthropic/claude-opus-4": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    concat('https://github.com/', repo_name, '/commit/', commit_id) as full_commit_url,\n    count() as total_comments,\n    uniqExact(actor_login) as unique_authors\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name, commit_id\nHAVING unique_authors >= 10\nORDER BY total_comments DESC\nLIMIT 10"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    CONCAT('https://github.com/', repo_name, '/commit/', commit_id) AS commit_url,\n    count() AS commit_events,\n    count(DISTINCT actor_login) AS unique_commenters,\n    uniq(actor_login) AS unique_authors\nFROM github_events \nWHERE event_type = 'CommitCommentEvent' \n    AND commit_id != ''\nGROUP BY repo_name, commit_id\nHAVING unique_commenters >= 10\nORDER BY commit_events DESC\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    concat('https://github.com/', repo_name, '/commit/', commit_id) AS commit_url,\n    count() AS total_comments,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name, commit_id\nHAVING uniq(actor_login) >= 10\nORDER BY total_comments DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -13127,12 +14639,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.275921944,
-        "rows_read": 6806781,
-        "bytes_read": 315403702
+        "elapsed": 0.245235256,
+        "rows_read": 6792623,
+        "bytes_read": 315236762
       },
-      "executionTime": 0.296,
-      "requestId": "01JTN5N4VHYPTCBV1P43VEJHVR"
+      "executionTime": 0.292,
+      "requestId": "01JVWGWS3Z2C9F5R5HQ7VXVEJE"
     }
   },
   "pipe_41.pipe": {
@@ -13402,6 +14914,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT concat('https://github.com/', repo_name, '/pull/', CAST(number AS String)) url, uniqExact(actor_login) unique_authors\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\nGROUP BY repo_name, number\nORDER BY unique_authors DESC\nLIMIT 10"
+      },
+      "anthropic/claude-opus-4": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0.18181818181818177,
+          "numeric": 0,
+          "fScore": 0.9
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    concat('https://github.com/', repo_name, '/pull/', toString(number)) AS pr_url,\n    count(DISTINCT actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\n    AND number > 0\nGROUP BY repo_name, number\nORDER BY unique_authors DESC\nLIMIT 10"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0.18181818181818177,
+          "numeric": 0,
+          "fScore": 0.9
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    CONCAT('https://github.com/', repo_name, '/pull/', toString(number)) as pr_url,\n    count(DISTINCT actor_login) as unique_authors\nFROM github_events \nWHERE event_type = 'PullRequestReviewCommentEvent' \n    AND number > 0\nGROUP BY repo_name, number\nORDER BY unique_authors DESC\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0.18181818181818177,
+          "numeric": 0,
+          "fScore": 0.9
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    concat('https://github.com/', repo_name, '/pull/', toString(number)) AS pr_url,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\nGROUP BY repo_name, number\nORDER BY unique_authors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -13420,7 +14974,7 @@
           "authors": 17
         },
         {
-          "URL": "https://github.com/symfony/symfony/pull/24411",
+          "URL": "https://github.com/symfony/recipes/pull/466",
           "authors": 16
         },
         {
@@ -13428,23 +14982,23 @@
           "authors": 16
         },
         {
-          "URL": "https://github.com/tgstation/tgstation/pull/34916",
-          "authors": 16
-        },
-        {
           "URL": "https://github.com/tgstation/tgstation/pull/40312",
           "authors": 16
         },
         {
-          "URL": "https://github.com/symfony/recipes/pull/466",
+          "URL": "https://github.com/tgstation/tgstation/pull/34916",
           "authors": 16
         },
         {
-          "URL": "https://github.com/ManageIQ/manageiq/pull/7517",
-          "authors": 15
+          "URL": "https://github.com/symfony/symfony/pull/24411",
+          "authors": 16
         },
         {
           "URL": "https://github.com/tgstation/tgstation/pull/35440",
+          "authors": 15
+        },
+        {
+          "URL": "https://github.com/jquery/jquery.org/pull/105",
           "authors": 15
         }
       ],
@@ -13459,12 +15013,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.067109167,
-        "rows_read": 4172440,
-        "bytes_read": 39109886
+        "elapsed": 0.06399496,
+        "rows_read": 3947090,
+        "bytes_read": 38630863
       },
-      "executionTime": 0.087,
-      "requestId": "01JTN5N6428XCXPP8DKYWXC9RV"
+      "executionTime": 0.107,
+      "requestId": "01JVWGWTCDZW672P0YV7YQAY9Z"
     }
   },
   "pipe_42.pipe": {
@@ -13734,6 +15288,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  actor_login,\n  count(*) pushes\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY pushes DESC\nLIMIT 10"
+      },
+      "anthropic/claude-opus-4": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    actor_login,\n    count() AS push_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY push_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    actor_login,\n    COUNT(*) as push_count\nFROM github_events \nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY push_count DESC\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    actor_login,\n    COUNT(*) AS push_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY push_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -13791,12 +15387,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.162183915,
-        "rows_read": 75689153,
-        "bytes_read": 223381427
+        "elapsed": 0.137538694,
+        "rows_read": 75572830,
+        "bytes_read": 226238267
       },
-      "executionTime": 0.181,
-      "requestId": "01JTN5N762R2V47HJBYRPA8ZX0"
+      "executionTime": 0.191,
+      "requestId": "01JVWGWVF3B6B5J324M3Z78C55"
     }
   },
   "pipe_43.pipe": {
@@ -14066,6 +15662,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT SUBSTRING_INDEX(repo_name, '/', 1) organization, count() stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY organization\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "anthropic/claude-opus-4": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    splitByChar('/', repo_name)[1] AS organization,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY organization\nORDER BY stars DESC\nLIMIT 10\n"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    splitByChar('/', repo_name)[1] as organization,\n    count(*) as stars\nFROM github_events \nWHERE event_type = 'WatchEvent'\nGROUP BY organization\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    splitByChar('/', repo_name)[1] AS organization,\n    count() AS stars_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY organization\nORDER BY stars_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -14123,12 +15761,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.053372069,
-        "rows_read": 7319235,
-        "bytes_read": 21919077
+        "elapsed": 0.045373232,
+        "rows_read": 7321600,
+        "bytes_read": 21926172
       },
-      "executionTime": 0.075,
-      "requestId": "01JTN5N8B1ZB49GVVD0RTAYP6S"
+      "executionTime": 0.092,
+      "requestId": "01JVWGWWMCDS9RKHSDCBPP3T1Y"
     }
   },
   "pipe_44.pipe": {
@@ -14398,6 +16036,34 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  SUBSTRING_INDEX(repo_name, '/', 1) organization,\n  uniqExact(repo_name) repo_count\nFROM github_events\nGROUP BY\n  organization\nORDER BY\n  repo_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    splitByChar('/', repo_name)[1] as organization,\n    uniq(repo_name) as repository_count\nFROM github_events\nWHERE repo_name != ''\nGROUP BY organization\nORDER BY repository_count DESC\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    splitByChar('/', repo_name)[1] AS organization,\n    COUNT(DISTINCT repo_name) AS repository_count\nFROM github_events\nGROUP BY organization\nORDER BY repository_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -14455,12 +16121,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.061594685,
-        "rows_read": 7319235,
-        "bytes_read": 21919077
+        "elapsed": 0.048595271,
+        "rows_read": 7321600,
+        "bytes_read": 21926172
       },
-      "executionTime": 0.08,
-      "requestId": "01JTN5N9CN7X4Y13GAWNPCN8ZK"
+      "executionTime": 0.109,
+      "requestId": "01JVWGWXPQ5ZCAR4SAEMQJFVYZ"
     }
   },
   "pipe_45.pipe": {
@@ -14730,6 +16396,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name AS repo,\n  count() AS pr_count,\n  uniqExact(actor_login) AS unique_authors,\n  sum(additions) AS total_adds,\n  sum(deletions) AS total_dels\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND additions < 10000\n  AND deletions < 10000\nGROUP BY repo_name\nORDER BY sum(additions) + sum(deletions) DESC\nLIMIT 10"
+      },
+      "anthropic/claude-opus-4": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    count(DISTINCT number) as pr_count,\n    count(DISTINCT actor_login) as unique_authors,\n    sum(additions) as total_adds,\n    sum(deletions) as total_dels,\n    sum(additions) + sum(deletions) as total_churn\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\n    AND additions < 10000\n    AND deletions < 10000\nGROUP BY repo_name\nORDER BY total_churn DESC\nLIMIT 10\n"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.8367030125422139,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    count(*) as pr_count,\n    uniq(actor_login) as unique_authors,\n    sum(additions) as total_adds,\n    sum(deletions) as total_dels,\n    sum(additions + deletions) as total_churn\nFROM github_events \nWHERE event_type = 'PullRequestEvent' \n    AND action = 'opened'\n    AND additions < 10000 \n    AND deletions < 10000\nGROUP BY repo_name\nORDER BY total_churn DESC\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.8367030125422139,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    count(number) AS pr_count,\n    uniq(actor_login) AS unique_authors,\n    sum(additions) AS total_adds,\n    sum(deletions) AS total_dels,\n    (sum(additions) + sum(deletions)) AS total_churn\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND additions < 10000\n  AND deletions < 10000\nGROUP BY repo_name\nORDER BY total_churn DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -14829,12 +16537,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.176928231,
-        "rows_read": 18564759,
-        "bytes_read": 256392615
+        "elapsed": 0.15284412,
+        "rows_read": 18340176,
+        "bytes_read": 255859913
       },
-      "executionTime": 0.196,
-      "requestId": "01JTN5NAEGTJNGG054RNXAR7A4"
+      "executionTime": 0.202,
+      "requestId": "01JVWGWYSF5R7EX3W2RY63RA99"
     }
   },
   "pipe_46.pipe": {
@@ -15104,6 +16812,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n  actor_login author, \n  count() pull_request_comments, \n  uniq(repo_name) unique_repos, \n  uniq(number) unique_prs \nFROM github_events \nWHERE event_type = 'PullRequestReviewCommentEvent' \n  AND action = 'created' \nGROUP BY actor_login \nORDER BY pull_request_comments DESC \nLIMIT 10"
+      },
+      "anthropic/claude-opus-4": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    actor_login as author,\n    count(*) as pull_request_comments,\n    uniqExact(repo_name) as unique_repositories,\n    uniqExact(number) as unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\nGROUP BY actor_login\nORDER BY pull_request_comments DESC\nLIMIT 10"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    actor_login as author,\n    count() as pr_comments_created,\n    uniq(repo_name) as unique_repositories,\n    uniq(number) as unique_prs\nFROM github_events \nWHERE event_type = 'PullRequestReviewCommentEvent' \n    AND action = 'created'\nGROUP BY actor_login \nORDER BY pr_comments_created DESC \nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    actor_login author,\n    COUNT(*) AS total_review_comments,\n    COUNT(DISTINCT repo_name) AS unique_repositories,\n    COUNT(DISTINCT number) AS unique_pull_requests\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent' AND action = 'created'\nGROUP BY author\nORDER BY total_review_comments DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -15189,12 +16939,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.058995494,
-        "rows_read": 4172440,
-        "bytes_read": 39109886
+        "elapsed": 0.049444631,
+        "rows_read": 3947090,
+        "bytes_read": 38630863
       },
-      "executionTime": 0.079,
-      "requestId": "01JTN5NBKY8NN8D0DS2ART5J38"
+      "executionTime": 0.097,
+      "requestId": "01JVWGWZZ1R3XDEB7ZKWRKVFQP"
     }
   },
   "pipe_47.pipe": {
@@ -15464,6 +17214,34 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT arrayJoin(labels) AS label, count() AS count\nFROM github_events\nWHERE ((event_type IN ('IssuesEvent','PullRequestEvent') AND action IN ('opened','labeled'))\n   OR (event_type = 'IssueCommentEvent' AND action = 'created'))\nGROUP BY label\nORDER BY count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    label,\n    count() as usage_count\nFROM github_events\nARRAY JOIN labels as label\nWHERE event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')\n    AND action IN ('created', 'opened', 'labeled')\n    AND label != ''\nGROUP BY label\nORDER BY usage_count DESC\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    label,\n    count() AS usage_count\nFROM github_events\nARRAY JOIN labels AS label\nWHERE event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')\n  AND action IN ('created', 'opened', 'labeled')\nGROUP BY label\nORDER BY usage_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -15521,12 +17299,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.127032683,
-        "rows_read": 34589909,
-        "bytes_read": 359810736
+        "elapsed": 0.106115457,
+        "rows_read": 34355563,
+        "bytes_read": 358387379
       },
-      "executionTime": 0.146,
-      "requestId": "01JTN5NCNNPBW7CY7SCT25ZCMG"
+      "executionTime": 0.149,
+      "requestId": "01JVWGX11B4GVBY3B5X8S9387F"
     }
   },
   "pipe_48.pipe": {
@@ -15796,6 +17574,34 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  SUBSTRING_INDEX(repo_name, '/', 1) AS organization,\n  uniq(actor_login) AS unique_authors,\n  uniq(CASE WHEN event_type = 'PullRequestEvent' AND action = 'opened' THEN actor_login ELSE NULL END) AS unique_pr_authors,\n  uniq(CASE WHEN event_type = 'IssuesEvent' AND action = 'opened' THEN actor_login ELSE NULL END) AS unique_issue_authors,\n  uniq(CASE WHEN event_type = 'IssueCommentEvent' THEN actor_login ELSE NULL END) AS unique_issue_comment_authors,\n  uniq(CASE WHEN event_type = 'PushEvent' THEN actor_login ELSE NULL END) AS unique_push_authors\nFROM github_events\nGROUP BY organization\nORDER BY unique_authors DESC\nLIMIT 10"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    splitByChar('/', repo_name)[1] as organization,\n    uniq(actor_login) as unique_authors,\n    uniqIf(actor_login, event_type = 'PullRequestEvent' AND action = 'opened') as unique_pr_authors,\n    uniqIf(actor_login, event_type = 'IssuesEvent' AND action = 'opened') as unique_issue_authors,\n    uniqIf(actor_login, event_type = 'IssueCommentEvent') as unique_issue_comment_authors,\n    uniqIf(actor_login, event_type = 'PushEvent') as unique_push_authors\nFROM github_events\nWHERE repo_name != '' AND organization != ''\nGROUP BY organization\nORDER BY unique_authors DESC\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    splitByChar('/', repo_name)[1] AS organization_name,\n    uniq(actor_login) AS unique_authors,\n    uniqIf(actor_login, event_type = 'PullRequestEvent' AND action = 'opened') AS unique_pull_request_authors,\n    uniqIf(actor_login, event_type = 'IssuesEvent' AND action = 'opened') AS unique_issue_authors,\n    uniqIf(actor_login, event_type = 'IssueCommentEvent' AND action = 'created') AS unique_issue_comment_authors,\n    uniqIf(actor_login, event_type = 'PushEvent') AS unique_push_authors\nFROM github_events\nGROUP BY organization_name\nORDER BY unique_authors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -15923,12 +17729,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 1.255305494,
-        "rows_read": 113921805,
-        "bytes_read": 561663376
+        "elapsed": 1.19607609,
+        "rows_read": 113695723,
+        "bytes_read": 567694996
       },
-      "executionTime": 1.302,
-      "requestId": "01JTN5NDT9109PACAXC370BPDG"
+      "executionTime": 1.331,
+      "requestId": "01JVWGX2836KB8XNQPV8G2JZ3B"
     }
   },
   "pipe_49.pipe": {
@@ -16198,6 +18004,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  char_length(repo_name) repo_name_length\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY repo_name_length DESC, repo_name ASC\nLIMIT 10"
+      },
+      "anthropic/claude-opus-4": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0.18181818181818177,
+          "numeric": 0,
+          "fScore": 0.9
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    length(repo_name) AS repo_name_length\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING count() >= 1\nORDER BY repo_name_length DESC\nLIMIT 10\n"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0.18181818181818177,
+          "numeric": 0,
+          "fScore": 0.9
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    length(repo_name) as repo_name_length\nFROM github_events \nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY repo_name_length DESC\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0.18181818181818177,
+          "numeric": 0,
+          "fScore": 0.9
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    CHAR_LENGTH(repo_name) repo_name_length\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY repo_name_length DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -16228,10 +18076,6 @@
           "name_length": 111
         },
         {
-          "repo_name": "ucdavis-bioinformatics-training/A-Primer-on-Using-the-Bioinformatics-Core-Administrated-Servers-and-Cluster-s-",
-          "name_length": 110
-        },
-        {
           "repo_name": "wakayama-pref-org/s_social_security_physical_disability_certificate_issued_situation_national_health_insurance",
           "name_length": 110
         },
@@ -16241,6 +18085,10 @@
         },
         {
           "repo_name": "reevesangie/https-nid.naver.com-nidlogin.login-svctype-262144-url-http-3A-2F-2Fm.cafe.naver.com-2FSectionMyCaf",
+          "name_length": 110
+        },
+        {
+          "repo_name": "ucdavis-bioinformatics-training/A-Primer-on-Using-the-Bioinformatics-Core-Administrated-Servers-and-Cluster-s-",
           "name_length": 110
         }
       ],
@@ -16255,12 +18103,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.041880371,
-        "rows_read": 7319235,
-        "bytes_read": 21919077
+        "elapsed": 0.034600478,
+        "rows_read": 7321600,
+        "bytes_read": 21926172
       },
-      "executionTime": 0.061,
-      "requestId": "01JTN5NG1HTMAQK3FH2B2ZBXNX"
+      "executionTime": 0.082,
+      "requestId": "01JVWGX4EBE0XEWHC8E4QVSC1N"
     }
   },
   "pipe_50.pipe": {
@@ -16530,6 +18378,34 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY char_length(repo_name), repo_name\nLIMIT 10"
+      },
+      "anthropic/claude-opus-4": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.6666666666666667,
+          "numeric": 1,
+          "fScore": 0.5
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT DISTINCT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING count() >= 1\nORDER BY length(repo_name) ASC\nLIMIT 10\n"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.75,
+          "numeric": 1,
+          "fScore": 0.40000000000000013
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT DISTINCT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\nORDER BY CHAR_LENGTH(repo_name) ASC, repo_name ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -16539,31 +18415,31 @@
           "repo_name": "tj/n"
         },
         {
-          "repo_name": "wq/wq"
-        },
-        {
           "repo_name": "tj/co"
         },
         {
-          "repo_name": "tj/go"
-        },
-        {
-          "repo_name": "tj/v8"
-        },
-        {
-          "repo_name": "z/kbx"
-        },
-        {
-          "repo_name": "s4/s4"
-        },
-        {
-          "repo_name": "sm/sm"
-        },
-        {
-          "repo_name": "ry/v8"
+          "repo_name": "qt/qt"
         },
         {
           "repo_name": "xo/xo"
+        },
+        {
+          "repo_name": "sn/sn"
+        },
+        {
+          "repo_name": "zg/sn"
+        },
+        {
+          "repo_name": "wg/kr"
+        },
+        {
+          "repo_name": "rr/rr"
+        },
+        {
+          "repo_name": "tj/es"
+        },
+        {
+          "repo_name": "unu/t"
         }
       ],
       "meta": [
@@ -16573,16 +18449,16 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.050462826,
-        "rows_read": 7319235,
-        "bytes_read": 21919077
+        "elapsed": 0.046769652,
+        "rows_read": 7321600,
+        "bytes_read": 21925410
       },
-      "executionTime": 0.069,
-      "requestId": "01JTN5NH2R88N5BR8DPPC55KMQ"
+      "executionTime": 0.091,
+      "requestId": "01JVWGX5G5DF0VGAY0AQJFBZCF"
     }
   },
   "_summary": {
-    "totalQuestions": 50,
+    "totalQuestions": 51,
     "modelStats": {
       "anthropic/claude-3.5-sonnet": {
         "totalMatches": 29,
@@ -16735,7 +18611,72 @@
         "avgExactDistance": 0.5412200956937799,
         "avgNumericDistance": 0.3688123300411849,
         "avgFScore": 0.46599999999999997
+      },
+      "anthropic/claude-opus-4": {
+        "totalMatches": 22,
+        "exactMatches": 15,
+        "numericMatches": 21,
+        "avgExactDistance": 0.341671784578359,
+        "avgNumericDistance": 0.2711202225218824,
+        "avgFScore": 0.3764705882352941
+      },
+      "anthropic/claude-sonnet-4": {
+        "totalMatches": 30,
+        "exactMatches": 20,
+        "numericMatches": 29,
+        "avgExactDistance": 0.5044563279857398,
+        "avgNumericDistance": 0.3577100810971648,
+        "avgFScore": 0.4823529411764705
+      },
+      "openai/gpt-4.5-preview": {
+        "totalMatches": 28,
+        "exactMatches": 22,
+        "numericMatches": 27,
+        "avgExactDistance": 0.5025967324728935,
+        "avgNumericDistance": 0.43601630141001135,
+        "avgFScore": 0.5078431372549018
       }
+    }
+  },
+  "generic_average_endpoint.pipe": {
+    "models": {
+      "anthropic/claude-opus-4": {
+        "matches": true,
+        "details": "Both results are empty",
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "sql": "%\nSELECT\n    {%if defined(group_by)%}\n        {{column(group_by)}}\n    {%else%}\n        model\n    {%end%} as group_by_column,\n    avg({%if defined(avg_column)%}{{column(avg_column)}}{%else%}llm_total_duration{%end%}) as average_value\nFROM results\nWHERE 1=1\n    {%if defined(model)%}\n    AND model = {{String(model, 'gpt-4')}}\n    {%end%}\n    {%if defined(provider)%}\n    AND provider = {{String(provider, 'openai')}}\n    {%end%}\n    {%if defined(name)%}\n    AND name = {{String(name, 'example_name')}}\n    {%end%}\nGROUP BY group_by_column\nORDER BY average_value DESC\nLIMIT 10"
+      },
+      "anthropic/claude-sonnet-4": {
+        "matches": true,
+        "details": "Both results are empty",
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "sql": "%\nSELECT \n    {{String(group_by_column, 'model')}} as group_column,\n    avg({{Float32(avg_column, 1.0)}}) as average_value\nFROM results\nWHERE 1=1\n{{% if defined(model_filter) %}}\n    AND model = '{{String(model_filter)}}'\n{{% end %}}\n{{% if defined(provider_filter) %}}\n    AND provider = '{{String(provider_filter)}}'\n{{% end %}}\n{{% if defined(name_filter) %}}\n    AND name = '{{String(name_filter)}}'\n{{% end %}}\nGROUP BY {{String(group_by_column, 'model')}}\nORDER BY average_value DESC\nLIMIT 10"
+      },
+      "openai/gpt-4.5-preview": {
+        "matches": true,
+        "details": "Both results are empty",
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "sql": "%\nSELECT\n    {{String(group_by_column, 'model')}} AS group_by,\n    avg({{String(average_column, 'llm_total_duration')}}) AS average_value\nFROM results\nWHERE 1=1\n{{% if defined(model) %}}\n    AND model = {{String(model, '')}}\n{{% end %}}\n{{% if defined(provider) %}}\n    AND provider = {{String(provider, '')}}\n{{% end %}}\n{{% if defined(name) %}}\n    AND name = {{String(name, '')}}\n{{% end %}}\nGROUP BY group_by\nORDER BY average_value DESC\nLIMIT {{Int(limit, 10)}} OFFSET {{Int(offset, 0)}}"
+      }
+    },
+    "humanResults": {
+      "success": false,
+      "data": [],
+      "executionTime": 0.231,
+      "requestId": "01JVWGV4P1VENYHHDCD78VMW25",
+      "error": "{\"error\": \"Resource 'results' not found\", \"documentation\": \"https://docs.tinybird.co/api-reference/query-api.html\"}"
     }
   }
 }
