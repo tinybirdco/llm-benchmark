@@ -40,6 +40,7 @@
         "gpt-4.1",
         "gpt-4.1-nano",
         "gpt-4o-mini",
+        "o3",
         "o3-mini",
         "o4-mini",
         "o4-mini-high"
