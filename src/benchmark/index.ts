@@ -179,7 +179,7 @@ function getCompletedQuestionsForModel(
 }
 
 async function main() {
-  await runHumanQueries();
+  // await runHumanQueries();
   await runBenchmark();
 
   const results = readExistingResults();
@@ -272,7 +272,7 @@ async function runModelBenchmark(
   completedQuestions: Set<string>
 ) {
   const client = getClient();
-  const questions = getEndpointQuestions();
+  const questions = getEndpointQuestions().slice(0, 1);
 
   const results: ChatResponse[] = [];
 

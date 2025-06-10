@@ -1,46 +1,8 @@
 {
   "providers": {
-    "anthropic": {
-      "models": [
-        "claude-3.5-sonnet",
-        "claude-3.7-sonnet"
-      ]
-    },
     "deepseek": {
       "models": [
-        "deepseek-chat-v3-0324",
-        "deepseek-chat-v3-0324:free"
-      ]
-    },
-    "google": {
-      "models": [
-        "gemini-2.0-flash-001",
-        "gemini-2.5-flash-preview",
-        "gemini-2.5-pro-preview-05-06"
-      ]
-    },
-    "meta-llama": {
-      "models": [
-        "llama-4-maverick",
-        "llama-4-scout",
-        "llama-3.3-70b-instruct"
-      ]
-    },
-    "mistralai": {
-      "models": [
-        "ministral-8b",
-        "mistral-small-3.1-24b-instruct",
-        "mistral-nemo"
-      ]
-    },
-    "openai": {
-      "models": [
-        "gpt-4.1",
-        "gpt-4.1-nano",
-        "gpt-4o-mini",
-        "o3-mini",
-        "o4-mini",
-        "o4-mini-high"
+        "deepseek-r1-distill-qwen-7b"
       ]
     }
   }
