@@ -3,10 +3,26 @@ import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { getConfig } from "./config";
 import { getDatasources, getEndpointQuestions } from "./resources";
 import { getSystemPrompt } from "./prompt";
+import { ChatResponse, SqlResult } from "./types";
 
 const router = createOpenRouter({
   apiKey: process.env.OPENROUTER_API_KEY,
 });
+
+// Debug logging function that only logs when LLM_DEBUG=1
+function debugLog(message: string, data?: Record<string, unknown>): void {
+  if (process.env.LLM_DEBUG === '1') {
+    console.log(`[DEBUG] ${message}`);
+    if (data !== undefined) {
+      if (typeof data === 'object') {
+        console.log(JSON.stringify(data, null, 2));
+      } else {
+        console.log(data);
+      }
+    }
+    console.log('-----------------------------------');
+  }
+}
 
 export function getClient() {
   const { tinybird } = getConfig();
@@ -30,17 +46,34 @@ export function getClient() {
     const requestId = response.headers.get("x-request-id") || "unknown";
 
     if (!response.ok) {
+      const errorText = await response.text();
+      debugLog("SQL Execution Error", {
+        sql,
+        error: errorText.slice(0, 500),
+        status: response.status,
+        requestId
+      });
+      
       return {
         success: false,
         data: [],
         executionTime,
         requestId,
-        error: (await response.text()).slice(0, 500),
+        error: errorText.slice(0, 500),
       };
     }
 
     try {
       const result = await response.json();
+      
+      debugLog("SQL Execution Success", {
+        sql,
+        resultRowCount: result.data?.length || 0,
+        executionTime,
+        requestId,
+        sampleData: result.data?.slice(0, 3) || []
+      });
+      
       return {
         success: true,
         data: result.data || [],
@@ -50,6 +83,11 @@ export function getClient() {
         requestId,
       };
     } catch (error) {
+      debugLog("SQL Result Parsing Error", {
+        sql,
+        error: error instanceof Error ? error.message?.slice(0, 500) : "Unknown error parsing response"
+      });
+      
       return {
         success: false,
         data: [],
@@ -80,6 +118,7 @@ export function getClient() {
     provider: string,
     model: string,
     systemPromptContent: string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     messages: any[]
   ): Promise<RouterResponse> {
     let timeToFirstToken = 0;
@@ -91,6 +130,15 @@ export function getClient() {
       completionTokens: 0,
       totalTokens: 0,
     };
+
+    debugLog("Calling LLM", {
+      provider,
+      model,
+      messages: messages.map(m => ({
+        role: m.role,
+        contentPreview: m.content.substring(0, 100) + (m.content.length > 100 ? '...' : '')
+      }))
+    });
 
     const overallStartTime = Date.now();
     let firstTokenTime = 0;
@@ -108,6 +156,12 @@ export function getClient() {
         firstTokenTime = Date.now();
         timeToFirstToken = (firstTokenTime - overallStartTime) / 1000; // in seconds
         isFirstToken = false;
+        
+        debugLog("Received first token", {
+          provider,
+          model,
+          timeToFirstToken
+        });
       }
 
       if (delta.type === "text-delta") {
@@ -116,7 +170,13 @@ export function getClient() {
           sql += textDelta;
         }
       } else if (delta.type === "error") {
-        throw new Error(`Error from model: ${JSON.stringify(delta.error)}`);
+        const errorMsg = `Error from model: ${JSON.stringify(delta.error)}`;
+        debugLog("LLM Error", {
+          provider,
+          model,
+          error: delta.error
+        });
+        throw new Error(errorMsg);
       }
     }
 
@@ -131,6 +191,15 @@ export function getClient() {
         tokenStats.completionTokens = usageData.completionTokens || 0;
         tokenStats.totalTokens = usageData.totalTokens || 0;
       }
+      
+      debugLog("LLM Response Complete", {
+        provider,
+        model,
+        totalDuration,
+        tokenStats,
+        sqlPreview: sql.substring(0, 200) + (sql.length > 200 ? '...' : '')
+      });
+      
     } catch (error) {
       console.error("Error getting token usage:", error);
     }
@@ -166,6 +235,13 @@ export function getClient() {
         ]
       );
     } catch (error) {
+      debugLog("Query Generation Error", {
+        provider,
+        model,
+        question: question.name,
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
+      
       return {
         sql: null,
         sqlResult: null,
@@ -184,6 +260,12 @@ export function getClient() {
         .replaceAll("```", "")
         .replaceAll(";", "") || null;
 
+    debugLog("Formatted SQL", {
+      original: response.sql?.substring(0, 100) + (response.sql && response.sql.length > 100 ? '...' : ''),
+      formatted: sql?.substring(0, 100) + (sql && sql.length > 100 ? '...' : ''),
+      query: question.name
+    });
+
     const metrics = response.metrics || null;
 
     let sqlResult: SqlResult | null = null;
@@ -191,14 +273,30 @@ export function getClient() {
 
     if (sql && shouldExecuteSql) {
       try {
+        debugLog("Warming SQL query", {
+          query: question.name,
+          sql
+        });
+        
         // Make a "warming" request first + small delay to ensure the warming request starts before the actual query
         executeSqlQuery(sql).catch(() => {});
         await new Promise((resolve) => setTimeout(resolve, 2_500));
 
+        debugLog("Executing actual SQL query", {
+          query: question.name,
+          sql
+        });
+        
         // Execute the actual query
         sqlResult = await executeSqlQuery(sql);
       } catch (e) {
         error = e instanceof Error ? e.message : "Unknown error";
+        
+        debugLog("SQL Execution Catch Block Error", {
+          query: question.name,
+          sql,
+          error
+        });
       }
     }
 

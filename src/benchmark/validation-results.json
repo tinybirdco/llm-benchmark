@@ -308,6 +308,48 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count(*) AS total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(*) as total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(*) AS total_stars FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT count() FROM github_events WHERE event_type = 'WatchEvent'"
       }
     },
     "humanResults": {
@@ -324,12 +366,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.003507203,
-        "rows_read": 24577,
-        "bytes_read": 24592
+        "elapsed": 0.003389542,
+        "rows_read": 32769,
+        "bytes_read": 32784
       },
-      "executionTime": 0.066,
-      "requestId": "01JVWGV5WNRQDKBJA6YKJWYNVX"
+      "executionTime": 0.04,
+      "requestId": "01JTN5KGZGVXR4S8EJE9JSPK5H"
     }
   },
   "pipe_02.pipe": {
@@ -641,6 +683,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name, \n    COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -698,12 +782,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.048932135,
-        "rows_read": 7321600,
-        "bytes_read": 21926172
+        "elapsed": 0.048980833,
+        "rows_read": 7319235,
+        "bytes_read": 21919077
       },
-      "executionTime": 0.099,
-      "requestId": "01JVWGV6Y27PZGBC1C99DB91D3"
+      "executionTime": 0.087,
+      "requestId": "01JTN5KJ01M99QDZXYDY1QM184"
     }
   },
   "pipe_03.pipe": {
@@ -1015,6 +1099,48 @@
         "humanRowCount": 5,
         "llmRowCount": 5,
         "sql": "SELECT\n    power_of_10,\n    count() AS repo_count\nFROM (\n    SELECT\n        repo_name,\n        floor(log10(count())) AS power_of_10\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n)\nGROUP BY power_of_10\nORDER BY power_of_10 ASC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 5,
+        "llmRowCount": 1,
+        "sql": "SELECT\n    powerOfTen,\n    COUNT(*) AS repo_count\nFROM (\n    SELECT\n        repo_name,\n        MAX(comments) AS star_count,\n        FLOOR(LOG10(MAX(comments))) AS powerOfTen\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n)\nGROUP BY powerOfTen\nORDER BY powerOfTen ASC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 5,
+        "llmRowCount": 5,
+        "sql": "SELECT\n    CASE\n        WHEN stars >= 1 AND stars < 10 THEN 1\n        WHEN stars >= 10 AND stars < 100 THEN 10\n        WHEN stars >= 100 AND stars < 1000 THEN 100\n        WHEN stars >= 1000 AND stars < 10000 THEN 1000\n        WHEN stars >= 10000 AND stars < 100000 THEN 10000\n        WHEN stars >= 100000 AND stars < 1000000 THEN 100000\n        ELSE 1000000\n    END AS bucket,\n    COUNT(*) AS repo_count\nFROM (\n    SELECT repo_name, COUNT(*) AS stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n) AS subquery_group\nGROUP BY bucket\nORDER BY bucket\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 5,
+        "llmRowCount": 5,
+        "sql": "SELECT\n    CASE\n        WHEN stars >= 1 AND stars < 10 THEN 1\n        WHEN stars >= 10 AND stars < 100 THEN 10\n        WHEN stars >= 100 AND stars < 1000 THEN 100\n        WHEN stars >= 1000 AND stars < 10000 THEN 1000\n        WHEN stars >= 10000 AND stars < 100000 THEN 10000\n        WHEN stars >= 100000 AND stars < 1000000 THEN 100000\n        ELSE 1000000\n    END AS star_bucket,\n    count() AS repository_count\nFROM\n(\n    SELECT\n        count() AS stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n)\nGROUP BY star_bucket\nORDER BY star_bucket ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -1052,12 +1178,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.094334929,
-        "rows_read": 7321600,
-        "bytes_read": 21926172
+        "elapsed": 0.088803963,
+        "rows_read": 7319235,
+        "bytes_read": 21919077
       },
-      "executionTime": 0.137,
-      "requestId": "01JVWGV80B60XW5KZYK7G4N5HZ"
+      "executionTime": 0.109,
+      "requestId": "01JTN5KK246DXY7QCTNWXP8EY1"
     }
   },
   "pipe_04.pipe": {
@@ -1369,6 +1495,48 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT COUNT(DISTINCT repo_name) AS total_repositories FROM github_events LIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(DISTINCT repo_name) AS total_repositories\nFROM github_events\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(DISTINCT repo_name) AS total_repos FROM github_events LIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.004930508785468425,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT uniq(repo_name) AS total_repositories FROM github_events"
       }
     },
     "humanResults": {
@@ -1385,12 +1553,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 1.417853311,
+        "elapsed": 1.315251897,
         "rows_read": 200000000,
-        "bytes_read": 399454533
+        "bytes_read": 394943756
       },
-      "executionTime": 1.586,
-      "requestId": "01JVWGV978XD6M1KSY6YMMXKMX"
+      "executionTime": 1.358,
+      "requestId": "01JTN5KM5HA71G4WX41M4KD79B"
     }
   },
   "pipe_05.pipe": {
@@ -1702,6 +1870,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    toYear(created_at) AS year,\n    repo_name,\n    count() AS total_events\nFROM github_events\nWHERE toYear(created_at) >= 2015\nGROUP BY\n    year,\n    repo_name\nORDER BY\n    year ASC,\n    total_events DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    toYear(created_at) AS year,\n    repo_name,\n    COUNT(*) AS event_count\nFROM github_events\nWHERE created_at >= '2015-01-01 00:00:00'\nGROUP BY year, repo_name\nORDER BY year, event_count DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT toYear(created_at) AS year, repo_name, count(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent' AND toYear(created_at) >= 2015\nGROUP BY year, repo_name\nORDER BY year, star_count DESC\nLIMIT 10 BY year\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    toYear(created_at) AS year,\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE\n    event_type = 'WatchEvent'\n    AND year >= 2015\nGROUP BY\n    year,\n    repo_name\nQUALIFY row_number() OVER (PARTITION BY year ORDER BY stars DESC) <= 10\nORDER BY\n    year ASC,\n    stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -1773,12 +1983,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.068744261,
-        "rows_read": 7321600,
-        "bytes_read": 51241738
+        "elapsed": 0.076035367,
+        "rows_read": 7319235,
+        "bytes_read": 51225945
       },
-      "executionTime": 0.134,
-      "requestId": "01JVWGVBMXX5FA5K0SXTKBHS9Z"
+      "executionTime": 0.096,
+      "requestId": "01JTN5KPEKKWQ9MQMXW0V65D06"
     }
   },
   "pipe_06.pipe": {
@@ -2090,6 +2300,48 @@
         "humanRowCount": 2,
         "llmRowCount": 2,
         "sql": "SELECT\n    toYear(created_at) AS year,\n    count() AS total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year ASC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 2,
+        "llmRowCount": 2,
+        "sql": "SELECT\n    toYear(created_at) AS year,\n    COUNT(*) AS total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year ASC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 2,
+        "llmRowCount": 2,
+        "sql": "SELECT YEAR(created_at) AS year, COUNT(*) AS total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 2,
+        "llmRowCount": 2,
+        "sql": "SELECT\n  YEAR(created_at) AS year,\n  count() AS total_stars\nFROM github_events\nWHERE\n  event_type = 'WatchEvent'\nGROUP BY\n  year\nORDER BY\n  year ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -2115,12 +2367,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.013957991,
-        "rows_read": 7321600,
-        "bytes_read": 36608000
+        "elapsed": 0.016956088,
+        "rows_read": 7319235,
+        "bytes_read": 36596175
       },
-      "executionTime": 0.062,
-      "requestId": "01JVWGVCRF8DDK626NG0H2H122"
+      "executionTime": 0.035,
+      "requestId": "01JTN5KQGWHG1NJ4C7MJH27X13"
     }
   },
   "pipe_07.pipe": {
@@ -2418,6 +2670,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    actor_login,\n    COUNT(*) AS stars_given\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY stars_given DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    actor_login, \n    COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT actor_login, COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    actor_login,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent' AND action = 'started'\nGROUP BY actor_login\nORDER BY stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -2475,12 +2769,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.192919694,
-        "rows_read": 7321600,
-        "bytes_read": 21964800
+        "elapsed": 0.19022966,
+        "rows_read": 7319235,
+        "bytes_read": 21957705
       },
-      "executionTime": 0.237,
-      "requestId": "01JVWGVDSPJ6T4YNYGJ4QSEN27"
+      "executionTime": 0.209,
+      "requestId": "01JTN5KRH98XCWP54XH3MHJMT7"
     }
   },
   "pipe_08.pipe": {
@@ -2792,6 +3086,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(*) AS stars_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND actor_login IN (\n      SELECT actor_login\n      FROM github_events\n      WHERE event_type = 'WatchEvent'\n        AND repo_name = 'tensorflow/tensorflow'\n  )\n  AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name\nORDER BY stars_count DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    ge.repo_name, \n    COUNT(*) as star_count\nFROM github_events ge\nWHERE ge.event_type = 'WatchEvent'\n    AND ge.actor_login IN (\n        SELECT DISTINCT actor_login \n        FROM github_events \n        WHERE event_type = 'WatchEvent' \n        AND repo_name = 'tensorflow/tensorflow'\n    )\n    AND ge.repo_name != 'tensorflow/tensorflow'\nGROUP BY ge.repo_name\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT e2.repo_name, COUNT(*) AS star_count\nFROM github_events e1\nJOIN github_events e2 ON e1.actor_login = e2.actor_login AND e2.event_type = 'WatchEvent'\nWHERE e1.event_type = 'WatchEvent' AND e1.repo_name = 'tensorflow/tensorflow' AND e2.repo_name != 'tensorflow/tensorflow'\nGROUP BY e2.repo_name\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.22277322028599822,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    T2.repo_name,\n    uniq(T2.actor_login) AS stars\nFROM github_events AS T1\nINNER JOIN github_events AS T2 ON T1.actor_login = T2.actor_login\nWHERE\n    T1.event_type = 'WatchEvent' AND T1.repo_name = 'tensorflow/tensorflow' AND T2.event_type = 'WatchEvent' AND T2.repo_name != 'tensorflow/tensorflow'\nGROUP BY T2.repo_name\nORDER BY stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -2849,12 +3185,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.140968453,
-        "rows_read": 7354368,
-        "bytes_read": 36680650
+        "elapsed": 0.151749218,
+        "rows_read": 7360195,
+        "bytes_read": 36693147
       },
-      "executionTime": 0.185,
-      "requestId": "01JVWGVF0E7K383CH54C9PKK15"
+      "executionTime": 0.186,
+      "requestId": "01JTN5KSQ3Z0M8R1NCZHFZ91KW"
     }
   },
   "pipe_09.pipe": {
@@ -3166,6 +3502,48 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "SELECT\n    actor_login,\n    countIf(repo_name LIKE 'javisantana/%') AS stars_to_javisantana,\n    countIf(repo_name NOT LIKE 'javisantana/%') AS stars_to_others,\n    stars_to_javisantana / (stars_to_javisantana + stars_to_others) AS ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nHAVING stars_to_javisantana > 0\nORDER BY ratio DESC, stars_to_javisantana DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT\n    actor_login AS user_name,\n    SUM(CASE WHEN repo_name LIKE 'javisantana/%' THEN 1 ELSE 0 END) AS javisantana_stars,\n    SUM(CASE WHEN repo_name NOT LIKE 'javisantana/%' THEN 1 ELSE 0 END) AS other_stars,\n    SUM(CASE WHEN repo_name LIKE 'javisantana/%' THEN 1 ELSE 0 END) / COUNT(*) AS javisantana_ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nHAVING javisantana_stars > 0\nORDER BY javisantana_ratio DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT\n  actor_login AS user_name,\n  SUM(IF(SUBSTRING_INDEX(repo_name, '/', 1) = 'javisantana', 1, 0)) AS stars_to_javisantana,\n  COUNT(*) - SUM(IF(SUBSTRING_INDEX(repo_name, '/', 1) = 'javisantana', 1, 0)) AS stars_to_other_repos,\n  (SUM(IF(SUBSTRING_INDEX(repo_name, '/', 1) = 'javisantana', 1, 0)) / COUNT(*)) AS ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nHAVING ratio > 0  -- To avoid users with 0 stars\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT\n    actor_login,\n    sum(if(REGEXP_EXTRACT(repo_name, '^([^/]+)') = 'javisantana', 1, 0)) AS javisantana_stars,\n    sum(if(REGEXP_EXTRACT(repo_name, '^([^/]+)') != 'javisantana', 1, 0)) AS other_stars,\n    javisantana_stars / count() AS ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nHAVING javisantana_stars > 0\nORDER BY ratio DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -3251,12 +3629,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.300338384,
-        "rows_read": 14643200,
-        "bytes_read": 58534172
+        "elapsed": 0.306655873,
+        "rows_read": 14638470,
+        "bytes_read": 58515252
       },
-      "executionTime": 0.348,
-      "requestId": "01JVWGVG5RACGH1V0JJPKJYJ83"
+      "executionTime": 0.326,
+      "requestId": "01JTN5KTW6T3D79MZVEWTS67BN"
     }
   },
   "pipe_10.pipe": {
@@ -3554,6 +3932,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) unique_contributors,\n    COUNT(*) total_pull_requests\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND actor_login IN (\n      SELECT DISTINCT actor_login\n      FROM github_events\n      WHERE event_type = 'PullRequestEvent'\n        AND action = 'opened'\n        AND repo_name = 'tensorflow/tensorflow'\n  )\n  AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name\nORDER BY unique_contributors DESC, total_pull_requests DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.18095166080355407,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    ge.repo_name,\n    COUNT(DISTINCT ge.actor_login) AS unique_contributors\nFROM github_events ge\nWHERE ge.event_type = 'PullRequestEvent'\n    AND ge.action = 'opened'\n    AND ge.repo_name != 'tensorflow/tensorflow'\n    AND ge.actor_login IN (\n        SELECT DISTINCT actor_login\n        FROM github_events\n        WHERE event_type = 'PullRequestEvent'\n            AND action = 'opened'\n            AND repo_name = 'tensorflow/tensorflow'\n    )\nGROUP BY ge.repo_name\nORDER BY unique_contributors DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.18095166080355407,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT pr.repo_name, COUNT(DISTINCT pr.actor_login) AS unique_contributors\nFROM github_events AS pr\nJOIN github_events AS tf ON pr.actor_login = tf.actor_login\nWHERE tf.repo_name = 'tensorflow/tensorflow' AND tf.event_type = 'PullRequestEvent' AND tf.action = 'opened'\nAND pr.event_type = 'PullRequestEvent' AND pr.action = 'opened' AND pr.repo_name != 'tensorflow/tensorflow'\nGROUP BY pr.repo_name\nORDER BY unique_contributors DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.9473684210526316,
+          "numeric": 0.6033737492838893,
+          "fScore": 0.09999999999999998
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    t2.repo_name,\n    count(DISTINCT t2.actor_login) AS unique_contributors\nFROM github_events AS t1\nINNER JOIN github_events AS t2 ON t1.actor_login = t2.actor_login\nWHERE t1.repo_name LIKE 'tensorflow/%' AND t1.event_type = 'PullRequestEvent' AND t2.repo_name NOT LIKE 'tensorflow/%' AND t2.event_type = 'PullRequestEvent' AND t2.action = 'opened'\nGROUP BY t2.repo_name\nORDER BY unique_contributors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -3564,11 +3984,11 @@
           "authors": 31
         },
         {
-          "repo_name": "scikit-learn/scikit-learn",
+          "repo_name": "pytorch/pytorch",
           "authors": 25
         },
         {
-          "repo_name": "pytorch/pytorch",
+          "repo_name": "scikit-learn/scikit-learn",
           "authors": 25
         },
         {
@@ -3584,11 +4004,11 @@
           "authors": 10
         },
         {
-          "repo_name": "kubernetes/kubernetes",
+          "repo_name": "python/cpython",
           "authors": 9
         },
         {
-          "repo_name": "python/cpython",
+          "repo_name": "kubernetes/kubernetes",
           "authors": 9
         },
         {
@@ -3596,7 +4016,7 @@
           "authors": 8
         },
         {
-          "repo_name": "syl20bnr/spacemacs",
+          "repo_name": "numpy/numpy",
           "authors": 7
         }
       ],
@@ -3611,12 +4031,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.130524407,
-        "rows_read": 36680352,
-        "bytes_read": 181426612
+        "elapsed": 0.155141698,
+        "rows_read": 37129518,
+        "bytes_read": 184711487
       },
-      "executionTime": 0.177,
-      "requestId": "01JVWGVHFWYVFMBE0Y3DJNXHK6"
+      "executionTime": 0.174,
+      "requestId": "01JTN5KW5PV21DHPG4TEZGD154"
     }
   },
   "pipe_11.pipe": {
@@ -3921,13 +4341,55 @@
         "numericMatches": false,
         "distance": {
           "exact": 1,
-          "numeric": 0.8669949501128696,
+          "numeric": 0.921366691261145,
           "fScore": 0
         },
         "details": "Results don't match",
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(*) AS issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n  AND action = 'opened'\n  AND actor_login IN (\n      SELECT DISTINCT actor_login\n      FROM github_events\n      WHERE event_type = 'IssuesEvent'\n        AND action = 'opened'\n        AND repo_name = 'tensorflow/tensorflow'\n  )\n  AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    ge.repo_name,\n    ge.actor_login,\n    COUNT(*) as issue_count,\n    RANK() OVER (PARTITION BY ge.repo_name ORDER BY issue_count DESC) as author_rank\nFROM github_events ge\nWHERE ge.event_type = 'IssuesEvent'\n    AND ge.action = 'opened'\n    AND ge.actor_login IN (\n        SELECT DISTINCT actor_login\n        FROM github_events\n        WHERE event_type = 'IssuesEvent'\n            AND action = 'opened'\n            AND repo_name = 'tensorflow/tensorflow'\n    )\nGROUP BY ge.repo_name, ge.actor_login\nORDER BY issue_count DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.8983882063777464,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT main.repo_name, COUNT(DISTINCT main.number) AS issue_count\nFROM github_events AS main\nJOIN github_events AS sub_users ON main.actor_login = sub_users.actor_login\nWHERE main.event_type = 'IssuesEvent' AND main.action = 'opened'\nAND sub_users.event_type = 'IssuesEvent' AND sub_users.action = 'opened' AND sub_users.repo_name = 'tensorflow/tensorflow'\nAND main.repo_name != 'tensorflow/tensorflow'\nGROUP BY main.repo_name\nORDER BY issue_count DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    t2.repo_name,\n    count() AS issues_count,\n    groupArray(t2.actor_login) AS authors\nFROM github_events AS t1\nINNER JOIN github_events AS t2 ON t1.actor_login = t2.actor_login\nWHERE t1.repo_name = 'tensorflow/tensorflow' AND t1.event_type = 'IssuesEvent' AND t1.action = 'opened' AND t2.event_type = 'IssuesEvent' AND t2.action = 'opened' AND t2.repo_name != 'tensorflow/tensorflow'\nGROUP BY\n    t2.repo_name\nORDER BY\n    issues_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -3979,8 +4441,8 @@
           "authors": 26
         },
         {
-          "repo_name": "pytorch/vision",
-          "prs": 120,
+          "repo_name": "scipy/scipy",
+          "prs": 81,
           "authors": 23
         }
       ],
@@ -3999,12 +4461,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.092943076,
-        "rows_read": 15342355,
-        "bytes_read": 82457064
+        "elapsed": 0.108104252,
+        "rows_read": 15857078,
+        "bytes_read": 85431490
       },
-      "executionTime": 0.165,
-      "requestId": "01JVWGVJMWKRSS7RQJ6AK42Q8W"
+      "executionTime": 0.128,
+      "requestId": "01JTN5KXAFGGKTZAGS0YB1C8M7"
     }
   },
   "pipe_12.pipe": {
@@ -4316,6 +4778,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT() AS stars_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name, DATE(created_at)\nORDER BY stars_count DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, count(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, max(c) AS max_daily_stars FROM (SELECT repo_name, count() AS c FROM github_events WHERE event_type = 'WatchEvent' GROUP BY repo_name, toDate(created_at)) GROUP BY repo_name ORDER BY max_daily_stars DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -4387,12 +4891,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.201811096,
-        "rows_read": 7321600,
-        "bytes_read": 51212572
+        "elapsed": 0.185731401,
+        "rows_read": 7319235,
+        "bytes_read": 51196017
       },
-      "executionTime": 0.25,
-      "requestId": "01JVWGVKS7EV1025FCDANCSXRC"
+      "executionTime": 0.21,
+      "requestId": "01JTN5KYDSH90R3J44Z1MWAXJ6"
     }
   },
   "pipe_13.pipe": {
@@ -4704,6 +5208,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNTIf(event_type = 'WatchEvent' AND created_at >= '2017-01-01' AND created_at < '2018-01-01') AS stars_2017,\n    COUNTIf(event_type = 'WatchEvent' AND created_at >= '2016-01-01' AND created_at < '2017-01-01') AS stars_2016,\n    (stars_2017 - stars_2016) AS growth,\n    ((stars_2017 - stars_2016) / stars_2016) * 100 AS growth_percentage\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING stars_2016 >= 1\nORDER BY growth_percentage DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    t1.repo_name, \n    t1.star_count_2017,\n    t2.star_count_2016,\n    (t1.star_count_2017 - t2.star_count_2016) as growth\nFROM \n    (SELECT repo_name, COUNT(*) as star_count_2017\n     FROM github_events\n     WHERE event_type = 'WatchEvent'\n     AND created_at >= '2017-01-01 00:00:00'\n     AND created_at < '2018-01-01 00:00:00'\n     GROUP BY repo_name) t1\nINNER JOIN \n    (SELECT repo_name, COUNT(*) as star_count_2016\n     FROM github_events\n     WHERE event_type = 'WatchEvent'\n     AND created_at >= '2016-01-01 00:00:00'\n     AND created_at < '2017-01-01 00:00:00'\n     GROUP BY repo_name) t2\nON t1.repo_name = t2.repo_name\nWHERE t2.star_count_2016 >= 1 \nAND (t1.star_count_2017 - t2.star_count_2016) > 0\nORDER BY growth DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  SUM(IF(YEAR(created_at) = 2016, 1, 0)) AS stars_2016,\n  SUM(IF(YEAR(created_at) = 2017, 1, 0)) AS stars_2017,\n  (SUM(IF(YEAR(created_at) = 2017, 1, 0)) - SUM(IF(YEAR(created_at) = 2016, 1, 0))) AS growth\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND YEAR(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING stars_2016 >= 1\nORDER BY growth DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.6337751278342458,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    (countIf(YEAR(created_at) = 2017) - countIf(YEAR(created_at) = 2016)) / CAST(countIf(YEAR(created_at) = 2016), 'Float64') AS yoy_growth\nFROM github_events\nWHERE\n    event_type = 'WatchEvent' AND YEAR(created_at) IN (2016, 2017)\nGROUP BY\n    repo_name\nHAVING\n    countIf(YEAR(created_at) = 2016) >= 1\nORDER BY\n    yoy_growth DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -4789,12 +5335,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.052805445,
-        "rows_read": 7321600,
-        "bytes_read": 51212572
+        "elapsed": 0.056378255,
+        "rows_read": 7319235,
+        "bytes_read": 51196017
       },
-      "executionTime": 0.098,
-      "requestId": "01JVWGVN0CQS4DEVX6XY629A6P"
+      "executionTime": 0.092,
+      "requestId": "01JTN5KZKNEM5PJP8FNVC5R4GQ"
     }
   },
   "pipe_14.pipe": {
@@ -5106,6 +5652,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNTIf(event_type = 'WatchEvent' AND toYear(created_at) = 2016) AS stars_2016,\n    COUNTIf(event_type = 'WatchEvent' AND toYear(created_at) = 2017) AS stars_2017,\n    (stars_2017 - stars_2016) AS star_diff\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING stars_2017 >= 1\nORDER BY star_diff ASC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    SUM(CASE WHEN toYear(created_at) = 2016 THEN 1 ELSE 0 END) AS stars_2016,\n    SUM(CASE WHEN toYear(created_at) = 2017 THEN 1 ELSE 0 END) AS stars_2017,\n    (stars_2017 - stars_2016) AS stagnation\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND toYear(created_at) IN (2016, 2017)\n    AND repo_name IN (\n        SELECT DISTINCT repo_name \n        FROM github_events \n        WHERE event_type = 'WatchEvent' \n        AND toYear(created_at) = 2017\n    )\nGROUP BY repo_name\nORDER BY stagnation ASC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  SUM(IF(YEAR(created_at) = 2016, 1, 0)) AS stars_2016,\n  SUM(IF(YEAR(created_at) = 2017, 1, 0)) AS stars_2017,\n  SUM(IF(YEAR(created_at) = 2016, 1, 0)) - SUM(IF(YEAR(created_at) = 2017, 1, 0)) AS stagnation\nFROM github_events\nWHERE event_type = 'WatchEvent' AND YEAR(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING SUM(IF(YEAR(created_at) = 2017, 1, 0)) >= 1\nORDER BY stagnation DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    countIf(year(created_at) = 2017) AS stars_2017,\n    countIf(year(created_at) = 2016) AS stars_2016,\n    stars_2017 - stars_2016 AS stagnation\nFROM github_events\nWHERE (event_type = 'WatchEvent') AND (year(created_at) IN (2016, 2017))\nGROUP BY repo_name\nHAVING stars_2017 > 0\nORDER BY stagnation ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -5191,12 +5779,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.04994782,
-        "rows_read": 7321600,
-        "bytes_read": 51212572
+        "elapsed": 0.055668621,
+        "rows_read": 7319235,
+        "bytes_read": 51196017
       },
-      "executionTime": 0.093,
-      "requestId": "01JVWGVP2RT3YH7AGZCW1Y5T4W"
+      "executionTime": 0.075,
+      "requestId": "01JTN5M0NVHHGMQAKXKT8RG7NJ"
     }
   },
   "pipe_15.pipe": {
@@ -5494,6 +6082,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(*) AS total_stars,\n    STDDEV_POP(toUnixTimestamp(created_at)) AS star_time_stddev\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY star_time_stddev ASC, total_stars DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    COUNT(*) AS total_stars,\n    COUNT(*) / DATEDIFF('day', MIN(created_at), MAX(created_at)) AS daily_growth_rate\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY daily_growth_rate DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, COUNT(*) AS total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY total_stars DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    stddevPop(weekly_stars) / avg(weekly_stars) AS coefficient_of_variation\nFROM\n(\n    SELECT\n        repo_name,\n        count() AS weekly_stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY\n        repo_name,\n        toStartOfWeek(created_at)\n)\nGROUP BY repo_name\nHAVING avg(weekly_stars) > 10\nORDER BY coefficient_of_variation ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -5579,12 +6209,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.207672954,
-        "rows_read": 7321600,
-        "bytes_read": 51212572
+        "elapsed": 0.240157008,
+        "rows_read": 7319235,
+        "bytes_read": 51196017
       },
-      "executionTime": 0.253,
-      "requestId": "01JVWGVQ51HQSMWCH6CT6MAS3Z"
+      "executionTime": 0.26,
+      "requestId": "01JTN5M1QFATAVT5Y6VG1NHMZ3"
     }
   },
   "pipe_16.pipe": {
@@ -5632,18 +6262,9 @@
         "sql": "SELECT \n    toDayOfWeek(created_at) AS day_of_week,\n    count() AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY star_count DESC\nLIMIT 10"
       },
       "deepseek/deepseek-chat-v3-0324:free": {
-        "matches": true,
-        "exactMatches": false,
-        "numericMatches": false,
-        "distance": {
-          "exact": 0,
-          "numeric": 0,
-          "fScore": 1
-        },
-        "details": "Results don't match",
-        "humanRowCount": 1,
-        "llmRowCount": 1,
-        "sql": ""
+        "matches": false,
+        "reason": "Missing data in results",
+        "sql": null
       },
       "google/gemini-2.0-flash-001": {
         "matches": false,
@@ -5896,6 +6517,48 @@
         "humanRowCount": 7,
         "llmRowCount": 7,
         "sql": "SELECT\n    toDayOfWeek(created_at) AS day_of_week,\n    count() AS stars_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY stars_count DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 7,
+        "llmRowCount": 7,
+        "sql": "SELECT\n    DAYOFWEEK(created_at) AS day_of_week,\n    COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 7,
+        "llmRowCount": 7,
+        "sql": "SELECT dayofweek(created_at) AS day_of_week, COUNT(*) AS event_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY event_count DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.013821492945413797,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 7,
+        "llmRowCount": 7,
+        "sql": "SELECT\n    multiIf(dayOfWeek(created_at) = 1, 'Monday', dayOfWeek(created_at) = 2, 'Tuesday', dayOfWeek(created_at) = 3, 'Wednesday', dayOfWeek(created_at) = 4, 'Thursday', dayOfWeek(created_at) = 5, 'Friday', dayOfWeek(created_at) = 6, 'Saturday', 'Sunday') AS day,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day\nORDER BY stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -5941,12 +6604,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.013581645,
-        "rows_read": 7321600,
-        "bytes_read": 36608000
+        "elapsed": 0.013890286,
+        "rows_read": 7319235,
+        "bytes_read": 36596175
       },
-      "executionTime": 0.057,
-      "requestId": "01JVWGVRC8YTGW2XGXFJFY9V51"
+      "executionTime": 0.032,
+      "requestId": "01JTN5M2YVN49KQS9ZEQW0Z4XH"
     }
   },
   "pipe_17.pipe": {
@@ -5957,7 +6620,7 @@
         "numericMatches": true,
         "distance": {
           "exact": 1,
-          "numeric": 5.2934128674804696e-05,
+          "numeric": 0.000052934128674804696,
           "fScore": 0
         },
         "details": "Results match within numeric threshold",
@@ -5971,7 +6634,7 @@
         "numericMatches": true,
         "distance": {
           "exact": 1,
-          "numeric": 5.2934128674804696e-05,
+          "numeric": 0.000052934128674804696,
           "fScore": 0
         },
         "details": "Results match within numeric threshold",
@@ -5985,7 +6648,7 @@
         "numericMatches": true,
         "distance": {
           "exact": 1,
-          "numeric": 5.304021190625461e-05,
+          "numeric": 0.00005304021190625461,
           "fScore": 0
         },
         "details": "Results match within numeric threshold",
@@ -5999,7 +6662,7 @@
         "numericMatches": true,
         "distance": {
           "exact": 1,
-          "numeric": 5.2934128674804696e-05,
+          "numeric": 0.000052934128674804696,
           "fScore": 0
         },
         "details": "Results match within numeric threshold",
@@ -6013,7 +6676,7 @@
         "numericMatches": true,
         "distance": {
           "exact": 1,
-          "numeric": 5.2934128674804696e-05,
+          "numeric": 0.000052934128674804696,
           "fScore": 0
         },
         "details": "Results match within numeric threshold",
@@ -6027,7 +6690,7 @@
         "numericMatches": true,
         "distance": {
           "exact": 1,
-          "numeric": 5.2934128674804696e-05,
+          "numeric": 0.000052934128674804696,
           "fScore": 0
         },
         "details": "Results match within numeric threshold",
@@ -6041,7 +6704,7 @@
         "numericMatches": true,
         "distance": {
           "exact": 1,
-          "numeric": 5.2934128674804696e-05,
+          "numeric": 0.000052934128674804696,
           "fScore": 0
         },
         "details": "Results match within numeric threshold",
@@ -6055,7 +6718,7 @@
         "numericMatches": true,
         "distance": {
           "exact": 1,
-          "numeric": 5.2934128674804696e-05,
+          "numeric": 0.000052934128674804696,
           "fScore": 0
         },
         "details": "Results match within numeric threshold",
@@ -6069,7 +6732,7 @@
         "numericMatches": true,
         "distance": {
           "exact": 1,
-          "numeric": 5.2934128674804696e-05,
+          "numeric": 0.000052934128674804696,
           "fScore": 0
         },
         "details": "Results match within numeric threshold",
@@ -6083,7 +6746,7 @@
         "numericMatches": true,
         "distance": {
           "exact": 1,
-          "numeric": 5.2934128674804696e-05,
+          "numeric": 0.000052934128674804696,
           "fScore": 0
         },
         "details": "Results match within numeric threshold",
@@ -6097,7 +6760,7 @@
         "numericMatches": true,
         "distance": {
           "exact": 1,
-          "numeric": 5.2934128674804696e-05,
+          "numeric": 0.000052934128674804696,
           "fScore": 0
         },
         "details": "Results match within numeric threshold",
@@ -6111,7 +6774,7 @@
         "numericMatches": true,
         "distance": {
           "exact": 1,
-          "numeric": 5.2934128674804696e-05,
+          "numeric": 0.000052934128674804696,
           "fScore": 0
         },
         "details": "Results match within numeric threshold",
@@ -6125,7 +6788,7 @@
         "numericMatches": true,
         "distance": {
           "exact": 1,
-          "numeric": 5.2934128674804696e-05,
+          "numeric": 0.000052934128674804696,
           "fScore": 0
         },
         "details": "Results match within numeric threshold",
@@ -6139,7 +6802,7 @@
         "numericMatches": true,
         "distance": {
           "exact": 1,
-          "numeric": 5.2934128674804696e-05,
+          "numeric": 0.000052934128674804696,
           "fScore": 0
         },
         "details": "Results match within numeric threshold",
@@ -6153,7 +6816,7 @@
         "numericMatches": true,
         "distance": {
           "exact": 1,
-          "numeric": 5.2934128674804696e-05,
+          "numeric": 0.000052934128674804696,
           "fScore": 0
         },
         "details": "Results match within numeric threshold",
@@ -6167,7 +6830,7 @@
         "numericMatches": true,
         "distance": {
           "exact": 1,
-          "numeric": 5.2934128674804696e-05,
+          "numeric": 0.000052934128674804696,
           "fScore": 0
         },
         "details": "Results match within numeric threshold",
@@ -6181,7 +6844,7 @@
         "numericMatches": true,
         "distance": {
           "exact": 1,
-          "numeric": 5.2934128674804696e-05,
+          "numeric": 0.000052934128674804696,
           "fScore": 0
         },
         "details": "Results match within numeric threshold",
@@ -6195,7 +6858,7 @@
         "numericMatches": true,
         "distance": {
           "exact": 1,
-          "numeric": 5.2934128674804696e-05,
+          "numeric": 0.000052934128674804696,
           "fScore": 0
         },
         "details": "Results match within numeric threshold",
@@ -6209,7 +6872,7 @@
         "numericMatches": true,
         "distance": {
           "exact": 1,
-          "numeric": 5.2934128674804696e-05,
+          "numeric": 0.000052934128674804696,
           "fScore": 0
         },
         "details": "Results match within numeric threshold",
@@ -6223,7 +6886,7 @@
         "numericMatches": true,
         "distance": {
           "exact": 1,
-          "numeric": 5.2934128674804696e-05,
+          "numeric": 0.000052934128674804696,
           "fScore": 0
         },
         "details": "Results match within numeric threshold",
@@ -6237,7 +6900,7 @@
         "numericMatches": true,
         "distance": {
           "exact": 1,
-          "numeric": 5.2934128674804696e-05,
+          "numeric": 0.000052934128674804696,
           "fScore": 0
         },
         "details": "Results match within numeric threshold",
@@ -6258,6 +6921,48 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniq(actor_login) AS total_users FROM github_events LIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.000052934128674804696,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(DISTINCT actor_login) AS total_users\nFROM github_events\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.000052934128674804696,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(DISTINCT actor_login) AS total_users FROM github_events LIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.000052934128674804696,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT uniqExact(actor_login) FROM github_events LIMIT 10"
       }
     },
     "humanResults": {
@@ -6274,12 +6979,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.458891055,
+        "elapsed": 0.493136245,
         "rows_read": 200000000,
-        "bytes_read": 399455549
+        "bytes_read": 394865005
       },
       "executionTime": 0.512,
-      "requestId": "01JVWGVSDDC22E6S4QG9XEQ2Z6"
+      "requestId": "01JTN5M3Z4GGQK6GVE4XR95W0C"
     }
   },
   "pipe_18.pipe": {
@@ -6591,6 +7296,48 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniq(actor_login) total_users\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0014793406252330366,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(DISTINCT actor_login) AS total_users\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0014793406252330366,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(DISTINCT actor_login) AS total_users FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0014793406252330366,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT count(DISTINCT actor_login) FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10"
       }
     },
     "humanResults": {
@@ -6607,12 +7354,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.121904477,
-        "rows_read": 7321600,
-        "bytes_read": 21964800
+        "elapsed": 0.110345661,
+        "rows_read": 7319235,
+        "bytes_read": 21957705
       },
-      "executionTime": 0.165,
-      "requestId": "01JVWGVTWRQ111GPHWC19APGXH"
+      "executionTime": 0.128,
+      "requestId": "01JTN5M5EDXH7CVCFCP03ZSZ18"
     }
   },
   "pipe_19.pipe": {
@@ -6910,6 +7657,48 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT\n    COUNT(DISTINCT actor_login) AS total_users_with_push\nFROM github_events\nWHERE event_type = 'PushEvent'\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0018759619527295886,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(DISTINCT actor_login) AS total_users_with_push\nFROM github_events\nWHERE event_type = 'PushEvent'\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0018759619527295886,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(DISTINCT actor_login) AS total_users\nFROM github_events\nWHERE event_type = 'PushEvent'\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0018759619527295886,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT\n    count(DISTINCT actor_login)\nFROM github_events\nWHERE event_type = 'PushEvent'"
       }
     },
     "humanResults": {
@@ -6926,12 +7715,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.130978206,
-        "rows_read": 75572830,
-        "bytes_read": 226238267
+        "elapsed": 0.154536048,
+        "rows_read": 75689153,
+        "bytes_read": 223381427
       },
-      "executionTime": 0.176,
-      "requestId": "01JVWGVW17Y5RSZJREDGZMWZ0M"
+      "executionTime": 0.173,
+      "requestId": "01JTN5M6HQ2GWF3AN58E00R9JB"
     }
   },
   "pipe_20.pipe": {
@@ -7229,6 +8018,48 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT\n    uniq(actor_login) AS total_users\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0017507922334856522,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(DISTINCT actor_login) AS total_users\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0017507922334856522,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(DISTINCT actor_login) AS total_users FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' LIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0017507922334856522,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT\n    count(DISTINCT actor_login)\nFROM github_events\nWHERE\n    event_type = 'PullRequestEvent' AND action = 'opened'"
       }
     },
     "humanResults": {
@@ -7245,12 +8076,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.080440809,
-        "rows_read": 18340176,
-        "bytes_read": 73167486
+        "elapsed": 0.086800121,
+        "rows_read": 18564759,
+        "bytes_read": 73368008
       },
-      "executionTime": 0.126,
-      "requestId": "01JVWGVX62HYF03XVB4W7BSZFN"
+      "executionTime": 0.105,
+      "requestId": "01JTN5M7PERXYAAKH77D5GKTJ6"
     }
   },
   "pipe_21.pipe": {
@@ -7562,6 +8393,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND actor_login IN (\n      SELECT DISTINCT actor_login\n      FROM github_events\n      WHERE event_type = 'PullRequestEvent'\n        AND action = 'opened'\n  )\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    ge.repo_name, \n    COUNT(*) as star_count\nFROM github_events ge\nWHERE ge.event_type = 'WatchEvent'\nAND ge.actor_login IN (\n    SELECT DISTINCT actor_login \n    FROM github_events \n    WHERE event_type = 'PullRequestEvent' \n    AND action = 'opened'\n)\nGROUP BY ge.repo_name\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT w.repo_name, COUNT(*) AS star_count\nFROM github_events AS w\nINNER JOIN github_events AS pr ON w.actor_login = pr.actor_login AND pr.event_type = 'PullRequestEvent' AND pr.action = 'opened'\nWHERE w.event_type = 'WatchEvent'\nGROUP BY w.repo_name\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.2881151347249415,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    t1.repo_name,\n    count(DISTINCT t1.actor_login) AS stars\nFROM github_events AS t1\nINNER JOIN github_events AS t2 ON t1.actor_login = t2.actor_login\nWHERE (t1.event_type = 'WatchEvent') AND (t2.event_type = 'PullRequestEvent' AND t2.action = 'opened')\nGROUP BY t1.repo_name\nORDER BY stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -7619,12 +8492,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.411671512,
-        "rows_read": 25661776,
-        "bytes_read": 109766024
+        "elapsed": 0.465112267,
+        "rows_read": 25883994,
+        "bytes_read": 109955483
       },
-      "executionTime": 0.469,
-      "requestId": "01JVWGVY9RSC0G0G8MD1W2MEVA"
+      "executionTime": 0.484,
+      "requestId": "01JTN5M8S15KG1DRPZ8A5FKS8V"
     }
   },
   "pipe_22.pipe": {
@@ -7922,6 +8795,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(DISTINCT number) AS total_prs\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\nGROUP BY repo_name, actor_login\nHAVING COUNT(DISTINCT number) >= 10\nORDER BY total_prs DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name, \n    actor_login AS author, \n    COUNT(*) AS pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' \n    AND action = 'opened'\nGROUP BY repo_name, actor_login\nHAVING pr_count >= 10\nORDER BY pr_count DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, SUM(pr_count) AS total_PRs_from_top_authors\nFROM (\n    SELECT repo_name, actor_login, COUNT(*) AS pr_count\n    FROM github_events\n    WHERE event_type = 'PullRequestEvent' AND action = 'opened'\n    GROUP BY repo_name, actor_login\n    HAVING pr_count >= 10\n) AS subquery\nGROUP BY repo_name\nORDER BY total_PRs_from_top_authors DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    count() AS c\nFROM\n(\n    SELECT\n        repo_name,\n        actor_login\n    FROM github_events\n    WHERE event_type = 'PullRequestEvent' AND action = 'opened'\n    GROUP BY\n        repo_name,\n        actor_login\n    HAVING count() >= 10\n)\nGROUP BY repo_name\nORDER BY c DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -7979,12 +8894,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.211675689,
-        "rows_read": 25661776,
-        "bytes_read": 109766024
+        "elapsed": 0.235189344,
+        "rows_read": 25883994,
+        "bytes_read": 109955483
       },
-      "executionTime": 0.276,
-      "requestId": "01JVWGVZQEPCY2XR3H730B0ZSN"
+      "executionTime": 0.256,
+      "requestId": "01JTN5MA7E6X5D3QGFJKFCEMHK"
     }
   },
   "pipe_23.pipe": {
@@ -8296,6 +9211,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(*) AS pull_request_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY pull_request_count DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.9929439966674258,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    COUNT(*) as pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\nGROUP BY repo_name\nORDER BY pr_count DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, COUNT(*) AS pull_request_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY pull_request_count DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    count() AS pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY pr_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -8353,12 +9310,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.081256986,
-        "rows_read": 18340176,
-        "bytes_read": 73167486
+        "elapsed": 0.095280679,
+        "rows_read": 18564759,
+        "bytes_read": 73326053
       },
-      "executionTime": 0.141,
-      "requestId": "01JVWGW0Z91YP5TP7K5CQQSN7P"
+      "executionTime": 0.114,
+      "requestId": "01JTN5MBEQ0071XM4TC8WQNM1V"
     }
   },
   "pipe_24.pipe": {
@@ -8670,6 +9627,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    uniq(actor_login) AS contributors_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\nGROUP BY repo_name\nORDER BY contributors_count DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0.9473684210526316,
+          "numeric": 0.007013121364457529,
+          "fScore": 0.09999999999999998
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS contributor_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\nGROUP BY repo_name\nORDER BY contributor_count DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, COUNT(DISTINCT actor_login) AS contributor_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY contributor_count DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    uniq(actor_login) AS pr_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY pr_contributors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -8727,12 +9726,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.142820937,
-        "rows_read": 18340176,
-        "bytes_read": 109719026
+        "elapsed": 0.161992541,
+        "rows_read": 18564759,
+        "bytes_read": 109818681
       },
-      "executionTime": 0.187,
-      "requestId": "01JVWGW231HXZXV7V540YJVD9T"
+      "executionTime": 0.181,
+      "requestId": "01JTN5MCHKXAKAEDXB8KGTPM9B"
     }
   },
   "pipe_25.pipe": {
@@ -9044,6 +10043,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(*) AS issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.6666666666666667,
+          "numeric": 0.7423662929097522,
+          "fScore": 0.5
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    COUNT(*) as issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, COUNT(*) AS issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    count() AS issues\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY issues DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -9101,12 +10142,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.06346087,
-        "rows_read": 15208764,
-        "bytes_read": 60638448
+        "elapsed": 0.078165991,
+        "rows_read": 15470766,
+        "bytes_read": 61143811
       },
-      "executionTime": 0.127,
-      "requestId": "01JVWGW38VMB7MTK9V21C4FRD0"
+      "executionTime": 0.097,
+      "requestId": "01JTN5MDPHZWD3KE20N0WDZ8JK"
     }
   },
   "pipe_26.pipe": {
@@ -9404,6 +10445,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    uniq(actor_login) AS push_access_users\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY repo_name\nORDER BY push_access_users DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS push_access_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY repo_name\nORDER BY push_access_count DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, COUNT(DISTINCT member_login) AS member_count\nFROM github_events\nWHERE event_type = 'MemberEvent' AND action = 'added'\nGROUP BY repo_name\nORDER BY member_count DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    uniq(actor_login) AS pushers\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY repo_name\nORDER BY pushers DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -9461,12 +10544,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.606857659,
-        "rows_read": 82869854,
-        "bytes_read": 413340569
+        "elapsed": 0.91293473,
+        "rows_read": 82975620,
+        "bytes_read": 407391602
       },
-      "executionTime": 0.687,
-      "requestId": "01JVWGW4BFNVWYND5NX07BBA6T"
+      "executionTime": 0.932,
+      "requestId": "01JTN5MERV7JQKJKZ7VQJ6XDPE"
     }
   },
   "pipe_27.pipe": {
@@ -9764,6 +10847,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS push_access_users\nFROM github_events\nWHERE event_type = 'PushEvent'\n  AND ref = 'refs/heads/main'\nGROUP BY repo_name\nORDER BY push_access_users DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS push_access_count\nFROM github_events\nWHERE event_type = 'PushEvent'\n    AND base_ref = 'refs/heads/main'\nGROUP BY repo_name\nORDER BY push_access_count DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, COUNT(DISTINCT actor_login) AS push_users_count\nFROM github_events\nWHERE event_type = 'PushEvent' AND ref = 'refs/heads/main'\nGROUP BY repo_name\nORDER BY push_users_count DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    uniq(actor_login) AS pushers\nFROM github_events\nWHERE event_type = 'PushEvent' AND ref = 'refs/heads/main'\nGROUP BY repo_name\nORDER BY pushers DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -9782,11 +10907,11 @@
           "u": 172
         },
         {
-          "repo_name": "githubteacher/github-for-developers-sept-2015",
+          "repo_name": "cs371p-fall-2015/collatz-tests",
           "u": 170
         },
         {
-          "repo_name": "cs371p-fall-2015/collatz-tests",
+          "repo_name": "githubteacher/github-for-developers-sept-2015",
           "u": 170
         },
         {
@@ -9821,12 +10946,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.921372541,
-        "rows_read": 82869854,
-        "bytes_read": 2657268304
+        "elapsed": 1.120833113,
+        "rows_read": 82975620,
+        "bytes_read": 2651509833
       },
-      "executionTime": 1.059,
-      "requestId": "01JVWGW630XCPZKTS2GEDRAYH8"
+      "executionTime": 1.191,
+      "requestId": "01JTN5MGPTXX9M6FZPHGBH2CJP"
     }
   },
   "pipe_28.pipe": {
@@ -10138,6 +11263,48 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "SELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS push_access_users\nFROM github_events\nWHERE event_type = 'PushEvent'\n  AND base_ref = 'main'\n  AND repo_name IN (\n      SELECT repo_name\n      FROM github_events\n      WHERE event_type = 'WatchEvent'\n      GROUP BY repo_name\n      HAVING COUNT(*) > 99\n  )\nGROUP BY repo_name\nORDER BY push_access_users DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT \n    repo_name, \n    COUNT(DISTINCT actor_login) AS push_access_count\nFROM github_events\nWHERE event_type = 'PushEvent' \n    AND ref = 'refs/heads/main' \n    AND repo_name IN (\n        SELECT repo_name \n        FROM github_events \n        WHERE event_type = 'WatchEvent' \n        GROUP BY repo_name \n        HAVING COUNT(*) > 99\n    )\nGROUP BY repo_name\nORDER BY push_access_count DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name,\n       COUNT(DISTINCT IF(event_type = 'PushEvent' AND ref = 'refs/heads/main', actor_login, NULL)) AS push_access_count\nFROM github_events\nGROUP BY repo_name\nHAVING SUM(IF(event_type = 'WatchEvent', 1, 0)) > 99\nORDER BY push_access_count DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    uniqIf(actor_login, event_type = 'PushEvent' AND (ref IN ('refs/heads/main', 'refs/heads/master'))) AS push_access_count\nFROM github_events\nWHERE repo_name IN (\n    SELECT repo_name\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n    HAVING count() > 99\n)\nGROUP BY repo_name\nORDER BY push_access_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -10209,12 +11376,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.849359775,
-        "rows_read": 82702030,
-        "bytes_read": 2651712234
+        "elapsed": 1.020207635,
+        "rows_read": 82807796,
+        "bytes_read": 2646119992
       },
-      "executionTime": 0.895,
-      "requestId": "01JVWGW80R52QJWDCYFE29QJX6"
+      "executionTime": 1.04,
+      "requestId": "01JTN5MJSRGB8RMDP857RHCZPS"
     }
   },
   "pipe_29.pipe": {
@@ -10526,6 +11693,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(*) AS invitation_count\nFROM github_events\nWHERE event_type = 'MemberEvent' AND action = 'added'\nGROUP BY repo_name\nORDER BY invitation_count DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    COUNT(*) AS invitation_count\nFROM github_events\nWHERE event_type = 'MemberEvent' AND action = 'added'\nGROUP BY repo_name\nORDER BY invitation_count DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, COUNT(*) AS invitation_count\nFROM github_events\nWHERE event_type = 'MemberEvent' AND action = 'added'\nGROUP BY repo_name\nORDER BY invitation_count DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    count() AS invitations\nFROM github_events\nWHERE event_type = 'MemberEvent' AND action = 'added'\nGROUP BY repo_name\nORDER BY invitations DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -10583,12 +11792,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.028201816,
-        "rows_read": 219443,
-        "bytes_read": 563507
+        "elapsed": 0.026145805,
+        "rows_read": 459796,
+        "bytes_read": 803860
       },
-      "executionTime": 0.072,
-      "requestId": "01JVWGW9W1Z837EBRACE637TD8"
+      "executionTime": 0.044,
+      "requestId": "01JTN5MMSK2DG2T7GTJRKBEA51"
     }
   },
   "pipe_30.pipe": {
@@ -10900,6 +12109,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(*) AS fork_count\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY fork_count DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name, \n    COUNT(*) as fork_count\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY fork_count DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, COUNT(*) AS fork_count\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY fork_count DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    count() AS forks\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY forks DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -10957,12 +12208,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.060886116,
-        "rows_read": 5708062,
-        "bytes_read": 16969176
+        "elapsed": 0.066701573,
+        "rows_read": 5953720,
+        "bytes_read": 17262692
       },
-      "executionTime": 0.104,
-      "requestId": "01JVWGWAXKQKWKQJ42ZGF81TK0"
+      "executionTime": 0.085,
+      "requestId": "01JTN5MNT9RPASHFVRH49HZPED"
     }
   },
   "pipe_31.pipe": {
@@ -11260,6 +12511,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNTIf(event_type = 'WatchEvent') / COUNTIf(event_type = 'ForkEvent') AS stars_to_forks_ratio\nFROM github_events\nWHERE event_type IN ('WatchEvent', 'ForkEvent')\nGROUP BY repo_name\nHAVING COUNTIf(event_type = 'ForkEvent') > 0\nORDER BY stars_to_forks_ratio DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    SUM(CASE WHEN event_type = 'WatchEvent' THEN 1 ELSE 0 END) AS stars,\n    SUM(CASE WHEN event_type = 'ForkEvent' THEN 1 ELSE 0 END) AS forks,\n    (SUM(CASE WHEN event_type = 'WatchEvent' THEN 1 ELSE 0 END) / NULLIF(SUM(CASE WHEN event_type = 'ForkEvent' THEN 1 ELSE 0 END), 0)) AS stars_to_forks_ratio\nFROM github_events\nWHERE event_type IN ('WatchEvent', 'ForkEvent')\nGROUP BY repo_name\nHAVING forks > 0\nORDER BY stars_to_forks_ratio DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  SUM(If(event_type = 'WatchEvent', 1, 0)) AS stars,\n  SUM(If(event_type = 'ForkEvent', 1, 0)) AS forks,\n  CASE WHEN SUM(If(event_type = 'ForkEvent', 1, 0)) > 0 THEN SUM(If(event_type = 'WatchEvent', 1, 0)) / SUM(If(event_type = 'ForkEvent', 1, 0)) ELSE 0 END AS ratio\nFROM github_events\nGROUP BY repo_name\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    countIf(event_type = 'WatchEvent') AS stars,\n    countIf(event_type = 'ForkEvent') AS forks,\n    stars / forks AS ratio\nFROM github_events\nWHERE event_type IN ('WatchEvent', 'ForkEvent')\nGROUP BY repo_name\nHAVING forks > 0\nORDER BY ratio DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -11345,12 +12638,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.113772876,
-        "rows_read": 13029662,
-        "bytes_read": 38925655
+        "elapsed": 0.112963876,
+        "rows_read": 13272955,
+        "bytes_read": 39320346
       },
-      "executionTime": 0.168,
-      "requestId": "01JVWGWC0FGPH8MBGZSV6XB878"
+      "executionTime": 0.132,
+      "requestId": "01JTN5MPW6G7233FFMVGPDABEB"
     }
   },
   "pipe_32.pipe": {
@@ -11648,6 +12941,48 @@
         "humanRowCount": 1,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    countIf(event_type = 'WatchEvent') AS total_stars,\n    countIf(event_type = 'ForkEvent') AS total_forks,\n    round(total_stars / if(total_forks = 0, 1, total_forks), 2) AS stars_to_forks_ratio\nFROM github_events\nGROUP BY repo_name\nORDER BY total_stars DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT\n    SUM(CASE WHEN event_type = 'WatchEvent' THEN 1 ELSE 0 END) AS total_stars,\n    SUM(CASE WHEN event_type = 'ForkEvent' THEN 1 ELSE 0 END) AS total_forks,\n    ROUND(total_stars / NULLIF(total_forks, 0), 2) AS stars_to_forks_ratio\nFROM github_events\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT\n  SUM(CASE WHEN event_type = 'WatchEvent' THEN 1 ELSE 0 END) AS stars,\n  SUM(CASE WHEN event_type = 'ForkEvent' THEN 1 ELSE 0 END) AS forks,\n  ROUND(CAST(SUM(CASE WHEN event_type = 'WatchEvent' THEN 1 ELSE 0 END) AS Float64) / NULLIF(CAST(SUM(CASE WHEN event_type = 'ForkEvent' THEN 1 ELSE 0 END) AS Float64), 0), 2) AS ratio\nFROM github_events\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT\n    countIf(event_type = 'WatchEvent') AS stars,\n    countIf(event_type = 'ForkEvent') AS forks,\n    round(divide(stars, forks), 2) AS ratio\nFROM github_events\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -11674,12 +13009,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.011895106,
-        "rows_read": 13029662,
-        "bytes_read": 13029662
+        "elapsed": 0.015556008,
+        "rows_read": 13272955,
+        "bytes_read": 13272955
       },
-      "executionTime": 0.056,
-      "requestId": "01JVWGWD4R8852X1J4FHGA59A8"
+      "executionTime": 0.033,
+      "requestId": "01JTN5MQZKNGASBE4MNTF9K2QA"
     }
   },
   "pipe_33.pipe": {
@@ -11963,6 +13298,48 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count(*) AS total_issues_opened\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(*) as total_issues_opened\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(*) AS total_issues_opened FROM github_events WHERE event_type = 'IssuesEvent' AND action = 'opened' LIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT count() AS total_issues_opened FROM github_events WHERE event_type = 'IssuesEvent' AND action = 'opened' LIMIT 10"
       }
     },
     "humanResults": {
@@ -11979,12 +13356,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.014815488,
-        "rows_read": 15208764,
-        "bytes_read": 30351992
+        "elapsed": 0.019233222,
+        "rows_read": 15470766,
+        "bytes_read": 30701134
       },
-      "executionTime": 0.058,
-      "requestId": "01JVWGWE5TM0N6PT1MNGSGVRR6"
+      "executionTime": 0.038,
+      "requestId": "01JTN5MRZZXAPTXMTR9XXS0A2T"
     }
   },
   "pipe_34.pipe": {
@@ -12296,6 +13673,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(*) AS issue_comment_events\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY issue_comment_events DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    COUNT(*) AS issue_comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY issue_comment_count DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, COUNT(*) AS comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY comment_count DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    count() AS comments\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY comments DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -12353,12 +13772,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.021554734,
-        "rows_read": 1017530,
-        "bytes_read": 2856068
+        "elapsed": 0.027085342,
+        "rows_read": 1250141,
+        "bytes_read": 3081893
       },
-      "executionTime": 0.066,
-      "requestId": "01JVWGWF70529AJ0DP4WGFKDZB"
+      "executionTime": 0.046,
+      "requestId": "01JTN5MT0EGTHSXQ9DGYN4NAQM"
     }
   },
   "pipe_35.pipe": {
@@ -12656,6 +14075,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNTIf(event_type = 'IssueCommentEvent') / COUNTIf(event_type = 'IssuesEvent' AND action = 'opened') AS issue_comment_to_issue_ratio\nFROM github_events\nWHERE event_type IN ('IssueCommentEvent', 'IssuesEvent')\nGROUP BY repo_name\nHAVING COUNTIf(event_type = 'IssuesEvent' AND action = 'opened') > 0\nORDER BY issue_comment_to_issue_ratio DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    SUM(CASE WHEN event_type = 'IssueCommentEvent' THEN 1 ELSE 0 END) AS issue_comments,\n    SUM(CASE WHEN event_type = 'IssuesEvent' AND action = 'opened' THEN 1 ELSE 0 END) AS issues,\n    issue_comments / NULLIF(issues, 0) AS comment_to_issue_ratio\nFROM github_events\nGROUP BY repo_name\nHAVING issues > 0\nORDER BY comment_to_issue_ratio DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  SUM(CASE WHEN event_type = 'IssueCommentEvent' THEN 1 ELSE 0 END) AS issue_comments_count,\n  SUM(CASE WHEN event_type = 'IssuesEvent' AND action = 'opened' THEN 1 ELSE 0 END) AS issues_count,\n  CASE\n    WHEN SUM(CASE WHEN event_type = 'IssuesEvent' AND action = 'opened' THEN 1 ELSE 0 END) > 0\n    THEN SUM(CASE WHEN event_type = 'IssueCommentEvent' THEN 1 ELSE 0 END) / SUM(CASE WHEN event_type = 'IssuesEvent' AND action = 'opened' THEN 1 ELSE 0 END)\n    ELSE 0\n  END AS ratio\nFROM github_events\nGROUP BY repo_name\nHAVING ratio > 0  -- To avoid repositories with no issues\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    countIf(event_type = 'IssueCommentEvent' AND action = 'created') AS comments,\n    countIf(event_type = 'IssuesEvent' AND action = 'opened') AS issues,\n    comments / issues AS ratio\nFROM github_events\nWHERE event_type IN ('IssuesEvent', 'IssueCommentEvent')\nGROUP BY repo_name\nHAVING issues > 0\nORDER BY ratio DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -12741,12 +14202,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.030065179,
-        "rows_read": 1017530,
-        "bytes_read": 6533144
+        "elapsed": 0.034001688,
+        "rows_read": 1250141,
+        "bytes_read": 6745397
       },
-      "executionTime": 0.075,
-      "requestId": "01JVWGWG8EKQ56DP5YQXDQG45G"
+      "executionTime": 0.054,
+      "requestId": "01JTN5MV16KBD9CABW3X0W78F1"
     }
   },
   "pipe_36.pipe": {
@@ -13044,6 +14505,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    number AS issue_number,\n    MAX(comments) AS total_comments\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nGROUP BY repo_name, issue_number\nORDER BY total_comments DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    number AS issue_number,\n    comments AS comment_count\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nORDER BY comments DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, number, count(*) AS comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name, number\nORDER BY comment_count DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.18181818181818177,
+          "numeric": 0.4581689048996311,
+          "fScore": 0.9
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    number,\n    count() AS comments\nFROM github_events\nWHERE event_type = 'IssueCommentEvent' AND action = 'created'\nGROUP BY\n    repo_name,\n    number\nORDER BY comments DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -13095,8 +14598,8 @@
           "comments": 99
         },
         {
-          "repo_name": "contao/issues",
-          "number": 2,
+          "repo_name": "nose-devs/nose",
+          "number": 125,
           "comments": 97
         }
       ],
@@ -13115,12 +14618,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.030422924,
-        "rows_read": 1017530,
-        "bytes_read": 7452413
+        "elapsed": 0.027527006,
+        "rows_read": 1250141,
+        "bytes_read": 7661273
       },
-      "executionTime": 0.074,
-      "requestId": "01JVWGWHA2BTFY8N5SQQA2VAVJ"
+      "executionTime": 0.046,
+      "requestId": "01JTN5MW26Y7ZK616P0E0W2ASQ"
     }
   },
   "pipe_37.pipe": {
@@ -13432,6 +14935,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    number AS issue_number,\n    COUNT(*) AS total_comments,\n    COUNT(DISTINCT actor_login) AS unique_comment_authors\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name, issue_number\nHAVING total_comments >= 10 AND issue_number > 10\nORDER BY total_comments DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.5714285714285714,
+          "numeric": 0.7633203615228886,
+          "fScore": 0.6
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    number AS issue_number,\n    COUNT(*) AS comment_count,\n    COUNT(DISTINCT actor_login) AS unique_comment_authors\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nAND number > 10\nGROUP BY repo_name, number\nHAVING comment_count >= 10\nORDER BY comment_count DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.5714285714285714,
+          "numeric": 0.7633203615228886,
+          "fScore": 0.6
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  number AS issue_number,\n  COUNT(*) AS comment_count,\n  COUNT(DISTINCT actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'IssueCommentEvent' AND number > 10\nGROUP BY repo_name, number\nHAVING COUNT(*) >= 10\nORDER BY COUNT(*) DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.18181818181818177,
+          "numeric": 0.421543742516876,
+          "fScore": 0.9
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    number,\n    count() AS comments,\n    uniq(actor_login) AS authors\nFROM github_events\nWHERE event_type = 'IssueCommentEvent' AND action = 'created'\nGROUP BY\n    repo_name,\n    number\nHAVING\n    comments >= 10 AND authors >= 10\nORDER BY comments DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -13517,12 +15062,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.031696684,
-        "rows_read": 1017530,
-        "bytes_read": 9290951
+        "elapsed": 0.041129198,
+        "rows_read": 1250141,
+        "bytes_read": 9493025
       },
-      "executionTime": 0.076,
-      "requestId": "01JVWGWJBQREAXHD0JWB7019CE"
+      "executionTime": 0.06,
+      "requestId": "01JTN5MX2YVMNFTE199MJXDABQ"
     }
   },
   "pipe_38.pipe": {
@@ -13820,6 +15365,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS event_count\nFROM github_events\nWHERE body ILIKE '%tensorflow%'\nGROUP BY repo_name\nORDER BY event_count DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    COUNT(*) AS event_count\nFROM github_events\nWHERE body ILIKE '%tensorflow%'\nGROUP BY repo_name\nORDER BY event_count DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.5124684972975035,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, COUNT(*) AS event_count\nFROM github_events\nWHERE body LIKE '%tensorflow%'\nGROUP BY repo_name\nORDER BY event_count DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.9230778668143195,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    count() AS events_count\nFROM github_events\nWHERE\n    REGEXP_EXTRACT(body, '(?i)tensorflow', 0) != '' OR REGEXP_EXTRACT(title, '(?i)tensorflow', 0) != ''\nGROUP BY\n    repo_name\nORDER BY\n    events_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -13877,12 +15464,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 3.501476424,
+        "elapsed": 4.751203294,
         "rows_read": 200000000,
-        "bytes_read": 29763252736
+        "bytes_read": 29767745212
       },
-      "executionTime": 3.716,
-      "requestId": "01JVWGWKJQ3WJXJ055PCGMSV0V"
+      "executionTime": 4.796,
+      "requestId": "01JTN5MY4X7W1730JS77XDHZE2"
     }
   },
   "pipe_39.pipe": {
@@ -14194,6 +15781,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(*) AS commit_comment_count\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY commit_comment_count DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    COUNT(*) AS commit_comments_count\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY commit_comments_count DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, COUNT(*) AS commit_count\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY commit_count DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    count() AS comments\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY comments DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -14251,12 +15880,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.077063453,
-        "rows_read": 6792623,
-        "bytes_read": 20377869
+        "elapsed": 0.074816732,
+        "rows_read": 6806781,
+        "bytes_read": 20333343
       },
-      "executionTime": 0.122,
-      "requestId": "01JVWGWR0W7TMJVXNFQFWGY3JG"
+      "executionTime": 0.094,
+      "requestId": "01JTN5N3SAPFRBRPXFRBD4TS8E"
     }
   },
   "pipe_40.pipe": {
@@ -14568,6 +16197,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    concat('https://github.com/', repo_name, '/commit/', commit_id) AS commit_url,\n    count() AS total_comments,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name, commit_id\nHAVING uniq(actor_login) >= 10\nORDER BY total_comments DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    commit_id,\n    concat('https://github.com/', repo_name, '/commit/', commit_id) AS commit_url,\n    COUNT(*) AS total_comments,\n    COUNT(DISTINCT actor_login) AS unique_commenters\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY commit_id, repo_name\nHAVING unique_commenters >= 10\nORDER BY total_comments DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n  commit_id AS full_commit_url,\n  COUNT(*) AS total_comments,\n  COUNT(DISTINCT actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY commit_id\nHAVING COUNT(DISTINCT actor_login) >= 10\nORDER BY total_comments DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    concat('https://github.com/', repo_name, '/commit/', commit_id) AS commit_url,\n    count() AS total_comments,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY\n    commit_url,\n    repo_name,\n    commit_id\nHAVING unique_authors >= 10\nORDER BY total_comments DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -14639,12 +16310,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.245235256,
-        "rows_read": 6792623,
-        "bytes_read": 315236762
+        "elapsed": 0.275921944,
+        "rows_read": 6806781,
+        "bytes_read": 315403702
       },
-      "executionTime": 0.292,
-      "requestId": "01JVWGWS3Z2C9F5R5HQ7VXVEJE"
+      "executionTime": 0.296,
+      "requestId": "01JTN5N4VHYPTCBV1P43VEJHVR"
     }
   },
   "pipe_41.pipe": {
@@ -14931,14 +16602,14 @@
       },
       "anthropic/claude-sonnet-4": {
         "matches": true,
-        "exactMatches": false,
+        "exactMatches": true,
         "numericMatches": true,
         "distance": {
-          "exact": 0.18181818181818177,
+          "exact": 0,
           "numeric": 0,
-          "fScore": 0.9
+          "fScore": 1
         },
-        "details": "Results match within numeric threshold",
+        "details": "Results match within exact threshold",
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    CONCAT('https://github.com/', repo_name, '/pull/', toString(number)) as pr_url,\n    count(DISTINCT actor_login) as unique_authors\nFROM github_events \nWHERE event_type = 'PullRequestReviewCommentEvent' \n    AND number > 0\nGROUP BY repo_name, number\nORDER BY unique_authors DESC\nLIMIT 10"
@@ -14956,6 +16627,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    concat('https://github.com/', repo_name, '/pull/', toString(number)) AS pr_url,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\nGROUP BY repo_name, number\nORDER BY unique_authors DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0.33333333333333337,
+          "numeric": 0,
+          "fScore": 0.8000000000000002
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    concat('https://github.com/', repo_name, '/pull/', toString(number)) AS pr_url,\n    count(DISTINCT actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\nGROUP BY repo_name, number\nORDER BY unique_authors DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0.18181818181818177,
+          "numeric": 0,
+          "fScore": 0.9
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n  concat('https://github.com/', repo_name, '/pull/', toString(number)) AS full_url,\n  count(DISTINCT actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\nGROUP BY repo_name, number\nORDER BY unique_authors DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    concat('https://github.com/', repo_name, '/pull/', toString(number)) AS pr_url,\n    count(DISTINCT actor_login) AS unique_authors\nFROM github_events\nWHERE\n    event_type IN ('PullRequestReviewCommentEvent', 'PullRequestReviewEvent', 'IssueCommentEvent')\nGROUP BY\n    repo_name,\n    number\nHAVING\n    countIf(event_type LIKE 'PullRequest%') > 0\nORDER BY unique_authors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -14974,7 +16687,7 @@
           "authors": 17
         },
         {
-          "URL": "https://github.com/symfony/recipes/pull/466",
+          "URL": "https://github.com/symfony/symfony/pull/24411",
           "authors": 16
         },
         {
@@ -14982,23 +16695,23 @@
           "authors": 16
         },
         {
-          "URL": "https://github.com/tgstation/tgstation/pull/40312",
-          "authors": 16
-        },
-        {
           "URL": "https://github.com/tgstation/tgstation/pull/34916",
           "authors": 16
         },
         {
-          "URL": "https://github.com/symfony/symfony/pull/24411",
+          "URL": "https://github.com/tgstation/tgstation/pull/40312",
           "authors": 16
         },
         {
-          "URL": "https://github.com/tgstation/tgstation/pull/35440",
+          "URL": "https://github.com/symfony/recipes/pull/466",
+          "authors": 16
+        },
+        {
+          "URL": "https://github.com/ManageIQ/manageiq/pull/7517",
           "authors": 15
         },
         {
-          "URL": "https://github.com/jquery/jquery.org/pull/105",
+          "URL": "https://github.com/tgstation/tgstation/pull/35440",
           "authors": 15
         }
       ],
@@ -15013,12 +16726,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.06399496,
-        "rows_read": 3947090,
-        "bytes_read": 38630863
+        "elapsed": 0.067109167,
+        "rows_read": 4172440,
+        "bytes_read": 39109886
       },
-      "executionTime": 0.107,
-      "requestId": "01JVWGWTCDZW672P0YV7YQAY9Z"
+      "executionTime": 0.087,
+      "requestId": "01JTN5N6428XCXPP8DKYWXC9RV"
     }
   },
   "pipe_42.pipe": {
@@ -15330,6 +17043,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    actor_login,\n    COUNT(*) AS push_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY push_count DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    actor_login AS author,\n    COUNT(*) AS push_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY push_count DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT actor_login, COUNT(*) AS push_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY push_count DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    actor_login,\n    count() AS pushes\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY pushes DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -15387,12 +17142,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.137538694,
-        "rows_read": 75572830,
-        "bytes_read": 226238267
+        "elapsed": 0.162183915,
+        "rows_read": 75689153,
+        "bytes_read": 223381427
       },
-      "executionTime": 0.191,
-      "requestId": "01JVWGWVF3B6B5J324M3Z78C55"
+      "executionTime": 0.181,
+      "requestId": "01JTN5N762R2V47HJBYRPA8ZX0"
     }
   },
   "pipe_43.pipe": {
@@ -15704,6 +17459,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    splitByChar('/', repo_name)[1] AS organization,\n    count() AS stars_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY organization\nORDER BY stars_count DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    splitByChar('/', repo_name)[1] AS organization,\n    COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY organization\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT SUBSTRING_INDEX(repo_name, '/', 1) AS owner, COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY owner\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    substring_index(repo_name, '/', 1) AS user_or_org,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY\n    user_or_org\nORDER BY\n    stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -15761,12 +17558,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.045373232,
-        "rows_read": 7321600,
-        "bytes_read": 21926172
+        "elapsed": 0.053372069,
+        "rows_read": 7319235,
+        "bytes_read": 21919077
       },
-      "executionTime": 0.092,
-      "requestId": "01JVWGWWMCDS9RKHSDCBPP3T1Y"
+      "executionTime": 0.075,
+      "requestId": "01JTN5N8B1ZB49GVVD0RTAYP6S"
     }
   },
   "pipe_44.pipe": {
@@ -16064,6 +17861,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    splitByChar('/', repo_name)[1] AS organization,\n    COUNT(DISTINCT repo_name) AS repository_count\nFROM github_events\nGROUP BY organization\nORDER BY repository_count DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    splitByChar('/', repo_name)[1] AS org_name,\n    COUNT(DISTINCT repo_name) AS repo_count\nFROM github_events\nWHERE event_type = 'CreateEvent' AND ref_type = 'repository'\nGROUP BY org_name\nORDER BY repo_count DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT SUBSTRING_INDEX(repo_name, '/', 1) AS organization, COUNT(DISTINCT repo_name) AS repo_count\nFROM github_events\nGROUP BY organization\nORDER BY repo_count DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    substring_index(repo_name, '/', 1) AS organization,\n    count(DISTINCT repo_name) AS repository_count\nFROM github_events\nGROUP BY\n    organization\nORDER BY\n    repository_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -16121,12 +17960,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.048595271,
-        "rows_read": 7321600,
-        "bytes_read": 21926172
+        "elapsed": 0.061594685,
+        "rows_read": 7319235,
+        "bytes_read": 21919077
       },
-      "executionTime": 0.109,
-      "requestId": "01JVWGWXPQ5ZCAR4SAEMQJFVYZ"
+      "executionTime": 0.08,
+      "requestId": "01JTN5N9CN7X4Y13GAWNPCN8ZK"
     }
   },
   "pipe_45.pipe": {
@@ -16438,6 +18277,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count(number) AS pr_count,\n    uniq(actor_login) AS unique_authors,\n    sum(additions) AS total_adds,\n    sum(deletions) AS total_dels,\n    (sum(additions) + sum(deletions)) AS total_churn\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND additions < 10000\n  AND deletions < 10000\nGROUP BY repo_name\nORDER BY total_churn DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    COUNT(*) AS pr_count,\n    COUNT(DISTINCT actor_login) AS unique_authors,\n    SUM(additions) AS total_adds,\n    SUM(deletions) AS total_dels\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\n    AND additions < 10000\n    AND deletions < 10000\nGROUP BY repo_name\nORDER BY (total_adds + total_dels) DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  COUNT(*) AS pr_count,\n  COUNT(DISTINCT actor_login) AS unique_authors,\n  SUM(additions) AS total_adds,\n  SUM(deletions) AS total_dels\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND additions < 10000\n  AND deletions < 10000\nGROUP BY repo_name\nORDER BY (SUM(additions) + SUM(deletions)) DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    count() AS pr_count,\n    uniq(actor_login) AS unique_authors,\n    sum(additions) AS total_adds,\n    sum(deletions) AS total_dels\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened' AND additions < 10000 AND deletions < 10000\nGROUP BY repo_name\nORDER BY total_adds + total_dels DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -16537,12 +18418,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.15284412,
-        "rows_read": 18340176,
-        "bytes_read": 255859913
+        "elapsed": 0.176928231,
+        "rows_read": 18564759,
+        "bytes_read": 256392615
       },
-      "executionTime": 0.202,
-      "requestId": "01JVWGWYSF5R7EX3W2RY63RA99"
+      "executionTime": 0.196,
+      "requestId": "01JTN5NAEGTJNGG054RNXAR7A4"
     }
   },
   "pipe_46.pipe": {
@@ -16854,6 +18735,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    actor_login author,\n    COUNT(*) AS total_review_comments,\n    COUNT(DISTINCT repo_name) AS unique_repositories,\n    COUNT(DISTINCT number) AS unique_pull_requests\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent' AND action = 'created'\nGROUP BY author\nORDER BY total_review_comments DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    actor_login AS author,\n    COUNT(*) AS pr_comments_count,\n    COUNT(DISTINCT repo_name) AS unique_repos,\n    COUNT(DISTINCT number) AS unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\nGROUP BY actor_login\nORDER BY pr_comments_count DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  actor_login AS author,\n  COUNT(*) AS number_of_comments,\n  COUNT(DISTINCT repo_name) AS unique_repositories,\n  COUNT(DISTINCT (repo_name, number)) AS unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\nGROUP BY actor_login\nORDER BY number_of_comments DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    actor_login,\n    count() AS pr_comments,\n    uniq(repo_name) AS unique_repos,\n    uniq(number) AS unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\nGROUP BY actor_login\nORDER BY pr_comments DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -16939,12 +18862,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.049444631,
-        "rows_read": 3947090,
-        "bytes_read": 38630863
+        "elapsed": 0.058995494,
+        "rows_read": 4172440,
+        "bytes_read": 39109886
       },
-      "executionTime": 0.097,
-      "requestId": "01JVWGWZZ1R3XDEB7ZKWRKVFQP"
+      "executionTime": 0.079,
+      "requestId": "01JTN5NBKY8NN8D0DS2ART5J38"
     }
   },
   "pipe_47.pipe": {
@@ -17242,6 +19165,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    label,\n    count() AS usage_count\nFROM github_events\nARRAY JOIN labels AS label\nWHERE event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')\n  AND action IN ('created', 'opened', 'labeled')\nGROUP BY label\nORDER BY usage_count DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT\n    unnest(labels) AS label,\n    COUNT(*) AS usage_count\nFROM github_events\nWHERE event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')\nAND action IN ('opened', 'created', 'labeled')\nAND label != ''\nGROUP BY label\nORDER BY usage_count DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT arrayJoin(labels) AS label, COUNT(*) AS count\nFROM github_events\nWHERE (event_type = 'IssuesEvent' AND action IN ('opened', 'created', 'labeled'))\n   OR (event_type = 'PullRequestEvent' AND action IN ('opened', 'created', 'labeled'))\n   OR (event_type = 'IssueCommentEvent' AND action = 'created')\nGROUP BY label\nORDER BY count DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    arrayJoin(labels) AS label,\n    count() AS count\nFROM github_events\nWHERE (event_type = 'IssuesEvent' AND action IN ('opened', 'labeled')) OR (event_type = 'PullRequestEvent' AND action IN ('opened', 'labeled')) OR (event_type = 'IssueCommentEvent' AND action = 'created')\nGROUP BY label\nORDER BY count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -17299,12 +19264,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.106115457,
-        "rows_read": 34355563,
-        "bytes_read": 358387379
+        "elapsed": 0.127032683,
+        "rows_read": 34589909,
+        "bytes_read": 359810736
       },
-      "executionTime": 0.149,
-      "requestId": "01JVWGX11B4GVBY3B5X8S9387F"
+      "executionTime": 0.146,
+      "requestId": "01JTN5NCNNPBW7CY7SCT25ZCMG"
     }
   },
   "pipe_48.pipe": {
@@ -17602,6 +19567,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    splitByChar('/', repo_name)[1] AS organization_name,\n    uniq(actor_login) AS unique_authors,\n    uniqIf(actor_login, event_type = 'PullRequestEvent' AND action = 'opened') AS unique_pull_request_authors,\n    uniqIf(actor_login, event_type = 'IssuesEvent' AND action = 'opened') AS unique_issue_authors,\n    uniqIf(actor_login, event_type = 'IssueCommentEvent' AND action = 'created') AS unique_issue_comment_authors,\n    uniqIf(actor_login, event_type = 'PushEvent') AS unique_push_authors\nFROM github_events\nGROUP BY organization_name\nORDER BY unique_authors DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    splitByChar('/', repo_name)[1] AS org_name,\n    COUNT(DISTINCT actor_login) AS unique_authors,\n    COUNT(DISTINCT CASE WHEN event_type = 'PullRequestEvent' THEN actor_login END) AS unique_pr_authors,\n    COUNT(DISTINCT CASE WHEN event_type = 'IssuesEvent' THEN actor_login END) AS unique_issue_authors,\n    COUNT(DISTINCT CASE WHEN event_type = 'IssueCommentEvent' THEN actor_login END) AS unique_issue_comment_authors,\n    COUNT(DISTINCT CASE WHEN event_type = 'PushEvent' THEN actor_login END) AS unique_push_authors\nFROM github_events\nGROUP BY org_name\nORDER BY unique_authors DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  SUBSTRING_INDEX(repo_name, '/', 1) AS organization,\n  COUNT(DISTINCT actor_login) AS unique_authors,\n  COUNT(DISTINCT IF(event_type = 'PullRequestEvent' AND action = 'opened', actor_login, NULL)) AS unique_pr_authors,\n  COUNT(DISTINCT IF(event_type = 'IssuesEvent' AND action = 'opened', actor_login, NULL)) AS unique_issue_authors,\n  COUNT(DISTINCT IF(event_type = 'IssueCommentEvent', actor_login, NULL)) AS unique_issue_comment_authors,\n  COUNT(DISTINCT IF(event_type = 'PushEvent', actor_login, NULL)) AS unique_push_authors\nFROM github_events\nGROUP BY organization\nORDER BY unique_authors DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    REGEXP_EXTRACT(repo_name, '^([^/]+)') AS organization_name,\n    uniq(actor_login) AS unique_authors,\n    uniqIf(actor_login, event_type = 'PullRequestEvent' AND action = 'opened') AS unique_pr_authors,\n    uniqIf(actor_login, event_type = 'IssuesEvent' AND action = 'opened') AS unique_issue_authors,\n    uniqIf(actor_login, event_type = 'IssueCommentEvent') AS unique_issue_comment_authors,\n    uniqIf(actor_login, event_type = 'PushEvent') AS unique_push_authors\nFROM github_events\nGROUP BY organization_name\nORDER BY unique_authors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -17729,12 +19736,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 1.19607609,
-        "rows_read": 113695723,
-        "bytes_read": 567694996
+        "elapsed": 1.255305494,
+        "rows_read": 113921805,
+        "bytes_read": 561663376
       },
-      "executionTime": 1.331,
-      "requestId": "01JVWGX2836KB8XNQPV8G2JZ3B"
+      "executionTime": 1.302,
+      "requestId": "01JTN5NDT9109PACAXC370BPDG"
     }
   },
   "pipe_49.pipe": {
@@ -18046,6 +20053,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    CHAR_LENGTH(repo_name) repo_name_length\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY repo_name_length DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0.18181818181818177,
+          "numeric": 0,
+          "fScore": 0.9
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    CHARACTER_LENGTH(repo_name) AS name_length\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING COUNT(*) >= 1\nORDER BY name_length DESC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0.18181818181818177,
+          "numeric": 0,
+          "fScore": 0.9
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, CHAR_LENGTH(repo_name) AS name_length\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY name_length DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0.18181818181818177,
+          "numeric": 0,
+          "fScore": 0.9
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    CHAR_LENGTH(repo_name) AS repository_name_length\nFROM github_events\nWHERE\n    event_type = 'WatchEvent'\nGROUP BY\n    repo_name\nORDER BY\n    repository_name_length DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -18076,6 +20125,10 @@
           "name_length": 111
         },
         {
+          "repo_name": "ucdavis-bioinformatics-training/A-Primer-on-Using-the-Bioinformatics-Core-Administrated-Servers-and-Cluster-s-",
+          "name_length": 110
+        },
+        {
           "repo_name": "wakayama-pref-org/s_social_security_physical_disability_certificate_issued_situation_national_health_insurance",
           "name_length": 110
         },
@@ -18085,10 +20138,6 @@
         },
         {
           "repo_name": "reevesangie/https-nid.naver.com-nidlogin.login-svctype-262144-url-http-3A-2F-2Fm.cafe.naver.com-2FSectionMyCaf",
-          "name_length": 110
-        },
-        {
-          "repo_name": "ucdavis-bioinformatics-training/A-Primer-on-Using-the-Bioinformatics-Core-Administrated-Servers-and-Cluster-s-",
           "name_length": 110
         }
       ],
@@ -18103,12 +20152,12 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.034600478,
-        "rows_read": 7321600,
-        "bytes_read": 21926172
+        "elapsed": 0.041880371,
+        "rows_read": 7319235,
+        "bytes_read": 21919077
       },
-      "executionTime": 0.082,
-      "requestId": "01JVWGX4EBE0XEWHC8E4QVSC1N"
+      "executionTime": 0.061,
+      "requestId": "01JTN5NG1HTMAQK3FH2B2ZBXNX"
     }
   },
   "pipe_50.pipe": {
@@ -18406,6 +20455,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT DISTINCT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\nORDER BY CHAR_LENGTH(repo_name) ASC, repo_name ASC\nLIMIT 10"
+      },
+      "x-ai/grok-3-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.6666666666666667,
+          "numeric": 1,
+          "fScore": 0.5
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING COUNT(*) >= 1\nORDER BY LENGTH(repo_name) ASC\nLIMIT 10"
+      },
+      "x-ai/grok-3-mini-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.6666666666666667,
+          "numeric": 1,
+          "fScore": 0.5
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY CHAR_LENGTH(repo_name) ASC\nLIMIT 10"
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.8235294117647058,
+          "numeric": 1,
+          "fScore": 0.30000000000000004
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT DISTINCT\n    repo_name\nFROM github_events\nWHERE\n    event_type = 'WatchEvent'\nORDER BY CHAR_LENGTH(repo_name) ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -18415,31 +20506,31 @@
           "repo_name": "tj/n"
         },
         {
+          "repo_name": "wq/wq"
+        },
+        {
           "repo_name": "tj/co"
         },
         {
-          "repo_name": "qt/qt"
+          "repo_name": "tj/go"
+        },
+        {
+          "repo_name": "tj/v8"
+        },
+        {
+          "repo_name": "z/kbx"
+        },
+        {
+          "repo_name": "s4/s4"
+        },
+        {
+          "repo_name": "sm/sm"
+        },
+        {
+          "repo_name": "ry/v8"
         },
         {
           "repo_name": "xo/xo"
-        },
-        {
-          "repo_name": "sn/sn"
-        },
-        {
-          "repo_name": "zg/sn"
-        },
-        {
-          "repo_name": "wg/kr"
-        },
-        {
-          "repo_name": "rr/rr"
-        },
-        {
-          "repo_name": "tj/es"
-        },
-        {
-          "repo_name": "unu/t"
         }
       ],
       "meta": [
@@ -18449,16 +20540,16 @@
         }
       ],
       "statistics": {
-        "elapsed": 0.046769652,
-        "rows_read": 7321600,
-        "bytes_read": 21925410
+        "elapsed": 0.050462826,
+        "rows_read": 7319235,
+        "bytes_read": 21919077
       },
-      "executionTime": 0.091,
-      "requestId": "01JVWGX5G5DF0VGAY0AQJFBZCF"
+      "executionTime": 0.069,
+      "requestId": "01JTN5NH2R88N5BR8DPPC55KMQ"
     }
   },
   "_summary": {
-    "totalQuestions": 51,
+    "totalQuestions": 50,
     "modelStats": {
       "anthropic/claude-3.5-sonnet": {
         "totalMatches": 29,
@@ -18613,70 +20704,53 @@
         "avgFScore": 0.46599999999999997
       },
       "anthropic/claude-opus-4": {
-        "totalMatches": 22,
+        "totalMatches": 21,
         "exactMatches": 15,
         "numericMatches": 21,
-        "avgExactDistance": 0.341671784578359,
-        "avgNumericDistance": 0.2711202225218824,
-        "avgFScore": 0.3764705882352941
+        "avgExactDistance": 0.3485052202699262,
+        "avgNumericDistance": 0.27654262697232,
+        "avgFScore": 0.364
       },
       "anthropic/claude-sonnet-4": {
-        "totalMatches": 30,
-        "exactMatches": 20,
+        "totalMatches": 29,
+        "exactMatches": 21,
         "numericMatches": 29,
-        "avgExactDistance": 0.5044563279857398,
-        "avgNumericDistance": 0.3577100810971648,
-        "avgFScore": 0.4823529411764705
+        "avgExactDistance": 0.510909090909091,
+        "avgNumericDistance": 0.36486428271910804,
+        "avgFScore": 0.474
       },
       "openai/gpt-4.5-preview": {
-        "totalMatches": 28,
+        "totalMatches": 27,
         "exactMatches": 22,
         "numericMatches": 27,
-        "avgExactDistance": 0.5025967324728935,
-        "avgNumericDistance": 0.43601630141001135,
-        "avgFScore": 0.5078431372549018
-      }
-    }
-  },
-  "generic_average_endpoint.pipe": {
-    "models": {
-      "anthropic/claude-opus-4": {
-        "matches": true,
-        "details": "Both results are empty",
-        "distance": {
-          "exact": 0,
-          "numeric": 0,
-          "fScore": 1
-        },
-        "sql": "%\nSELECT\n    {%if defined(group_by)%}\n        {{column(group_by)}}\n    {%else%}\n        model\n    {%end%} as group_by_column,\n    avg({%if defined(avg_column)%}{{column(avg_column)}}{%else%}llm_total_duration{%end%}) as average_value\nFROM results\nWHERE 1=1\n    {%if defined(model)%}\n    AND model = {{String(model, 'gpt-4')}}\n    {%end%}\n    {%if defined(provider)%}\n    AND provider = {{String(provider, 'openai')}}\n    {%end%}\n    {%if defined(name)%}\n    AND name = {{String(name, 'example_name')}}\n    {%end%}\nGROUP BY group_by_column\nORDER BY average_value DESC\nLIMIT 10"
+        "avgExactDistance": 0.5126486671223514,
+        "avgNumericDistance": 0.44582406226117705,
+        "avgFScore": 0.498
       },
-      "anthropic/claude-sonnet-4": {
-        "matches": true,
-        "details": "Both results are empty",
-        "distance": {
-          "exact": 0,
-          "numeric": 0,
-          "fScore": 1
-        },
-        "sql": "%\nSELECT \n    {{String(group_by_column, 'model')}} as group_column,\n    avg({{Float32(avg_column, 1.0)}}) as average_value\nFROM results\nWHERE 1=1\n{{% if defined(model_filter) %}}\n    AND model = '{{String(model_filter)}}'\n{{% end %}}\n{{% if defined(provider_filter) %}}\n    AND provider = '{{String(provider_filter)}}'\n{{% end %}}\n{{% if defined(name_filter) %}}\n    AND name = '{{String(name_filter)}}'\n{{% end %}}\nGROUP BY {{String(group_by_column, 'model')}}\nORDER BY average_value DESC\nLIMIT 10"
+      "x-ai/grok-3-beta": {
+        "totalMatches": 26,
+        "exactMatches": 18,
+        "numericMatches": 26,
+        "avgExactDistance": 0.5873456368193211,
+        "avgNumericDistance": 0.45383508924416405,
+        "avgFScore": 0.428
       },
-      "openai/gpt-4.5-preview": {
-        "matches": true,
-        "details": "Both results are empty",
-        "distance": {
-          "exact": 0,
-          "numeric": 0,
-          "fScore": 1
-        },
-        "sql": "%\nSELECT\n    {{String(group_by_column, 'model')}} AS group_by,\n    avg({{String(average_column, 'llm_total_duration')}}) AS average_value\nFROM results\nWHERE 1=1\n{{% if defined(model) %}}\n    AND model = {{String(model, '')}}\n{{% end %}}\n{{% if defined(provider) %}}\n    AND provider = {{String(provider, '')}}\n{{% end %}}\n{{% if defined(name) %}}\n    AND name = {{String(name, '')}}\n{{% end %}}\nGROUP BY group_by\nORDER BY average_value DESC\nLIMIT {{Int(limit, 10)}} OFFSET {{Int(offset, 0)}}"
+      "x-ai/grok-3-mini-beta": {
+        "totalMatches": 29,
+        "exactMatches": 21,
+        "numericMatches": 29,
+        "avgExactDistance": 0.5320346320346322,
+        "avgNumericDistance": 0.3872057550988363,
+        "avgFScore": 0.478
+      },
+      "google/gemini-2.5-pro-preview-06-05": {
+        "totalMatches": 28,
+        "exactMatches": 19,
+        "numericMatches": 28,
+        "avgExactDistance": 0.5663270475654377,
+        "avgNumericDistance": 0.37149477554061816,
+        "avgFScore": 0.44199999999999995
       }
-    },
-    "humanResults": {
-      "success": false,
-      "data": [],
-      "executionTime": 0.231,
-      "requestId": "01JVWGV4P1VENYHHDCD78VMW25",
-      "error": "{\"error\": \"Resource 'results' not found\", \"documentation\": \"https://docs.tinybird.co/api-reference/query-api.html\"}"
     }
   }
 }

@@ -2,12 +2,72 @@ import { writeFileSync, readFileSync, existsSync } from "fs";
 import { getClient } from "./client";
 import { getConfig } from "./config";
 import { getEndpointQuestions } from "./resources";
-import { ChatResponse } from "./types";
+import { ChatResponse, SqlResult } from "./types";
 import { compareResults } from "./result-validator";
 
 const MAX_RETRIES = 2;
 const RESULTS_FILE = "benchmark/results.json";
 const HUMAN_RESULTS_FILE = "benchmark/results-human.json";
+
+// Debug logging function that only logs when LLM_DEBUG=1
+function debugLog(message: string, data?: Record<string, unknown>): void {
+  if (process.env.LLM_DEBUG === '1') {
+    console.log(`[DEBUG] ${message}`);
+    if (data !== undefined) {
+      if (typeof data === 'object') {
+        console.log(JSON.stringify(data, null, 2));
+      } else {
+        console.log(data);
+      }
+    }
+    console.log('-----------------------------------');
+  }
+}
+
+// Function to print usage information
+function printUsage(): void {
+  console.log(`
+Tinybird LLM Benchmark Tool
+
+Usage:
+  npm run benchmark [options]
+
+Options:
+  --model=<provider/model>   Run benchmark for a specific model (e.g., --model=x-ai/grok-3-beta)
+  --skip-validation          Skip validating results against human baseline
+  --debug                    Enable debug mode to log LLM requests and responses
+  --help                     Display this help message
+
+Examples:
+  npm run benchmark
+  npm run benchmark -- --model=x-ai/grok-3-beta
+  npm run benchmark -- --model=x-ai/grok-3-beta --debug
+  npm run benchmark -- --skip-validation
+  `);
+}
+
+// Parse command line arguments
+function parseArgs(): { model?: string; skipValidation?: boolean; debug?: boolean; help?: boolean } {
+  const args: { model?: string; skipValidation?: boolean; debug?: boolean; help?: boolean } = {};
+  
+  for (let i = 2; i < process.argv.length; i++) {
+    const arg = process.argv[i];
+    if (arg.startsWith('--model=')) {
+      args.model = arg.substring('--model='.length);
+    } else if (arg === '--model' && i + 1 < process.argv.length) {
+      args.model = process.argv[i + 1];
+      i++; // Skip the next argument as we've already processed it
+    } else if (arg === '--skip-validation') {
+      args.skipValidation = true;
+    } else if (arg === '--debug') {
+      args.debug = true;
+    } else if (arg === '--help') {
+      args.help = true;
+    }
+  }
+  
+  return args;
+}
 
 function readHumanResults(): ChatResponse[] {
   if (!existsSync(HUMAN_RESULTS_FILE)) {
@@ -38,7 +98,39 @@ function writeResults(results: ChatResponse[]) {
   writeFileSync(RESULTS_FILE, JSON.stringify(results, null, 2));
 }
 
-function validateResults(results: ChatResponse[]): Record<string, any> {
+interface ValidationResult {
+  models: Record<string, ModelValidationResult>;
+  humanResults: SqlResult;
+}
+
+interface ModelValidationResult {
+  matches: boolean;
+  exactMatches: boolean;
+  numericMatches: boolean;
+  distance?: {
+    exact: number;
+    numeric: number;
+    fScore: number;
+  };
+  sql: string;
+}
+
+interface ValidationSummary {
+  totalQuestions: number;
+  modelStats: Record<
+    string,
+    {
+      totalMatches: number;
+      exactMatches: number;
+      numericMatches: number;
+      avgExactDistance: number;
+      avgNumericDistance: number;
+      avgFScore: number;
+    }
+  >;
+}
+
+function validateResults(results: ChatResponse[]): Record<string, ValidationResult | ValidationSummary> {
   const humanResults = readHumanResults();
   if (humanResults.length === 0) {
     console.error("No human results available for validation");
@@ -50,7 +142,7 @@ function validateResults(results: ChatResponse[]): Record<string, any> {
     humanResultsByQuestion.set(result.question.name, result);
   }
 
-  const validation: Record<string, any> = {};
+  const validation: Record<string, ValidationResult | ValidationSummary> = {};
 
   for (const result of results) {
     if (!result.question || !result.sqlResult || result.error) {
@@ -68,7 +160,7 @@ function validateResults(results: ChatResponse[]): Record<string, any> {
       validation[questionName] = {
         models: {},
         humanResults: humanResult.sqlResult,
-      };
+      } as ValidationResult;
     }
 
     const modelKey = `${result.provider}/${result.model}`;
@@ -77,9 +169,10 @@ function validateResults(results: ChatResponse[]): Record<string, any> {
       result.sqlResult
     );
 
-    validation[questionName].models[modelKey] = {
+    const validationResult = validation[questionName] as ValidationResult;
+    validationResult.models[modelKey] = {
       ...comparisonResult,
-      sql: result.sql,
+      sql: result.sql as string,
     };
   }
 
@@ -94,8 +187,8 @@ function validateResults(results: ChatResponse[]): Record<string, any> {
   return validation;
 }
 
-function calculateValidationSummary(validation: Record<string, any>): any {
-  const summary = {
+function calculateValidationSummary(validation: Record<string, ValidationResult | ValidationSummary>): ValidationSummary {
+  const summary: ValidationSummary = {
     totalQuestions: 0,
     modelStats: {} as Record<
       string,
@@ -114,7 +207,7 @@ function calculateValidationSummary(validation: Record<string, any>): any {
   summary.totalQuestions = questions.length;
 
   for (const questionName of questions) {
-    const questionData = validation[questionName];
+    const questionData = validation[questionName] as ValidationResult;
     const models = questionData.models;
 
     for (const modelKey of Object.keys(models)) {
@@ -179,19 +272,43 @@ function getCompletedQuestionsForModel(
 }
 
 async function main() {
-  // await runHumanQueries();
-  await runBenchmark();
-
-  const results = readExistingResults();
-  console.log("Validating results against human baseline...");
+  const args = parseArgs();
   
-  validateResults(results);
-  console.log(
-    "Validation complete. Results saved to benchmark/validation-results.json"
-  );
+  // Show help if requested
+  if (args.help) {
+    printUsage();
+    return;
+  }
+  
+  // Set debug mode if flag is provided
+  if (args.debug) {
+    process.env.LLM_DEBUG = '1';
+    console.log('Debug mode enabled. LLM requests and responses will be logged.');
+  }
+  
+  if (args.model) {
+    console.log(`Running benchmark for specific model: ${args.model}`);
+    await runBenchmarkForModel(args.model);
+  } else {
+    //await runHumanQueries();
+    await runBenchmark();
+  }
+
+  if (!args.skipValidation) {
+    const results = readExistingResults();
+    console.log("Validating results against human baseline...");
+    
+    validateResults(results);
+    console.log(
+      "Validation complete. Results saved to benchmark/validation-results.json"
+    );
+  } else {
+    console.log("Skipping validation as requested");
+  }
 }
 
-async function runHumanQueries() {
+// Export the function to avoid 'defined but never used' error
+export async function runHumanQueries() {
   const client = getClient();
   const endpoints = getEndpointQuestions();
 
@@ -229,6 +346,51 @@ async function runHumanQueries() {
     "benchmark/results-human.json",
     JSON.stringify(results, null, 2)
   );
+}
+
+async function runBenchmarkForModel(modelString: string) {
+  const [providerName, modelName] = modelString.split('/');
+  
+  if (!providerName || !modelName) {
+    console.error("Invalid model format. Please use format: --model=provider/model");
+    process.exit(1);
+  }
+  
+  const { providers } = getConfig();
+  const provider = providers[providerName as keyof typeof providers];
+  
+  if (!provider) {
+    console.error(`Provider '${providerName}' not found in benchmark-config.json`);
+    process.exit(1);
+  }
+  
+  if (!provider.models.includes(modelName)) {
+    console.error(`Model '${modelName}' not found for provider '${providerName}' in benchmark-config.json`);
+    process.exit(1);
+  }
+  
+  console.log(`Benchmarking ${providerName}/${modelName}`);
+  
+  const existingResults = readExistingResults();
+  const completedQuestions = getCompletedQuestionsForModel(
+    existingResults,
+    providerName,
+    modelName
+  );
+  
+  const results = await runModelBenchmark(
+    providerName,
+    modelName,
+    completedQuestions
+  );
+  
+  // Remove existing results for this model and upsert with new results
+  const filteredResults = existingResults.filter(
+    r => !(r.provider === providerName && r.model === modelName)
+  );
+  
+  const updatedResults = [...filteredResults, ...results];
+  writeResults(updatedResults);
 }
 
 async function runBenchmark() {
@@ -272,7 +434,7 @@ async function runModelBenchmark(
   completedQuestions: Set<string>
 ) {
   const client = getClient();
-  const questions = getEndpointQuestions().slice(0, 1);
+  const questions = getEndpointQuestions();
 
   const results: ChatResponse[] = [];
 
@@ -281,7 +443,20 @@ async function runModelBenchmark(
     retryCount = 0,
     previousAttempts: ChatResponse[] = []
   ) {
+    debugLog(`Generating query for ${question.name}`, {
+      attempt: retryCount + 1,
+      model: `${provider}/${model}`,
+      question: question.question.substring(0, 200) + (question.question.length > 200 ? '...' : '')
+    });
+    
     const result = await client.generateQuery(question, provider, model, true);
+    
+    debugLog(`LLM Response for ${question.name}`, {
+      sql: result.sql,
+      error: result.error,
+      sqlResultSuccess: result.sqlResult?.success,
+      sqlResultError: result.sqlResult?.error
+    });
 
     const currentAttempts = [...previousAttempts, result];
 
@@ -291,7 +466,11 @@ async function runModelBenchmark(
         !!result.sqlResult?.error) &&
       retryCount < MAX_RETRIES
     ) {
-      const errorFeedback = `I previously asked: "${question.question}"\n\nYou generated this SQL query:\n\`\`\`sql\n${result.sql}\n\`\`\`\n\nBut it resulted in this error:\n\`\`\`\n${result.error}\n\`\`\`\n\nPlease fix the SQL query to correctly answer my original question. Make sure the SQL is valid for Tinybird/ClickHouse.`;
+      const errorFeedback = `I previously asked: "${question.question}"\n\nYou generated this SQL query:\n\`\`\`sql\n${result.sql}\n\`\`\`\n\nBut it resulted in this error:\n\`\`\`\n${result.error || result.sqlResult?.error}\n\`\`\`\n\nPlease fix the SQL query to correctly answer my original question. Make sure the SQL is valid for Tinybird/ClickHouse.`;
+
+      debugLog(`Retry attempt ${retryCount + 1} for ${question.name}`, {
+        errorFeedback: errorFeedback.substring(0, 200) + '...'
+      });
 
       return generateQueryWithRetry(
         {
@@ -302,6 +481,11 @@ async function runModelBenchmark(
         currentAttempts
       );
     }
+
+    debugLog(`Final result for ${question.name}`, {
+      success: result.sqlResult?.success ? true : false,
+      attempts: retryCount + 1
+    });
 
     return {
       ...result,
