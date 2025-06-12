@@ -16,7 +16,6 @@ export function getConfig() {
 
       workspaceId: process.env.TINYBIRD_WORKSPACE_ID!,
       workspaceToken: process.env.TINYBIRD_WORKSPACE_TOKEN!,
-      
     },
   };
 }

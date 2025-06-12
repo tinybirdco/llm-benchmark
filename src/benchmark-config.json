@@ -40,7 +40,9 @@
       "models": [
         "ministral-8b",
         "mistral-small-3.1-24b-instruct",
-        "mistral-nemo"
+        "mistral-nemo",
+        "magistral-small-2506",
+        "magistral-medium-2506"
       ]
     },
     "openai": {
@@ -49,6 +51,7 @@
         "gpt-4.1-nano",
         "gpt-4o-mini",
         "o3-mini",
+        "o3-pro",
         "o4-mini",
         "o4-mini-high"
       ]

@@ -350,6 +350,48 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count() FROM github_events WHERE event_type = 'WatchEvent'"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(*) FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "To count all stars, which corresponds to counting all events of type 'WatchEvent' in the `github_events` table, the correct query is to count these events without a limit. However, given the instruction to add limits for pagination and the large dataset size, there's ambiguity in whether to perform a full count or to list a limited number of star events.\n\nGiven the constraints and the \"URI too large\" error from the initial attempt, the feasible approach is to list star events with a limit of 10. This adheres to the instruction and avoids performance issues. This query does not count all stars but lists a limited number of star events, which can be used to infer a partial count.\n\nFinal SQL query:\n\n\nSELECT * FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10\n"
+      },
+      "openai/o3-pro": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT count() stars FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10"
       }
     },
     "humanResults": {
@@ -725,6 +767,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, COUNT() AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT repo_name, COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n"
+      },
+      "openai/o3-pro": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, count() star_count FROM github_events WHERE event_type = 'WatchEvent' GROUP BY repo_name ORDER BY star_count DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -1141,6 +1225,48 @@
         "humanRowCount": 5,
         "llmRowCount": 5,
         "sql": "SELECT\n    CASE\n        WHEN stars >= 1 AND stars < 10 THEN 1\n        WHEN stars >= 10 AND stars < 100 THEN 10\n        WHEN stars >= 100 AND stars < 1000 THEN 100\n        WHEN stars >= 1000 AND stars < 10000 THEN 1000\n        WHEN stars >= 10000 AND stars < 100000 THEN 10000\n        WHEN stars >= 100000 AND stars < 1000000 THEN 100000\n        ELSE 1000000\n    END AS star_bucket,\n    count() AS repository_count\nFROM\n(\n    SELECT\n        count() AS stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n)\nGROUP BY star_bucket\nORDER BY star_bucket ASC\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 5,
+        "llmRowCount": 0,
+        "sql": "\nWITH star_counts AS (\n  SELECT\n    repo_name,\n    COUNT(*) AS star_count\n  FROM github_events\n  WHERE event_type = 15  -- WatchEvent\n  GROUP BY repo_name\n),\npower_definitions AS (\n  SELECT 0 AS power, 1 AS power_of_10, 0 AS lower, 1 AS upper UNION ALL\n  SELECT 1 AS power, 10 AS power_of_10, 9 AS lower, 11 AS upper UNION ALL\n  SELECT 2 AS power, 100 AS power_of_10, 90 AS lower, 110 AS upper UNION ALL\n  SELECT 3 AS power, 1000 AS power_of_10, 900 AS lower, 1100 AS upper UNION ALL\n  SELECT 4 AS power, 10000 AS power_of_10, 9000 AS lower, 11000 AS upper UNION ALL\n  SELECT 5 AS power, 100000 AS power_of_10, 90000 AS lower, 110000 AS upper\n),\ncounted AS (\n  SELECT\n    pd.power,\n    pd.power_of_10,\n    COUNT(DISTINCT sc.repo_name) AS repo_count\n  FROM\n    power_definitions pd\n  JOIN\n    star_counts sc ON sc.star_count BETWEEN pd.lower AND pd.upper\n  GROUP BY\n    pd.power, pd.power_of_10\n)\nSELECT\n  power,\n  power_of_10,\n  repo_count\nFROM counted\nORDER BY power\nLIMIT 10\n"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 5,
+        "llmRowCount": 5,
+        "sql": "\nSELECT\n    CASE\n        WHEN star_count < 10 THEN '1-9'\n        WHEN star_count >= 10 AND star_count < 100 THEN '10-99'\n        WHEN star_count >= 100 AND star_count < 1000 THEN '100-999'\n        WHEN star_count >= 1000 AND star_count < 10000 THEN '1000-9999'\n        WHEN star_count >= 10000 AND star_count < 100000 THEN '10000-99999'\n        WHEN star_count >= 100000 AND star_count < 1000000 THEN '100000-999999'\n        WHEN star_count >= 1000000 AND star_count < 10000000 THEN '1000000-9999999'\n        WHEN star_count >= 10000000 AND star_count < 100000000 THEN '10000000-99999999'\n        WHEN star_count >= 100000000 AND star_count < 1000000000 THEN '100000000-999999999'\n        ELSE '1000000000+'\n    END AS star_range,\n    COUNT(*) AS repository_count,\n    CASE\n        WHEN star_count < 10 THEN 1\n        WHEN star_count >= 10 AND star_count < 100 THEN 10\n        WHEN star_count >= 100 AND star_count < 1000 THEN 100\n        WHEN star_count >= 1000 AND star_count < 10000 THEN 1000\n        WHEN star_count >= 10000 AND star_count < 100000 THEN 10000\n        WHEN star_count >= 100000 AND star_count < 1000000 THEN 100000\n        WHEN star_count >= 1000000 AND star_count < 10000000 THEN 1000000\n        WHEN star_count >= 10000000 AND star_count < 100000000 THEN 10000000\n        WHEN star_count >= 100000000 AND star_count < 1000000000 THEN 100000000\n        ELSE 1000000000\n    END AS range_min\nFROM (\n    SELECT\n        repo_name,\n        COUNT(*) AS star_count\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n)\nGROUP BY star_range, range_min\nORDER BY range_min\nLIMIT 10\n"
+      },
+      "openai/o3-pro": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 5,
+        "llmRowCount": 5,
+        "sql": "SELECT\n  stars_bucket,\n  count() repositories\nFROM\n(\n  SELECT\n    repo_name,\n    count() AS star_cnt,\n    CASE\n      WHEN count() < 10 THEN 1\n      WHEN count() < 100 THEN 10\n      WHEN count() < 1000 THEN 100\n      WHEN count() < 10000 THEN 1000\n      WHEN count() < 100000 THEN 10000\n      WHEN count() < 1000000 THEN 100000\n      WHEN count() < 10000000 THEN 1000000\n      WHEN count() < 100000000 THEN 10000000\n      WHEN count() < 1000000000 THEN 100000000\n      ELSE 1000000000\n    END AS stars_bucket\n  FROM github_events\n  WHERE event_type = 'WatchEvent'\n  GROUP BY repo_name\n)\nGROUP BY stars_bucket\nORDER BY stars_bucket\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -1537,6 +1663,48 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniq(repo_name) AS total_repositories FROM github_events"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT count(DISTINCT repo_name) AS total_repositories\nFROM github_events\nLIMIT 10"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT uniqExact(repo_name) AS total_repositories FROM github_events LIMIT 10"
+      },
+      "openai/o3-pro": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT uniqExact(repo_name) total_repositories FROM github_events LIMIT 10"
       }
     },
     "humanResults": {
@@ -1912,6 +2080,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    toYear(created_at) AS year,\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE\n    event_type = 'WatchEvent'\n    AND year >= 2015\nGROUP BY\n    year,\n    repo_name\nQUALIFY row_number() OVER (PARTITION BY year ORDER BY stars DESC) <= 10\nORDER BY\n    year ASC,\n    stars DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.9473684210526316,
+          "numeric": 0.8575712207596997,
+          "fScore": 0.09999999999999998
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n  YEAR(created_at) as year,\n  repo_name,\n  COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND YEAR(created_at) >= 2015\nGROUP BY year, repo_name\nORDER BY star_count DESC, year\nLIMIT 10\n"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Final SQL query with corrected parameters and window function:\n\n\n%\nSELECT\n    YEAR(created_at) AS year,\n    repo_name,\n    COUNT(*) AS star_count,\n    row_number() OVER (PARTITION BY YEAR(created_at) ORDER BY COUNT(*) DESC) AS rank\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND created_at >= '2015-01-01 00:00:00'\nGROUP BY year, repo_name\nORDER BY year, rank\nLIMIT {{{{UInt32(limit, 10)}}}}\nOFFSET {{{{UInt32(offset, 0)}}}}\n"
+      },
+      "openai/o3-pro": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0003506604419472093,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 2,
+        "sql": "SELECT\n  YEAR(created_at) year,\n  topK(5)(repo_name) top_repositories\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND created_at >= CAST('2015-01-01 00:00:00', 'DateTime')\nGROUP BY year\nORDER BY year\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -2342,6 +2552,48 @@
         "humanRowCount": 2,
         "llmRowCount": 2,
         "sql": "SELECT\n  YEAR(created_at) AS year,\n  count() AS total_stars\nFROM github_events\nWHERE\n  event_type = 'WatchEvent'\nGROUP BY\n  year\nORDER BY\n  year ASC\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 2,
+        "llmRowCount": 2,
+        "sql": "\nSELECT\n    YEAR(created_at) AS year,\n    COUNT(*) AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year\nLIMIT 10\n"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 2,
+        "llmRowCount": 0,
+        "sql": "The SQL query to track the number of stars over time by year is:\n\n\nSELECT toYear(created_at) AS year, COUNT(*) AS total_stars FROM github_events WHERE event_type = 'WatchEvent' GROUP BY year ORDER BY year LIMIT 10\n\n\nThis query filters for 'WatchEvent' events, extracts the year from the created_at timestamp, counts the stars per year, groups by year, orders by year, and limits to 10 results for pagination. This should provide a clear view of how the number of stars has changed over time by year.\n\n\nSELECT toYear(created_at) AS year, COUNT(*) AS total_stars FROM github_events WHERE event_type = 'WatchEvent' GROUP BY year ORDER BY year LIMIT 10\n"
+      },
+      "openai/o3-pro": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 2,
+        "llmRowCount": 2,
+        "sql": "SELECT\n  YEAR(created_at) event_year,\n  count() stars_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND action = 'started'\nGROUP BY event_year\nORDER BY event_year\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -2712,6 +2964,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    actor_login,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent' AND action = 'started'\nGROUP BY actor_login\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT actor_login, COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT actor_login, COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY star_count DESC\nLIMIT 10\n"
+      },
+      "openai/o3-pro": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT actor_login, count() stars_given FROM github_events WHERE event_type = 'WatchEvent' AND actor_login != '' GROUP BY actor_login ORDER BY stars_given DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -3128,6 +3422,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    T2.repo_name,\n    uniq(T2.actor_login) AS stars\nFROM github_events AS T1\nINNER JOIN github_events AS T2 ON T1.actor_login = T2.actor_login\nWHERE\n    T1.event_type = 'WatchEvent' AND T1.repo_name = 'tensorflow/tensorflow' AND T2.event_type = 'WatchEvent' AND T2.repo_name != 'tensorflow/tensorflow'\nGROUP BY T2.repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 1,
+        "sql": "SELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent' AND repo_name = 'tensorflow/tensorflow'\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Here is the corrected SQL query:\n\n\nSELECT t2.repo_name, COUNT(DISTINCT t2.actor_login) AS star_count\nFROM github_events t1\nJOIN github_events t2\nON t1.actor_login = t2.actor_login\nWHERE t1.event_type = 'WatchEvent'\nAND t1.repo_name = 'tensorflow/tensorflow'\nAND t2.event_type = 'WatchEvent'\nAND t2.repo_name != 'tensorflow/tensorflow'\nGROUP BY t2.repo_name\nORDER BY star_count DESC\nLIMIT 10\n\n\nThis query:\n1. Joins the github_events table to itself on actor_login (user)\n2. Filters for users who starred tensorflow/tensorflow (t1 table)\n3. Finds all other repos these users starred (t2 table)\n4. Counts distinct users (which equals number of stars) for each repo\n5. Orders by star count descending and limits to top 10"
+      },
+      "openai/o3-pro": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  g2.repo_name repo_name,\n  count() stars\nFROM github_events AS g2\nANY INNER JOIN github_events AS g1 ON g1.actor_login = g2.actor_login\nWHERE\n  g1.event_type = 'WatchEvent'\n  AND g1.action = 'started'\n  AND g1.repo_name = 'tensorflow/tensorflow'\n  AND g2.event_type = 'WatchEvent'\n  AND g2.action = 'started'\n  AND g2.repo_name != 'tensorflow/tensorflow'\nGROUP BY\n  g2.repo_name\nORDER BY\n  stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -3544,6 +3880,48 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "SELECT\n    actor_login,\n    sum(if(REGEXP_EXTRACT(repo_name, '^([^/]+)') = 'javisantana', 1, 0)) AS javisantana_stars,\n    sum(if(REGEXP_EXTRACT(repo_name, '^([^/]+)') != 'javisantana', 1, 0)) AS other_stars,\n    javisantana_stars / count() AS ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nHAVING javisantana_stars > 0\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.4022967426109692,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    actor_login as name,\n    SUM(REGEXP_MATCHES(repo_name, '^javisantana/')) as stars_given_to_javisantana_repos,\n    COUNT(*) - SUM(REGEXP_MATCHES(repo_name, '^javisantana/')) as stars_given_to_other_repos,\n    SUM(REGEXP_MATCHES(repo_name, '^javisantana/')) / COUNT(*) as ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY ratio DESC\nLIMIT 10\n"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT\n    actor_login,\n    SUM(CASE WHEN repo_name LIKE '%javisantana%' THEN 1 ELSE 0 END) AS javisantana_stars,\n    COUNT(*) AS total_stars,\n    SUM(CASE WHEN repo_name LIKE '%javisantana%' THEN 1 ELSE 0 END) / COUNT(*) AS ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nHAVING SUM(CASE WHEN repo_name LIKE '%javisantana%' THEN 1 ELSE 0 END) > 0\nORDER BY ratio DESC\nLIMIT 10\n"
+      },
+      "openai/o3-pro": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.32732676121846455,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  actor_login AS user_name,\n  sum(substring_index(repo_name, '/', 1) = 'javisantana') AS javisantana_stars,\n  count() - sum(substring_index(repo_name, '/', 1) = 'javisantana') AS other_stars,\n  sum(substring_index(repo_name, '/', 1) = 'javisantana') / count() AS ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY ratio DESC, javisantana_stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -3974,6 +4352,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    t2.repo_name,\n    count(DISTINCT t2.actor_login) AS unique_contributors\nFROM github_events AS t1\nINNER JOIN github_events AS t2 ON t1.actor_login = t2.actor_login\nWHERE t1.repo_name LIKE 'tensorflow/%' AND t1.event_type = 'PullRequestEvent' AND t2.repo_name NOT LIKE 'tensorflow/%' AND t2.event_type = 'PullRequestEvent' AND t2.action = 'opened'\nGROUP BY t2.repo_name\nORDER BY unique_contributors DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS unique_contributors\nFROM\n    github_events\nWHERE\n    event_type = 'PullRequestEvent' AND\n    action = 'opened' AND\n    repo_name != 'tensorflow/tensorflow'\nGROUP BY\n    repo_name\nORDER BY\n    unique_contributors DESC\nLIMIT 10\n"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "### Final SQL Query\n\n\nSELECT g2.repo_name, COUNT(DISTINCT g2.actor_login) AS unique_contributors FROM github_events g1 JOIN github_events g2 ON g1.actor_login = g2.actor_login WHERE g1.event_type = 'PullRequestEvent' AND g1.repo_name LIKE 'tensorflow/%' AND g1.action = 'opened' AND g2.event_type = 'PullRequestEvent' AND g2.repo_name NOT LIKE 'tensorflow/%' AND g2.action = 'opened' GROUP BY g2.repo_name ORDER BY unique_contributors DESC LIMIT 10\n\n\nThis query should correctly identify the top 10 non-TensorFlow repositories that have received pull requests from TensorFlow contributors, ranked by the number of unique contributors."
+      },
+      "openai/o3-pro": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  g1.repo_name repo,\n  uniq(g1.actor_login) unique_contributors\nFROM github_events AS g1\nANY INNER JOIN github_events AS g2\n  ON g1.actor_login = g2.actor_login\nWHERE g1.event_type = 'PullRequestEvent'\n  AND g1.action = 'opened'\n  AND g1.repo_name NOT LIKE 'tensorflow/%'\n  AND g2.event_type = 'PullRequestEvent'\n  AND g2.action = 'opened'\n  AND g2.repo_name LIKE 'tensorflow/%'\nGROUP BY g1.repo_name\nORDER BY unique_contributors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -4390,6 +4810,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    t2.repo_name,\n    count() AS issues_count,\n    groupArray(t2.actor_login) AS authors\nFROM github_events AS t1\nINNER JOIN github_events AS t2 ON t1.actor_login = t2.actor_login\nWHERE t1.repo_name = 'tensorflow/tensorflow' AND t1.event_type = 'IssuesEvent' AND t1.action = 'opened' AND t2.event_type = 'IssuesEvent' AND t2.action = 'opened' AND t2.repo_name != 'tensorflow/tensorflow'\nGROUP BY\n    t2.repo_name\nORDER BY\n    issues_count DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.921366691261145,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, COUNT(*) as issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nAND repo_name != 'tensorflow/tensorflow'\nAND actor_login IN (\n    SELECT DISTINCT actor_login\n    FROM github_events\n    WHERE event_type = 'IssuesEvent' AND action = 'opened' AND repo_name = 'tensorflow/tensorflow'\n)\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    repo_name,\n    actor_login as author,\n    COUNT(*) as issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\nAND action = 'opened'\nAND actor_login IN (\n    SELECT DISTINCT actor_login\n    FROM github_events\n    WHERE event_type = 'IssuesEvent'\n    AND action = 'opened'\n    AND repo_name = 'tensorflow/tensorflow'\n)\nAND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name, actor_login\nORDER BY issue_count DESC, author\nLIMIT 10\n"
+      },
+      "openai/o3-pro": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  ge2.repo_name repo_name,\n  uniq(ge2.actor_login) distinct_authors\nFROM github_events ge1\nANY INNER JOIN github_events ge2 ON ge1.actor_login = ge2.actor_login\nWHERE ge1.event_type = 'IssuesEvent'\n  AND ge1.action = 'opened'\n  AND ge1.repo_name = 'tensorflow/tensorflow'\n  AND ge2.event_type = 'IssuesEvent'\n  AND ge2.action = 'opened'\n  AND ge2.repo_name != 'tensorflow/tensorflow'\nGROUP BY ge2.repo_name\nORDER BY distinct_authors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -4820,6 +5282,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, max(c) AS max_daily_stars FROM (SELECT repo_name, count() AS c FROM github_events WHERE event_type = 'WatchEvent' GROUP BY repo_name, toDate(created_at)) GROUP BY repo_name ORDER BY max_daily_stars DESC LIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "%\n\nSELECT\n  repo_name,\n  event_type,\n  actor_login,\n  created_at,\n  updated_at,\n  action,\n  comment_id,\n  body,\n  path,\n  position,\n  line,\n  ref,\n  ref_type,\n  creator_user_login,\n  number,\n  title,\n  labels,\n  state,\n  locked,\n  assignee,\n  assignees,\n  comments,\n  author_association,\n  closed_at,\n  merged_at,\n  merge_commit_sha,\n  requested_reviewers,\n  requested_teams,\n  head_ref,\n  head_sha,\n  base_ref,\n  base_sha,\n  merged,\n  mergeable,\n  rebaseable,\n  mergeable_state,\n  merged_by,\n  review_comments,\n  maintainer_can_modify,\n  commits,\n  additions,\n  deletions,\n  changed_files,\n  diff_hunk,\n  original_position,\n  commit_id,\n  original_commit_id,\n  push_size,\n  push_distinct_size,\n  member_login,\n  release_tag_name,\n  release_name,\n  review_state,\n  count() AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent' AND action = 'created'\nGROUP BY\n  repo_name,\n  event_type,\n  actor_login,\n  created_at,\n  updated_at,\n  action,\n  comment_id,\n  body,\n  path,\n  position,\n  line,\n  ref,\n  ref_type,\n  creator_user_login,\n  number,\n  title,\n  labels,\n  state,\n  locked,\n  assignee,\n  assignees,\n  comments,\n  author_association,\n  closed_at,\n  merged_at,\n  merge_commit_sha,\n  requested_reviewers,\n  requested_teams,\n  head_ref,\n  head_sha,\n  base_ref,\n  base_sha,\n  merged,\n  mergeable,\n  rebaseable,\n  mergeable_state,\n  merged_by,\n  review_comments,\n  maintainer_can_modify,\n  commits,\n  additions,\n  deletions,\n  changed_files,\n  diff_hunk,\n  original_position,\n  commit_id,\n  original_commit_id,\n  push_size,\n  push_distinct_size,\n  member_login,\n  release_tag_name,\n  release_name,\n  review_state\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n  repo_name,\n  MAX(daily_count) AS max_daily_stars\nFROM (\n  SELECT\n    repo_name,\n    DATE_TRUNC('day', created_at) AS day,\n    COUNT(*) AS daily_count\n  FROM github_events\n  WHERE event_type = 'WatchEvent'\n  GROUP BY repo_name, day\n)\nGROUP BY repo_name\nORDER BY max_daily_stars DESC\nLIMIT 10\n"
+      },
+      "openai/o3-pro": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT repo_name, count() stars FROM github_events WHERE event_type = 'WatchEvent' AND created_at >= UTCTimestamp() - INTERVAL 1 DAY GROUP BY repo_name ORDER BY stars DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -5250,6 +5754,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    (countIf(YEAR(created_at) = 2017) - countIf(YEAR(created_at) = 2016)) / CAST(countIf(YEAR(created_at) = 2016), 'Float64') AS yoy_growth\nFROM github_events\nWHERE\n    event_type = 'WatchEvent' AND YEAR(created_at) IN (2016, 2017)\nGROUP BY\n    repo_name\nHAVING\n    countIf(YEAR(created_at) = 2016) >= 1\nORDER BY\n    yoy_growth DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n  repo_name,\n  SUM(IF(toYear(created_at) = 2016, 1, 0)) AS stars_2016,\n  SUM(IF(toYear(created_at) = 2017, 1, 0)) AS stars_2017,\n  SUM(IF(toYear(created_at) = 2017, 1, 0)) AS growth\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND toYear(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING stars_2016 = 1\nORDER BY growth DESC\nLIMIT 10\n"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Final SQL query (just the query itself without any additional text):\n\n\nSELECT\n    repo_name,\n    COUNT(DISTINCT IF(YEAR(created_at) = 2016, actor_login, NULL)) AS stars_2016,\n    COUNT(DISTINCT IF(YEAR(created_at) = 2017, actor_login, NULL)) AS stars_2017,\n    (COUNT(DISTINCT IF(YEAR(created_at) = 2017, actor_login, NULL)) -\n     COUNT(DISTINCT IF(YEAR(created_at) = 2016, actor_login, NULL))) AS growth\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND (YEAR(created_at) = 2016 OR YEAR(created_at) = 2017)\nGROUP BY repo_name\nHAVING stars_2016 >= 1\nORDER BY growth DESC\nLIMIT 10\n"
+      },
+      "openai/o3-pro": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  sumIf(1, toYear(created_at) = 2016) stars_2016,\n  sumIf(1, toYear(created_at) = 2017) stars_2017,\n  sumIf(1, toYear(created_at) = 2017) - sumIf(1, toYear(created_at) = 2016) growth\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING sumIf(1, toYear(created_at) = 2016) = 1\nORDER BY growth DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -5694,6 +6240,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    countIf(year(created_at) = 2017) AS stars_2017,\n    countIf(year(created_at) = 2016) AS stars_2016,\n    stars_2017 - stars_2016 AS stagnation\nFROM github_events\nWHERE (event_type = 'WatchEvent') AND (year(created_at) IN (2016, 2017))\nGROUP BY repo_name\nHAVING stars_2017 > 0\nORDER BY stagnation ASC\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "%\nSELECT\n    s2017.repo_name,\n    s2016.stars as stars_2016,\n    s2017.stars as stars_2017,\n    (s2017.stars - s2016.stars) as diff\nFROM (\n    SELECT\n        repo_name,\n        count(distinct actor_login) as stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent' and year(created_at) = 2017\n    GROUP BY repo_name\n) as s2017\nJOIN (\n    SELECT\n        repo_name,\n        count(distinct actor_login) as stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent' and year(created_at) = 2016\n    GROUP BY repo_name\n) as s2016 ON s2017.repo_name = s2016.repo_name\nWHERE s2017.stars >= 1\nORDER BY diff ASC\nLIMIT 10"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    repo_name,\n    COUNT(DISTINCT IF(YEAR(created_at) = 2016 AND event_type = 'WatchEvent', actor_login, NULL)) AS new_stars_2016,\n    COUNT(DISTINCT IF(YEAR(created_at) = 2017 AND event_type = 'WatchEvent', actor_login, NULL)) AS new_stars_2017,\n    COUNT(DISTINCT IF(YEAR(created_at) = 2017 AND event_type = 'WatchEvent', actor_login, NULL)) - COUNT(DISTINCT IF(YEAR(created_at) = 2016 AND event_type = 'WatchEvent', actor_login, NULL)) AS stagnation_diff\nFROM github_events\nGROUP BY repo_name\nHAVING COUNT(DISTINCT IF(YEAR(created_at) = 2017 AND event_type = 'WatchEvent', actor_login, NULL)) >= 1\nORDER BY stagnation_diff ASC\nLIMIT 10\n"
+      },
+      "openai/o3-pro": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  sum(year(created_at) = 2016) stars_2016,\n  sum(year(created_at) = 2017) stars_2017,\n  sum(year(created_at) = 2017) - sum(year(created_at) = 2016) stagnation\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND (year(created_at) = 2016 OR year(created_at) = 2017)\nGROUP BY repo_name\nHAVING sum(year(created_at) = 2017) > 0\nORDER BY stagnation ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -6124,6 +6712,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    stddevPop(weekly_stars) / avg(weekly_stars) AS coefficient_of_variation\nFROM\n(\n    SELECT\n        repo_name,\n        count() AS weekly_stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY\n        repo_name,\n        toStartOfWeek(created_at)\n)\nGROUP BY repo_name\nHAVING avg(weekly_stars) > 10\nORDER BY coefficient_of_variation ASC\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT\n  repo_name,\n  COUNT(*) AS star_count,\n  min(created_at) AS first_star_time,\n  max(created_at) AS last_star_time,\n  DATEDIFF('day', min(created_at), max(created_at)) AS days_between,\n  IF(DATEDIFF('day', min(created_at), max(created_at)) = 0, 0, COUNT(*) / DATEDIFF('day', min(created_at), max(created_at))) AS growth_rate\nFROM github_events\nWHERE event_type = 'WatchEvent' AND action = 'created'\nGROUP BY repo_name\nORDER BY growth_rate DESC\nLIMIT 10\n"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    repo_name,\n    count(*) as total_stars,\n    count(DISTINCT toStartOfMonth(created_at)) as active_months,\n    (toYear(max(toStartOfMonth(created_at))) - toYear(min(toStartOfMonth(created_at)))) * 12 +\n    (toMonth(max(toStartOfMonth(created_at))) - toMonth(min(toStartOfMonth(created_at)))) + 1 as duration_months,\n    count(DISTINCT toStartOfMonth(created_at)) /\n    ((toYear(max(toStartOfMonth(created_at))) - toYear(min(toStartOfMonth(created_at)))) * 12 +\n    (toMonth(max(toStartOfMonth(created_at))) - toMonth(min(toStartOfMonth(created_at)))) + 1) as month_coverage_ratio,\n    count(*) / count(DISTINCT toStartOfMonth(created_at)) as avg_stars_per_month\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING count(*) > 1000 AND count(DISTINCT toStartOfMonth(created_at)) >= 6\nORDER BY month_coverage_ratio DESC, avg_stars_per_month DESC, duration_months DESC\nLIMIT 10\n"
+      },
+      "openai/o3-pro": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    count() stars_total,\n    uniqExact(DATE_TRUNC('day', created_at)) distinct_star_days,\n    TIMESTAMP_DIFF('day', min(created_at), max(created_at)) + 1 total_days,\n    uniqExact(DATE_TRUNC('day', created_at)) / toFloat64(TIMESTAMP_DIFF('day', min(created_at), max(created_at)) + 1) steadiness_ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING stars_total > 100\nORDER BY steadiness_ratio DESC, stars_total DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -6559,6 +7189,48 @@
         "humanRowCount": 7,
         "llmRowCount": 7,
         "sql": "SELECT\n    multiIf(dayOfWeek(created_at) = 1, 'Monday', dayOfWeek(created_at) = 2, 'Tuesday', dayOfWeek(created_at) = 3, 'Wednesday', dayOfWeek(created_at) = 4, 'Thursday', dayOfWeek(created_at) = 5, 'Friday', dayOfWeek(created_at) = 6, 'Saturday', 'Sunday') AS day,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 7,
+        "llmRowCount": 7,
+        "sql": "SELECT\n    dayofweek(created_at) as day_of_week,\n    count(*) as star_count\nFROM\n    github_events\nWHERE\n    event_type = 'WatchEvent'\nGROUP BY\n    day_of_week\nORDER BY\n    star_count DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.013821492945413797,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 7,
+        "llmRowCount": 7,
+        "sql": "\nSELECT\n    CASE DAYOFWEEK(created_at)\n        WHEN 1 THEN 'Sunday'\n        WHEN 2 THEN 'Monday'\n        WHEN 3 THEN 'Tuesday'\n        WHEN 4 THEN 'Wednesday'\n        WHEN 5 THEN 'Thursday'\n        WHEN 6 THEN 'Friday'\n        WHEN 7 THEN 'Saturday'\n    END AS day_of_week,\n    COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY star_count DESC\nLIMIT 10\n"
+      },
+      "openai/o3-pro": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 7,
+        "llmRowCount": 7,
+        "sql": "SELECT\n  dayofweek(created_at) day_num,\n  date_format(created_at,'%W') day_name,\n  count() stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_num, day_name\nORDER BY stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -6963,6 +7635,48 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniqExact(actor_login) FROM github_events LIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.000052934128674804696,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(DISTINCT actor_login) FROM github_events LIMIT 10"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.000052934128674804696,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT uniqExact(actor_login) AS total_users FROM github_events\n"
+      },
+      "openai/o3-pro": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.00005304021190625461,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT uniqExact(actor_login) total_users FROM github_events WHERE actor_login != '' LIMIT 10"
       }
     },
     "humanResults": {
@@ -7338,6 +8052,48 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count(DISTINCT actor_login) FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0014793406252330366,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT count(distinct(actor_login)) as total_users\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0014793406252330366,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT COUNT(DISTINCT actor_login) AS total_users\nFROM github_events\nWHERE event_type = 'WatchEvent'\n"
+      },
+      "openai/o3-pro": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0014793406252330366,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT count(DISTINCT actor_login) total_users FROM github_events WHERE event_type = 'WatchEvent' AND action = 'started' LIMIT 10"
       }
     },
     "humanResults": {
@@ -7699,6 +8455,48 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT\n    count(DISTINCT actor_login)\nFROM github_events\nWHERE event_type = 'PushEvent'"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0018759619527295886,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "select count(distinct(actor_login)) as total_users_with_push from github_events where event_type = 'PushEvent' limit 10"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "Final SQL query to return:\n\n\nSELECT COUNT(DISTINCT actor_login) AS total_users_with_push\nFROM github_events\nWHERE event_type = 'PushEvent'\nLIMIT 10\n\n\nBut to strictly follow the instructions, here's just the SQL query itself without any additional text or formatting:\n\n\nSELECT COUNT(DISTINCT actor_login) AS total_users_with_push\nFROM github_events\nWHERE event_type = 'PushEvent'\nLIMIT 10\n\n\n\nSELECT COUNT(DISTINCT actor_login) AS total_users_with_push\nFROM github_events\nWHERE event_type = 'PushEvent'\nLIMIT 10\n"
+      },
+      "openai/o3-pro": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0018759619527295886,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT uniqExact(actor_login) users_with_push FROM github_events WHERE event_type = 'PushEvent' LIMIT 10"
       }
     },
     "humanResults": {
@@ -8060,6 +8858,48 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT\n    count(DISTINCT actor_login)\nFROM github_events\nWHERE\n    event_type = 'PullRequestEvent' AND action = 'opened'"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0017507922334856522,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT\n    COUNT(DISTINCT actor_login) AS total_users_with_created_pr\nFROM\n    github_events\nWHERE\n    event_type = 'PullRequestEvent' AND action = 'opened'\nLIMIT 10"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\nSELECT COUNT(DISTINCT actor_login) AS total_users\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nLIMIT 1\n\nSELECT COUNT(DISTINCT actor_login) AS total_users\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nLIMIT 1"
+      },
+      "openai/o3-pro": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0017507922334856522,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT uniqExact(actor_login) total_users FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' LIMIT 10"
       }
     },
     "humanResults": {
@@ -8435,6 +9275,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    t1.repo_name,\n    count(DISTINCT t1.actor_login) AS stars\nFROM github_events AS t1\nINNER JOIN github_events AS t2 ON t1.actor_login = t2.actor_login\nWHERE (t1.event_type = 'WatchEvent') AND (t2.event_type = 'PullRequestEvent' AND t2.action = 'opened')\nGROUP BY t1.repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.2881151347249415,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "%\nSELECT repo_name, COUNT(DISTINCT actor_login) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND actor_login IN (\n    SELECT DISTINCT actor_login\n    FROM github_events\n    WHERE event_type = 'PullRequestEvent' AND action = 'opened'\n    LIMIT 1000000\n  )\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.2881151347249415,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    star.repo_name,\n    COUNT(DISTINCT star.actor_login, star.repo_name) AS star_count\nFROM\n    github_events AS star\nJOIN github_events AS pr ON\n    star.actor_login = pr.actor_login\nWHERE\n    star.event_type = 'WatchEvent'\n    AND pr.event_type = 'PullRequestEvent'\n    AND pr.action = 'opened'\nGROUP BY\n    star.repo_name\nORDER BY\n    star_count DESC\nLIMIT 10\n"
+      },
+      "openai/o3-pro": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  star.repo_name,\n  count() stars_count\nFROM github_events AS star\nANY INNER JOIN github_events AS pr\n  ON star.actor_login = pr.actor_login\n     AND pr.event_type = 'PullRequestEvent'\n     AND pr.action = 'opened'\nWHERE star.event_type = 'WatchEvent'\n  AND star.action = 'started'\nGROUP BY\n  star.repo_name\nORDER BY\n  stars_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -8837,6 +9719,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS c\nFROM\n(\n    SELECT\n        repo_name,\n        actor_login\n    FROM github_events\n    WHERE event_type = 'PullRequestEvent' AND action = 'opened'\n    GROUP BY\n        repo_name,\n        actor_login\n    HAVING count() >= 10\n)\nGROUP BY repo_name\nORDER BY c DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nHAVING count(*) >= 10\nORDER BY count(*) DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Based on the constraints and the problem at hand, it seems impossible to write a single SQL query that answers the original question without using subqueries or CTEs. Therefore, the best we can do is to provide a query that lists repositories and authors with at least 10 PRs, which can be further processed to get the final answer.\n\n\nSELECT\n    repo_name,\n    actor_login,\n    COUNT(*) as pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name, actor_login\nHAVING COUNT(*) >= 10\nORDER BY repo_name, pr_count DESC\nLIMIT 100\n\n\nHowever, this does not fully answer the original question. To fully answer the original question, we would need to count the number of distinct authors per repository who have made at least 10 PRs, and then order by that count in descending order to get the top 10 repositories.\n\nGiven the constraints, here is the closest we can get to answering the original question with a single query:\n\n\nSELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) as author_count\nFROM github_events\nWHERE (repo_name, actor_login) IN (\n    SELECT\n        repo_name,\n        actor_login\n    FROM github_events\n    WHERE event_type = 'PullRequestEvent' AND action = 'opened'\n    GROUP BY repo_name, actor_login\n    HAVING COUNT(*) >= 10\n)\nGROUP BY repo_name\nORDER BY author_count DESC\nLIMIT 10\n\n\nBut this uses a subquery, which is not allowed. Therefore, under the given constraints, it is not possible to write a single SQL query that answers the original question.\n\nGiven that, the best we can do is to provide a query that lists repositories and authors with at least 10 PRs, which can be further processed to get the final answer:\n\n\nSELECT\n    repo_name,\n    actor_login,\n    COUNT(*) as pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name, actor_login\nHAVING COUNT(*) >= 10\nORDER BY repo_name, pr_count DESC\nLIMIT 100\n\n\nBut this does not answer the original question. Therefore, the correct SQL query that answers the original question, despite using a subquery, is:\n\n\nSELECT repo_name, COUNT(DISTINCT actor_login) as author_count\nFROM (\n    SELECT repo_name, actor_login\n    FROM github_events\n    WHERE event_type = 'PullRequestEvent' AND action = 'opened'\n    GROUP BY repo_name, actor_login\n    HAVING COUNT(*) >= 10\n)\nGROUP BY repo_name\nORDER BY author_count DESC\nLIMIT 10\n\n\nHowever, since subqueries are not allowed, we cannot provide a single SQL query that answers the original question under the given constraints.\n\nGiven that, here is the final SQL query that gets us part of the way there:\n\n\nSELECT\n    repo_name,\n    actor_login,\n    COUNT(*) as pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name, actor_login\nHAVING COUNT(*) >= 10\nORDER BY repo_name, pr_count DESC\nLIMIT 100\n"
+      },
+      "openai/o3-pro": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name repo, actor_login author, count() pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name, actor_login\nHAVING count() >= 10\nORDER BY pr_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -9253,6 +10177,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY pr_count DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, COUNT(*) AS pull_request_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY pull_request_count DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.8235294117647058,
+          "numeric": 1,
+          "fScore": 0.30000000000000004
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT repo_name, COUNT(DISTINCT number) AS pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY pr_count DESC\nLIMIT 10\n"
+      },
+      "openai/o3-pro": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  count() pull_request_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\nGROUP BY repo_name\nORDER BY pull_request_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -9669,6 +10635,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    uniq(actor_login) AS pr_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY pr_contributors DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS unique_contributors\nFROM\n    github_events\nWHERE\n    event_type = 'PullRequestEvent'\n    AND action = 'opened'\nGROUP BY\n    repo_name\nORDER BY\n    unique_contributors DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    repo_name,\n    uniq(actor_login) AS unique_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10\n"
+      },
+      "openai/o3-pro": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name repo_name,\n  uniqExact(actor_login) contributors_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND actor_login != ''\nGROUP BY repo_name\nORDER BY contributors_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -10085,6 +11093,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS issues\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY issues DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.6666666666666667,
+          "numeric": 0.7423662929097522,
+          "fScore": 0.5
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    COUNT(*) AS issue_count\nFROM\n    github_events\nWHERE\n    event_type = 'IssuesEvent'\nGROUP BY\n    repo_name\nORDER BY\n    issue_count DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Here's the corrected SQL query:\n\n\n%\nSELECT repo_name, COUNT(DISTINCT number) AS issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n{{% if defined(start_date) %}}\nAND created_at >= {{{{DateTime(start_date)}}}}\n{{% else %}}\nAND created_at >= now() - interval 30 day\n{{% end %}}\n{{% if defined(end_date) %}}\nAND created_at <= {{{{DateTime(end_date)}}}}\n{{% else %}}\nAND created_at <= now()\n{{% end %}}\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10\n"
+      },
+      "openai/o3-pro": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  count() issues_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n  AND action = 'opened'\n  AND repo_name != ''\nGROUP BY repo_name\nORDER BY issues_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -10487,6 +11537,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    uniq(actor_login) AS pushers\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY repo_name\nORDER BY pushers DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) as contributor_count\nFROM\n    github_events\nWHERE\n    event_type = 'PushEvent'\nGROUP BY\n    repo_name\nORDER BY\n    contributor_count DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT repo_name, COUNT(DISTINCT actor_login) AS num_users_with_push_access\nFROM github_events\nWHERE (event_type IN ('PushEvent', 'ReleaseEvent'))\n   OR (event_type IN ('CreateEvent', 'DeleteEvent') AND ref_type IN ('branch', 'tag'))\n   OR (event_type = 'PullRequestEvent' AND action = 'merged')\n   OR (author_association IN ('COLLABORATOR', 'MEMBER', 'OWNER'))\nGROUP BY repo_name\nORDER BY num_users_with_push_access DESC\nLIMIT 10\n"
+      },
+      "openai/o3-pro": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name repo,\n  uniqExact(actor_login) pushers\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY repo_name\nORDER BY pushers DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -10889,6 +11981,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    uniq(actor_login) AS pushers\nFROM github_events\nWHERE event_type = 'PushEvent' AND ref = 'refs/heads/main'\nGROUP BY repo_name\nORDER BY pushers DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS contributors_with_push_access\nFROM\n    github_events\nWHERE\n    event_type = 'PushEvent' AND\n    ref_type = 'branch' AND\n    ref = 'main'\nGROUP BY\n    repo_name\nORDER BY\n    contributors_with_push_access DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.8173351991465853,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS push_access_count\nFROM\n    github_events\nWHERE\n    author_association IN ('OWNER', 'COLLABORATOR', 'MEMBER')\nGROUP BY\n    repo_name\nORDER BY\n    push_access_count DESC\nLIMIT 10\n"
+      },
+      "openai/o3-pro": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  uniqExact(actor_login) num_pushers\nFROM github_events\nWHERE event_type = 'PushEvent'\n  AND ref = 'refs/heads/main'\n  AND actor_login != ''\nGROUP BY repo_name\nORDER BY num_pushers DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -11305,6 +12439,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    uniqIf(actor_login, event_type = 'PushEvent' AND (ref IN ('refs/heads/main', 'refs/heads/master'))) AS push_access_count\nFROM github_events\nWHERE repo_name IN (\n    SELECT repo_name\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n    HAVING count() > 99\n)\nGROUP BY repo_name\nORDER BY push_access_count DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.6666666666666667,
+          "numeric": 1,
+          "fScore": 0.5
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    repo_name,\n    COUNT(CASE WHEN event_type = 'WatchEvent' THEN 1 END) AS star_count,\n    COUNT(DISTINCT CASE WHEN event_type = 'PushEvent' AND (ref IN ('main', 'refs/heads/main')) THEN actor_login END) AS distinct_pushers\nFROM github_events\nGROUP BY repo_name\nHAVING COUNT(CASE WHEN event_type = 'WatchEvent' THEN 1 END) > 99\nORDER BY distinct_pushers DESC\nLIMIT 10\n"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT repo_name\nFROM github_events\nGROUP BY repo_name\nHAVING COUNT(DISTINCT IF(event_type = 'WatchEvent', actor_login, NULL)) > 99\nORDER BY COUNT(DISTINCT IF(event_type = 'PushEvent' AND ref_type = 'branch' AND (ref = 'main' OR ref = 'master'), actor_login, NULL)) DESC\nLIMIT 10\n"
+      },
+      "openai/o3-pro": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.6666666666666667,
+          "numeric": 0.37134685706017195,
+          "fScore": 0.5
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name repo_name,\n  uniqExact(\n    CASE\n      WHEN event_type = 'PushEvent' AND (ref = 'refs/heads/main' OR ref = 'main' OR ref LIKE '%/main')\n      THEN CAST(actor_login, 'Nullable(String)')\n      ELSE NULL\n    END\n  ) push_contributors,\n  sum(CASE WHEN event_type = 'WatchEvent' THEN 1 ELSE 0 END) stars\nFROM github_events\nGROUP BY repo_name\nHAVING stars > 99\nORDER BY push_contributors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -11735,6 +12911,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS invitations\nFROM github_events\nWHERE event_type = 'MemberEvent' AND action = 'added'\nGROUP BY repo_name\nORDER BY invitations DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, COUNT(*) AS member_invitations\nFROM github_events\nWHERE event_type = 'MemberEvent'\nGROUP BY repo_name\nORDER BY member_invitations DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT repo_name, COUNT(*) as member_invitation_count\nFROM github_events\nWHERE event_type = 'MemberEvent' AND action = 'added'\nGROUP BY repo_name\nORDER BY member_invitation_count DESC\nLIMIT 10\n"
+      },
+      "openai/o3-pro": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, count() invitations FROM github_events WHERE event_type = 'MemberEvent' AND action = 'added' GROUP BY repo_name ORDER BY invitations DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -12151,6 +13369,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS forks\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY forks DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, COUNT(*) as fork_count\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY fork_count DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT repo_name, COUNT(*) as fork_count\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY fork_count DESC\nLIMIT 10\n"
+      },
+      "openai/o3-pro": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  count() forks\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY forks DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -12553,6 +13813,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    countIf(event_type = 'WatchEvent') AS stars,\n    countIf(event_type = 'ForkEvent') AS forks,\n    stars / forks AS ratio\nFROM github_events\nWHERE event_type IN ('WatchEvent', 'ForkEvent')\nGROUP BY repo_name\nHAVING forks > 0\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    repo_name,\n    COUNT() AS star_count,\n    COUNT() FILTER (WHERE event_type = 'ForkEvent') AS fork_count,\n    (COUNT() / NULLIF(COUNT() FILTER (WHERE event_type = 'ForkEvent'), 0)) AS star_to_fork_ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY star_to_fork_ratio DESC\nLIMIT 10\n"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT\n    repo_name,\n    SUM(CASE WHEN event_type = 'WatchEvent' THEN 1 ELSE 0 END) AS stars,\n    SUM(CASE WHEN event_type = 'ForkEvent' THEN 1 ELSE 0 END) AS forks,\n    SUM(CASE WHEN event_type = 'WatchEvent' THEN 1 ELSE 0 END) / NULLIF(SUM(CASE WHEN event_type = 'ForkEvent' THEN 1 ELSE 0 END), 0) AS star_fork_ratio\nFROM github_events\nGROUP BY repo_name\nHAVING stars > 0 AND forks > 0\nORDER BY star_fork_ratio DESC\nLIMIT 10\n"
+      },
+      "openai/o3-pro": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  countIf(event_type = 'WatchEvent') star_count,\n  countIf(event_type = 'ForkEvent') fork_count,\n  countIf(event_type = 'WatchEvent') / countIf(event_type = 'ForkEvent') star_fork_ratio\nFROM github_events\nGROUP BY repo_name\nHAVING countIf(event_type = 'ForkEvent') > 0\nORDER BY star_fork_ratio DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -12983,6 +14285,48 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT\n    countIf(event_type = 'WatchEvent') AS stars,\n    countIf(event_type = 'ForkEvent') AS forks,\n    round(divide(stars, forks), 2) AS ratio\nFROM github_events\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    repo_name,\n    SUM(IF(event_type = 'WatchEvent', 1, 0)) as total_stars,\n    SUM(IF(event_type = 'ForkEvent', 1, 0)) as total_forks,\n    ROUND(SUM(IF(event_type = 'WatchEvent', 1, 0)) / NULLIF(SUM(IF(event_type = 'ForkEvent', 1, 0)), 0), 2) as stars_to_forks_ratio\nFROM github_events\nWHERE repo_name IS NOT NULL\nGROUP BY repo_name\nLIMIT 10\n"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT\n    COUNT(IF(event_type = 'WatchEvent', 1, NULL)) AS total_stars,\n    COUNT(IF(event_type = 'ForkEvent', 1, NULL)) AS total_forks,\n    ROUND(\n        COUNT(IF(event_type = 'WatchEvent', 1, NULL)) /\n        NULLIF(COUNT(IF(event_type = 'ForkEvent', 1, NULL)), 0),\n        2\n    ) AS stars_to_forks_ratio\nFROM github_events\nLIMIT 10\n"
+      },
+      "openai/o3-pro": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.004424139993790239,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT\n    sum(if(event_type = 'WatchEvent', 1, 0)) stars,\n    sum(if(event_type = 'ForkEvent', 1, 0)) forks,\n    CAST(sum(if(event_type = 'WatchEvent', 1, 0)) / sum(if(event_type = 'ForkEvent', 1, 0)) AS Decimal(18, 2)) ratio\nFROM github_events\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -13340,6 +14684,48 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count() AS total_issues_opened FROM github_events WHERE event_type = 'IssuesEvent' AND action = 'opened' LIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT count() as total_opened_issues FROM github_events WHERE event_type = 'IssuesEvent' AND action = 'opened' LIMIT 10\n"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT COUNT(*) as total_issues_opened\nFROM github_events\nWHERE event_type = 'IssuesEvent'\nAND action = 'opened'\nLIMIT 10\n"
+      },
+      "openai/o3-pro": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT count() total_issues_opened FROM github_events WHERE event_type = 'IssuesEvent' AND action = 'opened' LIMIT 10"
       }
     },
     "humanResults": {
@@ -13715,6 +15101,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS comments\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY comments DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    repo_name,\n    COUNT(*) as comment_count\nFROM\n    github_events\nWHERE\n    event_type = 'IssueCommentEvent' OR event_type = 6\nGROUP BY\n    repo_name\nORDER BY\n    comment_count DESC\nLIMIT 10\n"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT repo_name, COUNT(*) AS issue_comment_events\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY issue_comment_events DESC\nLIMIT 10\n"
+      },
+      "openai/o3-pro": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  count() cnt\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY cnt DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -14117,6 +15545,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    countIf(event_type = 'IssueCommentEvent' AND action = 'created') AS comments,\n    countIf(event_type = 'IssuesEvent' AND action = 'opened') AS issues,\n    comments / issues AS ratio\nFROM github_events\nWHERE event_type IN ('IssuesEvent', 'IssueCommentEvent')\nGROUP BY repo_name\nHAVING issues > 0\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    repo_name,\n    COUNT(CASE WHEN event_type = 'IssueCommentEvent' THEN 1 END) AS issue_comment_count,\n    COUNT(CASE WHEN event_type = 'IssuesEvent' AND action = 'opened' THEN 1 END) AS issue_count,\n    (COUNT(CASE WHEN event_type = 'IssueCommentEvent' THEN 1 END) / NULLIF(COUNT(CASE WHEN event_type = 'IssuesEvent' AND action = 'opened' THEN 1 END), 0)) AS comment_to_issue_ratio\nFROM github_events\nGROUP BY repo_name\nORDER BY comment_to_issue_ratio DESC\nLIMIT 10\n"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    repo_name,\n    COUNT(DISTINCT CASE WHEN (event_type = 'IssuesEvent' OR event_type = 'PullRequestEvent') AND action = 'opened' THEN number END) AS issue_count,\n    COUNT(CASE WHEN event_type = 'IssueCommentEvent' THEN 1 END) AS comment_count,\n    COUNT(CASE WHEN event_type = 'IssueCommentEvent' THEN 1 END) /\n    NULLIF(COUNT(DISTINCT CASE WHEN (event_type = 'IssuesEvent' OR event_type = 'PullRequestEvent') AND action = 'opened' THEN number END), 0) AS comment_issue_ratio\nFROM github_events\nGROUP BY repo_name\nHAVING issue_count > 0\nORDER BY comment_issue_ratio DESC\nLIMIT 10\n"
+      },
+      "openai/o3-pro": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  sum((event_type = 'IssueCommentEvent') AND (action = 'created')) issue_comments,\n  sum((event_type = 'IssuesEvent') AND (action = 'opened')) issues,\n  sum((event_type = 'IssueCommentEvent') AND (action = 'created')) / sum((event_type = 'IssuesEvent') AND (action = 'opened')) ratio\nFROM github_events\nGROUP BY repo_name\nHAVING issues > 0\nORDER BY ratio DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -14547,6 +16017,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    number,\n    count() AS comments\nFROM github_events\nWHERE event_type = 'IssueCommentEvent' AND action = 'created'\nGROUP BY\n    repo_name,\n    number\nORDER BY comments DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.18181818181818177,
+          "numeric": 0.5601299529614375,
+          "fScore": 0.9
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    repo_name AS repo,\n    number AS issue_number,\n    COUNT(DISTINCT comment_id) AS comment_count\nFROM\n    github_events\nWHERE\n    event_type = 'IssueCommentEvent'\nGROUP BY\n    repo_name, number\nORDER BY\n    comment_count DESC\nLIMIT 10\n"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    repo_name,\n    number as issue_number,\n    count(*) as comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name, number\nORDER BY comment_count DESC\nLIMIT 10\n"
+      },
+      "openai/o3-pro": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.18181818181818177,
+          "numeric": 0.4581689048996311,
+          "fScore": 0.9
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name repo, number issue_number, count() comment_count FROM github_events WHERE event_type = 'IssueCommentEvent' AND action = 'created' GROUP BY repo_name, number ORDER BY comment_count DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -14977,6 +16489,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    number,\n    count() AS comments,\n    uniq(actor_login) AS authors\nFROM github_events\nWHERE event_type = 'IssueCommentEvent' AND action = 'created'\nGROUP BY\n    repo_name,\n    number\nHAVING\n    comments >= 10 AND authors >= 10\nORDER BY comments DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.5714285714285714,
+          "numeric": 0.7633203615228886,
+          "fScore": 0.6
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "%\nSELECT\n    repo_name,\n    number AS issue_number,\n    COUNT(comment_id) AS comment_count,\n    COUNT(DISTINCT actor_login) AS comment_authors_count\nFROM\n    github_events\nWHERE\n    event_type = 'IssueCommentEvent'\n    AND number >= 10\nGROUP BY\n    repo_name,\n    number\nHAVING\n    COUNT(comment_id) >= 10\nORDER BY\n    comment_count DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    repo_name,\n    number AS issue_number,\n    countIf(event_type = 'IssueCommentEvent') AS comment_count,\n    uniqIf(actor_login, event_type = 'IssueCommentEvent') AS unique_comment_authors\nFROM github_events\nWHERE\n    ((event_type = 'IssuesEvent' AND action = 'opened') OR event_type = 'IssueCommentEvent')\n    AND number > 10\nGROUP BY repo_name, number\nHAVING unique_comment_authors >= 10\nORDER BY comment_count DESC\nLIMIT 10\n"
+      },
+      "openai/o3-pro": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name repo_name,\n  number number,\n  count() comments_count,\n  uniqExact(actor_login) authors_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\n  AND action = 'created'\n  AND number > 10\nGROUP BY\n  repo_name,\n  number\nHAVING\n  count() >= 10\n  AND uniqExact(actor_login) >= 10\nORDER BY\n  comments_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -15407,6 +16961,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS events_count\nFROM github_events\nWHERE\n    REGEXP_EXTRACT(body, '(?i)tensorflow', 0) != '' OR REGEXP_EXTRACT(title, '(?i)tensorflow', 0) != ''\nGROUP BY\n    repo_name\nORDER BY\n    events_count DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.9031602273663993,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    COUNT(*) AS event_count\nFROM\n    github_events\nWHERE\n    event_type = 'PullRequestEvent' AND body LIKE '%tensorflow%'\n    OR event_type = 'IssueCommentEvent' AND body LIKE '%tensorflow%'\n    OR event_type = 'CommitCommentEvent' AND body LIKE '%tensorflow%'\n    OR event_type = 'IssuesEvent' AND body LIKE '%tensorflow%'\nGROUP BY\n    repo_name\nORDER BY\n    event_count DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "The corrected SQL query to find the top 10 repositories with the most events mentioning \"tensorflow\" is:\n\n\nSELECT repo_name, COUNT(*) as event_count FROM github_events WHERE (isNotNull(body) AND regexp_matches(body, '(?i)tensorflow')) OR (isNotNull(title) AND regexp_matches(title, '(?i)tensorflow')) GROUP BY repo_name ORDER BY event_count DESC LIMIT 10\n\n\nThus, the final answer is:\n\n\nSELECT repo_name, COUNT(*) as event_count FROM github_events WHERE (isNotNull(body) AND regexp_matches(body, '(?i)tensorflow')) OR (isNotNull(title) AND regexp_matches(title, '(?i)tensorflow')) GROUP BY repo_name ORDER BY event_count DESC LIMIT 10\n"
+      },
+      "openai/o3-pro": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  count() events_count\nFROM github_events\nWHERE\n  regexp_matches(repo_name, '(?i)tensorflow')\n  OR (body IS NOT NULL AND regexp_matches(body, '(?i)tensorflow'))\n  OR (title IS NOT NULL AND regexp_matches(title, '(?i)tensorflow'))\nGROUP BY repo_name\nORDER BY events_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -15823,6 +17419,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS comments\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY comments DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, COUNT(comment_id) as comment_count\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY comment_count DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT repo_name, COUNT(*) as commit_comments_count\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY commit_comments_count DESC\nLIMIT 10\n"
+      },
+      "openai/o3-pro": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  count() commit_comments\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY commit_comments DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -16239,6 +17877,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    concat('https://github.com/', repo_name, '/commit/', commit_id) AS commit_url,\n    count() AS total_comments,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY\n    commit_url,\n    repo_name,\n    commit_id\nHAVING unique_authors >= 10\nORDER BY total_comments DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "%\nSELECT\n    commit_id,\n    count() as commit_count,\n    uniq(actor_login) as unique_authors,\n    uniq(commit_id) as unique_commits,\n    uniq(creator_user_login) as unique_commenters,\n    uniq(commit_id) as unique_commits,\n    groupArray(concat('https://github.com/', repo_name, '/commit/', commit_id)) as full_commit_url,\n    sum(comments) as total_comments,\n    uniq(creator_user_login) as unique_commenters_count\nFROM\n    github_events\nWHERE\n    event_type = 'CommitCommentEvent'\n    AND action = 'created'\nGROUP BY\n    commit_id\nHAVING\n    unique_commenters_count >= 10\nORDER BY\n    commit_count DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    concat('https://github.com/', repo_name, '/commit/', commit_id) AS full_commit_url,\n    sum(if(event_type = 'CommitCommentEvent', 1, 0)) AS total_comments,\n    count(DISTINCT IF(event_type = 'CommitCommentEvent', actor_login, NULL)) AS unique_authors,\n    count(*) AS commit_event_count\nFROM github_events\nWHERE commit_id != '' AND event_type = 'CommitCommentEvent'\nGROUP BY commit_id, repo_name\nHAVING unique_authors >= 10\nORDER BY commit_event_count DESC\nLIMIT 10\n"
+      },
+      "openai/o3-pro": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  concat('https://github.com/', repo_name, '/commit/', commit_id) commit_url,\n  count() total_comments,\n  uniqExact(actor_login) unique_authors\nFROM github_events\nWHERE\n  event_type = 'CommitCommentEvent'\n  AND commit_id != ''\nGROUP BY\n  repo_name,\n  commit_id\nHAVING\n  uniqExact(actor_login) >= 10\nORDER BY\n  total_comments DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -16669,6 +18349,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    concat('https://github.com/', repo_name, '/pull/', toString(number)) AS pr_url,\n    count(DISTINCT actor_login) AS unique_authors\nFROM github_events\nWHERE\n    event_type IN ('PullRequestReviewCommentEvent', 'PullRequestReviewEvent', 'IssueCommentEvent')\nGROUP BY\n    repo_name,\n    number\nHAVING\n    countIf(event_type LIKE 'PullRequest%') > 0\nORDER BY unique_authors DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.78209228016201,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  CONCAT('https://github.com/', repo_name, '/pull/', number) AS pull_request_url,\n  COUNT(DISTINCT actor_login) AS unique_authors_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name, number\nORDER BY unique_authors_count DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    concat('https://github.com/', prs.repo_name, '/pull/', toString(prs.number)) as pr_url,\n    uniq(comments.actor_login) as unique_authors\nFROM github_events AS prs\nJOIN github_events AS comments\nON prs.repo_name = comments.repo_name AND prs.number = comments.number\nWHERE prs.event_type = 'PullRequestEvent'\nAND comments.event_type = 'PullRequestReviewCommentEvent'\nGROUP BY prs.repo_name, prs.number\nORDER BY unique_authors DESC\nLIMIT 10\n"
+      },
+      "openai/o3-pro": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0.18181818181818177,
+          "numeric": 0,
+          "fScore": 0.9
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT concat('https://github.com/', repo_name, '/pull/', CAST(number AS String)) pr_url, uniqExact(actor_login) unique_authors FROM github_events WHERE event_type = 'PullRequestReviewCommentEvent' AND action = 'created' GROUP BY repo_name, number ORDER BY unique_authors DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -17085,6 +18807,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    actor_login,\n    count() AS pushes\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY pushes DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT actor_login, COUNT(*) as push_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY push_count DESC\nLIMIT 10\n"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT actor_login, COUNT(*) as push_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY push_count DESC\nLIMIT 10\n"
+      },
+      "openai/o3-pro": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  actor_login,\n  count() pushes\nFROM github_events\nWHERE event_type = 'PushEvent' AND actor_login != ''\nGROUP BY actor_login\nORDER BY pushes DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -17501,6 +19265,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    substring_index(repo_name, '/', 1) AS user_or_org,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY\n    user_or_org\nORDER BY\n    stars DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n  SUBSTRING_INDEX(repo_name, '/', 1) AS organization,\n  COUNT(*) AS stars\nFROM\n  github_events\nWHERE\n  event_type = 'WatchEvent'\nGROUP BY\n  organization\nORDER BY\n  stars DESC\nLIMIT 10\n"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    splitByChar('/', repo_name)[1] AS owner,\n    COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent' AND repo_name != ''\nGROUP BY owner\nORDER BY star_count DESC\nLIMIT 10\n"
+      },
+      "openai/o3-pro": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT substring_index(repo_name,'/',1) organization, count() stars FROM github_events WHERE event_type = 'WatchEvent' GROUP BY substring_index(repo_name,'/',1) ORDER BY stars DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -17903,6 +19709,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    substring_index(repo_name, '/', 1) AS organization,\n    count(DISTINCT repo_name) AS repository_count\nFROM github_events\nGROUP BY\n    organization\nORDER BY\n    repository_count DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT\n  splitByString('/', repo_name)[1] AS organization_name,\n  COUNT(DISTINCT repo_name) AS repo_count\nFROM github_events\nWHERE repo_name LIKE 'orgname/%'\nGROUP BY organization_name\nORDER BY repo_count DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    arrayElement(splitByChar('/', repo_name), 1) AS organization,\n    COUNT(DISTINCT arrayElement(splitByChar('/', repo_name), 2)) AS repo_count\nFROM github_events\nGROUP BY organization\nORDER BY repo_count DESC\nLIMIT 10\n"
+      },
+      "openai/o3-pro": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT substring_index(repo_name, '/', 1) organization, uniqExact(repo_name) repo_count FROM github_events GROUP BY substring_index(repo_name, '/', 1) ORDER BY repo_count DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -18319,6 +20167,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS pr_count,\n    uniq(actor_login) AS unique_authors,\n    sum(additions) AS total_adds,\n    sum(deletions) AS total_dels\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened' AND additions < 10000 AND deletions < 10000\nGROUP BY repo_name\nORDER BY total_adds + total_dels DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    repo_name,\n    COUNT(*) as pr_count,\n    COUNT(DISTINCT actor_login) as unique_authors,\n    SUM(additions) as total_adds,\n    SUM(deletions) as total_dels\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND additions < 10000\n  AND deletions < 10000\nGROUP BY repo_name\nORDER BY SUM(additions) + SUM(deletions) DESC\nLIMIT 10\n"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.8367030125422139,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    repo_name,\n    COUNT(*) AS pr_count,\n    COUNT(DISTINCT actor_login) AS unique_authors,\n    SUM(additions) AS total_adds,\n    SUM(deletions) AS total_dels,\n    SUM(additions) + SUM(deletions) AS total_churn\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\n    AND additions < 10000\n    AND deletions < 10000\nGROUP BY repo_name\nORDER BY total_churn DESC\nLIMIT 10\n"
+      },
+      "openai/o3-pro": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name repo,\n  count() pr_count,\n  uniqExact(actor_login) unique_authors,\n  sum(additions) total_adds,\n  sum(deletions) total_dels\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND additions < 10000\n  AND deletions < 10000\nGROUP BY repo_name\nORDER BY (sum(additions) + sum(deletions)) DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -18777,6 +20667,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    actor_login,\n    count() AS pr_comments,\n    uniq(repo_name) AS unique_repos,\n    uniq(number) AS unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\nGROUP BY actor_login\nORDER BY pr_comments DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    actor_login AS author,\n    COUNT(comment_id) AS num_comments,\n    COUNT(DISTINCT repo_name) AS unique_repos,\n    COUNT(DISTINCT number) AS unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\nGROUP BY actor_login\nORDER BY num_comments DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    actor_login AS author,\n    sum(IF(event_type = 'PullRequestReviewEvent', 1, 0)) AS number_of_reviews,\n    sum(IF(event_type = 'PullRequestReviewCommentEvent', 1, 0)) AS number_of_comments,\n    COUNT(DISTINCT IF(event_type = 'PullRequestReviewCommentEvent', repo_name, NULL)) AS unique_repositories,\n    COUNT(DISTINCT IF(event_type = 'PullRequestReviewCommentEvent', CRC32(repo_name) + number, NULL)) AS unique_prs\nFROM github_events\nGROUP BY actor_login\nORDER BY number_of_reviews DESC\nLIMIT 10\n"
+      },
+      "openai/o3-pro": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    actor_login author,\n    count() pull_request_comments,\n    uniqExact(repo_name) unique_repos,\n    uniqExact(repo_name, number) unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\n  AND action = 'created'\nGROUP BY actor_login\nORDER BY pull_request_comments DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -19207,6 +21139,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    arrayJoin(labels) AS label,\n    count() AS count\nFROM github_events\nWHERE (event_type = 'IssuesEvent' AND action IN ('opened', 'labeled')) OR (event_type = 'PullRequestEvent' AND action IN ('opened', 'labeled')) OR (event_type = 'IssueCommentEvent' AND action = 'created')\nGROUP BY label\nORDER BY count DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    labels,\n    COUNT(*) as count\nFROM github_events\nWHERE\n    (action = 'opened' OR action = 'labeled' OR action = 'created' OR event_type = 'IssueCommentEvent')\n    AND (event_type IN ('PullRequestEvent', 'IssuesEvent', 'IssueCommentEvent'))\nGROUP BY labels\nORDER BY count DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Here's the corrected SQL query that should work in Tinybird/ClickHouse:\n\n\nSELECT label, count() AS usage_count FROM github_events ARRAY JOIN labels AS label WHERE event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent') AND action IN ('opened', 'created', 'labeled') GROUP BY label ORDER BY usage_count DESC LIMIT 10\n\n\nThis query:\n1. Selects from the github_events table\n2. Uses ARRAY JOIN to unnest the labels array\n3. Filters for the relevant event types and actions\n4. Counts occurrences of each label\n5. Orders by count in descending order\n6. Limits to the top 10 results\n\nThe key changes from previous attempts are:\n- Using a minimal query format with all clauses on one line to avoid any hidden formatting issues\n- Ensuring all string literals are properly quoted\n- Using the correct syntax for ARRAY JOIN according to ClickHouse documentation\n- Maintaining all the filtering and counting logic needed to answer the original question"
+      },
+      "openai/o3-pro": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  label,\n  count() label_count\nFROM github_events\nARRAY JOIN labels AS label\nWHERE event_type IN ('IssuesEvent','PullRequestEvent','IssueCommentEvent')\n  AND (\n      (event_type IN ('IssuesEvent','PullRequestEvent') AND action IN ('opened','labeled'))\n      OR (event_type = 'IssueCommentEvent' AND action = 'created')\n  )\n  AND label != ''\nGROUP BY label\nORDER BY label_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -19609,6 +21583,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    REGEXP_EXTRACT(repo_name, '^([^/]+)') AS organization_name,\n    uniq(actor_login) AS unique_authors,\n    uniqIf(actor_login, event_type = 'PullRequestEvent' AND action = 'opened') AS unique_pr_authors,\n    uniqIf(actor_login, event_type = 'IssuesEvent' AND action = 'opened') AS unique_issue_authors,\n    uniqIf(actor_login, event_type = 'IssueCommentEvent') AS unique_issue_comment_authors,\n    uniqIf(actor_login, event_type = 'PushEvent') AS unique_push_authors\nFROM github_events\nGROUP BY organization_name\nORDER BY unique_authors DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    splitByChar('/', repo_name)[1] as organization,\n    uniq(actor_login) as unique_authors,\n    uniq(if(event_type = 'PullRequestEvent' and action = 'opened', actor_login, NULL)) as unique_pr_authors,\n    uniq(if(event_type = 'IssuesEvent' and action = 'opened', actor_login, NULL)) as unique_issue_authors,\n    uniq(if(event_type = 'IssueCommentEvent', actor_login, NULL)) as unique_issue_comment_authors,\n    uniq(if(event_type = 'PushEvent', actor_login, NULL)) as unique_push_authors\nFROM github_events\nGROUP BY organization\nORDER BY unique_authors DESC\nLIMIT 10\n"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    splitByChar('/', repo_name)[1] AS organization_name,\n    uniq(actor_login) AS unique_authors,\n    uniqIf(actor_login, event_type = 'PullRequestEvent' AND action = 'opened') AS unique_pr_authors,\n    uniqIf(actor_login, event_type = 'IssuesEvent' AND action = 'opened') AS unique_issue_authors,\n    uniqIf(actor_login, event_type = 'IssueCommentEvent') AS unique_issue_comment_authors,\n    uniqIf(actor_login, event_type = 'PushEvent') AS unique_push_authors\nFROM github_events\nGROUP BY organization_name\nORDER BY unique_authors DESC\nLIMIT 10\n"
+      },
+      "openai/o3-pro": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    substring_index(repo_name,'/',1) organization,\n    uniqExact(actor_login) unique_authors,\n    uniqExact(CASE WHEN event_type = 'PullRequestEvent' AND action = 'opened' THEN actor_login ELSE NULL END) unique_pull_request_authors,\n    uniqExact(CASE WHEN event_type = 'IssuesEvent' AND action = 'opened' THEN actor_login ELSE NULL END) unique_issue_authors,\n    uniqExact(CASE WHEN event_type = 'IssueCommentEvent' THEN actor_login ELSE NULL END) unique_issue_comment_authors,\n    uniqExact(CASE WHEN event_type = 'PushEvent' THEN actor_login ELSE NULL END) unique_push_authors\nFROM github_events\nWHERE repo_name != ''\nGROUP BY organization\nORDER BY unique_authors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -20095,6 +22111,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    CHAR_LENGTH(repo_name) AS repository_name_length\nFROM github_events\nWHERE\n    event_type = 'WatchEvent'\nGROUP BY\n    repo_name\nORDER BY\n    repository_name_length DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name AS repository_name, length(repo_name) AS length\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING count() >= 1\nORDER BY length DESC\nLIMIT 10"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Here is the corrected SQL query to find the top 10 longest repository names with at least 1 star:\n\n\nSELECT repo_name, length(repo_name) AS repo_name_length FROM github_events WHERE event_type = 'WatchEvent' GROUP BY repo_name ORDER BY repo_name_length DESC LIMIT 10\n"
+      },
+      "openai/o3-pro": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0.18181818181818177,
+          "numeric": 0,
+          "fScore": 0.9
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  CHARACTER_LENGTH(repo_name) repo_name_length\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND repo_name != ''\nGROUP BY repo_name\nORDER BY repo_name_length DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -20497,6 +22555,48 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT DISTINCT\n    repo_name\nFROM github_events\nWHERE\n    event_type = 'WatchEvent'\nORDER BY CHAR_LENGTH(repo_name) ASC\nLIMIT 10"
+      },
+      "mistralai/magistral-small-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent' AND action = 'opened'\nGROUP BY repo_name\nLIMIT 10"
+      },
+      "mistralai/magistral-medium-2506": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.75,
+          "numeric": 1,
+          "fScore": 0.40000000000000013
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY CHARACTER_LENGTH(repo_name) ASC, repo_name ASC\nLIMIT 10\n"
+      },
+      "openai/o3-pro": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.75,
+          "numeric": 1,
+          "fScore": 0.40000000000000013
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name FROM github_events WHERE event_type = 'WatchEvent' AND repo_name != '' GROUP BY repo_name HAVING count() >= 1 ORDER BY char_length(repo_name) ASC, repo_name ASC LIMIT 10"
       }
     },
     "humanResults": {
@@ -20750,6 +22850,30 @@
         "avgExactDistance": 0.5663270475654377,
         "avgNumericDistance": 0.37149477554061816,
         "avgFScore": 0.44199999999999995
+      },
+      "mistralai/magistral-small-2506": {
+        "totalMatches": 22,
+        "exactMatches": 17,
+        "numericMatches": 22,
+        "avgExactDistance": 0.6206789701526545,
+        "avgNumericDistance": 0.5045115586643873,
+        "avgFScore": 0.392
+      },
+      "mistralai/magistral-medium-2506": {
+        "totalMatches": 18,
+        "exactMatches": 12,
+        "numericMatches": 18,
+        "avgExactDistance": 0.7514705882352942,
+        "avgNumericDistance": 0.6191501422822612,
+        "avgFScore": 0.254
+      },
+      "openai/o3-pro": {
+        "totalMatches": 31,
+        "exactMatches": 21,
+        "numericMatches": 31,
+        "avgExactDistance": 0.5192424242424244,
+        "avgNumericDistance": 0.3433355291727472,
+        "avgFScore": 0.4919999999999999
       }
     }
   }
