@@ -18,7 +18,6 @@
       "models": [
         "deepseek-chat-v3-0324",
         "deepseek-chat-v3-0324:free",
-        "deepseek-r1-distill-qwen-7b"
       ]
     },
     "google": {
@@ -41,8 +40,7 @@
         "ministral-8b",
         "mistral-small-3.1-24b-instruct",
         "mistral-nemo",
-        "magistral-small-2506",
-        "magistral-medium-2506"
+        "magistral-small-2506"
       ]
     },
     "openai": {

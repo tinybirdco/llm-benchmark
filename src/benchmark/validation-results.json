@@ -365,20 +365,6 @@
         "llmRowCount": 1,
         "sql": "SELECT COUNT(*) FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": false,
-        "exactMatches": false,
-        "numericMatches": false,
-        "distance": {
-          "exact": 1,
-          "numeric": 1,
-          "fScore": 0
-        },
-        "details": "Results don't match",
-        "humanRowCount": 1,
-        "llmRowCount": 0,
-        "sql": "To count all stars, which corresponds to counting all events of type 'WatchEvent' in the `github_events` table, the correct query is to count these events without a limit. However, given the instruction to add limits for pagination and the large dataset size, there's ambiguity in whether to perform a full count or to list a limited number of star events.\n\nGiven the constraints and the \"URI too large\" error from the initial attempt, the feasible approach is to list star events with a limit of 10. This adheres to the instruction and avoids performance issues. This query does not count all stars but lists a limited number of star events, which can be used to infer a partial count.\n\nFinal SQL query:\n\n\nSELECT * FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10\n"
-      },
       "openai/o3-pro": {
         "matches": true,
         "exactMatches": true,
@@ -392,6 +378,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count() stars FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "{\"error\": \"DB::Exception: Syntax error: failed at position 1 ('SELECT') (line 1, col 1): Let me help fix the SQL query to correctly count stars in GitHub repositories.\\n\\nTo count all stars in GitHub repositories, we need to query the `github_events` table where the action is 'added' (which indicates a star) and the ref_type is 'repository'. We'll group by repository name and count the number of stars, limiting the result to 10 entries.\\n\\nThis query:\\n1. Uses proper SQL syntax starting with SELECT\\n2. Groups by repository name\\n3. Counts the number of 'added' events (which represent stars)\\n4. Uses TO_DENSE() to ensure the count is treated as a numeric value\\n5. Limits the result to 10 entries\"}\n\nTo fix the SQL query, we need to:\n\n1. Start with \"SELECT\" instead of \"Let me help fix the SQL query...\"\n2. Use proper SQL syntax for counting and grouping\n3. Remove the explanation comments\n\nHere is the corrected SQL query:\n\n\nSELECT repo_name, COUNT(*) AS stars\nFROM github_events\nWHERE action = 'added' AND ref_type = 'repository'\nGROUP BY repo_name\nLIMIT 10\n\n\nThis query:\n1. Counts all 'added' events (which represent stars) in GitHub repositories\n2. Groups the results by repository name\n3. Limits the output to 10 entries\n4. Uses proper SQL syntax with SELECT, FROM, WHERE, GROUP BY, and LIMIT\n\nThe query should now work correctly in ClickHouse/Tinybird."
       }
     },
     "humanResults": {
@@ -782,20 +782,6 @@
         "llmRowCount": 10,
         "sql": "SELECT repo_name, COUNT() AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": true,
-        "exactMatches": true,
-        "numericMatches": true,
-        "distance": {
-          "exact": 0,
-          "numeric": 0,
-          "fScore": 1
-        },
-        "details": "Results match within exact threshold",
-        "humanRowCount": 10,
-        "llmRowCount": 10,
-        "sql": "\nSELECT repo_name, COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n"
-      },
       "openai/o3-pro": {
         "matches": true,
         "exactMatches": true,
@@ -809,6 +795,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() star_count FROM github_events WHERE event_type = 'WatchEvent' GROUP BY repo_name ORDER BY star_count DESC LIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help you fix the SQL query. The main issue is with the CTE syntax and the use of the `Let` keyword, which isn't valid in ClickHouse. Here's the corrected version:\n\n\nWITH star_repositories AS (\n    SELECT \n        r.repo_name AS repository_name,\n        SUM(g.stars) + SUM(g.star_requests) AS total_stars\n    FROM \n        github_events g\n    JOIN \n        repo_names r ON g.repo_name = r.repo_name\n    WHERE \n        g.action = 'opened'\n    GROUP BY \n        r.repo_name\n    WINDOW \n    OVER (\n        ORDER BY r.repo_name\n        ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING\n    )\n)\nSELECT \n    repository_name,\n    total_stars\nFROM \n    star_repositories\nORDER BY \n    total_stars DESC\nLIMIT 10\n\n\nThe changes made:\n1. Changed `Let` to `WITH` for CTE syntax\n2. Added proper indentation for the CTE\n3. Added a window function using the `OVER` clause\n4. Kept the same logic but fixed the syntax errors\n\nThis query will:\n1. Create a CTE called `star_repositories` that calculates the total stars for each repository\n2. Use a window function to order the repositories\n3. Select the top 10 repositories by total stars"
       }
     },
     "humanResults": {
@@ -1240,20 +1240,6 @@
         "llmRowCount": 0,
         "sql": "\nWITH star_counts AS (\n  SELECT\n    repo_name,\n    COUNT(*) AS star_count\n  FROM github_events\n  WHERE event_type = 15  -- WatchEvent\n  GROUP BY repo_name\n),\npower_definitions AS (\n  SELECT 0 AS power, 1 AS power_of_10, 0 AS lower, 1 AS upper UNION ALL\n  SELECT 1 AS power, 10 AS power_of_10, 9 AS lower, 11 AS upper UNION ALL\n  SELECT 2 AS power, 100 AS power_of_10, 90 AS lower, 110 AS upper UNION ALL\n  SELECT 3 AS power, 1000 AS power_of_10, 900 AS lower, 1100 AS upper UNION ALL\n  SELECT 4 AS power, 10000 AS power_of_10, 9000 AS lower, 11000 AS upper UNION ALL\n  SELECT 5 AS power, 100000 AS power_of_10, 90000 AS lower, 110000 AS upper\n),\ncounted AS (\n  SELECT\n    pd.power,\n    pd.power_of_10,\n    COUNT(DISTINCT sc.repo_name) AS repo_count\n  FROM\n    power_definitions pd\n  JOIN\n    star_counts sc ON sc.star_count BETWEEN pd.lower AND pd.upper\n  GROUP BY\n    pd.power, pd.power_of_10\n)\nSELECT\n  power,\n  power_of_10,\n  repo_count\nFROM counted\nORDER BY power\nLIMIT 10\n"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": true,
-        "exactMatches": false,
-        "numericMatches": true,
-        "distance": {
-          "exact": 1,
-          "numeric": 0,
-          "fScore": 0
-        },
-        "details": "Results match within numeric threshold",
-        "humanRowCount": 5,
-        "llmRowCount": 5,
-        "sql": "\nSELECT\n    CASE\n        WHEN star_count < 10 THEN '1-9'\n        WHEN star_count >= 10 AND star_count < 100 THEN '10-99'\n        WHEN star_count >= 100 AND star_count < 1000 THEN '100-999'\n        WHEN star_count >= 1000 AND star_count < 10000 THEN '1000-9999'\n        WHEN star_count >= 10000 AND star_count < 100000 THEN '10000-99999'\n        WHEN star_count >= 100000 AND star_count < 1000000 THEN '100000-999999'\n        WHEN star_count >= 1000000 AND star_count < 10000000 THEN '1000000-9999999'\n        WHEN star_count >= 10000000 AND star_count < 100000000 THEN '10000000-99999999'\n        WHEN star_count >= 100000000 AND star_count < 1000000000 THEN '100000000-999999999'\n        ELSE '1000000000+'\n    END AS star_range,\n    COUNT(*) AS repository_count,\n    CASE\n        WHEN star_count < 10 THEN 1\n        WHEN star_count >= 10 AND star_count < 100 THEN 10\n        WHEN star_count >= 100 AND star_count < 1000 THEN 100\n        WHEN star_count >= 1000 AND star_count < 10000 THEN 1000\n        WHEN star_count >= 10000 AND star_count < 100000 THEN 10000\n        WHEN star_count >= 100000 AND star_count < 1000000 THEN 100000\n        WHEN star_count >= 1000000 AND star_count < 10000000 THEN 1000000\n        WHEN star_count >= 10000000 AND star_count < 100000000 THEN 10000000\n        WHEN star_count >= 100000000 AND star_count < 1000000000 THEN 100000000\n        ELSE 1000000000\n    END AS range_min\nFROM (\n    SELECT\n        repo_name,\n        COUNT(*) AS star_count\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n)\nGROUP BY star_range, range_min\nORDER BY range_min\nLIMIT 10\n"
-      },
       "openai/o3-pro": {
         "matches": true,
         "exactMatches": true,
@@ -1267,6 +1253,20 @@
         "humanRowCount": 5,
         "llmRowCount": 5,
         "sql": "SELECT\n  stars_bucket,\n  count() repositories\nFROM\n(\n  SELECT\n    repo_name,\n    count() AS star_cnt,\n    CASE\n      WHEN count() < 10 THEN 1\n      WHEN count() < 100 THEN 10\n      WHEN count() < 1000 THEN 100\n      WHEN count() < 10000 THEN 1000\n      WHEN count() < 100000 THEN 10000\n      WHEN count() < 1000000 THEN 100000\n      WHEN count() < 10000000 THEN 1000000\n      WHEN count() < 100000000 THEN 10000000\n      WHEN count() < 1000000000 THEN 100000000\n      ELSE 1000000000\n    END AS stars_bucket\n  FROM github_events\n  WHERE event_type = 'WatchEvent'\n  GROUP BY repo_name\n)\nGROUP BY stars_bucket\nORDER BY stars_bucket\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 5,
+        "llmRowCount": 0,
+        "sql": "Let me help you fix the SQL query. The main issue is that we need to properly format the table name and ensure the query is properly structured. Here's the corrected version:\n\n\nSELECT\n    ROUND(stars, -1) AS power_of_10,\n    COUNT(*) AS count\nFROM\n    github reservoirs\nGROUP BY\n    power_of_10\nORDER BY\n    power_of_10\n\n\nThis query:\n1. Rounds the stars to the nearest power of 10 using `ROUND(stars, -1)`\n2. Groups repositories by this rounded value\n3. Counts the number of repositories in each group\n4. Orders the results from smallest to largest power of 10\n\nThe query is properly formatted and uses valid SQL syntax for ClickHouse."
       }
     },
     "humanResults": {
@@ -1678,20 +1678,6 @@
         "llmRowCount": 1,
         "sql": "SELECT count(DISTINCT repo_name) AS total_repositories\nFROM github_events\nLIMIT 10"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": true,
-        "exactMatches": true,
-        "numericMatches": true,
-        "distance": {
-          "exact": 0,
-          "numeric": 0,
-          "fScore": 1
-        },
-        "details": "Results match within exact threshold",
-        "humanRowCount": 1,
-        "llmRowCount": 1,
-        "sql": "SELECT uniqExact(repo_name) AS total_repositories FROM github_events LIMIT 10"
-      },
       "openai/o3-pro": {
         "matches": true,
         "exactMatches": true,
@@ -1705,6 +1691,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniqExact(repo_name) total_repositories FROM github_events LIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "Let me help you fix the SQL query for counting repositories. The main issue was with the OVER() syntax and proper query formatting.\n\nHere's the corrected SQL query:\n\n\nSELECT \n    COUNT(DISTINCT repo_name) OVER () AS total_repos\nFROM \n    github_events\nWHERE \n    action = 'create'\nORDER BY \n    created_at\n\n\n\nThis query:\n1. Uses `COUNT(DISTINCT repo_name)` to count unique repositories\n2. `OVER ()` specifies the entire result set for the window function\n3. Orders by creation date (though this doesn't affect the count)\n4. Ends properly with a semicolon\n\nThe query will return the total number of repositories created on GitHub."
       }
     },
     "humanResults": {
@@ -2095,20 +2095,6 @@
         "llmRowCount": 10,
         "sql": "\nSELECT\n  YEAR(created_at) as year,\n  repo_name,\n  COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND YEAR(created_at) >= 2015\nGROUP BY year, repo_name\nORDER BY star_count DESC, year\nLIMIT 10\n"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": false,
-        "exactMatches": false,
-        "numericMatches": false,
-        "distance": {
-          "exact": 1,
-          "numeric": 1,
-          "fScore": 0
-        },
-        "details": "Results don't match",
-        "humanRowCount": 10,
-        "llmRowCount": 0,
-        "sql": "Final SQL query with corrected parameters and window function:\n\n\n%\nSELECT\n    YEAR(created_at) AS year,\n    repo_name,\n    COUNT(*) AS star_count,\n    row_number() OVER (PARTITION BY YEAR(created_at) ORDER BY COUNT(*) DESC) AS rank\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND created_at >= '2015-01-01 00:00:00'\nGROUP BY year, repo_name\nORDER BY year, rank\nLIMIT {{{{UInt32(limit, 10)}}}}\nOFFSET {{{{UInt32(offset, 0)}}}}\n"
-      },
       "openai/o3-pro": {
         "matches": true,
         "exactMatches": false,
@@ -2122,6 +2108,20 @@
         "humanRowCount": 10,
         "llmRowCount": 2,
         "sql": "SELECT\n  YEAR(created_at) year,\n  topK(5)(repo_name) top_repositories\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND created_at >= CAST('2015-01-01 00:00:00', 'DateTime')\nGROUP BY year\nORDER BY year\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me fix the SQL query again to properly format it for ClickHouse/Tinybird. The main issue was the incorrect placement of the LIMIT statement and the closing parenthesis.\n\nHere's the corrected SQL query:\n\n\nSELECT \n    repo_name,\n    year(created_at) as release_year,\n    SUM(created_at = 'now()') as pull_request_activity,\n    SUM(body LIKE '%') as issue_activity\nFROM \n    github_events\nWHERE \n    action IN ('create', 'pull_request', 'issue')\n    AND year(created_at) >= ${year}\nGROUP BY \n    repo_name, \n    release_year\nORDER BY \n    release_year DESC,\n    (SUM(created_at = 'now()') + SUM(body LIKE '%')) DESC\nLIMIT 10\n\n\nKey changes made:\n1. Removed the \"To\" keyword at the start of the query\n2. Properly structured the query with proper line breaks\n3. Fixed the LIMIT statement placement\n4. Properly formatted the parameter placeholder `${year}`\n\nThis query will now correctly analyze repository activity from 2015 onwards, showing the top repositories and their activity trends each year."
       }
     },
     "humanResults": {
@@ -2567,20 +2567,6 @@
         "llmRowCount": 2,
         "sql": "\nSELECT\n    YEAR(created_at) AS year,\n    COUNT(*) AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year\nLIMIT 10\n"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": false,
-        "exactMatches": false,
-        "numericMatches": false,
-        "distance": {
-          "exact": 1,
-          "numeric": 1,
-          "fScore": 0
-        },
-        "details": "Results don't match",
-        "humanRowCount": 2,
-        "llmRowCount": 0,
-        "sql": "The SQL query to track the number of stars over time by year is:\n\n\nSELECT toYear(created_at) AS year, COUNT(*) AS total_stars FROM github_events WHERE event_type = 'WatchEvent' GROUP BY year ORDER BY year LIMIT 10\n\n\nThis query filters for 'WatchEvent' events, extracts the year from the created_at timestamp, counts the stars per year, groups by year, orders by year, and limits to 10 results for pagination. This should provide a clear view of how the number of stars has changed over time by year.\n\n\nSELECT toYear(created_at) AS year, COUNT(*) AS total_stars FROM github_events WHERE event_type = 'WatchEvent' GROUP BY year ORDER BY year LIMIT 10\n"
-      },
       "openai/o3-pro": {
         "matches": true,
         "exactMatches": true,
@@ -2594,6 +2580,20 @@
         "humanRowCount": 2,
         "llmRowCount": 2,
         "sql": "SELECT\n  YEAR(created_at) event_year,\n  count() stars_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND action = 'started'\nGROUP BY event_year\nORDER BY event_year\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 2,
+        "llmRowCount": 0,
+        "sql": "Let me fix the SQL query to properly answer your question about how the total number of stars has changed over time by year. The main issue was the incorrect query syntax and formatting.\n\nHere's the corrected SQL query:\n\n\nSELECT \n    YEAR(created_at) AS year,\n    COUNT(*) AS total_stars\nFROM \n    github_events.github_events\nWHERE \n    action = 9 -- StarEvent\nGROUP BY \n    year\nORDER BY \n    year\n\n\nThis query:\n1. Uses proper schema qualification with `github_events.github_events`\n2. Filters for StarEvents (action = 9)\n3. Groups the events by year\n4. Counts the number of events per year\n5. Orders the results by year\n\nThe result will show the total number of stars added each year, allowing you to track how the number of stars has changed over time."
       }
     },
     "humanResults": {
@@ -2979,20 +2979,6 @@
         "llmRowCount": 10,
         "sql": "SELECT actor_login, COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY star_count DESC\nLIMIT 10"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": true,
-        "exactMatches": true,
-        "numericMatches": true,
-        "distance": {
-          "exact": 0,
-          "numeric": 0,
-          "fScore": 1
-        },
-        "details": "Results match within exact threshold",
-        "humanRowCount": 10,
-        "llmRowCount": 10,
-        "sql": "\nSELECT actor_login, COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY star_count DESC\nLIMIT 10\n"
-      },
       "openai/o3-pro": {
         "matches": true,
         "exactMatches": true,
@@ -3006,6 +2992,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT actor_login, count() stars_given FROM github_events WHERE event_type = 'WatchEvent' AND actor_login != '' GROUP BY actor_login ORDER BY stars_given DESC LIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help you fix the SQL query for \"Who are top 10 people giving stars?\". Here's the corrected version:\n\n\n%\nSELECT \n    author_login as username,\n    COUNT(*) as wash_count\nFROM \n    github_events\nWHERE \n    action = 'washed'\nGROUP BY \n    author_login\nORDER BY \n    wash_count DESC\nLIMIT 10\n\n\nThis query:\n1. Selects the author_login as username\n2. Counts the number of wash actions as wash_count\n3. Groups by author_login\n4. Orders by wash_count in descending order\n5. Limits the result to top 10 entries\n\nThe query uses proper syntax and follows the constraints provided. The result will show the top 10 users who have the most wash actions, which is likely what you want to analyze."
       }
     },
     "humanResults": {
@@ -3437,20 +3437,6 @@
         "llmRowCount": 1,
         "sql": "SELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent' AND repo_name = 'tensorflow/tensorflow'\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": false,
-        "exactMatches": false,
-        "numericMatches": false,
-        "distance": {
-          "exact": 1,
-          "numeric": 1,
-          "fScore": 0
-        },
-        "details": "Results don't match",
-        "humanRowCount": 10,
-        "llmRowCount": 0,
-        "sql": "Here is the corrected SQL query:\n\n\nSELECT t2.repo_name, COUNT(DISTINCT t2.actor_login) AS star_count\nFROM github_events t1\nJOIN github_events t2\nON t1.actor_login = t2.actor_login\nWHERE t1.event_type = 'WatchEvent'\nAND t1.repo_name = 'tensorflow/tensorflow'\nAND t2.event_type = 'WatchEvent'\nAND t2.repo_name != 'tensorflow/tensorflow'\nGROUP BY t2.repo_name\nORDER BY star_count DESC\nLIMIT 10\n\n\nThis query:\n1. Joins the github_events table to itself on actor_login (user)\n2. Filters for users who starred tensorflow/tensorflow (t1 table)\n3. Finds all other repos these users starred (t2 table)\n4. Counts distinct users (which equals number of stars) for each repo\n5. Orders by star count descending and limits to top 10"
-      },
       "openai/o3-pro": {
         "matches": false,
         "exactMatches": false,
@@ -3464,6 +3450,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  g2.repo_name repo_name,\n  count() stars\nFROM github_events AS g2\nANY INNER JOIN github_events AS g1 ON g1.actor_login = g2.actor_login\nWHERE\n  g1.event_type = 'WatchEvent'\n  AND g1.action = 'started'\n  AND g1.repo_name = 'tensorflow/tensorflow'\n  AND g2.event_type = 'WatchEvent'\n  AND g2.action = 'started'\n  AND g2.repo_name != 'tensorflow/tensorflow'\nGROUP BY\n  g2.repo_name\nORDER BY\n  stars DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help fix the SQL query. The main issue in your original query was the complex join structure and formatting. Here's a corrected version that should work:\n\n\nSELECT \n    r.repo_name AS repo_name,\n    COUNT(DISTINCT s.star_id) AS stars\nFROM \n    github_repos r\n    LEFT JOIN github_starred s ON r.repo_id = s.repo_id\n    LEFT JOIN github_users u ON s.user_id = u.user_id\n    LEFT JOIN github_user g ON u.login = g.login\n    LEFT JOIN github_repos r2 ON g.github_id = r2.user_id\n    LEFT JOIN github_repos r3 ON r.repo_id = r3.repo_id\n    WHERE r3.name = 'tensorflow/tensorflow'\nGROUP BY \n    r.repo_name\nORDER BY \n    stars DESC\nLIMIT 10\n\n\nThis query:\n1. Joins all tables together in the correct order\n2. Filters for repositories where the user is part of 'tensorflow/tensorflow'\n3. Counts distinct stars from those users\n4. Groups by repository name\n5. Sorts by star count descending\n6. Limits to top 10\n\nThe result will show the top 10 repositories by number of stars from the tensorflow/tensorflow maintainers."
       }
     },
     "humanResults": {
@@ -3895,20 +3895,6 @@
         "llmRowCount": 10,
         "sql": "\nSELECT\n    actor_login as name,\n    SUM(REGEXP_MATCHES(repo_name, '^javisantana/')) as stars_given_to_javisantana_repos,\n    COUNT(*) - SUM(REGEXP_MATCHES(repo_name, '^javisantana/')) as stars_given_to_other_repos,\n    SUM(REGEXP_MATCHES(repo_name, '^javisantana/')) / COUNT(*) as ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY ratio DESC\nLIMIT 10\n"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": false,
-        "exactMatches": false,
-        "numericMatches": false,
-        "distance": {
-          "exact": 1,
-          "numeric": 1,
-          "fScore": 0
-        },
-        "details": "Results don't match",
-        "humanRowCount": 10,
-        "llmRowCount": 0,
-        "sql": "\nSELECT\n    actor_login,\n    SUM(CASE WHEN repo_name LIKE '%javisantana%' THEN 1 ELSE 0 END) AS javisantana_stars,\n    COUNT(*) AS total_stars,\n    SUM(CASE WHEN repo_name LIKE '%javisantana%' THEN 1 ELSE 0 END) / COUNT(*) AS ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nHAVING SUM(CASE WHEN repo_name LIKE '%javisantana%' THEN 1 ELSE 0 END) > 0\nORDER BY ratio DESC\nLIMIT 10\n"
-      },
       "openai/o3-pro": {
         "matches": false,
         "exactMatches": false,
@@ -3922,6 +3908,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  actor_login AS user_name,\n  sum(substring_index(repo_name, '/', 1) = 'javisantana') AS javisantana_stars,\n  count() - sum(substring_index(repo_name, '/', 1) = 'javisantana') AS other_stars,\n  sum(substring_index(repo_name, '/', 1) = 'javisantana') / count() AS ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY ratio DESC, javisantana_stars DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help fix the SQL query. The error suggests we need to modify how we handle the star_events CTE and its usage. Here's the corrected version:\n\n\nWITH star_events AS (\n    SELECT \n        event_type, \n        actor_login as user_login,\n        repo_name,\n        COUNT(*) as total_stars\n    FROM \n        github_events\n    WHERE \n        action = 'star'\n),\nuser_stats AS (\n    SELECT \n        user_login,\n        SUM(CASE WHEN repo_name = 'javisantana' THEN total_stars END) as stars_javisantana,\n        SUM(CASE WHEN repo_name != 'javisantana' THEN total_stars END) as stars_other\n    FROM \n        star_events\n    GROUP BY \n        user_login\n)\nSELECT \n    user_login,\n    stars_javisantana,\n    stars_other,\n    (stars_javisantana::numeric / (stars_javisantana::numeric + stars_other::numeric)) as star_ratio\nFROM \n    user_stats\nORDER BY \n    star_ratio DESC\nLIMIT 10\n\n\nThe key changes are:\n1. Removed redundant CTEs and joins\n2. Used proper windowing with CASE statements instead of subqueries\n3. Simplified the grouping and calculations\n4. Used proper type casting with ::numeric to handle division correctly\n5. Removed unnecessary aliases and kept the core logic intact\n\nThis should now work correctly for Tinybird/ClickHouse."
       }
     },
     "humanResults": {
@@ -4367,20 +4367,6 @@
         "llmRowCount": 10,
         "sql": "\nSELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS unique_contributors\nFROM\n    github_events\nWHERE\n    event_type = 'PullRequestEvent' AND\n    action = 'opened' AND\n    repo_name != 'tensorflow/tensorflow'\nGROUP BY\n    repo_name\nORDER BY\n    unique_contributors DESC\nLIMIT 10\n"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": false,
-        "exactMatches": false,
-        "numericMatches": false,
-        "distance": {
-          "exact": 1,
-          "numeric": 1,
-          "fScore": 0
-        },
-        "details": "Results don't match",
-        "humanRowCount": 10,
-        "llmRowCount": 0,
-        "sql": "### Final SQL Query\n\n\nSELECT g2.repo_name, COUNT(DISTINCT g2.actor_login) AS unique_contributors FROM github_events g1 JOIN github_events g2 ON g1.actor_login = g2.actor_login WHERE g1.event_type = 'PullRequestEvent' AND g1.repo_name LIKE 'tensorflow/%' AND g1.action = 'opened' AND g2.event_type = 'PullRequestEvent' AND g2.repo_name NOT LIKE 'tensorflow/%' AND g2.action = 'opened' GROUP BY g2.repo_name ORDER BY unique_contributors DESC LIMIT 10\n\n\nThis query should correctly identify the top 10 non-TensorFlow repositories that have received pull requests from TensorFlow contributors, ranked by the number of unique contributors."
-      },
       "openai/o3-pro": {
         "matches": false,
         "exactMatches": false,
@@ -4394,6 +4380,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  g1.repo_name repo,\n  uniq(g1.actor_login) unique_contributors\nFROM github_events AS g1\nANY INNER JOIN github_events AS g2\n  ON g1.actor_login = g2.actor_login\nWHERE g1.event_type = 'PullRequestEvent'\n  AND g1.action = 'opened'\n  AND g1.repo_name NOT LIKE 'tensorflow/%'\n  AND g2.event_type = 'PullRequestEvent'\n  AND g2.action = 'opened'\n  AND g2.repo_name LIKE 'tensorflow/%'\nGROUP BY g1.repo_name\nORDER BY unique_contributors DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "To find the top 10 non-TensorFlow repositories that received the most pull requests from TensorFlow contributors, we'll use the `github_events` datasource to analyze pull request events. We'll filter for pull request events, count the number of unique contributors per repository, and exclude repositories that contain \"TensorFlow\" in their name.\n\nHere's the corrected SQL query:\n\n\nSELECT \n    repo_name,\n    COUNT(DISTINCT actor_login) AS unique_contributors\nFROM \n    github_events\nWHERE \n    action = 'pull_request'\n    AND repo_name NOT LIKE '%TensorFlow%'\nGROUP BY \n    repo_name\nORDER BY \n    unique_contributors DESC\nLIMIT 10\n\n\nThis query:\n1. Filters for pull request events (`action = 'pull_request'`)\n2. Counts distinct contributors per repository (`COUNT(DISTINCT actor_login)`)\n3. Excludes repositories containing \"TensorFlow\" in their name (`repo_name NOT LIKE '%TensorFlow%'`)\n4. Groups by repository name\n5. Orders by the number of unique contributors in descending order\n6. Limits the result to the top 10 repositories\n\nThe result will show the top 10 non-TensorFlow repositories that received the most pull requests from TensorFlow contributors."
       }
     },
     "humanResults": {
@@ -4825,20 +4825,6 @@
         "llmRowCount": 10,
         "sql": "SELECT repo_name, COUNT(*) as issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nAND repo_name != 'tensorflow/tensorflow'\nAND actor_login IN (\n    SELECT DISTINCT actor_login\n    FROM github_events\n    WHERE event_type = 'IssuesEvent' AND action = 'opened' AND repo_name = 'tensorflow/tensorflow'\n)\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": false,
-        "exactMatches": false,
-        "numericMatches": false,
-        "distance": {
-          "exact": 1,
-          "numeric": 1,
-          "fScore": 0
-        },
-        "details": "Results don't match",
-        "humanRowCount": 10,
-        "llmRowCount": 10,
-        "sql": "\nSELECT\n    repo_name,\n    actor_login as author,\n    COUNT(*) as issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\nAND action = 'opened'\nAND actor_login IN (\n    SELECT DISTINCT actor_login\n    FROM github_events\n    WHERE event_type = 'IssuesEvent'\n    AND action = 'opened'\n    AND repo_name = 'tensorflow/tensorflow'\n)\nAND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name, actor_login\nORDER BY issue_count DESC, author\nLIMIT 10\n"
-      },
       "openai/o3-pro": {
         "matches": false,
         "exactMatches": false,
@@ -4852,6 +4838,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  ge2.repo_name repo_name,\n  uniq(ge2.actor_login) distinct_authors\nFROM github_events ge1\nANY INNER JOIN github_events ge2 ON ge1.actor_login = ge2.actor_login\nWHERE ge1.event_type = 'IssuesEvent'\n  AND ge1.action = 'opened'\n  AND ge1.repo_name = 'tensorflow/tensorflow'\n  AND ge2.event_type = 'IssuesEvent'\n  AND ge2.action = 'opened'\n  AND ge2.repo_name != 'tensorflow/tensorflow'\nGROUP BY ge2.repo_name\nORDER BY distinct_authors DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me fix the SQL query properly for your original question. The main issue was with the subquery syntax and the LIMIT. Here's the corrected version:\n\n\nSELECT \n    repository_name,\n    COUNT(DISTINCT user_login) AS total_opened_issues\nFROM \n    github_events\nWHERE \n    event_type = 'IssuesEvent'\n    AND action = 'opened'\n    AND repo_name = 'tensorflow/tensorflow'\nINNER JOIN \n    github_repos \n    ON github_events.user_login = github_repos.user_login\n    AND github_events.repo_name = github_repos.repo_name\nGROUP BY \n    repository_name\nORDER BY \n    total_opened_issues DESC\nLIMIT 10\n\n\nChanges made:\n1. Removed the subquery and used direct INNER JOIN\n2. Fixed the syntax for joining conditions\n3. Added proper LIMIT\n4. Maintained the same column aliases and ordering\n\nThis query will now correctly count the distinct users who opened issues in the tensorflow/tensorflow repository and return the top 10 by this count."
       }
     },
     "humanResults": {
@@ -5297,20 +5297,6 @@
         "llmRowCount": 0,
         "sql": "%\n\nSELECT\n  repo_name,\n  event_type,\n  actor_login,\n  created_at,\n  updated_at,\n  action,\n  comment_id,\n  body,\n  path,\n  position,\n  line,\n  ref,\n  ref_type,\n  creator_user_login,\n  number,\n  title,\n  labels,\n  state,\n  locked,\n  assignee,\n  assignees,\n  comments,\n  author_association,\n  closed_at,\n  merged_at,\n  merge_commit_sha,\n  requested_reviewers,\n  requested_teams,\n  head_ref,\n  head_sha,\n  base_ref,\n  base_sha,\n  merged,\n  mergeable,\n  rebaseable,\n  mergeable_state,\n  merged_by,\n  review_comments,\n  maintainer_can_modify,\n  commits,\n  additions,\n  deletions,\n  changed_files,\n  diff_hunk,\n  original_position,\n  commit_id,\n  original_commit_id,\n  push_size,\n  push_distinct_size,\n  member_login,\n  release_tag_name,\n  release_name,\n  review_state,\n  count() AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent' AND action = 'created'\nGROUP BY\n  repo_name,\n  event_type,\n  actor_login,\n  created_at,\n  updated_at,\n  action,\n  comment_id,\n  body,\n  path,\n  position,\n  line,\n  ref,\n  ref_type,\n  creator_user_login,\n  number,\n  title,\n  labels,\n  state,\n  locked,\n  assignee,\n  assignees,\n  comments,\n  author_association,\n  closed_at,\n  merged_at,\n  merge_commit_sha,\n  requested_reviewers,\n  requested_teams,\n  head_ref,\n  head_sha,\n  base_ref,\n  base_sha,\n  merged,\n  mergeable,\n  rebaseable,\n  mergeable_state,\n  merged_by,\n  review_comments,\n  maintainer_can_modify,\n  commits,\n  additions,\n  deletions,\n  changed_files,\n  diff_hunk,\n  original_position,\n  commit_id,\n  original_commit_id,\n  push_size,\n  push_distinct_size,\n  member_login,\n  release_tag_name,\n  release_name,\n  review_state\nORDER BY star_count DESC\nLIMIT 10"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": false,
-        "exactMatches": false,
-        "numericMatches": false,
-        "distance": {
-          "exact": 1,
-          "numeric": 1,
-          "fScore": 0
-        },
-        "details": "Results don't match",
-        "humanRowCount": 10,
-        "llmRowCount": 10,
-        "sql": "\nSELECT\n  repo_name,\n  MAX(daily_count) AS max_daily_stars\nFROM (\n  SELECT\n    repo_name,\n    DATE_TRUNC('day', created_at) AS day,\n    COUNT(*) AS daily_count\n  FROM github_events\n  WHERE event_type = 'WatchEvent'\n  GROUP BY repo_name, day\n)\nGROUP BY repo_name\nORDER BY max_daily_stars DESC\nLIMIT 10\n"
-      },
       "openai/o3-pro": {
         "matches": false,
         "exactMatches": false,
@@ -5324,6 +5310,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "SELECT repo_name, count() stars FROM github_events WHERE event_type = 'WatchEvent' AND created_at >= UTCTimestamp() - INTERVAL 1 DAY GROUP BY repo_name ORDER BY stars DESC LIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help you fix the SQL query. Based on your question and the context provided, here's the corrected SQL query with proper formatting and structure:\n\n\nSELECT \n    repo_name \nFROM \n    github_events \nWHERE \n    action = 'star' \n    AND event_type = 'StarEvent' \n    AND EXTRACT(DATE, timestamp) >= DATE_SUB(CURDATE(), INTERVAL 1 DAY) \n    AND EXTRACT(DATE, timestamp) < DATE_SUB(CURDATE(), INTERVAL 0 DAY) \nGROUP BY \n    repo_name \nORDER BY \n    COUNT(*) DESC \nLIMIT 10\n\n\nThis query:\n1. Filters for star events which directly relate to star counts\n2. Groups by repository name\n3. Orders by the count of star events in descending order\n4. Limits the results to 10 repositories\n5. Uses proper date formatting with EXTRACT(DATE, timestamp) to get the date part of the timestamp\n\nMake sure to add a semicolon at the end of the query. The query should now work correctly in ClickHouse."
       }
     },
     "humanResults": {
@@ -5769,20 +5769,6 @@
         "llmRowCount": 10,
         "sql": "\nSELECT\n  repo_name,\n  SUM(IF(toYear(created_at) = 2016, 1, 0)) AS stars_2016,\n  SUM(IF(toYear(created_at) = 2017, 1, 0)) AS stars_2017,\n  SUM(IF(toYear(created_at) = 2017, 1, 0)) AS growth\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND toYear(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING stars_2016 = 1\nORDER BY growth DESC\nLIMIT 10\n"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": false,
-        "exactMatches": false,
-        "numericMatches": false,
-        "distance": {
-          "exact": 1,
-          "numeric": 1,
-          "fScore": 0
-        },
-        "details": "Results don't match",
-        "humanRowCount": 10,
-        "llmRowCount": 0,
-        "sql": "Final SQL query (just the query itself without any additional text):\n\n\nSELECT\n    repo_name,\n    COUNT(DISTINCT IF(YEAR(created_at) = 2016, actor_login, NULL)) AS stars_2016,\n    COUNT(DISTINCT IF(YEAR(created_at) = 2017, actor_login, NULL)) AS stars_2017,\n    (COUNT(DISTINCT IF(YEAR(created_at) = 2017, actor_login, NULL)) -\n     COUNT(DISTINCT IF(YEAR(created_at) = 2016, actor_login, NULL))) AS growth\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND (YEAR(created_at) = 2016 OR YEAR(created_at) = 2017)\nGROUP BY repo_name\nHAVING stars_2016 >= 1\nORDER BY growth DESC\nLIMIT 10\n"
-      },
       "openai/o3-pro": {
         "matches": false,
         "exactMatches": false,
@@ -5796,6 +5782,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  sumIf(1, toYear(created_at) = 2016) stars_2016,\n  sumIf(1, toYear(created_at) = 2017) stars_2017,\n  sumIf(1, toYear(created_at) = 2017) - sumIf(1, toYear(created_at) = 2016) growth\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING sumIf(1, toYear(created_at) = 2016) = 1\nORDER BY growth DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help fix the SQL query. The main issue is properly referencing the event statistics columns with their correct column names from the schema. Here's the corrected query:\n\n\nWITH push_event_stats AS (\n    SELECT \n        repo_name AS repository_name,\n        pushEvent_PushEvent_2017_stars AS pushEvent_2017_stars,\n        pushEvent_PushEvent_2016_stars AS pushEvent_2016_stars\n    FROM \n        github_events\n    WHERE \n        event_type = 'PushEvent'\n)\nSELECT \n    repository_name,\n    (pushEvent_2017_stars - pushEvent_2016_stars) / pushEvent_2016_stars AS growth,\n    ROUND((pushEvent_2017_stars - pushEvent_2016_stars) / pushEvent_2016_stars * 100) AS growth_percentage\nFROM \n    push_event_stats\nWHERE \n    pushEvent_2016_stars >= 1\n    AND (pushEvent_2017_stars - pushEvent_2016_stars) > 0\nORDER BY \n    growth_percentage DESC\nLIMIT 10\n\n\nKey changes made:\n1. Added proper CTE syntax with `AS push_event_stats`\n2. Fixed column references to use the exact column names from the schema: `pushEvent_PushEvent_2017_stars` and `pushEvent_PushEvent_2016_stars`\n3. Simplified the aliasing in the main query\n4. Added proper ordering and limiting\n\nThis query will now correctly calculate the growth percentage for each repository and return the top 10 with the highest growth."
       }
     },
     "humanResults": {
@@ -6255,20 +6255,6 @@
         "llmRowCount": 10,
         "sql": "%\nSELECT\n    s2017.repo_name,\n    s2016.stars as stars_2016,\n    s2017.stars as stars_2017,\n    (s2017.stars - s2016.stars) as diff\nFROM (\n    SELECT\n        repo_name,\n        count(distinct actor_login) as stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent' and year(created_at) = 2017\n    GROUP BY repo_name\n) as s2017\nJOIN (\n    SELECT\n        repo_name,\n        count(distinct actor_login) as stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent' and year(created_at) = 2016\n    GROUP BY repo_name\n) as s2016 ON s2017.repo_name = s2016.repo_name\nWHERE s2017.stars >= 1\nORDER BY diff ASC\nLIMIT 10"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": false,
-        "exactMatches": false,
-        "numericMatches": false,
-        "distance": {
-          "exact": 1,
-          "numeric": 1,
-          "fScore": 0
-        },
-        "details": "Results don't match",
-        "humanRowCount": 10,
-        "llmRowCount": 10,
-        "sql": "\nSELECT\n    repo_name,\n    COUNT(DISTINCT IF(YEAR(created_at) = 2016 AND event_type = 'WatchEvent', actor_login, NULL)) AS new_stars_2016,\n    COUNT(DISTINCT IF(YEAR(created_at) = 2017 AND event_type = 'WatchEvent', actor_login, NULL)) AS new_stars_2017,\n    COUNT(DISTINCT IF(YEAR(created_at) = 2017 AND event_type = 'WatchEvent', actor_login, NULL)) - COUNT(DISTINCT IF(YEAR(created_at) = 2016 AND event_type = 'WatchEvent', actor_login, NULL)) AS stagnation_diff\nFROM github_events\nGROUP BY repo_name\nHAVING COUNT(DISTINCT IF(YEAR(created_at) = 2017 AND event_type = 'WatchEvent', actor_login, NULL)) >= 1\nORDER BY stagnation_diff ASC\nLIMIT 10\n"
-      },
       "openai/o3-pro": {
         "matches": false,
         "exactMatches": false,
@@ -6282,6 +6268,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  sum(year(created_at) = 2016) stars_2016,\n  sum(year(created_at) = 2017) stars_2017,\n  sum(year(created_at) = 2017) - sum(year(created_at) = 2016) stagnation\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND (year(created_at) = 2016 OR year(created_at) = 2017)\nGROUP BY repo_name\nHAVING sum(year(created_at) = 2017) > 0\nORDER BY stagnation ASC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help you fix the SQL query. Based on your description and the context provided, here's the corrected SQL query:\n\n\nWITH stars_2016 AS (\n    SELECT \n        repo_name,\n        COUNT(*) AS star_2016\n    FROM \n        github_events\n    WHERE \n        action = 'star' AND year = 2016\n    GROUP BY \n        repo_name\n),\nstars_2017 AS (\n    SELECT \n        repo_name,\n        COUNT(*) AS star_2017\n    FROM \n        github_events\n    WHERE \n        action = 'star' AND year = 2017\n    GROUP BY \n        repo_name\n)\n\nSELECT \n    s2016.repo_name AS repo_name,\n    s2016.star_2016 - s2017.star_2017 AS stagnation\nFROM \n    stars_2016 s2016\nJOIN \n    stars_2017 s2017\nON \n    s2016.repo_name = s2017.repo_name\nWHERE \n    s2017.star_2017 > 0\nORDER BY \n    stagnation ASC\nLIMIT 10\n\n\nKey changes made:\n1. Simplified the CTEs to only include repo_name and star counts\n2. Removed unnecessary GROUP BY action since we don't need it for the calculation\n3. Fixed the joining structure between the CTEs\n4. Added proper ordering and limiting\n5. Used proper syntax for LIMIT clause\n\nThis query will:\n1. Calculate star counts for 2016 and 2017\n2. Join the results by repo_name\n3. Filter for repositories with stars in 2017\n4. Calculate stagnation as the difference between 2016 and 2017 stars\n5. Sort by worst (most negative) stagnation\n6. Return the top 10 results\n\nLet me know if you need any clarification or if you'd like to make any adjustments!"
       }
     },
     "humanResults": {
@@ -6727,20 +6727,6 @@
         "llmRowCount": 0,
         "sql": "\nSELECT\n  repo_name,\n  COUNT(*) AS star_count,\n  min(created_at) AS first_star_time,\n  max(created_at) AS last_star_time,\n  DATEDIFF('day', min(created_at), max(created_at)) AS days_between,\n  IF(DATEDIFF('day', min(created_at), max(created_at)) = 0, 0, COUNT(*) / DATEDIFF('day', min(created_at), max(created_at))) AS growth_rate\nFROM github_events\nWHERE event_type = 'WatchEvent' AND action = 'created'\nGROUP BY repo_name\nORDER BY growth_rate DESC\nLIMIT 10\n"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": false,
-        "exactMatches": false,
-        "numericMatches": false,
-        "distance": {
-          "exact": 1,
-          "numeric": 1,
-          "fScore": 0
-        },
-        "details": "Results don't match",
-        "humanRowCount": 10,
-        "llmRowCount": 10,
-        "sql": "\nSELECT\n    repo_name,\n    count(*) as total_stars,\n    count(DISTINCT toStartOfMonth(created_at)) as active_months,\n    (toYear(max(toStartOfMonth(created_at))) - toYear(min(toStartOfMonth(created_at)))) * 12 +\n    (toMonth(max(toStartOfMonth(created_at))) - toMonth(min(toStartOfMonth(created_at)))) + 1 as duration_months,\n    count(DISTINCT toStartOfMonth(created_at)) /\n    ((toYear(max(toStartOfMonth(created_at))) - toYear(min(toStartOfMonth(created_at)))) * 12 +\n    (toMonth(max(toStartOfMonth(created_at))) - toMonth(min(toStartOfMonth(created_at)))) + 1) as month_coverage_ratio,\n    count(*) / count(DISTINCT toStartOfMonth(created_at)) as avg_stars_per_month\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING count(*) > 1000 AND count(DISTINCT toStartOfMonth(created_at)) >= 6\nORDER BY month_coverage_ratio DESC, avg_stars_per_month DESC, duration_months DESC\nLIMIT 10\n"
-      },
       "openai/o3-pro": {
         "matches": false,
         "exactMatches": false,
@@ -6754,6 +6740,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() stars_total,\n    uniqExact(DATE_TRUNC('day', created_at)) distinct_star_days,\n    TIMESTAMP_DIFF('day', min(created_at), max(created_at)) + 1 total_days,\n    uniqExact(DATE_TRUNC('day', created_at)) / toFloat64(TIMESTAMP_DIFF('day', min(created_at), max(created_at)) + 1) steadiness_ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING stars_total > 100\nORDER BY steadiness_ratio DESC, stars_total DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help fix the SQL query. The main issue was the CTE syntax and query structure. Here's the corrected version:\n\n\nSELECT \n    owner AS repository,\n    repo_name,\n    (star_count - LAG(star_count) OVER (ORDER BY star_time)) / \n    (star_time - LAG(star_time) OVER (ORDER BY star_time)) AS growth_rate\nFROM \n    github_events\nWHERE \n    action = 'added' \n    AND repo_name LIKE '%/'\n    AND star_time >= CURRENT_DATE - INTERVAL '5 Year'\nGROUP BY \n    owner, repo_name\nORDER BY \n    growth_rate DESC\nLIMIT 10\n\n\nThis query:\n1. Directly calculates the growth rate without using a CTE\n2. Groups by owner and repo_name\n3. Orders by growth rate\n4. Limits to top 10 repositories\n\nThe query uses proper ClickHouse syntax and should work without syntax errors. The growth rate calculation uses the difference in stars divided by time difference between events."
       }
     },
     "humanResults": {
@@ -7204,20 +7204,6 @@
         "llmRowCount": 7,
         "sql": "SELECT\n    dayofweek(created_at) as day_of_week,\n    count(*) as star_count\nFROM\n    github_events\nWHERE\n    event_type = 'WatchEvent'\nGROUP BY\n    day_of_week\nORDER BY\n    star_count DESC\nLIMIT 10"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": true,
-        "exactMatches": false,
-        "numericMatches": true,
-        "distance": {
-          "exact": 1,
-          "numeric": 0.013821492945413797,
-          "fScore": 0
-        },
-        "details": "Results match within numeric threshold",
-        "humanRowCount": 7,
-        "llmRowCount": 7,
-        "sql": "\nSELECT\n    CASE DAYOFWEEK(created_at)\n        WHEN 1 THEN 'Sunday'\n        WHEN 2 THEN 'Monday'\n        WHEN 3 THEN 'Tuesday'\n        WHEN 4 THEN 'Wednesday'\n        WHEN 5 THEN 'Thursday'\n        WHEN 6 THEN 'Friday'\n        WHEN 7 THEN 'Saturday'\n    END AS day_of_week,\n    COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY star_count DESC\nLIMIT 10\n"
-      },
       "openai/o3-pro": {
         "matches": true,
         "exactMatches": false,
@@ -7231,6 +7217,20 @@
         "humanRowCount": 7,
         "llmRowCount": 7,
         "sql": "SELECT\n  dayofweek(created_at) day_num,\n  date_format(created_at,'%W') day_name,\n  count() stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_num, day_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 7,
+        "llmRowCount": 0,
+        "sql": "Let me help fix the SQL query. The main issue is properly formatting the weekday name and ensuring the string operations work correctly in ClickHouse. Here's the corrected query:\n\n\nSELECT \n    json_typeof(json_array_agg(DATE_FORMAT(created_at, '%A'), ' ')) AS formatted_day,\n    COUNT(*) AS star_count\nFROM \n    github_events\nWHERE \n    action = 'star'\nGROUP BY \n    formatted_day\nORDER BY \n    star_count DESC\nLIMIT 10\n\n\nThis query:\n1. Uses `json_array_agg` to create an array of weekday names with spaces\n2. Uses `json_typeof` to convert the array into a string with proper formatting\n3. Groups by the formatted weekday\n4. Orders by star count\n5. Limits to top 10 results\n\nThe output will be nicely formatted as \"Friday star_count\" etc. in a single string."
       }
     },
     "humanResults": {
@@ -7650,20 +7650,6 @@
         "llmRowCount": 1,
         "sql": "SELECT COUNT(DISTINCT actor_login) FROM github_events LIMIT 10"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": true,
-        "exactMatches": false,
-        "numericMatches": true,
-        "distance": {
-          "exact": 1,
-          "numeric": 0.000052934128674804696,
-          "fScore": 0
-        },
-        "details": "Results match within numeric threshold",
-        "humanRowCount": 1,
-        "llmRowCount": 1,
-        "sql": "\nSELECT uniqExact(actor_login) AS total_users FROM github_events\n"
-      },
       "openai/o3-pro": {
         "matches": true,
         "exactMatches": false,
@@ -7677,6 +7663,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniqExact(actor_login) total_users FROM github_events WHERE actor_login != '' LIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "Let me fix the SQL query to correctly answer your original question about counting the total number of users on GitHub.\n\nThe issue with the previous query was that `COUNT(DISTINCT)` needed to be properly formatted with the column name enclosed in backticks since it contains spaces. Here's the corrected query:\n\n\nSELECT COUNT(DISTINCT `actor_login`) AS total_users\nFROM github_events\nWHERE event_type = 'user_created'\n\n\nThis query:\n1. Uses `COUNT(DISTINCT)` to count unique `actor_login` values\n2. Filters for events where `event_type` is 'user_created'\n3. Returns the total number of unique users who have created events\n\nThe result will be a single row with the total number of users."
       }
     },
     "humanResults": {
@@ -8067,20 +8067,6 @@
         "llmRowCount": 1,
         "sql": "SELECT count(distinct(actor_login)) as total_users\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": true,
-        "exactMatches": false,
-        "numericMatches": true,
-        "distance": {
-          "exact": 1,
-          "numeric": 0.0014793406252330366,
-          "fScore": 0
-        },
-        "details": "Results match within numeric threshold",
-        "humanRowCount": 1,
-        "llmRowCount": 1,
-        "sql": "\nSELECT COUNT(DISTINCT actor_login) AS total_users\nFROM github_events\nWHERE event_type = 'WatchEvent'\n"
-      },
       "openai/o3-pro": {
         "matches": true,
         "exactMatches": false,
@@ -8094,6 +8080,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count(DISTINCT actor_login) total_users FROM github_events WHERE event_type = 'WatchEvent' AND action = 'started' LIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "To find the total number of users who gave at least one star, we need to count the number of unique users who have starred at least one repository. We can do this by counting the number of distinct actor_logins from the star events.\n\nHere's the corrected SQL query:\n\n\nSELECT COUNT(DISTINCT actor_login) AS total_users\nFROM %github_events%\nWHERE action = 'star' AND ref_type = 'repository'\n\n\nThis query:\n1. Uses `%github_events%` as a parameter placeholder for the table name\n2. Counts distinct `actor_login` values (users) who starred repositories\n3. Filters for star actions and repository ref types\n4. Returns the result as `total_users`\n\nThe query follows ClickHouse/Tinybird syntax rules and avoids any syntax errors. Make sure to replace `%github_events%` with your actual table name when using this query."
       }
     },
     "humanResults": {
@@ -8470,20 +8470,6 @@
         "llmRowCount": 1,
         "sql": "select count(distinct(actor_login)) as total_users_with_push from github_events where event_type = 'PushEvent' limit 10"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": false,
-        "exactMatches": false,
-        "numericMatches": false,
-        "distance": {
-          "exact": 1,
-          "numeric": 1,
-          "fScore": 0
-        },
-        "details": "Results don't match",
-        "humanRowCount": 1,
-        "llmRowCount": 0,
-        "sql": "Final SQL query to return:\n\n\nSELECT COUNT(DISTINCT actor_login) AS total_users_with_push\nFROM github_events\nWHERE event_type = 'PushEvent'\nLIMIT 10\n\n\nBut to strictly follow the instructions, here's just the SQL query itself without any additional text or formatting:\n\n\nSELECT COUNT(DISTINCT actor_login) AS total_users_with_push\nFROM github_events\nWHERE event_type = 'PushEvent'\nLIMIT 10\n\n\n\nSELECT COUNT(DISTINCT actor_login) AS total_users_with_push\nFROM github_events\nWHERE event_type = 'PushEvent'\nLIMIT 10\n"
-      },
       "openai/o3-pro": {
         "matches": true,
         "exactMatches": false,
@@ -8497,6 +8483,11 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniqExact(actor_login) users_with_push FROM github_events WHERE event_type = 'PushEvent' LIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "reason": "Missing data in results",
+        "sql": null
       }
     },
     "humanResults": {
@@ -8873,20 +8864,6 @@
         "llmRowCount": 1,
         "sql": "SELECT\n    COUNT(DISTINCT actor_login) AS total_users_with_created_pr\nFROM\n    github_events\nWHERE\n    event_type = 'PullRequestEvent' AND action = 'opened'\nLIMIT 10"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": false,
-        "exactMatches": false,
-        "numericMatches": false,
-        "distance": {
-          "exact": 1,
-          "numeric": 1,
-          "fScore": 0
-        },
-        "details": "Results don't match",
-        "humanRowCount": 1,
-        "llmRowCount": 0,
-        "sql": "\nSELECT COUNT(DISTINCT actor_login) AS total_users\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nLIMIT 1\n\nSELECT COUNT(DISTINCT actor_login) AS total_users\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nLIMIT 1"
-      },
       "openai/o3-pro": {
         "matches": true,
         "exactMatches": false,
@@ -8900,6 +8877,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniqExact(actor_login) total_users FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' LIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "Let me help you fix the SQL query. Based on the schema and your question about counting users with at least one created PR, I'll provide a corrected version of the query:\n\n\nSELECT COUNT(DISTINCT actor_login) AS total_users\nFROM github_events\nWHERE action = 'create'\nLIMIT 10\n\n\nThis query:\n1. Uses `COUNT(DISTINCT)` to count unique `actor_login` values\n2. Filters for rows where the action is 'create'\n3. Limits the result to 10 rows\n4. Uses the correct column name `actor_login` from the schema\n5. Follows ClickHouse/PostgreSQL syntax for aggregate functions\n\nThe query should now work correctly to answer your original question about the total number of users with at least one created PR."
       }
     },
     "humanResults": {
@@ -9290,20 +9281,6 @@
         "llmRowCount": 10,
         "sql": "%\nSELECT repo_name, COUNT(DISTINCT actor_login) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND actor_login IN (\n    SELECT DISTINCT actor_login\n    FROM github_events\n    WHERE event_type = 'PullRequestEvent' AND action = 'opened'\n    LIMIT 1000000\n  )\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": false,
-        "exactMatches": false,
-        "numericMatches": false,
-        "distance": {
-          "exact": 1,
-          "numeric": 0.2881151347249415,
-          "fScore": 0
-        },
-        "details": "Results don't match",
-        "humanRowCount": 10,
-        "llmRowCount": 10,
-        "sql": "\nSELECT\n    star.repo_name,\n    COUNT(DISTINCT star.actor_login, star.repo_name) AS star_count\nFROM\n    github_events AS star\nJOIN github_events AS pr ON\n    star.actor_login = pr.actor_login\nWHERE\n    star.event_type = 'WatchEvent'\n    AND pr.event_type = 'PullRequestEvent'\n    AND pr.action = 'opened'\nGROUP BY\n    star.repo_name\nORDER BY\n    star_count DESC\nLIMIT 10\n"
-      },
       "openai/o3-pro": {
         "matches": false,
         "exactMatches": false,
@@ -9317,6 +9294,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  star.repo_name,\n  count() stars_count\nFROM github_events AS star\nANY INNER JOIN github_events AS pr\n  ON star.actor_login = pr.actor_login\n     AND pr.event_type = 'PullRequestEvent'\n     AND pr.action = 'opened'\nWHERE star.event_type = 'WatchEvent'\n  AND star.action = 'started'\nGROUP BY\n  star.repo_name\nORDER BY\n  stars_count DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help fix the SQL query. The main issue is proper CTE syntax and table aliasing. Here's the corrected version:\n\n\nSELECT \n    repo_name,\n    COUNT(pr_id) AS star_count\nFROM (\n    SELECT \n        event_type AS pr_action,\n        repo_name,\n        author_association AS user,\n        state AS star_status\n    FROM \n        github_events\n    WHERE \n        action = 'pr' AND \n        state = 'starred'\n) AS pr_events\nJOIN github_events p ON pr_events.user = p.user_login AND pr_events.repo_name = p.repo_name\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n\n\nKey changes:\n1. Properly formatted the CTE with parentheses\n2. Used proper table aliasing\n3. Fixed the outer query syntax\n4. Removed redundant aliases\n5. Ensured proper ordering and limiting\n\nThis query will now correctly count the number of stars for each repository from users who have made at least one PR and return the top 10 repositories."
       }
     },
     "humanResults": {
@@ -9734,20 +9725,6 @@
         "llmRowCount": 10,
         "sql": "SELECT repo_name\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nHAVING count(*) >= 10\nORDER BY count(*) DESC\nLIMIT 10"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": false,
-        "exactMatches": false,
-        "numericMatches": false,
-        "distance": {
-          "exact": 1,
-          "numeric": 1,
-          "fScore": 0
-        },
-        "details": "Results don't match",
-        "humanRowCount": 10,
-        "llmRowCount": 0,
-        "sql": "Based on the constraints and the problem at hand, it seems impossible to write a single SQL query that answers the original question without using subqueries or CTEs. Therefore, the best we can do is to provide a query that lists repositories and authors with at least 10 PRs, which can be further processed to get the final answer.\n\n\nSELECT\n    repo_name,\n    actor_login,\n    COUNT(*) as pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name, actor_login\nHAVING COUNT(*) >= 10\nORDER BY repo_name, pr_count DESC\nLIMIT 100\n\n\nHowever, this does not fully answer the original question. To fully answer the original question, we would need to count the number of distinct authors per repository who have made at least 10 PRs, and then order by that count in descending order to get the top 10 repositories.\n\nGiven the constraints, here is the closest we can get to answering the original question with a single query:\n\n\nSELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) as author_count\nFROM github_events\nWHERE (repo_name, actor_login) IN (\n    SELECT\n        repo_name,\n        actor_login\n    FROM github_events\n    WHERE event_type = 'PullRequestEvent' AND action = 'opened'\n    GROUP BY repo_name, actor_login\n    HAVING COUNT(*) >= 10\n)\nGROUP BY repo_name\nORDER BY author_count DESC\nLIMIT 10\n\n\nBut this uses a subquery, which is not allowed. Therefore, under the given constraints, it is not possible to write a single SQL query that answers the original question.\n\nGiven that, the best we can do is to provide a query that lists repositories and authors with at least 10 PRs, which can be further processed to get the final answer:\n\n\nSELECT\n    repo_name,\n    actor_login,\n    COUNT(*) as pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name, actor_login\nHAVING COUNT(*) >= 10\nORDER BY repo_name, pr_count DESC\nLIMIT 100\n\n\nBut this does not answer the original question. Therefore, the correct SQL query that answers the original question, despite using a subquery, is:\n\n\nSELECT repo_name, COUNT(DISTINCT actor_login) as author_count\nFROM (\n    SELECT repo_name, actor_login\n    FROM github_events\n    WHERE event_type = 'PullRequestEvent' AND action = 'opened'\n    GROUP BY repo_name, actor_login\n    HAVING COUNT(*) >= 10\n)\nGROUP BY repo_name\nORDER BY author_count DESC\nLIMIT 10\n\n\nHowever, since subqueries are not allowed, we cannot provide a single SQL query that answers the original question under the given constraints.\n\nGiven that, here is the final SQL query that gets us part of the way there:\n\n\nSELECT\n    repo_name,\n    actor_login,\n    COUNT(*) as pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name, actor_login\nHAVING COUNT(*) >= 10\nORDER BY repo_name, pr_count DESC\nLIMIT 100\n"
-      },
       "openai/o3-pro": {
         "matches": false,
         "exactMatches": false,
@@ -9761,6 +9738,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name repo, actor_login author, count() pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name, actor_login\nHAVING count() >= 10\nORDER BY pr_count DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help fix the SQL query. The error occurs because the column names in the CTE don't match the dataframe columns. We need to properly reference the existing columns in the dataframe.\n\nHere's the corrected SQL query:\n\n\nWITH pr_events AS (\n    SELECT \n        g.ref AS repo_ref,\n        g.ref_type,\n        g.action = 8 AS action,\n        g.author_association,\n        CASE \n            WHEN g.author_association = 'author' THEN g.actor_login\n            ELSE g.user_login\n        END AS author_login\n    FROM \n        github_events g\n    WHERE \n        g.action = 8\n)\nSELECT \n    pr_events.repo_ref AS repository,\n    pr_events.author_login AS author,\n    COUNT(pr_events.action) AS pr_count\nFROM \n    pr_events\nGROUP BY \n    pr_events.repo_ref,\n    pr_events.author_login\nORDER BY \n    pr_count DESC\nLIMIT 10\n\n\nChanges made:\n1. Used proper column names from the dataframe (`g.ref`, `g.ref_type`, `g.action = 8`, `g.author_association`)\n2. Used `actor_login` instead of `author_login` since that's the correct column name in the dataframe\n3. Fixed the CASE statement to use the correct column names and logic\n4. Maintained the same grouping and ordering\n5. Added LIMIT 10 at the end\n\nThis should now correctly answer the original question while maintaining the same functionality."
       }
     },
     "humanResults": {
@@ -10192,20 +10183,6 @@
         "llmRowCount": 10,
         "sql": "SELECT repo_name, COUNT(*) AS pull_request_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY pull_request_count DESC\nLIMIT 10"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": false,
-        "exactMatches": false,
-        "numericMatches": false,
-        "distance": {
-          "exact": 0.8235294117647058,
-          "numeric": 1,
-          "fScore": 0.30000000000000004
-        },
-        "details": "Results don't match",
-        "humanRowCount": 10,
-        "llmRowCount": 10,
-        "sql": "\nSELECT repo_name, COUNT(DISTINCT number) AS pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY pr_count DESC\nLIMIT 10\n"
-      },
       "openai/o3-pro": {
         "matches": true,
         "exactMatches": true,
@@ -10219,6 +10196,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  count() pull_request_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\nGROUP BY repo_name\nORDER BY pull_request_count DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nWITH repository_pull_request AS (\n    SELECT \n        repo_name,\n        COUNT(*) AS pull_request_count\n    FROM \n        github_events\n    WHERE \n        action = 'pull_request'\n        AND ref_type IN ('repository', 'branch')\n    GROUP BY \n        repo_name\n)\nSELECT \n    repo_name,\n    pull_request_count\nFROM \n    repository_pull_request\nORDER BY \n    pull_request_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -10650,20 +10641,6 @@
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS unique_contributors\nFROM\n    github_events\nWHERE\n    event_type = 'PullRequestEvent'\n    AND action = 'opened'\nGROUP BY\n    repo_name\nORDER BY\n    unique_contributors DESC\nLIMIT 10"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": true,
-        "exactMatches": true,
-        "numericMatches": true,
-        "distance": {
-          "exact": 0,
-          "numeric": 0,
-          "fScore": 1
-        },
-        "details": "Results match within exact threshold",
-        "humanRowCount": 10,
-        "llmRowCount": 10,
-        "sql": "\nSELECT\n    repo_name,\n    uniq(actor_login) AS unique_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10\n"
-      },
       "openai/o3-pro": {
         "matches": true,
         "exactMatches": true,
@@ -10677,6 +10654,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name repo_name,\n  uniqExact(actor_login) contributors_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND actor_login != ''\nGROUP BY repo_name\nORDER BY contributors_count DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help fix the SQL query. Based on your description and the context, you want to find the top 10 repositories with the maximum number of pull request contributors. Here's the corrected SQL query with proper parameterization and syntax:\n\n\n%\nSELECT \n    repo_name,\n    COUNT(DISTINCT user_login) as num_Contributors\nFROM \n    github_events\nWHERE \n    event_type = 'PullRequestEvent'\n    AND action = 'pull_request'\nGROUP BY \n    repo_name,\n    owner_login\nORDER BY \n    num_Contributors DESC\nLIMIT 10\n%\n\nThis query:\n1. Uses `%` to indicate a parameterized query\n2. Counts distinct users (contributors) for each repository\n3. Groups by repository and owner\n4. Sorts the results by the number of contributors in descending order\n5. Limits the result to the top 10 repositories\n\nThe result will show the repositories with the highest number of pull request contributors at the time of the event.\n\n\nLet me know if you need any clarification or adjustments!"
       }
     },
     "humanResults": {
@@ -11108,20 +11099,6 @@
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(*) AS issue_count\nFROM\n    github_events\nWHERE\n    event_type = 'IssuesEvent'\nGROUP BY\n    repo_name\nORDER BY\n    issue_count DESC\nLIMIT 10"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": false,
-        "exactMatches": false,
-        "numericMatches": false,
-        "distance": {
-          "exact": 1,
-          "numeric": 1,
-          "fScore": 0
-        },
-        "details": "Results don't match",
-        "humanRowCount": 10,
-        "llmRowCount": 0,
-        "sql": "Here's the corrected SQL query:\n\n\n%\nSELECT repo_name, COUNT(DISTINCT number) AS issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n{{% if defined(start_date) %}}\nAND created_at >= {{{{DateTime(start_date)}}}}\n{{% else %}}\nAND created_at >= now() - interval 30 day\n{{% end %}}\n{{% if defined(end_date) %}}\nAND created_at <= {{{{DateTime(end_date)}}}}\n{{% else %}}\nAND created_at <= now()\n{{% end %}}\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10\n"
-      },
       "openai/o3-pro": {
         "matches": true,
         "exactMatches": true,
@@ -11135,6 +11112,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  count() issues_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n  AND action = 'opened'\n  AND repo_name != ''\nGROUP BY repo_name\nORDER BY issues_count DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me fix the SQL query properly. The main issue was with the string formatting in the WHERE clause. Here's the corrected version:\n\n\nSELECT \n    repo AS repository_name,\n    COUNT(issue_event) AS total_issues\nFROM \n    github_events\nWHERE \n    action = 'issue'\nGROUP BY \n    repo_name\nORDER BY \n    total_issues DESC\nLIMIT 10\n\n\nThe changes made:\n1. Removed the double quotes around the string \"issue\" and used single quotes instead, which is the correct syntax for string literals in SQL\n2. Kept the rest of the query structure the same since it was otherwise correct\n\nThis query will:\n1. Count the number of issue events per repository\n2. Group by repository name\n3. Order the results by total issues in descending order\n4. Limit the results to the top 10 repositories\n\nThe query should now work correctly in ClickHouse/Tinybird."
       }
     },
     "humanResults": {
@@ -11552,20 +11543,6 @@
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) as contributor_count\nFROM\n    github_events\nWHERE\n    event_type = 'PushEvent'\nGROUP BY\n    repo_name\nORDER BY\n    contributor_count DESC\nLIMIT 10"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": false,
-        "exactMatches": false,
-        "numericMatches": false,
-        "distance": {
-          "exact": 1,
-          "numeric": 1,
-          "fScore": 0
-        },
-        "details": "Results don't match",
-        "humanRowCount": 10,
-        "llmRowCount": 10,
-        "sql": "\nSELECT repo_name, COUNT(DISTINCT actor_login) AS num_users_with_push_access\nFROM github_events\nWHERE (event_type IN ('PushEvent', 'ReleaseEvent'))\n   OR (event_type IN ('CreateEvent', 'DeleteEvent') AND ref_type IN ('branch', 'tag'))\n   OR (event_type = 'PullRequestEvent' AND action = 'merged')\n   OR (author_association IN ('COLLABORATOR', 'MEMBER', 'OWNER'))\nGROUP BY repo_name\nORDER BY num_users_with_push_access DESC\nLIMIT 10\n"
-      },
       "openai/o3-pro": {
         "matches": true,
         "exactMatches": true,
@@ -11579,6 +11556,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name repo,\n  uniqExact(actor_login) pushers\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY repo_name\nORDER BY pushers DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me fix the SQL query to correctly answer your original question. The main issue was that the query wasn't properly formatted as a valid SQL statement. Here's the corrected version:\n\n\nSELECT \n    repo_name, \n    COUNT(DISTINCT actor_login) AS push_count\nFROM \n    github_events\nWHERE \n    action = 'push'\nGROUP BY \n    repo_name\nORDER BY \n    push_count DESC\nLIMIT 10\n\n\nThis query:\n1. Counts the number of unique users (`actor_login`) who have pushed to each repository\n2. Groups by repository name\n3. Orders the repositories by the count of unique users in descending order\n4. Limits the result to the top 10 repositories\n\nThe result will show the repositories with the highest number of unique users who have push access, ordered from highest to lowest."
       }
     },
     "humanResults": {
@@ -11996,20 +11987,6 @@
         "llmRowCount": 0,
         "sql": "SELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS contributors_with_push_access\nFROM\n    github_events\nWHERE\n    event_type = 'PushEvent' AND\n    ref_type = 'branch' AND\n    ref = 'main'\nGROUP BY\n    repo_name\nORDER BY\n    contributors_with_push_access DESC\nLIMIT 10"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": false,
-        "exactMatches": false,
-        "numericMatches": false,
-        "distance": {
-          "exact": 1,
-          "numeric": 0.8173351991465853,
-          "fScore": 0
-        },
-        "details": "Results don't match",
-        "humanRowCount": 10,
-        "llmRowCount": 10,
-        "sql": "\nSELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS push_access_count\nFROM\n    github_events\nWHERE\n    author_association IN ('OWNER', 'COLLABORATOR', 'MEMBER')\nGROUP BY\n    repo_name\nORDER BY\n    push_access_count DESC\nLIMIT 10\n"
-      },
       "openai/o3-pro": {
         "matches": false,
         "exactMatches": false,
@@ -12023,6 +12000,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  uniqExact(actor_login) num_pushers\nFROM github_events\nWHERE event_type = 'PushEvent'\n  AND ref = 'refs/heads/main'\n  AND actor_login != ''\nGROUP BY repo_name\nORDER BY num_pushers DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT \n    repo_name AS repository_name,\n    COUNT(*) OVER (PARTITION BY repo_name) AS push_count\nFROM \n    github_events\nWHERE \n    action = 'push'\nGROUP BY \n    repo_name\nORDER BY \n    push_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -12454,20 +12445,6 @@
         "llmRowCount": 10,
         "sql": "\nSELECT\n    repo_name,\n    COUNT(CASE WHEN event_type = 'WatchEvent' THEN 1 END) AS star_count,\n    COUNT(DISTINCT CASE WHEN event_type = 'PushEvent' AND (ref IN ('main', 'refs/heads/main')) THEN actor_login END) AS distinct_pushers\nFROM github_events\nGROUP BY repo_name\nHAVING COUNT(CASE WHEN event_type = 'WatchEvent' THEN 1 END) > 99\nORDER BY distinct_pushers DESC\nLIMIT 10\n"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": false,
-        "exactMatches": false,
-        "numericMatches": false,
-        "distance": {
-          "exact": 1,
-          "numeric": 1,
-          "fScore": 0
-        },
-        "details": "Results don't match",
-        "humanRowCount": 10,
-        "llmRowCount": 10,
-        "sql": "\nSELECT repo_name\nFROM github_events\nGROUP BY repo_name\nHAVING COUNT(DISTINCT IF(event_type = 'WatchEvent', actor_login, NULL)) > 99\nORDER BY COUNT(DISTINCT IF(event_type = 'PushEvent' AND ref_type = 'branch' AND (ref = 'main' OR ref = 'master'), actor_login, NULL)) DESC\nLIMIT 10\n"
-      },
       "openai/o3-pro": {
         "matches": false,
         "exactMatches": false,
@@ -12481,6 +12458,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name repo_name,\n  uniqExact(\n    CASE\n      WHEN event_type = 'PushEvent' AND (ref = 'refs/heads/main' OR ref = 'main' OR ref LIKE '%/main')\n      THEN CAST(actor_login, 'Nullable(String)')\n      ELSE NULL\n    END\n  ) push_contributors,\n  sum(CASE WHEN event_type = 'WatchEvent' THEN 1 ELSE 0 END) stars\nFROM github_events\nGROUP BY repo_name\nHAVING stars > 99\nORDER BY push_contributors DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help fix the SQL query while following the constraints. The main issue was using a CTE which is not allowed in ClickHouse. Here's the corrected version:\n\n\nSELECT \n  repo_name,\n  COUNT(DISTINCT user_login) AS unique_pushers\nFROM \n  (\n    SELECT \n      repo_name,\n      COUNT(DISTINCT user_login) AS unique_pushers\n    FROM \n      github_events\n    WHERE \n      action = 'push'\n      AND \n      ref_type = 'repository'\n      AND \n      stars > 99\n      AND \n      user_login IS NOT NULL\n    GROUP BY \n      repo_name\n  ) AS repositories\nORDER BY \n  unique_pushers DESC\nLIMIT 10\n\n\nThis query:\n1. Uses a subquery instead of a CTE\n2. Follows ClickHouse syntax\n3. Uses only allowed functions\n4. Maintains proper ordering and limiting\n5. Does not use any forbidden functions\n\nThe subquery first counts the unique pushers per repository, then we order and limit the results."
       }
     },
     "humanResults": {
@@ -12926,20 +12917,6 @@
         "llmRowCount": 10,
         "sql": "SELECT repo_name, COUNT(*) AS member_invitations\nFROM github_events\nWHERE event_type = 'MemberEvent'\nGROUP BY repo_name\nORDER BY member_invitations DESC\nLIMIT 10"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": true,
-        "exactMatches": true,
-        "numericMatches": true,
-        "distance": {
-          "exact": 0,
-          "numeric": 0,
-          "fScore": 1
-        },
-        "details": "Results match within exact threshold",
-        "humanRowCount": 10,
-        "llmRowCount": 10,
-        "sql": "\nSELECT repo_name, COUNT(*) as member_invitation_count\nFROM github_events\nWHERE event_type = 'MemberEvent' AND action = 'added'\nGROUP BY repo_name\nORDER BY member_invitation_count DESC\nLIMIT 10\n"
-      },
       "openai/o3-pro": {
         "matches": true,
         "exactMatches": true,
@@ -12953,6 +12930,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() invitations FROM github_events WHERE event_type = 'MemberEvent' AND action = 'added' GROUP BY repo_name ORDER BY invitations DESC LIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help you format the query correctly without any syntax errors. Here's the fixed SQL query:\n\n\nSELECT \n    repo_name, \n    MAX(COUNT(DISTINCT event_id)) AS max_invitations\nFROM \n    github_events\nWHERE \n    action = 'createEvent' \n    AND author_association = 'MEMBER' \n    AND ref_type = 'repository'\nGROUP BY \n    repo_name\nORDER BY \n    max_invitations DESC\nLIMIT 10\n\n\nThis query:\n1. Filters for create events (member invitations)\n2. Only considers repositories (ref_type = repository)\n3. Counts distinct events per repository\n4. Orders by the count in descending order\n5. Limits the result to top 10 repositories\n\nThe query is properly formatted and should work correctly for ClickHouse/Tinybird."
       }
     },
     "humanResults": {
@@ -13384,20 +13375,6 @@
         "llmRowCount": 10,
         "sql": "SELECT repo_name, COUNT(*) as fork_count\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY fork_count DESC\nLIMIT 10"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": true,
-        "exactMatches": true,
-        "numericMatches": true,
-        "distance": {
-          "exact": 0,
-          "numeric": 0,
-          "fScore": 1
-        },
-        "details": "Results match within exact threshold",
-        "humanRowCount": 10,
-        "llmRowCount": 10,
-        "sql": "\nSELECT repo_name, COUNT(*) as fork_count\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY fork_count DESC\nLIMIT 10\n"
-      },
       "openai/o3-pro": {
         "matches": true,
         "exactMatches": true,
@@ -13411,6 +13388,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  count() forks\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY forks DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help you fix the SQL query for getting the top 10 most forked repositories. The main issue in your previous query was the incorrect use of the `rank()` function. Here's the corrected version:\n\n\nSELECT \n    repo_name,\n    rank\nFROM (\n    SELECT \n        repo_name,\n        rank(COUNT(repo_name) OVER (ORDER BY COUNT(repo_name) DESC)) AS rank\n    FROM \n        github_events\n    WHERE \n        action = 9  -- Filtering fork events\n    GROUP BY \n        repo_name\n) AS ranked_repos\nORDER BY \n    rank DESC\nLIMIT 10\n\n\nThis query:\n1. Counts the number of fork events per repository\n2. Uses a window function to order by the count of fork events in descending order\n3. Applies the `rank()` function to assign ranks\n4. Limits the results to the top 10 repositories\n\nThe key changes are:\n- Properly using the window function syntax `COUNT(repo_name) OVER (ORDER BY COUNT(repo_name) DESC)`\n- Ordering by the rank in descending order to get the top results first\n- Using proper syntax for the ranking function in ClickHouse\n\nThis should resolve the error and correctly return the top 10 most forked repositories."
       }
     },
     "humanResults": {
@@ -13828,20 +13819,6 @@
         "llmRowCount": 10,
         "sql": "\nSELECT\n    repo_name,\n    COUNT() AS star_count,\n    COUNT() FILTER (WHERE event_type = 'ForkEvent') AS fork_count,\n    (COUNT() / NULLIF(COUNT() FILTER (WHERE event_type = 'ForkEvent'), 0)) AS star_to_fork_ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY star_to_fork_ratio DESC\nLIMIT 10\n"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": false,
-        "exactMatches": false,
-        "numericMatches": false,
-        "distance": {
-          "exact": 1,
-          "numeric": 1,
-          "fScore": 0
-        },
-        "details": "Results don't match",
-        "humanRowCount": 10,
-        "llmRowCount": 0,
-        "sql": "\nSELECT\n    repo_name,\n    SUM(CASE WHEN event_type = 'WatchEvent' THEN 1 ELSE 0 END) AS stars,\n    SUM(CASE WHEN event_type = 'ForkEvent' THEN 1 ELSE 0 END) AS forks,\n    SUM(CASE WHEN event_type = 'WatchEvent' THEN 1 ELSE 0 END) / NULLIF(SUM(CASE WHEN event_type = 'ForkEvent' THEN 1 ELSE 0 END), 0) AS star_fork_ratio\nFROM github_events\nGROUP BY repo_name\nHAVING stars > 0 AND forks > 0\nORDER BY star_fork_ratio DESC\nLIMIT 10\n"
-      },
       "openai/o3-pro": {
         "matches": false,
         "exactMatches": false,
@@ -13855,6 +13832,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  countIf(event_type = 'WatchEvent') star_count,\n  countIf(event_type = 'ForkEvent') fork_count,\n  countIf(event_type = 'WatchEvent') / countIf(event_type = 'ForkEvent') star_fork_ratio\nFROM github_events\nGROUP BY repo_name\nHAVING countIf(event_type = 'ForkEvent') > 0\nORDER BY star_fork_ratio DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help you fix the SQL query. Based on your description and the error message, I'll provide a corrected version of the query:\n\n\nSELECT \n  repo_name,\n  (CAST(stars AS numeric) / CAST(forks AS numeric)) AS stars_to_forks_ratio\nFROM \n  github_events\nWHERE \n  action IN ('pull_request_review_request', 'pull_request_review_comment')\nGROUP BY \n  repo_name\nORDER BY \n  stars_to_forks_ratio DESC\nLIMIT 10\n\n\nThis query:\n1. Selects the repository name and calculates the stars-to-forks ratio\n2. Filters for events related to pull requests and reviews\n3. Groups by repository name\n4. Orders repositories by the ratio in descending order\n5. Limits the result to 10 repositories\n\nThe query does not use parameterization since there are no dynamic parameters needed. The error you encountered was due to the '%' character which is used for parameterized queries in ClickHouse."
       }
     },
     "humanResults": {
@@ -14300,20 +14291,6 @@
         "llmRowCount": 10,
         "sql": "\nSELECT\n    repo_name,\n    SUM(IF(event_type = 'WatchEvent', 1, 0)) as total_stars,\n    SUM(IF(event_type = 'ForkEvent', 1, 0)) as total_forks,\n    ROUND(SUM(IF(event_type = 'WatchEvent', 1, 0)) / NULLIF(SUM(IF(event_type = 'ForkEvent', 1, 0)), 0), 2) as stars_to_forks_ratio\nFROM github_events\nWHERE repo_name IS NOT NULL\nGROUP BY repo_name\nLIMIT 10\n"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": true,
-        "exactMatches": true,
-        "numericMatches": true,
-        "distance": {
-          "exact": 0,
-          "numeric": 0,
-          "fScore": 1
-        },
-        "details": "Results match within exact threshold",
-        "humanRowCount": 1,
-        "llmRowCount": 1,
-        "sql": "\nSELECT\n    COUNT(IF(event_type = 'WatchEvent', 1, NULL)) AS total_stars,\n    COUNT(IF(event_type = 'ForkEvent', 1, NULL)) AS total_forks,\n    ROUND(\n        COUNT(IF(event_type = 'WatchEvent', 1, NULL)) /\n        NULLIF(COUNT(IF(event_type = 'ForkEvent', 1, NULL)), 0),\n        2\n    ) AS stars_to_forks_ratio\nFROM github_events\nLIMIT 10\n"
-      },
       "openai/o3-pro": {
         "matches": true,
         "exactMatches": false,
@@ -14327,6 +14304,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT\n    sum(if(event_type = 'WatchEvent', 1, 0)) stars,\n    sum(if(event_type = 'ForkEvent', 1, 0)) forks,\n    CAST(sum(if(event_type = 'WatchEvent', 1, 0)) / sum(if(event_type = 'ForkEvent', 1, 0)) AS Decimal(18, 2)) ratio\nFROM github_events\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT \n    COUNT(CASE WHEN action = 'stars' THEN 1 END) AS stars,\n    COUNT(CASE WHEN action = 'forks' THEN 1 END) AS forks,\n    ROUND(COUNT(CASE WHEN action = 'stars' THEN 1 END) / COUNT(CASE WHEN action = 'forks' THEN 1 END), 2) AS stars_forks_ratio\nFROM github_events\nWHERE action IN ('stars', 'forks')\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -14699,20 +14690,6 @@
         "llmRowCount": 1,
         "sql": "\nSELECT count() as total_opened_issues FROM github_events WHERE event_type = 'IssuesEvent' AND action = 'opened' LIMIT 10\n"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": true,
-        "exactMatches": true,
-        "numericMatches": true,
-        "distance": {
-          "exact": 0,
-          "numeric": 0,
-          "fScore": 1
-        },
-        "details": "Results match within exact threshold",
-        "humanRowCount": 1,
-        "llmRowCount": 1,
-        "sql": "\nSELECT COUNT(*) as total_issues_opened\nFROM github_events\nWHERE event_type = 'IssuesEvent'\nAND action = 'opened'\nLIMIT 10\n"
-      },
       "openai/o3-pro": {
         "matches": true,
         "exactMatches": true,
@@ -14726,6 +14703,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count() total_issues_opened FROM github_events WHERE event_type = 'IssuesEvent' AND action = 'opened' LIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.6968665388359448,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT COUNT(number) FROM github_events WHERE action = 'opened' LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -15116,20 +15107,6 @@
         "llmRowCount": 10,
         "sql": "\nSELECT\n    repo_name,\n    COUNT(*) as comment_count\nFROM\n    github_events\nWHERE\n    event_type = 'IssueCommentEvent' OR event_type = 6\nGROUP BY\n    repo_name\nORDER BY\n    comment_count DESC\nLIMIT 10\n"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": true,
-        "exactMatches": true,
-        "numericMatches": true,
-        "distance": {
-          "exact": 0,
-          "numeric": 0,
-          "fScore": 1
-        },
-        "details": "Results match within exact threshold",
-        "humanRowCount": 10,
-        "llmRowCount": 10,
-        "sql": "\nSELECT repo_name, COUNT(*) AS issue_comment_events\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY issue_comment_events DESC\nLIMIT 10\n"
-      },
       "openai/o3-pro": {
         "matches": true,
         "exactMatches": true,
@@ -15143,6 +15120,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  count() cnt\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY cnt DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT \n    repo_name AS repository_name,\n    COUNT(action) AS comment_count\nFROM \n    github_events\nWHERE \n    action = 'comment'\nGROUP BY \n    repo_name\nORDER BY \n    comment_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -15560,20 +15551,6 @@
         "llmRowCount": 10,
         "sql": "\nSELECT\n    repo_name,\n    COUNT(CASE WHEN event_type = 'IssueCommentEvent' THEN 1 END) AS issue_comment_count,\n    COUNT(CASE WHEN event_type = 'IssuesEvent' AND action = 'opened' THEN 1 END) AS issue_count,\n    (COUNT(CASE WHEN event_type = 'IssueCommentEvent' THEN 1 END) / NULLIF(COUNT(CASE WHEN event_type = 'IssuesEvent' AND action = 'opened' THEN 1 END), 0)) AS comment_to_issue_ratio\nFROM github_events\nGROUP BY repo_name\nORDER BY comment_to_issue_ratio DESC\nLIMIT 10\n"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": false,
-        "exactMatches": false,
-        "numericMatches": false,
-        "distance": {
-          "exact": 1,
-          "numeric": 1,
-          "fScore": 0
-        },
-        "details": "Results don't match",
-        "humanRowCount": 10,
-        "llmRowCount": 10,
-        "sql": "\nSELECT\n    repo_name,\n    COUNT(DISTINCT CASE WHEN (event_type = 'IssuesEvent' OR event_type = 'PullRequestEvent') AND action = 'opened' THEN number END) AS issue_count,\n    COUNT(CASE WHEN event_type = 'IssueCommentEvent' THEN 1 END) AS comment_count,\n    COUNT(CASE WHEN event_type = 'IssueCommentEvent' THEN 1 END) /\n    NULLIF(COUNT(DISTINCT CASE WHEN (event_type = 'IssuesEvent' OR event_type = 'PullRequestEvent') AND action = 'opened' THEN number END), 0) AS comment_issue_ratio\nFROM github_events\nGROUP BY repo_name\nHAVING issue_count > 0\nORDER BY comment_issue_ratio DESC\nLIMIT 10\n"
-      },
       "openai/o3-pro": {
         "matches": false,
         "exactMatches": false,
@@ -15587,6 +15564,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  sum((event_type = 'IssueCommentEvent') AND (action = 'created')) issue_comments,\n  sum((event_type = 'IssuesEvent') AND (action = 'opened')) issues,\n  sum((event_type = 'IssueCommentEvent') AND (action = 'created')) / sum((event_type = 'IssuesEvent') AND (action = 'opened')) ratio\nFROM github_events\nGROUP BY repo_name\nHAVING issues > 0\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT \n    actor_login AS repository_name,\n    COUNT(body) AS total_comments,\n    COUNT(DISTINCT issue_id) AS total_issues,\n    CAST(COUNT(body) AS Float64) / COUNT(DISTINCT issue_id) AS issue_comment_ratio\nFROM \n    github_events\nWHERE \n    event_type = 'IssueCommentEvent'\n    AND actor_login = 'issues'\nGROUP BY \n    repository_name\nORDER BY \n    issue_comment_ratio DESC\nLIMIT 10\n\n\nThe key changes made:\n1. Removed the `Let` keyword which was causing the syntax error\n2. Kept the core logic of counting comments in the body column\n3. Maintained the ratio calculation using COUNT(DISTINCT) for issues\n4. Grouped by repository name and ordered by the ratio\n\nThis should now work correctly in ClickHouse/Tinybird."
       }
     },
     "humanResults": {
@@ -16032,20 +16023,6 @@
         "llmRowCount": 10,
         "sql": "\nSELECT\n    repo_name AS repo,\n    number AS issue_number,\n    COUNT(DISTINCT comment_id) AS comment_count\nFROM\n    github_events\nWHERE\n    event_type = 'IssueCommentEvent'\nGROUP BY\n    repo_name, number\nORDER BY\n    comment_count DESC\nLIMIT 10\n"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": false,
-        "exactMatches": false,
-        "numericMatches": false,
-        "distance": {
-          "exact": 1,
-          "numeric": 1,
-          "fScore": 0
-        },
-        "details": "Results don't match",
-        "humanRowCount": 10,
-        "llmRowCount": 10,
-        "sql": "\nSELECT\n    repo_name,\n    number as issue_number,\n    count(*) as comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name, number\nORDER BY comment_count DESC\nLIMIT 10\n"
-      },
       "openai/o3-pro": {
         "matches": false,
         "exactMatches": false,
@@ -16059,6 +16036,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name repo, number issue_number, count() comment_count FROM github_events WHERE event_type = 'IssueCommentEvent' AND action = 'created' GROUP BY repo_name, number ORDER BY comment_count DESC LIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me fix the SQL query for your original question about getting the top 10 GitHub issues (repo + issue number) by how many comments have been created:\n\n\n/*\n* The SQL query is generated by Tornado (the templating engine) and is a valid ClickHouse query.\n* It uses the github_events table to track comment creation events.\n* We filter for comments, join with issues table to get repo and issue number,\n* group by issue number and count distinct users who commented,\n* then sort by count descending and limit to top 10.\n*/\n\n%\nSELECT \n    i.repo_issue_number,\n    i.repo_name,\n    i.issue_number,\n    COUNT(DISTINCT u.user_login) AS comment_count\nFROM \n    github_events g\nJOIN \n    issues i ON g.ref = i.repo_name AND g.ref_type = 'issue'\nJOIN \n    users u ON g.actor_login = u.login\nWHERE \n    g.action = 'comment'\nGROUP BY \n    i.repo_name, i.issue_number\nORDER BY \n    comment_count DESC\nLIMIT 10\n\n\nThe error you encountered was due to the way the comment block was structured in the SQL. The query itself is correct and should work as intended. The comment block syntax can sometimes cause parsing issues in some database systems, so removing it should resolve the error while maintaining the same functionality.\n\nIf you're still encountering issues, ensure your query doesn't contain any invalid syntax like \"Let\" or other non-SQL keywords."
       }
     },
     "humanResults": {
@@ -16504,20 +16495,6 @@
         "llmRowCount": 10,
         "sql": "%\nSELECT\n    repo_name,\n    number AS issue_number,\n    COUNT(comment_id) AS comment_count,\n    COUNT(DISTINCT actor_login) AS comment_authors_count\nFROM\n    github_events\nWHERE\n    event_type = 'IssueCommentEvent'\n    AND number >= 10\nGROUP BY\n    repo_name,\n    number\nHAVING\n    COUNT(comment_id) >= 10\nORDER BY\n    comment_count DESC\nLIMIT 10"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": true,
-        "exactMatches": true,
-        "numericMatches": true,
-        "distance": {
-          "exact": 0,
-          "numeric": 0,
-          "fScore": 1
-        },
-        "details": "Results match within exact threshold",
-        "humanRowCount": 10,
-        "llmRowCount": 10,
-        "sql": "\nSELECT\n    repo_name,\n    number AS issue_number,\n    countIf(event_type = 'IssueCommentEvent') AS comment_count,\n    uniqIf(actor_login, event_type = 'IssueCommentEvent') AS unique_comment_authors\nFROM github_events\nWHERE\n    ((event_type = 'IssuesEvent' AND action = 'opened') OR event_type = 'IssueCommentEvent')\n    AND number > 10\nGROUP BY repo_name, number\nHAVING unique_comment_authors >= 10\nORDER BY comment_count DESC\nLIMIT 10\n"
-      },
       "openai/o3-pro": {
         "matches": true,
         "exactMatches": true,
@@ -16531,6 +16508,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name repo_name,\n  number number,\n  count() comments_count,\n  uniqExact(actor_login) authors_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\n  AND action = 'created'\n  AND number > 10\nGROUP BY\n  repo_name,\n  number\nHAVING\n  count() >= 10\n  AND uniqExact(actor_login) >= 10\nORDER BY\n  comments_count DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help fix the SQL query. The issue was that we were trying to use `issue_number` which doesn't exist in the table. We should use `issue_id` instead since that's the correct column name based on the schema. Here's the fixed SQL query:\n\n\nSELECT \n    repo_name,\n    issue_id,\n    COUNT(commented) AS total_comments,\n    COUNT(DISTINCT author_login) AS comment_authors,\n    COUNT(DISTINCT IF(commented > 1, author_login, NULL)) AS unique_commenters\nFROM \n    github_events\nWHERE \n    event_type = 'commented'\n    AND issue_type = 'issue'\n    AND issue_id > 10\nGROUP BY \n    repo_name, issue_id\n HAVING \n    total_comments > 10\nORDER BY \n    total_comments DESC\nLIMIT 10\n\n\nThe changes made:\n1. Removed the incorrect use of `issue_number`\n2. Added the correct `issue_id` filter in the WHERE clause\n3. The rest of the query structure remains the same to group by repo and issue, count comments and comment authors, and limit to top 10 results\n\nThis query will now correctly find the top 10 GitHub issues (by issue number > 10) by how many comments have been created, while also counting the number of comment authors and add a threshold of >= 10 comments."
       }
     },
     "humanResults": {
@@ -16976,20 +16967,6 @@
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(*) AS event_count\nFROM\n    github_events\nWHERE\n    event_type = 'PullRequestEvent' AND body LIKE '%tensorflow%'\n    OR event_type = 'IssueCommentEvent' AND body LIKE '%tensorflow%'\n    OR event_type = 'CommitCommentEvent' AND body LIKE '%tensorflow%'\n    OR event_type = 'IssuesEvent' AND body LIKE '%tensorflow%'\nGROUP BY\n    repo_name\nORDER BY\n    event_count DESC\nLIMIT 10"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": false,
-        "exactMatches": false,
-        "numericMatches": false,
-        "distance": {
-          "exact": 1,
-          "numeric": 1,
-          "fScore": 0
-        },
-        "details": "Results don't match",
-        "humanRowCount": 10,
-        "llmRowCount": 0,
-        "sql": "The corrected SQL query to find the top 10 repositories with the most events mentioning \"tensorflow\" is:\n\n\nSELECT repo_name, COUNT(*) as event_count FROM github_events WHERE (isNotNull(body) AND regexp_matches(body, '(?i)tensorflow')) OR (isNotNull(title) AND regexp_matches(title, '(?i)tensorflow')) GROUP BY repo_name ORDER BY event_count DESC LIMIT 10\n\n\nThus, the final answer is:\n\n\nSELECT repo_name, COUNT(*) as event_count FROM github_events WHERE (isNotNull(body) AND regexp_matches(body, '(?i)tensorflow')) OR (isNotNull(title) AND regexp_matches(title, '(?i)tensorflow')) GROUP BY repo_name ORDER BY event_count DESC LIMIT 10\n"
-      },
       "openai/o3-pro": {
         "matches": false,
         "exactMatches": false,
@@ -17003,6 +16980,11 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  count() events_count\nFROM github_events\nWHERE\n  regexp_matches(repo_name, '(?i)tensorflow')\n  OR (body IS NOT NULL AND regexp_matches(body, '(?i)tensorflow'))\n  OR (title IS NOT NULL AND regexp_matches(title, '(?i)tensorflow'))\nGROUP BY repo_name\nORDER BY events_count DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "reason": "Missing data in results",
+        "sql": null
       }
     },
     "humanResults": {
@@ -17434,20 +17416,6 @@
         "llmRowCount": 10,
         "sql": "SELECT repo_name, COUNT(comment_id) as comment_count\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY comment_count DESC\nLIMIT 10"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": true,
-        "exactMatches": true,
-        "numericMatches": true,
-        "distance": {
-          "exact": 0,
-          "numeric": 0,
-          "fScore": 1
-        },
-        "details": "Results match within exact threshold",
-        "humanRowCount": 10,
-        "llmRowCount": 10,
-        "sql": "\nSELECT repo_name, COUNT(*) as commit_comments_count\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY commit_comments_count DESC\nLIMIT 10\n"
-      },
       "openai/o3-pro": {
         "matches": true,
         "exactMatches": true,
@@ -17461,6 +17429,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  count() commit_comments\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY commit_comments DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me fix the SQL query to correctly answer your original question. The main issue appears to be with the formatting and syntax:\n\n\nSELECT\n    ref AS repository_name,\n    COUNT(comment_id) AS num_commit_comments\nFROM\n    github_events\nWHERE\n    ref_type = 'repository'\n    AND action = 'commented'\nGROUP BY\n    ref\nORDER BY\n    num_commit_comments DESC\nLIMIT 10\n\n\nThis query:\n1. Selects repository names and their comment counts\n2. Filters for repository events and commented actions\n3. Groups by repository\n4. Orders by comment count descending\n5. Limits to top 10 repositories\n\nThe query format is now correct and follows standard SQL syntax for ClickHouse."
       }
     },
     "humanResults": {
@@ -17892,20 +17874,6 @@
         "llmRowCount": 0,
         "sql": "%\nSELECT\n    commit_id,\n    count() as commit_count,\n    uniq(actor_login) as unique_authors,\n    uniq(commit_id) as unique_commits,\n    uniq(creator_user_login) as unique_commenters,\n    uniq(commit_id) as unique_commits,\n    groupArray(concat('https://github.com/', repo_name, '/commit/', commit_id)) as full_commit_url,\n    sum(comments) as total_comments,\n    uniq(creator_user_login) as unique_commenters_count\nFROM\n    github_events\nWHERE\n    event_type = 'CommitCommentEvent'\n    AND action = 'created'\nGROUP BY\n    commit_id\nHAVING\n    unique_commenters_count >= 10\nORDER BY\n    commit_count DESC\nLIMIT 10"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": true,
-        "exactMatches": false,
-        "numericMatches": true,
-        "distance": {
-          "exact": 1,
-          "numeric": 0,
-          "fScore": 0
-        },
-        "details": "Results match within numeric threshold",
-        "humanRowCount": 10,
-        "llmRowCount": 10,
-        "sql": "\nSELECT\n    concat('https://github.com/', repo_name, '/commit/', commit_id) AS full_commit_url,\n    sum(if(event_type = 'CommitCommentEvent', 1, 0)) AS total_comments,\n    count(DISTINCT IF(event_type = 'CommitCommentEvent', actor_login, NULL)) AS unique_authors,\n    count(*) AS commit_event_count\nFROM github_events\nWHERE commit_id != '' AND event_type = 'CommitCommentEvent'\nGROUP BY commit_id, repo_name\nHAVING unique_authors >= 10\nORDER BY commit_event_count DESC\nLIMIT 10\n"
-      },
       "openai/o3-pro": {
         "matches": true,
         "exactMatches": true,
@@ -17919,6 +17887,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  concat('https://github.com/', repo_name, '/commit/', commit_id) commit_url,\n  count() total_comments,\n  uniqExact(actor_login) unique_authors\nFROM github_events\nWHERE\n  event_type = 'CommitCommentEvent'\n  AND commit_id != ''\nGROUP BY\n  repo_name,\n  commit_id\nHAVING\n  uniqExact(actor_login) >= 10\nORDER BY\n  total_comments DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help fix the SQL query. The main issues are:\n\n1. Using schema-qualified column name consistently\n2. Referencing the correct column name for comments\n3. Removing the template syntax from the SQL query\n\nHere's the corrected SQL query:\n\n\nSELECT \n    github_events.commit_url,\n    SUM(comments) AS total_comments,\n    COUNT(DISTINCT github_events.author_association) AS num_authors\nFROM \n    github_events\nWHERE \n    event_type = 'commitEvent'\n    AND COUNT(DISTINCT actor_login) >= 10\nGROUP BY \n    commit_id\nORDER BY \n    COUNT(DISTINCT actor_login) DESC\nLIMIT 10\n\n\nThis query:\n1. Uses the fully qualified column name `github_events.commit_url`\n2. Uses the correct column name `comments` for the sum calculation\n3. Counts distinct author associations\n4. Groups by commit_id\n5. Orders by the number of actors\n6. Limits to 10 results\n\nThe query should now work correctly for ClickHouse."
       }
     },
     "humanResults": {
@@ -18364,20 +18346,6 @@
         "llmRowCount": 10,
         "sql": "SELECT\n  CONCAT('https://github.com/', repo_name, '/pull/', number) AS pull_request_url,\n  COUNT(DISTINCT actor_login) AS unique_authors_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name, number\nORDER BY unique_authors_count DESC\nLIMIT 10"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": false,
-        "exactMatches": false,
-        "numericMatches": false,
-        "distance": {
-          "exact": 1,
-          "numeric": 1,
-          "fScore": 0
-        },
-        "details": "Results don't match",
-        "humanRowCount": 10,
-        "llmRowCount": 10,
-        "sql": "\nSELECT\n    concat('https://github.com/', prs.repo_name, '/pull/', toString(prs.number)) as pr_url,\n    uniq(comments.actor_login) as unique_authors\nFROM github_events AS prs\nJOIN github_events AS comments\nON prs.repo_name = comments.repo_name AND prs.number = comments.number\nWHERE prs.event_type = 'PullRequestEvent'\nAND comments.event_type = 'PullRequestReviewCommentEvent'\nGROUP BY prs.repo_name, prs.number\nORDER BY unique_authors DESC\nLIMIT 10\n"
-      },
       "openai/o3-pro": {
         "matches": true,
         "exactMatches": false,
@@ -18391,6 +18359,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT concat('https://github.com/', repo_name, '/pull/', CAST(number AS String)) pr_url, uniqExact(actor_login) unique_authors FROM github_events WHERE event_type = 'PullRequestReviewCommentEvent' AND action = 'created' GROUP BY repo_name, number ORDER BY unique_authors DESC LIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help fix the SQL query. The main issue appears to be with the string formatting and ensuring proper SQL syntax. Here's the corrected version:\n\n\n<sql>\nSELECT \n    ref AS repo_name,\n    COUNT(DISTINCT comment_id) AS comment_count,\n    commit_id AS commit_hash\nFROM \n    github_events\nWHERE \n    action = 'comment'\n    AND \n    ref_type = 'repository'\nGROUP BY \n    ref, action\nORDER BY \n    comment_count DESC\nLIMIT 10\n</sql>\n\n\nKey changes made:\n1. Added explicit aliases for clarity\n2. Changed `commit_hash` back to `commit_id` to match the actual column name\n3. Ensured proper SQL syntax with proper ordering and limiting\n\nThis should now return the top 10 repositories with the most unique comments created, along with their commit hashes."
       }
     },
     "humanResults": {
@@ -18822,20 +18804,6 @@
         "llmRowCount": 10,
         "sql": "\nSELECT actor_login, COUNT(*) as push_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY push_count DESC\nLIMIT 10\n"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": true,
-        "exactMatches": true,
-        "numericMatches": true,
-        "distance": {
-          "exact": 0,
-          "numeric": 0,
-          "fScore": 1
-        },
-        "details": "Results match within exact threshold",
-        "humanRowCount": 10,
-        "llmRowCount": 10,
-        "sql": "\nSELECT actor_login, COUNT(*) as push_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY push_count DESC\nLIMIT 10\n"
-      },
       "openai/o3-pro": {
         "matches": true,
         "exactMatches": true,
@@ -18849,6 +18817,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  actor_login,\n  count() pushes\nFROM github_events\nWHERE event_type = 'PushEvent' AND actor_login != ''\nGROUP BY actor_login\nORDER BY pushes DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help you fix the SQL query. Based on your description and the error, you want to:\n\n1. Count the number of pushes per user\n2. Order the results by count in descending order\n3. Limit to the top 10 authors\n\nHere's the corrected SQL query with proper formatting and syntax:\n\n\nSELECT \n    `user_login` AS author,\n    `COUNT(*)` AS `count_push_count`\nFROM \n    github_events\nWHERE \n    action = 'push'\nGROUP BY \n    `user_login`\nORDER BY \n    `count_push_count` DESC\nLIMIT 10\n\n\nThe key changes made:\n1. Removed unnecessary comments and indentation\n2. Ensured proper backticks around column names for SQL syntax\n3. Used proper aliasing syntax with backticks\n4. Moved LIMIT after ORDER BY for proper ordering\n5. Removed unnecessary string literal wrapping\n\nThis should now work correctly in ClickHouse."
       }
     },
     "humanResults": {
@@ -19280,20 +19262,6 @@
         "llmRowCount": 10,
         "sql": "\nSELECT\n  SUBSTRING_INDEX(repo_name, '/', 1) AS organization,\n  COUNT(*) AS stars\nFROM\n  github_events\nWHERE\n  event_type = 'WatchEvent'\nGROUP BY\n  organization\nORDER BY\n  stars DESC\nLIMIT 10\n"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": true,
-        "exactMatches": false,
-        "numericMatches": true,
-        "distance": {
-          "exact": 1,
-          "numeric": 0,
-          "fScore": 0
-        },
-        "details": "Results match within numeric threshold",
-        "humanRowCount": 10,
-        "llmRowCount": 10,
-        "sql": "\nSELECT\n    splitByChar('/', repo_name)[1] AS owner,\n    COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent' AND repo_name != ''\nGROUP BY owner\nORDER BY star_count DESC\nLIMIT 10\n"
-      },
       "openai/o3-pro": {
         "matches": true,
         "exactMatches": false,
@@ -19307,6 +19275,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT substring_index(repo_name,'/',1) organization, count() stars FROM github_events WHERE event_type = 'WatchEvent' GROUP BY substring_index(repo_name,'/',1) ORDER BY stars DESC LIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help fix the SQL query. The issue appears to be with the string formatting and SQL syntax. Here's the corrected version:\n\n\nSELECT \n    ref_type AS organization,\n    repo_name AS name,\n    COUNT(action) AS stars\nFROM \n    github_events\nWHERE \n    action = 10\nGROUP BY \n    ref_type, repo_name\nORDER BY \n    stars DESC\nLIMIT 10\n\n\nThis query will:\n1. Count the number of star events (action = 10)\n2. Group the results by organization (ref_type) and repository (repo_name)\n3. Order the results by the number of stars in descending order\n4. Limit the results to the top 10 entries\n\nThe query uses ref_type to get the organization name and repo_name to get the repository name. The COUNT(action) will give us the total number of stars for each repository."
       }
     },
     "humanResults": {
@@ -19724,20 +19706,6 @@
         "llmRowCount": 0,
         "sql": "SELECT\n  splitByString('/', repo_name)[1] AS organization_name,\n  COUNT(DISTINCT repo_name) AS repo_count\nFROM github_events\nWHERE repo_name LIKE 'orgname/%'\nGROUP BY organization_name\nORDER BY repo_count DESC\nLIMIT 10"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": false,
-        "exactMatches": false,
-        "numericMatches": false,
-        "distance": {
-          "exact": 1,
-          "numeric": 1,
-          "fScore": 0
-        },
-        "details": "Results don't match",
-        "humanRowCount": 10,
-        "llmRowCount": 10,
-        "sql": "\nSELECT\n    arrayElement(splitByChar('/', repo_name), 1) AS organization,\n    COUNT(DISTINCT arrayElement(splitByChar('/', repo_name), 2)) AS repo_count\nFROM github_events\nGROUP BY organization\nORDER BY repo_count DESC\nLIMIT 10\n"
-      },
       "openai/o3-pro": {
         "matches": false,
         "exactMatches": false,
@@ -19751,6 +19719,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT substring_index(repo_name, '/', 1) organization, uniqExact(repo_name) repo_count FROM github_events GROUP BY substring_index(repo_name, '/', 1) ORDER BY repo_count DESC LIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "{\"comment\":\"I'll fix the syntax error in the query by using single quotes consistently and properly formatting the string in the comment.\",\"query\":\"SELECT substr(repo_name, 0, instr(repo_name, '/') - 1) AS organization_name, COUNT(*) AS repository_count FROM github_events GROUP BY substr(repo_name, 0, instr(repo_name, '/') - 1) ORDER BY repository_count DESC LIMIT 10\"}"
       }
     },
     "humanResults": {
@@ -20182,20 +20164,6 @@
         "llmRowCount": 10,
         "sql": "\nSELECT\n    repo_name,\n    COUNT(*) as pr_count,\n    COUNT(DISTINCT actor_login) as unique_authors,\n    SUM(additions) as total_adds,\n    SUM(deletions) as total_dels\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND additions < 10000\n  AND deletions < 10000\nGROUP BY repo_name\nORDER BY SUM(additions) + SUM(deletions) DESC\nLIMIT 10\n"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": false,
-        "exactMatches": false,
-        "numericMatches": false,
-        "distance": {
-          "exact": 1,
-          "numeric": 0.8367030125422139,
-          "fScore": 0
-        },
-        "details": "Results don't match",
-        "humanRowCount": 10,
-        "llmRowCount": 10,
-        "sql": "\nSELECT\n    repo_name,\n    COUNT(*) AS pr_count,\n    COUNT(DISTINCT actor_login) AS unique_authors,\n    SUM(additions) AS total_adds,\n    SUM(deletions) AS total_dels,\n    SUM(additions) + SUM(deletions) AS total_churn\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\n    AND additions < 10000\n    AND deletions < 10000\nGROUP BY repo_name\nORDER BY total_churn DESC\nLIMIT 10\n"
-      },
       "openai/o3-pro": {
         "matches": true,
         "exactMatches": true,
@@ -20209,6 +20177,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name repo,\n  count() pr_count,\n  uniqExact(actor_login) unique_authors,\n  sum(additions) total_adds,\n  sum(deletions) total_dels\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND additions < 10000\n  AND deletions < 10000\nGROUP BY repo_name\nORDER BY (sum(additions) + sum(deletions)) DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help fix the SQL query. The main issue appears to be with how we're structuring the CTE and referencing the columns. Here's the corrected version:\n\n\nWITH pr_churn_data AS (\n    SELECT \n        repo_name,\n        COUNT(DISTINCT author_login) AS unique_authors,\n        SUM(adds) AS total_adds,\n        SUM(dels) AS total_dels\n    FROM \n        github_events\n    WHERE \n        action = 'pull_request'\n    GROUP BY \n        repo_name\n)\nSELECT \n    repo_name,\n    unique_authors AS unique_authors,\n    total_adds AS total_adds,\n    total_dels AS total_dels\nFROM \n    pr_churn_data\nWHERE \n    total_adds < 10000 AND \n    total_dels < 10000\nORDER BY \n    total_adds DESC, total_dels DESC\nLIMIT 10\n\n\nThe changes made:\n1. Removed `PR_number` from the CTE since we don't need it directly\n2. Simplified the CTE to only return the necessary aggregated values\n3. Removed redundant counting in the main query since we already have the totals from the CTE\n4. Kept the same ordering and limiting\n\nThis should now correctly return the top 10 repositories with the requested information."
       }
     },
     "humanResults": {
@@ -20682,20 +20664,6 @@
         "llmRowCount": 10,
         "sql": "SELECT\n    actor_login AS author,\n    COUNT(comment_id) AS num_comments,\n    COUNT(DISTINCT repo_name) AS unique_repos,\n    COUNT(DISTINCT number) AS unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\nGROUP BY actor_login\nORDER BY num_comments DESC\nLIMIT 10"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": false,
-        "exactMatches": false,
-        "numericMatches": false,
-        "distance": {
-          "exact": 1,
-          "numeric": 1,
-          "fScore": 0
-        },
-        "details": "Results don't match",
-        "humanRowCount": 10,
-        "llmRowCount": 10,
-        "sql": "\nSELECT\n    actor_login AS author,\n    sum(IF(event_type = 'PullRequestReviewEvent', 1, 0)) AS number_of_reviews,\n    sum(IF(event_type = 'PullRequestReviewCommentEvent', 1, 0)) AS number_of_comments,\n    COUNT(DISTINCT IF(event_type = 'PullRequestReviewCommentEvent', repo_name, NULL)) AS unique_repositories,\n    COUNT(DISTINCT IF(event_type = 'PullRequestReviewCommentEvent', CRC32(repo_name) + number, NULL)) AS unique_prs\nFROM github_events\nGROUP BY actor_login\nORDER BY number_of_reviews DESC\nLIMIT 10\n"
-      },
       "openai/o3-pro": {
         "matches": true,
         "exactMatches": true,
@@ -20709,6 +20677,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    actor_login author,\n    count() pull_request_comments,\n    uniqExact(repo_name) unique_repos,\n    uniqExact(repo_name, number) unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\n  AND action = 'created'\nGROUP BY actor_login\nORDER BY pull_request_comments DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "{\"query\":\"WITH author_comments AS (\\n SELECT author_association AS author, COUNT(PullRequestReviewComment) AS comment_count\\n FROM github_events.PullRequestReviewComment\\n WHERE action = 'created'\\n),\\nauthor_repos AS (\\n SELECT author_association AS author, COUNT(DISTINCT repo_name) AS unique_repos\\n FROM github_events.PullRequestReviewRequest\\n WHERE action = 'opened'\\n),\\nauthor_prs AS (\\n SELECT author_association AS author, COUNT(PullRequestReview) AS pr_count\\n FROM github_events.PullRequestReview\\n GROUP BY author_association\\n)\\n\\nSELECT author, comment_count, unique_repos, pr_count\\n FROM author_comments\\n JOIN author_repos ON author_comments.author = author_repos.author\\n JOIN author_prs ON author_comments.author = author_prs.author\\n ORDER BY comment_count DESC\\n LIMIT 10\",\"sql instructs\":\"- Use proper table names from the schema\\n- Fix the syntax errors in the query\\n- Ensure all joins are properly formatted\\n- Use the correct column aliases\",\"engine\":\"MergeTree\",\"schema\":\"MergeTree\"}"
       }
     },
     "humanResults": {
@@ -21154,20 +21136,6 @@
         "llmRowCount": 10,
         "sql": "SELECT\n    labels,\n    COUNT(*) as count\nFROM github_events\nWHERE\n    (action = 'opened' OR action = 'labeled' OR action = 'created' OR event_type = 'IssueCommentEvent')\n    AND (event_type IN ('PullRequestEvent', 'IssuesEvent', 'IssueCommentEvent'))\nGROUP BY labels\nORDER BY count DESC\nLIMIT 10"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": false,
-        "exactMatches": false,
-        "numericMatches": false,
-        "distance": {
-          "exact": 1,
-          "numeric": 1,
-          "fScore": 0
-        },
-        "details": "Results don't match",
-        "humanRowCount": 10,
-        "llmRowCount": 0,
-        "sql": "Here's the corrected SQL query that should work in Tinybird/ClickHouse:\n\n\nSELECT label, count() AS usage_count FROM github_events ARRAY JOIN labels AS label WHERE event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent') AND action IN ('opened', 'created', 'labeled') GROUP BY label ORDER BY usage_count DESC LIMIT 10\n\n\nThis query:\n1. Selects from the github_events table\n2. Uses ARRAY JOIN to unnest the labels array\n3. Filters for the relevant event types and actions\n4. Counts occurrences of each label\n5. Orders by count in descending order\n6. Limits to the top 10 results\n\nThe key changes from previous attempts are:\n- Using a minimal query format with all clauses on one line to avoid any hidden formatting issues\n- Ensuring all string literals are properly quoted\n- Using the correct syntax for ARRAY JOIN according to ClickHouse documentation\n- Maintaining all the filtering and counting logic needed to answer the original question"
-      },
       "openai/o3-pro": {
         "matches": true,
         "exactMatches": true,
@@ -21181,6 +21149,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  label,\n  count() label_count\nFROM github_events\nARRAY JOIN labels AS label\nWHERE event_type IN ('IssuesEvent','PullRequestEvent','IssueCommentEvent')\n  AND (\n      (event_type IN ('IssuesEvent','PullRequestEvent') AND action IN ('opened','labeled'))\n      OR (event_type = 'IssueCommentEvent' AND action = 'created')\n  )\n  AND label != ''\nGROUP BY label\nORDER BY label_count DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT \n    label,\n    SUM(CASE WHEN action = 'issue' THEN count ELSE 0 END) AS issue_count,\n    SUM(CASE WHEN action = 'pull_request' THEN count ELSE 0 END) AS pull_request_count,\n    SUM(CASE WHEN action = 'issue_comment' THEN count ELSE 0 END) AS issue_comment_count,\n    SUM(CASE WHEN action = 'pull_request_comment' THEN count ELSE 0 END) AS pull_request_comment_count,\n    SUM(CASE WHEN action = 'label' THEN count ELSE 0 END) AS label_count,\n    SUM(CASE WHEN action = 'unlabeled' THEN count ELSE 0 END) AS unlabeled_count\nFROM github_events\nGROUP BY label\nORDER BY (issue_count + pull_request_count + issue_comment_count + pull_request_comment_count + label_count + unlabeled_count) DESC\nLIMIT 10\n\n\nThe key changes made:\n1. Fixed formatting of CASE statements\n2. Added proper aliasing for each count column\n3. Properly enclosed counts in parentheses\n4. Fixed ordering syntax to use a single expression for sorting\n5. Added proper LIMIT clause at the end\n\nThis query will now correctly calculate the counts for each action type, sum them up, and return the top 10 labels based on the total count."
       }
     },
     "humanResults": {
@@ -21598,20 +21580,6 @@
         "llmRowCount": 10,
         "sql": "\nSELECT\n    splitByChar('/', repo_name)[1] as organization,\n    uniq(actor_login) as unique_authors,\n    uniq(if(event_type = 'PullRequestEvent' and action = 'opened', actor_login, NULL)) as unique_pr_authors,\n    uniq(if(event_type = 'IssuesEvent' and action = 'opened', actor_login, NULL)) as unique_issue_authors,\n    uniq(if(event_type = 'IssueCommentEvent', actor_login, NULL)) as unique_issue_comment_authors,\n    uniq(if(event_type = 'PushEvent', actor_login, NULL)) as unique_push_authors\nFROM github_events\nGROUP BY organization\nORDER BY unique_authors DESC\nLIMIT 10\n"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": false,
-        "exactMatches": false,
-        "numericMatches": false,
-        "distance": {
-          "exact": 1,
-          "numeric": 1,
-          "fScore": 0
-        },
-        "details": "Results don't match",
-        "humanRowCount": 10,
-        "llmRowCount": 10,
-        "sql": "\nSELECT\n    splitByChar('/', repo_name)[1] AS organization_name,\n    uniq(actor_login) AS unique_authors,\n    uniqIf(actor_login, event_type = 'PullRequestEvent' AND action = 'opened') AS unique_pr_authors,\n    uniqIf(actor_login, event_type = 'IssuesEvent' AND action = 'opened') AS unique_issue_authors,\n    uniqIf(actor_login, event_type = 'IssueCommentEvent') AS unique_issue_comment_authors,\n    uniqIf(actor_login, event_type = 'PushEvent') AS unique_push_authors\nFROM github_events\nGROUP BY organization_name\nORDER BY unique_authors DESC\nLIMIT 10\n"
-      },
       "openai/o3-pro": {
         "matches": false,
         "exactMatches": false,
@@ -21625,6 +21593,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    substring_index(repo_name,'/',1) organization,\n    uniqExact(actor_login) unique_authors,\n    uniqExact(CASE WHEN event_type = 'PullRequestEvent' AND action = 'opened' THEN actor_login ELSE NULL END) unique_pull_request_authors,\n    uniqExact(CASE WHEN event_type = 'IssuesEvent' AND action = 'opened' THEN actor_login ELSE NULL END) unique_issue_authors,\n    uniqExact(CASE WHEN event_type = 'IssueCommentEvent' THEN actor_login ELSE NULL END) unique_issue_comment_authors,\n    uniqExact(CASE WHEN event_type = 'PushEvent' THEN actor_login ELSE NULL END) unique_push_authors\nFROM github_events\nWHERE repo_name != ''\nGROUP BY organization\nORDER BY unique_authors DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help fix the SQL query. The main issue was using the incorrect table name without quotes and using complex subqueries. Here's the corrected version:\n\n\nSELECT \n    repo_name AS organization_name,\n    COUNT(DISTINCT author_association) \n    + COUNT(DISTINCT author_association WHERE event_type = 'PullRequestEvent') \n    + COUNT(DISTINCT author_association WHERE event_type = 'IssueEvent') \n    + COUNT(DISTINCT author_association WHERE event_type = 'IssueCommentEvent') \n    + COUNT(DISTINCT author_association WHERE event_type = 'PushEvent') AS total_authors\nFROM github_events\nWHERE event_type IN (SELECT event_type FROM GitHubEventLog GROUP BY event_type, repo_name, action ORDER BY action DESC)\nGROUP BY repo_name\nORDER BY total_authors DESC\nLIMIT 10\n\n\nThis query:\n1. Uses proper quoting for the table name `github_events`\n2. Uses a single subquery to count unique authors for each event type\n3. Adds the counts together to get the total number of unique authors\n4. Follows the parameter name convention (no quotes around parameter names)\n5. Uses proper mathematical operations on the counts\n6. Is efficient and works within ClickHouse/Tinybird constraints\n\nThe query will return the organization names along with the total number of unique authors across all events (pull requests, issues, comments, and pushes) for each organization, sorted in descending order by total authors, limited to the top 10."
       }
     },
     "humanResults": {
@@ -22126,20 +22108,6 @@
         "llmRowCount": 10,
         "sql": "SELECT repo_name AS repository_name, length(repo_name) AS length\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING count() >= 1\nORDER BY length DESC\nLIMIT 10"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": false,
-        "exactMatches": false,
-        "numericMatches": false,
-        "distance": {
-          "exact": 1,
-          "numeric": 1,
-          "fScore": 0
-        },
-        "details": "Results don't match",
-        "humanRowCount": 10,
-        "llmRowCount": 0,
-        "sql": "Here is the corrected SQL query to find the top 10 longest repository names with at least 1 star:\n\n\nSELECT repo_name, length(repo_name) AS repo_name_length FROM github_events WHERE event_type = 'WatchEvent' GROUP BY repo_name ORDER BY repo_name_length DESC LIMIT 10\n"
-      },
       "openai/o3-pro": {
         "matches": true,
         "exactMatches": false,
@@ -22153,6 +22121,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  CHARACTER_LENGTH(repo_name) repo_name_length\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND repo_name != ''\nGROUP BY repo_name\nORDER BY repo_name_length DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help you fix the SQL query. Based on your question, you want to find the top 10 longest repository names with at least 1 star. Here's the corrected SQL query:\n\n\nSELECT \n    repository_name AS repo_name,\n    string_length(repository_name) AS repo_name_length,\n    COUNT(*) AS star_count\nFROM \n    github_events\nWHERE \n    action = 'star'\n    AND repository_name IS NOT NULL\nGROUP BY \n    repository_name\nORDER BY \n    repo_name_length DESC\nLIMIT 10\n\n\nThis query will:\n1. Get the repository name and its length\n2. Count the number of stars each repository has\n3. Filter out repositories without any stars\n4. Sort by the number of stars in descending order\n5. Limit the results to the top 10 repositories\n\nThe query assumes the repository name is available in the github_events table. If this column is not available, we may need to join with another table or use a different approach."
       }
     },
     "humanResults": {
@@ -22570,20 +22552,6 @@
         "llmRowCount": 0,
         "sql": "SELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent' AND action = 'opened'\nGROUP BY repo_name\nLIMIT 10"
       },
-      "mistralai/magistral-medium-2506": {
-        "matches": false,
-        "exactMatches": false,
-        "numericMatches": false,
-        "distance": {
-          "exact": 0.75,
-          "numeric": 1,
-          "fScore": 0.40000000000000013
-        },
-        "details": "Results don't match",
-        "humanRowCount": 10,
-        "llmRowCount": 10,
-        "sql": "\nSELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY CHARACTER_LENGTH(repo_name) ASC, repo_name ASC\nLIMIT 10\n"
-      },
       "openai/o3-pro": {
         "matches": false,
         "exactMatches": false,
@@ -22597,6 +22565,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name FROM github_events WHERE event_type = 'WatchEvent' AND repo_name != '' GROUP BY repo_name HAVING count() >= 1 ORDER BY char_length(repo_name) ASC, repo_name ASC LIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT\n    DISTINCT ref AS repo_name\nFROM\n    github_events\nWHERE\n    action = 'star' AND\n    ref_type = 'repository'\nORDER BY\n    length(repo_name) ASC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -22859,14 +22841,6 @@
         "avgNumericDistance": 0.5045115586643873,
         "avgFScore": 0.392
       },
-      "mistralai/magistral-medium-2506": {
-        "totalMatches": 18,
-        "exactMatches": 12,
-        "numericMatches": 18,
-        "avgExactDistance": 0.7514705882352942,
-        "avgNumericDistance": 0.6191501422822612,
-        "avgFScore": 0.254
-      },
       "openai/o3-pro": {
         "totalMatches": 31,
         "exactMatches": 21,
@@ -22874,6 +22848,14 @@
         "avgExactDistance": 0.5192424242424244,
         "avgNumericDistance": 0.3433355291727472,
         "avgFScore": 0.4919999999999999
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "totalMatches": 0,
+        "exactMatches": 0,
+        "numericMatches": 0,
+        "avgExactDistance": 0.96,
+        "avgNumericDistance": 0.9539373307767189,
+        "avgFScore": 0
       }
     }
   }
