@@ -3,7 +3,8 @@
     "x-ai": {
       "models": [
         "grok-3-beta",
-        "grok-3-mini-beta"
+        "grok-3-mini-beta",
+        "grok-4"
       ]
     },
     "anthropic": {
@@ -17,7 +18,7 @@
     "deepseek": {
       "models": [
         "deepseek-chat-v3-0324",
-        "deepseek-chat-v3-0324:free",
+        "deepseek-chat-v3-0324:free"
       ]
     },
     "google": {
@@ -40,7 +41,9 @@
         "ministral-8b",
         "mistral-small-3.1-24b-instruct",
         "mistral-nemo",
-        "magistral-small-2506"
+        "magistral-small-2506",
+        "devstral-medium",
+        "devstral-small"
       ]
     },
     "openai": {
