@@ -21,12 +21,13 @@ The benchmark includes an automated retry mechanism that feeds execution errors 
 
 The benchmark currently supports the following providers and models through [OpenRouter](https://openrouter.ai/):
 
-- **Anthropic**: Claude 3.5 Sonnet, Claude 3.7 Sonnet
-- **DeepSeek**: DeepSeek Chat v3
-- **Google**: Gemini 2.0 Flash, Gemini 2.5 Flash/Pro
-- **Meta**: Llama 4 Maverick/Scout, Llama 3.3 70B
-- **Mistral**: Ministral 8B, Mistral Small 3.1, Mistral Nemo
-- **OpenAI**: GPT-4.1, GPT-4.1 Nano, GPT-4o Mini, O3/O4 Mini
+- **X.AI**: Grok-3 Beta, Grok-3 Mini Beta, Grok-4
+- **Anthropic**: Claude 3.5 Sonnet, Claude 3.7 Sonnet, Claude Opus 4, Claude Sonnet 4
+- **DeepSeek**: DeepSeek Chat v3 0324, DeepSeek Chat v3 0324 Free
+- **Google**: Gemini 2.0 Flash 001, Gemini 2.5 Flash, Gemini 2.5 Pro
+- **Meta**: Llama 4 Maverick, Llama 4 Scout, Llama 3.3 70B Instruct
+- **Mistral**: Ministral 8B, Mistral Small 3.1 24B Instruct, Mistral Nemo, Magistral Small 2506, Devstral Medium, Devstral Small
+- **OpenAI**: GPT-4.1, GPT-4.1 Nano, GPT-4o Mini, O3, O3 Mini, O3 Pro, O4 Mini, O4 Mini High
 
 It can be extended to other models, see [how to benchmark a new model](#how-to-benchmark-a-new-model)
 
@@ -113,6 +114,12 @@ This will:
 ### Test a new model
 
 Edit `benchmark-config.json` to customize which providers and models to test.
+
+Run the new model so the results file is updated:
+
+```bash
+npm run benchmark -- --model="openai/o3" --debug
+```
 
 ## Results Analysis
 
