@@ -31,6 +31,7 @@ jobs:
         run: npm run benchmark -- --model="${{ github.event.inputs.model }}"
         env:
           TINYBIRD_API_HOST: ${{ vars.TINYBIRD_API_HOST }}
+          TINYBIRD_WORKSPACE_TOKEN: ${{ secrets.WORKSPACE_TOKEN }}
           WORKSPACE_TOKEN: ${{ secrets.WORKSPACE_TOKEN }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
 
