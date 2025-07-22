@@ -1,10 +1,12 @@
+name: Add new model to benchmark
+
 on:
   workflow_dispatch:
     inputs:
       model:
         description: "Model to benchmark"
         required: true
-        default: "gpt-4o"
+        default: "openai/gpt-4o"
 
 jobs:
   benchmark:
