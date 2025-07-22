@@ -356,19 +356,6 @@ async function runBenchmarkForModel(modelString: string) {
     process.exit(1);
   }
   
-  const { providers } = getConfig();
-  const provider = providers[providerName as keyof typeof providers];
-  
-  if (!provider) {
-    console.error(`Provider '${providerName}' not found in benchmark-config.json`);
-    process.exit(1);
-  }
-  
-  if (!provider.models.includes(modelName)) {
-    console.error(`Model '${modelName}' not found for provider '${providerName}' in benchmark-config.json`);
-    process.exit(1);
-  }
-  
   console.log(`Benchmarking ${providerName}/${modelName}`);
   
   const existingResults = readExistingResults();
