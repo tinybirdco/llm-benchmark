@@ -61,7 +61,8 @@
       "models": [
         "qwen3-32b",
         "qwen3-235b-a22b",
-        "qwen-2.5-coder-32b-instruct"
+        "qwen-2.5-coder-32b-instruct",
+        "qwen/qwen3-235b-a22b-07-25"
       ]
     }
   }
