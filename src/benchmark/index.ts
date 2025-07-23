@@ -359,7 +359,7 @@ async function runBenchmarkForModel(modelString: string) {
   console.log(`Benchmarking ${providerName}/${modelName}`);
   
   // Read the current config file
-  const configPath = "src/benchmark-config.json";
+  const configPath = "benchmark-config.json";
   let config;
   try {
     config = JSON.parse(readFileSync(configPath, "utf-8"));
