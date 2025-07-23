@@ -358,6 +358,41 @@ async function runBenchmarkForModel(modelString: string) {
   
   console.log(`Benchmarking ${providerName}/${modelName}`);
   
+  // Read the current config file
+  const configPath = "src/benchmark-config.json";
+  let config;
+  try {
+    config = JSON.parse(readFileSync(configPath, "utf-8"));
+  } catch (error) {
+    console.error("Error reading benchmark-config.json:", error);
+    process.exit(1);
+  }
+  
+  // Check if the provider exists in the config
+  if (!config.providers[providerName]) {
+    console.error(`Provider '${providerName}' not found in benchmark-config.json`);
+    console.error(`Available providers: ${Object.keys(config.providers).join(', ')}`);
+    process.exit(1);
+  }
+  
+  // Check if the model already exists for the provider
+  const providerModels = config.providers[providerName].models;
+  if (providerModels.includes(modelName)) {
+    console.log(`Model '${modelName}' already exists for provider '${providerName}'`);
+  } else {
+    // Add the model to the provider's model list
+    config.providers[providerName].models.push(modelName);
+    
+    // Write the updated config back to disk
+    try {
+      writeFileSync(configPath, JSON.stringify(config, null, 2));
+      console.log(`Added model '${modelName}' to provider '${providerName}' in benchmark-config.json`);
+    } catch (error) {
+      console.error("Error writing updated benchmark-config.json:", error);
+      process.exit(1);
+    }
+  }
+  
   const existingResults = readExistingResults();
   const completedQuestions = getCompletedQuestionsForModel(
     existingResults,
