@@ -18,7 +18,8 @@
     "deepseek": {
       "models": [
         "deepseek-chat-v3-0324",
-        "deepseek-chat-v3-0324:free"
+        "deepseek-chat-v3-0324:free",
+        "deepseek-r1-distill-qwen-7b"
       ]
     },
     "google": {

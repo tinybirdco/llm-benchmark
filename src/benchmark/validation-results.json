@@ -560,6 +560,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count() as total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "Let me help fix the SQL query for counting stars. The main issue was with the syntax and proper formatting. Here's the corrected version:\n\n\n%\nSELECT \n    repo_name,\n    COUNT(*) AS total_stars\nFROM \n    github_events\nWHERE \n    action IN ('create', 'added', 'push', 'pull_request_event') \n    AND \n    ref_type IN ('branch', 'commit', 'repository')\n    AND \n    event_type IN ('PullRequestEvent', 'PushEvent', 'CommitEvent')\n    AND \n    session_id IS NOT NULL\nGROUP BY \n    repo_name\nLIMIT \n    10\n</sql>\n\n\nThis query:\n1. Uses COUNT(*) to count all stars\n2. Groups by repository name\n3. Limits the result to 10 rows\n4. Uses proper parameterization for actions and ref_types\n5. Is properly formatted with correct syntax"
       }
     },
     "humanResults": {
@@ -1145,6 +1159,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    COUNT(*) as stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "{\"error\": \"DB::Exception: Syntax error: failed at position 1 ('Let') (line 1, col 1): Let me help you fix the SQL query to correctly answer your question about the top 10 repositories by stars.\\n\\nThe issue with your original query was that it. Expected one of: Query, Query with output, EXPLAIN, EXPLAIN, SELECT query, possibly with UNION, list of union elements, SELECT query, subquery, possibly with UNION, SELECT subquery, SELECT query, WITH, FROM, SELECT, SHOW CREATE QUOTA query, SHOW CREA\"}"
       }
     },
     "humanResults": {
@@ -1771,6 +1799,20 @@
         "humanRowCount": 5,
         "llmRowCount": 5,
         "sql": "SELECT\n    pow(10, floor(log10(stars))) as star_bucket,\n    count() as repo_count\nFROM (\n    SELECT\n        repo_name,\n        count() as stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n)\nGROUP BY star_bucket\nORDER BY star_bucket ASC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 5,
+        "llmRowCount": 0,
+        "sql": "Let me help you fix the SQL query. Based on your question and the context provided, here's the corrected version:\n\n\nSELECT \n    FLOOR(total_stars / 10) AS power_of_10,\n    COUNT(repository_name) AS count_of_repos\nFROM \n    (SELECT \n        repository_name,\n        SUM(action::INT) AS total_stars\n     FROM \n         github_events\n     WHERE \n         action = 'star'\n     GROUP BY \n         repository_name) AS star_counts\nGROUP BY \n    FLOOR(total_stars / 10)\nORDER BY \n    power_of_10 ASC\n\n\nThe main changes made are:\n1. Removed unnecessary subquery grouping since we're already using a subquery alias\n2. Ensured proper formatting and spacing\n3. Added explicit aliasing for clarity\n4. Fixed the grouping structure\n\nThis query will now correctly:\n1. Calculate the total number of stars for each repository\n2. Group repositories by their star count range (powers of 10)\n3. Count how many repositories fall into each range\n4. Order the results from smallest to largest star count\n\nThe results will show how many repositories have approximately 1-9 stars, 10-99 stars, 100-999 stars, etc."
       }
     },
     "humanResults": {
@@ -2377,6 +2419,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT countDistinct(repo_name) as total_repositories FROM github_events LIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "Let me help you fix the SQL query. The issue is that the query is wrapped in `<sql>` tags which is not valid syntax for ClickHouse. Here's the corrected version:\n\n\nSELECT COUNT(DISTINCT repo_name) AS total_repositories\nFROM github_events\nWHERE action = 'created'\n\n\nThis query will count the number of unique repositories that have been created. The `COUNT(DISTINCT repo_name)` function counts the number of unique repository names, and the `WHERE action = 'created'` filters the results to only include created events."
       }
     },
     "humanResults": {
@@ -2962,6 +3018,20 @@
         "humanRowCount": 10,
         "llmRowCount": 100,
         "sql": "SELECT \n    toYear(created_at) as year,\n    repo_name,\n    count() as total_events\nFROM github_events\nWHERE created_at >= '2015-01-01'\nGROUP BY year, repo_name\nORDER BY year ASC, total_events DESC\nLIMIT 100"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help fix the SQL query. The issue appears to be with the formatting and syntax of the query. Here's the corrected version:\n\n\nSELECT \n    repo_name AS repository,\n    COUNT(action) AS pull_request_count\nFROM \n    github_events\nWHERE \n    action = 'pull_request'\n    AND year(created_at) >= 2015\nGROUP BY \n    repo_name\nORDER BY \n    pull_request_count DESC\nLIMIT 10\n\n\nThis query:\n1. Counts pull requests per repository\n2. Filters for years >= 2015\n3. Groups by repository name\n4. Orders by pull request count descending\n5. Limits the result to the top 10 repositories\n\nThe result will show the most active repositories based on pull request counts from 2015 onwards."
       }
     },
     "humanResults": {
@@ -3602,6 +3672,20 @@
         "humanRowCount": 2,
         "llmRowCount": 2,
         "sql": "SELECT\n    toYear(created_at) AS year,\n    count() AS total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 2,
+        "llmRowCount": 0,
+        "sql": "Let me fix the SQL query to properly answer your question about how the total number of stars has changed over time by year. The main issue in the previous query was the formatting and syntax.\n\nHere's the corrected SQL query:\n\n\nSELECT \n    year(created_at) AS year,\n    SUM(stars) AS total_stars\nFROM \n    github_events\nWHERE \n    action = 'star'\nGROUP BY \n    year(created_at)\nORDER BY \n    year\nLIMIT 10\n\n\nThis query:\n1. Filters for star events\n2. Groups by year\n3. Summarizes the total stars per year\n4. Orders by year\n5. Limits the results to 10 rows\n\nThe query follows proper ClickHouse/Tinybird syntax and should work without any issues."
       }
     },
     "humanResults": {
@@ -4182,6 +4266,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT actor_login, count() as stars_given\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY stars_given DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "To find the top 10 people who gave the most stars, we'll use the `github_events` table since star events are recorded there. We'll filter for actions where stars were given (`action = 'opened'`), group by user, and sum the star counts. We'll then sort the results by the total stars and limit the results to the top 10.\n\nHere's the SQL query:\n\n\nSELECT \n    RANK() OVER (ORDER BY star_count DESC) AS rank,\n    star_count,\n    author_login\nFROM (\n    SELECT \n        author_login,\n        SUM(number) AS star_count\n    FROM github_events\n    WHERE action = 'opened'\n    GROUP BY author_login\n) AS user_stats\nORDER BY star_count DESC\nLIMIT 10\n\n\nThis query:\n1. Filters for star events (`action = 'opened'`)\n2. Groups by user (`author_login`)\n3. Sums the total stars each user gave\n4. Sorts the results by total stars in descending order\n5. Limits the results to the top 10 users\n6. Adds a rank column using window function\n\nThe result will show the rank, total stars, and the user who gave the most stars."
       }
     },
     "humanResults": {
@@ -4808,6 +4906,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login \n        FROM github_events \n        WHERE event_type = 'WatchEvent' \n            AND repo_name = 'tensorflow/tensorflow'\n    )\n    AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help fix the SQL query. The main issues in your query were:\n\n1. The parameter value was in single quotes inside the template\n2. The subquery had incorrect counting logic\n3. Missing proper parameter formatting\n\nHere's the corrected SQL query:\n\n\nSELECT \n    r.repo_name,\n    r.stars_count,\n    r.forks_count,\n    r.subscribers_count\nFROM \n    github_repos r\nJOIN \n    (SELECT \n        COUNT(DISTINCT s.star_id) AS stars_count,\n        COUNT(DISTINCT s.user_login) AS forks_count,\n        COUNT(DISTINCT s.user_login) AS subscribers_count,\n        COUNT(DISTINCT s.user_login) AS stars_count\n     FROM \n        github_repos g\n        JOIN github_repos starred s ON g.repo_id = s.repo_id\n        WHERE g.user_login = '%s'\n     ) AS starred reservoir\nON r.repo_id = reservoir.repo_id\nORDER BY \n    reservoir.stars_count DESC\nLIMIT 10\n\n<template parameters>\n%<REPO_NAME>% = 'tensorflow/tensorflow'\n</template parameters>\n\n\nKey fixes made:\n1. Counted distinct star_id instead of user_login\n2. Removed unnecessary aliasing in the main query\n3. Fixed parameter formatting using double quotes\n4. Simplified the subquery counting logic\n\nThis should now work correctly to find repositories starred by people who starred tensorflow/tensorflow, sorted by stars count descending with a limit of 10."
       }
     },
     "humanResults": {
@@ -5420,6 +5532,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    actor_login AS user_name,\n    sumIf(1, repo_name LIKE 'javisantana/%') AS javisantana_stars,\n    sumIf(1, repo_name NOT LIKE 'javisantana/%') AS other_stars,\n    sumIf(1, repo_name LIKE 'javisantana/%') / sum(1) AS ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nHAVING sum(1) >= 10\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help fix the SQL query. The main issue is correctly referencing the star_events CTE and properly aliasing the COUNT results. Here's the corrected version:\n\n\nWITH star_events AS (\n    SELECT \n        event_type, \n        actor_login as user_login,\n        repo_name,\n        COUNT(*) as total_stars\n    FROM \n        github_events\n    WHERE \n        action = 'star'\n),\njavisantana_stars AS (\n    SELECT \n        user_login,\n        COUNT(*) as stars_javisantana\n    FROM \n        star_events\n    WHERE \n        repo_name = 'javisantana'\n),\nother_stars AS (\n    SELECT \n        user_login,\n    COUNT(*) as stars_other_repos\n    FROM \n        star_events\n    WHERE \n        repo_name != 'javisantana'\n)\nSELECT \n    user_login,\n    stars_javisantana as stars_javisantana,\n    stars_other_repos as total_stars,\n    (stars_javisantana::numeric / (stars_javisantana::numeric + stars_other_repos::numeric))::numeric as star_ratio\nFROM \n    star_events\n CROSS JOIN \n    javisantana_stars\n CROSS JOIN \n    other_stars\nGROUP BY \n    user_login\nORDER BY \n    star_ratio DESC\nLIMIT 10\n\n\nThe key changes are:\n1. Properly aliasing the subquery results with AS\n2. Cross joining the subquery results instead of trying to reference them directly\n3. Maintaining proper grouping and ordering\n\nThis should now work correctly and return the desired results."
       }
     },
     "humanResults": {
@@ -6060,6 +6186,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    uniq(actor_login) AS unique_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND repo_name NOT LIKE '%tensorflow%'\n  AND actor_login IN (\n      SELECT DISTINCT actor_login\n      FROM github_events\n      WHERE event_type = 'PullRequestEvent'\n        AND action = 'opened'\n        AND repo_name LIKE '%tensorflow%'\n  )\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help fix the SQL query syntax. The main issue is that the query needs to be properly structured with SELECT first, then FROM. Here's the corrected version:\n\n\nSELECT \n    repo AS repository,\n    COUNT(DISTINCT actor_login) AS unique_contributors\nFROM \n    github_events\nWHERE \n    action = 'pull_request' \n    AND ref_type = 8 \n    AND actor_login = 'tensorflow'\nGROUP BY \n    repo\nORDER BY \n    unique_contributors DESC\nLIMIT 10\n\n\nThis query:\n1. Selects the repository and counts distinct contributors\n2. Filters for pull_request events from TensorFlow contributors\n3. Groups by repository\n4. Orders by number of unique contributors\n5. Limits to top 10 repositories\n\nThe query is properly structured and follows the required syntax for ClickHouse/Tinybird."
       }
     },
     "humanResults": {
@@ -6686,6 +6826,11 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    actor_login,\n    count() as issues_count\nFROM github_events\nWHERE event_type = 'IssuesEvent' \n    AND action = 'opened'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login \n        FROM github_events \n        WHERE event_type = 'IssuesEvent' \n            AND action = 'opened' \n            AND repo_name = 'tensorflow/tensorflow'\n    )\n    AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name, actor_login\nORDER BY issues_count DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "reason": "Missing data in results",
+        "sql": null
       }
     },
     "humanResults": {
@@ -7317,6 +7462,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() as stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help fix the SQL query. The main issue was with the date truncation syntax in the subquery. Here's the corrected version:\n\n\nSELECT \n    repo_name AS repository_name,\n    SUM(stars) AS total_stars\nFROM \n    github_events\nWHERE \n    event_type IN ('PushEvent', 'PullRequestEvent')\n    AND closed_at IS NOT NULL\n    AND (repo_name = (\n        SELECT repo_name \n        FROM github_events \n        WHERE event_type IN ('PushEvent', 'PullRequestEvent')\n        AND closed_at IS NOT NULL\n        AND DATE_TRUNC('day', created_at) = date_trunc('day', created_at) AS day\n        AND created_at >= day\n        AND created_at < (day + 1)\n        ORDER BY repo_name DESC\n        LIMIT 1\n    ))\nGROUP BY \n    repo_name\nORDER BY \n    total_stars DESC\nLIMIT 10\n\n\nThe changes made:\n1. Used proper date truncation syntax with `DATE_TRUNC`\n2. Added explicit day and day+1 comparisons\n3. Fixed JSON string formatting\n4. Removed unnecessary single quotes around JSON\n5. Simplified the subquery logic\n\nThis should now correctly find the top 10 repositories with the most stars over one full day at any instant."
       }
     },
     "humanResults": {
@@ -7957,6 +8116,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    sumIf(1, toYear(created_at) = 2016) AS stars_2016,\n    sumIf(1, toYear(created_at) = 2017) AS stars_2017,\n    CASE\n        WHEN stars_2016 = 0 THEN CAST(stars_2017, 'Float64')\n        ELSE CAST((stars_2017 - stars_2016), 'Float64') / CAST(stars_2016, 'Float64')\n    END AS growth_rate\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND created_at >= '2016-01-01'\n  AND created_at < '2018-01-01'\nGROUP BY repo_name\nHAVING stars_2016 >= 1\nORDER BY growth_rate DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help fix the SQL query. The main issue was that the query had a comment-style line that wasn't properly formatted for ClickHouse/Tinybird. Here's the corrected version:\n\n\nSELECT \n    repository_name,\n    ((CAST(stars_2017 AS FLOAT64) - CAST(stars_2016 AS FLOAT64)) / CAST(stars_2016 AS FLOAT64)) AS growth_yoy\nFROM \n    github_events\nWHERE \n    event_type = 'PushEvent'\n    AND year = 2017\n    AND stars_2016 >= 1\nGROUP BY \n    repository_name\nORDER BY \n    growth_yoy DESC\nLIMIT 10\n\n\nThis query:\n1. Filters for PushEvents\n2. Groups by repository_name\n3. Calculates growth as (2017Stars - 2016Stars) / 2016Stars\n4. Filters for repositories with at least 1 star in 2016\n5. Sorts by growth in descending order\n6. Limits the result to top 10 repositories\n\nThe schema shows we have the necessary columns (`stars_2016`, `stars_2017`, `repository_name`) for this query to work."
       }
     },
     "humanResults": {
@@ -8611,6 +8784,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    stars_2016,\n    stars_2017,\n    (stars_2017 - stars_2016) AS stagnation_score\nFROM (\n    SELECT \n        repo_name,\n        SUM(CASE WHEN toYear(created_at) = 2016 AND event_type = 'WatchEvent' THEN 1 ELSE 0 END) AS stars_2016,\n        SUM(CASE WHEN toYear(created_at) = 2017 AND event_type = 'WatchEvent' THEN 1 ELSE 0 END) AS stars_2017\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n      AND repo_name IN (\n          SELECT DISTINCT repo_name \n          FROM github_events \n          WHERE event_type = 'WatchEvent' \n            AND toYear(created_at) = 2017\n      )\n    GROUP BY repo_name\n    HAVING stars_2017 >= 1\n)\nORDER BY stagnation_score ASC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help fix the SQL query. The main issues were with subquery syntax and proper ordering. Here's the corrected version:\n\n\nWITH r2017 AS (\n    SELECT \n        repo_name \n        , COUNT(action) AS actions_2017 \n    FROM github_events \n    WHERE action IN ('commit', 'push') \n        AND toDate Kronecker action_date::Kronecker toDate '2017-12-31' \n    GROUP BY \n        repo_name \n    HAVING COUNT(action) >= 1 \n),\nr2016 AS (\n    SELECT \n        repo_name \n        , COUNT(action) AS actions_2016 \n    FROM github_events \n    WHERE action IN ('commit', 'push') \n        AND toDate Kronecker action_date::Kronecker toDate '2016-12-31' \n    GROUP BY \n        repo_name \n)\nSELECT \n    r2017.repo_name \n    , (r2017.actions_2017 - r2016.actions_2016) AS growth \nORDER BY \n    growth ASC \nLIMIT 10\n\n\nThis query:\n1. Uses proper WITH clauses for subqueries\n2. Fixes the ordering and limiting\n3. Removes unnecessary quotes\n4. Uses proper syntax for ClickHouse\n\nThe query will now show repositories with the worst growth (most negative growth) between 2017 and 2016, limited to the top 10."
       }
     },
     "humanResults": {
@@ -9251,6 +9438,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    count() as total_stars,\n    count() / date_diff('day', min(created_at), max(created_at)) as stars_per_day\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING date_diff('day', min(created_at), max(created_at)) > 30\nORDER BY stars_per_day DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help you fix the SQL query for the top 10 repositories with the most steady star growth rate over time. The main issue was the incorrect placement of the growth rate calculation and the use of single quotes around the explanation.\n\nHere's the corrected SQL query:\n\n\nWITH star_growth AS (\n    SELECT \n        repository_name,\n        avg(rate(stars)) AS average_growth_rate\n    FROM \n        github_events\n    WHERE \n        action = 'added' AND \n        event_type = 'PushEvent' AND \n        ref_type = 'Repository'\n    GROUP BY \n        repository_name\n)\nSELECT \n    repository_name,\n    average_growth_rate\nFROM \n    star_growth\nORDER BY \n    average_growth_rate DESC\nLIMIT 10\n\n\nThis query:\n1. Uses a CTE (Common Table Expression) to first calculate the average growth rate for each repository\n2. Groups by repository name and calculates the average growth rate using the rate() function\n3. Orders the results by growth rate descending\n4. Limits the result to top 10 repositories\n\nThe growth rate calculation is simply the average of star additions over time for each repository. The rate() function calculates the percentage change between consecutive star counts, and we're taking the average of these rates to get a steady growth metric for each repository.\n\nI've removed the quotes around the explanation since they were causing syntax errors in the previous attempts. The explanation can now be added as a comment in your analysis."
       }
     },
     "humanResults": {
@@ -9896,6 +10097,20 @@
         "humanRowCount": 7,
         "llmRowCount": 1,
         "sql": "SELECT\n    dayOfWeek(created_at) AS day_of_week,\n    count() AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY star_count DESC\nLIMIT 1"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 7,
+        "llmRowCount": 0,
+        "sql": "Here is the corrected SQL query that will help determine the best day of the week to catch a star:\n\n\nSELECT\n    date_trunc('day', created_at) AS day_of_week,\n    COUNT(CASE WHEN action = 'star' THEN 1 END) AS stars_count\nFROM\n    github_events\nWHERE\n    action = 'star'\nGROUP BY\n    day_of_week\nORDER BY\n    stars_count DESC\nLIMIT 10\n\n\nThis query:\n1. Groups events by the day of the week using `date_trunc('day', created_at)`\n2. Counts the number of stars created each day\n3. Orders the results by the number of stars in descending order\n4. Limits the output to 10 rows (though in this case, we'll likely get all 7 days of the week)\n\nThe result will show which day of the week has the highest number of stars being created, helping us identify the best day to catch a star."
       }
     },
     "humanResults": {
@@ -10510,6 +10725,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT countDistinct(actor_login) AS total_users\nFROM github_events\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\nSELECT \n    COUNT(DISTINCT actor_login) as total_users\nFROM \n    github_events\nWHERE \n    action IN ('star', 'fork')\nGROUP BY \n    `owner_login`\nLIMIT 10\n\n\nThe key changes made:\n1. Properly formatted the query with backticks around table and column names\n2. Fixed the grouping column syntax\n3. Removed extra spaces and improper line breaks that caused the syntax error\n4. Maintained the same logical structure while ensuring proper formatting for ClickHouse/Tinybird"
       }
     },
     "humanResults": {
@@ -11095,6 +11324,11 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT countDistinct(actor_login) AS total_users\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "reason": "Missing data in results",
+        "sql": null
       }
     },
     "humanResults": {
@@ -11666,6 +11900,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT COUNT(DISTINCT actor_login) AS total_users\nFROM github_events\nWHERE event_type = 'PushEvent'\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "Let me help you fix the SQL query. The issue appears to be with the formatting and syntax of the query. Here's the corrected version:\n\n\nSELECT COUNT(DISTINCT actor_login) AS total_users FROM github_events WHERE action = 'push'\n\n\nThis query will:\n1. Count the number of distinct `actor_login` entries\n2. Only include users who have at least one push action (`action = 'push'`)\n3. Return the result as `total_users`\n\nThe `actor_login` column represents the login of the user who performed the push action, so this is the correct column to use for counting unique users with at least one push."
       }
     },
     "humanResults": {
@@ -12237,6 +12485,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT COUNT(DISTINCT actor_login) AS total_users\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "Let me help you fix the SQL query. The issue appears to be with the string formatting and the LIMIT clause. Here's the corrected version:\n\n\nSELECT COUNT(DISTINCT author_login) as total_users \nFROM github_events \nWHERE action = STRING(\"create\")\n\n\nThis query:\n1. Counts the number of distinct author_login entries where the action is 'create'\n2. Uses double quotes for the string parameter in the STRING function\n3. Removes the LIMIT 10 since we just want the total count\n\nThe query should now work correctly and return the total number of unique users who have created at least one PR."
       }
     },
     "humanResults": {
@@ -12822,6 +13084,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND actor_login IN (\n    SELECT DISTINCT actor_login \n    FROM github_events \n    WHERE event_type = 'PullRequestEvent' \n      AND action = 'opened'\n  )\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help fix the SQL query. Based on your description and the context, here's the corrected version that should work for ClickHouse/Tinybird:\n\n\nWITH user_prs AS (\n    SELECT \n        user_login,\n        COUNT(DISTINCT repository) AS repositories_contributed\n    FROM \n        github_events\n    WHERE \n        action IN ('pull_request_review_request', 'pull_request_review_comment')\n        AND ref_type IN ('repository', 'pull_request')\n        AND year(created_at) >= 2023\n    GROUP BY \n        user_login\n)\nSELECT \n    repository AS repo_name,\n    COUNT(DISTINCT user_login) AS total_prs\nFROM \n    user_prs\nGROUP BY \n    repo_name\nORDER BY \n    total_prs DESC\nLIMIT 10\n\n\nThis query:\n1. Uses a CTE (`user_prs`) to first get the user_login and count of repositories they've contributed to via PRs\n2. Groups by repository\n3. Counts the number of unique users who have contributed to each repository\n4. Orders the results by total contributions in descending order\n5. Limits the result to the top 10 repositories\n\nThe query uses basic aggregations and grouping with a CTE to break down the logic into manageable steps. It should work correctly in ClickHouse/Tinybird."
       }
     },
     "humanResults": {
@@ -13434,6 +13710,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    actor_login,\n    COUNT(*) as pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' \n    AND action = 'opened'\nGROUP BY repo_name, actor_login\nHAVING pr_count >= 10\nORDER BY pr_count DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help fix the SQL query. The main issue is ensuring proper type handling between the CTE and the main query. Here's the corrected version:\n\n\nWITH cte_prs AS (\n    SELECT \n        repo_name AS r_repo,\n        author_association AS a_assoc,\n        COUNT(*) AS pr_count\n    FROM \n        github_events\n    WHERE \n        event_type = 'PullRequestEvent'\n        AND action = 8\n    GROUP BY \n        repo_name,\n        author_association\n)\nSELECT \n    r_repo::Text AS repo_name,\n    a_assoc::String AS author_association,\n    pr_count\nFROM \n    cte_prs\nJOIN \n    github_events AS g\nON \n    g.r_repo::Text = cte_prs.r_repo::Text\n    AND g.a_assoc::String = cte_prs.a_assoc::String\nORDER BY \n    pr_count DESC\nLIMIT 10\n\n\nThe key changes made:\n1. Added explicit type casts for the join columns to ensure type compatibility\n2. Maintained the same ordering and LIMIT\n3. Kept the CTE logic intact but ensured proper type handling\n\nThis should now work correctly in ClickHouse while maintaining the same functionality of finding the top 10 repos with authors who have made at least 10 PRs."
       }
     },
     "humanResults": {
@@ -14060,6 +14350,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() as pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY pr_count DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    repository_name,\n    COUNT(*) AS pull_request_count\nFROM\n    github_events\nWHERE\n    action = 'pull_request'\nAND\n    actor_login = (\n        SELECT actor_login\n        FROM github_events\n        WHERE action = 'pull_request'\n        GROUP BY actor_login\n        ORDER BY COUNT(*) DESC\n        LIMIT 10\n    )\nGROUP BY\n    repository_name\nORDER BY\n    pull_request_count DESC\nLIMIT 10\n%\n\n\nThis query:\n1. First finds the top 10 repositories by pull_request_count\n2. Groups the original data by actor_login (repository name)\n3. Counts the pull requests for each repository\n4. Orders by the count in descending order\n5. Limits to 10 results\n\nThe query uses proper syntax for ClickHouse and should work without any parameters."
       }
     },
     "humanResults": {
@@ -14686,6 +14990,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    uniq(actor_login) as pr_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent' \n    AND action = 'opened'\nGROUP BY repo_name\nORDER BY pr_contributors DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion earlier. Let me fix the SQL query properly. The issue was that the query wasn't starting with \"SELECT\" and was using invalid syntax.\n\nHere's the corrected SQL query:\n\n\nSELECT \n    repo_name AS repository,\n    COUNT(DISTINCT actor_login) AS num_contributors\nFROM \n    github_events\nWHERE \n    action = 'pull_request'\n    AND event_type = 'PullRequestEvent'\n    AND actor_login IS NOT NULL\n    AND actor_association = 'CONTRIBUTOR'\nGROUP BY \n    repo_name\nORDER BY \n    num_contributors DESC\nLIMIT 10\n\n\nThis query:\n1. Counts distinct contributors per repository\n2. Filters for pull request events\n3. Only considers 'CONTRIBUTOR' associations\n4. Groups by repository\n5. Orders by number of contributors\n6. Limits to top 10 repositories\n\nThe query uses proper ClickHouse syntax and follows the parameter rules since we're not using any dynamic parameters."
       }
     },
     "humanResults": {
@@ -15312,6 +15630,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() as issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me fix the SQL query to properly answer your question about the top 10 repositories with the maximum number of issues. Here's the corrected version:\n\n\nSELECT\n    COALESCE(repo_name, '') AS repository_name,\n    COUNT(event_id) AS issue_count\nFROM\n    github_events\nWHERE\n    action = 11\nGROUP BY\n    COALESCE(repo_name, '')\nORDER BY\n    issue_count DESC\nLIMIT 10\n\n\nThis query:\n1. Uses proper SQL syntax without any natural language comments\n2. Filters for issue creation events (action = 11)\n3. Groups by repository name\n4. Counts the number of issues per repository\n5. Sorts the results by issue count in descending order\n6. Limits the results to the top 10 repositories\n\nThe query should now work correctly in ClickHouse."
       }
     },
     "humanResults": {
@@ -15924,6 +16256,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    uniq(actor_login) as push_access_users\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY repo_name\nORDER BY push_access_users DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help fix the SQL query. Based on your description and the instruction limit, here's the corrected version:\n\n\nSELECT \n    repo_name AS repository_name,\n    COUNT(DISTINCT author_association) AS num_pushers\nFROM \n    github_events\nJOIN \n    user_association ON github_events.login = user_association.author_login\nWHERE \n    action = 5\nGROUP BY \n    repo_name\nORDER BY \n    num_pushers DESC\nLIMIT 10\n\n\nThe key changes made:\n1. Used proper table names from the schema: `github_events` and `user_association`\n2. Added proper alias for the repository name column\n3. Added `LIMIT 10` at the end to match the instruction limit\n4. Fixed the syntax for the JOIN clause\n\nThis query will now return the top 10 repositories with the most unique users who have push access."
       }
     },
     "humanResults": {
@@ -16536,6 +16882,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    uniq(actor_login) as pushers_count\nFROM github_events\nWHERE event_type = 'PushEvent'\n  AND ref = 'refs/heads/main'\nGROUP BY repo_name\nORDER BY pushers_count DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Here's the corrected SQL query:\n\n\nSELECT \n    repo_name,\n    COUNT(DISTINCT author_association.user_login) as pushers_count\nFROM \n    github_events gve\n    LEFT JOIN github_events.author_association aa ON gve.ref = aa.ref\n    WHERE \n        action = 19 AND \n        ref_type = 3\nGROUP BY \n    repo_name\nORDER BY \n    pushers_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -17162,6 +17522,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "SELECT \n    repo_name,\n    COUNT(DISTINCT actor_login) as push_access_users\nFROM github_events\nWHERE event_type = 'PushEvent'\n    AND ref = 'refs/heads/main'\n    AND repo_name IN (\n        SELECT repo_name \n        FROM github_events \n        WHERE event_type = 'WatchEvent' \n        GROUP BY repo_name \n        HAVING COUNT(*) > 99\n    )\nGROUP BY repo_name\nORDER BY push_access_users DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help fix the SQL query. The main issue appears to be with the syntax and proper query structure. Here's the corrected version:\n\n\nSELECT \n    repo_name,\n    COUNT(DISTINCT author_association) as num_Pushers\nFROM \n    github_events\nJOIN \n    schema\nON \n    github_events.ref = schema.ref\nWHERE \n    github_events.action = 'push'\n    AND schema.ref_type = 'repository'\n    AND schema.stars > 99\n    AND author_association = 'OWNER'\nGROUP BY \n    repo_name\nORDER BY \n    num_Pushers DESC\nLIMIT 10\n\n\nThe changes made:\n1. Removed unnecessary triple quotes for the query\n2. Fixed the column name formatting (removed spaces for better readability)\n3. Ensured proper closing of the LIMIT clause\n4. Fixed the syntax by properly enclosing the query\n\nThis query will now correctly return the top 10 repositories with the most users having push access, specifically for repositories with more than 99 stars."
       }
     },
     "humanResults": {
@@ -17802,6 +18176,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() as member_invitations_count\nFROM github_events\nWHERE event_type = 'MemberEvent' AND action = 'added'\nGROUP BY repo_name\nORDER BY member_invitations_count DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help you fix the SQL query. Based on your description and the schema provided, I'll construct a query that:\n1. Filters for 'invited' actions\n2. Groups by repository\n3. Gets the maximum invitation count per repository\n4. Sorts in descending order\n5. Limits to top 10 repositories\n\nHere's the corrected SQL query:\n\n\nSELECT \n    repo_name AS repository_name,\n    MAX(invitations) AS max_invitations\nFROM \n    github_events\nWHERE \n    action = 'invited' AND \n    ref_type = 'repository'\nGROUP BY \n    repo_name\nORDER BY \n    max_invitations DESC\nLIMIT 10\n\n\nThis query follows ClickHouse/Tinybird syntax rules and should work correctly. Make sure to:\n1. Replace `invitations` with the actual column name from your database\n2. Replace `repo_name` with your actual repository name column\n3. Add appropriate escape characters if needed\n4. Add LIMIT 10 at the end to get the top 10 repositories\n\nThe query uses proper syntax for ClickHouse and includes the necessary components to answer your question about the top repositories by member invitations."
       }
     },
     "humanResults": {
@@ -18428,6 +18816,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() as fork_count\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY fork_count DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "{\"error\": \"[Error] Syntax error: failed at position 1 ('Let') (line 1, col 1): Let me fix the SQL query to correctly answer the question \\\"top 10 Most forked repositories\\\". The issue was that the query started with \"Let\" which is not valid SQL. Instead, we should directly write the SELECT statement.\", \"documentation\": \"https://docs.tinybird.co/api-reference/query-api.html#get--v0-sql\"}"
       }
     },
     "humanResults": {
@@ -19040,6 +19442,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    sumIf(1, event_type = 'WatchEvent') AS stars,\n    sumIf(1, event_type = 'ForkEvent') AS forks,\n    if(forks > 0, stars / forks, 0) AS star_fork_ratio\nFROM github_events\nGROUP BY repo_name\nHAVING forks > 0\nORDER BY star_fork_ratio DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help you fix the SQL query. Based on your description and the context, you want to calculate the ratio of stars to forks for each repository and get the top 10 repositories by this ratio. Here's the corrected ClickHouse/SQL query:\n\n\nSELECT \n    repo_name,\n    COUNT(CASE WHEN action = 'pull_request_review_request' THEN 1 ELSE 0 END) AS forks,\n    COUNT(CASE WHEN action = 'pull_request_review_comment' THEN 1 ELSE 0 END) AS stars,\n    (CAST(stars AS FLOAT) / CAST(forks AS FLOAT)) AS star_to_fork_ratio\nFROM \n    github_events\nWHERE \n    action IN ('pull_request_review_request', 'pull_request_review_comment')\nGROUP BY \n    repo_name\nORDER BY \n    star_to_fork_ratio DESC\nLIMIT 10\n\n\nThis query:\n1. Uses proper ClickHouse/SQL syntax\n2. Counts the number of pull requests that resulted in forks and stars per repository\n3. Calculates the ratio of stars to forks using CAST to ensure proper division\n4. Groups by repository name\n5. Orders by the star-to-fork ratio in descending order\n6. Limits the results to 10 repositories\n\nThe results will show you the top 10 repositories based on the ratio of stars to forks."
       }
     },
     "humanResults": {
@@ -19680,6 +20096,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT\n    sum(if(event_type = 'WatchEvent', 1, 0)) AS total_stars,\n    sum(if(event_type = 'ForkEvent', 1, 0)) AS total_forks,\n    round(\n        sum(if(event_type = 'WatchEvent', 1, 0)) / \n        greatest(sum(if(event_type = 'ForkEvent', 1, 0)), 1),\n        2\n    ) AS star_fork_ratio\nFROM github_events\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT \n    COUNT(CASE WHEN action = 'stars' THEN 1 END) AS stars,\n    COUNT(CASE WHEN action = 'forks' THEN 1 END) AS forks,\n    ROUND(COUNT(CASE WHEN action = 'stars' THEN 1 END) / COUNT(CASE WHEN action = 'forks' THEN 1 END), 2) AS stars_forks_ratio\nFROM github_events\nWHERE action IN ('stars', 'forks')\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -20247,6 +20677,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count() AS total_issues_opened\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n  AND action = 'opened'\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "Let me help you fix the SQL query to correctly count the number of issues opened on GitHub. Based on your requirements and the error in the previous query, we need to modify the query to properly use the COUNT() function and apply the LIMIT clause.\n\nHere's the corrected SQL query:\n\n\nSELECT COUNT(DISTINCT github_events.action) AS total_issues_opened\nFROM github_events\nWHERE action = 'opened'\nLIMIT 10\n\n\nThis query:\n1. Uses COUNT(DISTINCT) to count unique opened issues\n2. Specifies the column qualifier with a backslash for clarity\n3. Limits the result to 10 rows\n4. Returns the total count in a column named total_issues_opened\n\nThe query follows ClickHouse/SQL syntax rules and should work correctly now."
       }
     },
     "humanResults": {
@@ -20832,6 +21276,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, COUNT(*) as issue_comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY issue_comment_count DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help you fix the SQL query. Based on your description and the error, you want to get the top 10 repositories by issue comment events. Here's the corrected SQL query:\n\n\nSELECT \n    repo_name,\n    COUNT(DISTINCT comment_id) AS comment_count\nFROM \n    github_events\nWHERE \n    action = 'comment'\nGROUP BY \n    repo_name\nORDER BY \n    comment_count DESC\nLIMIT 10\n\n\nThis query:\n1. Counts distinct comments per repository\n2. Groups by repository\n3. Orders by comment count descending\n4. Limits to top 10 repositories\n\nThe query follows ClickHouse/PostgreSQL syntax and should work correctly."
       }
     },
     "humanResults": {
@@ -21444,6 +21902,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    SUM(CASE WHEN event_type = 'IssueCommentEvent' THEN 1 ELSE 0 END) AS issue_comments,\n    SUM(CASE WHEN event_type = 'IssuesEvent' AND action = 'opened' THEN 1 ELSE 0 END) AS issues,\n    if(issues > 0, issue_comments / issues, 0) AS ratio\nFROM github_events\nGROUP BY repo_name\nHAVING issues > 0\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me fix the SQL query properly for your question about the top 10 repositories by the ratio between issue comments and issues.\n\nThe key changes needed are:\n1. Remove the unnecessary `Let` statement since it's not needed\n2. Use proper SQL syntax for column aliases\n3. Ensure proper formatting for readability\n\nHere's the corrected SQL query:\n\n\nSELECT \n    repository_name AS repo_name,\n    (SUM(CASE WHEN action = 'commented' THEN 1 ELSE 0 END) / \n     COUNT(CASE WHEN action IN ('created', 'added', 'commented') THEN 1 ELSE 0 END)) AS comment_to_issue_ratio\nFROM \n    github_events\nWHERE \n    event_type = 'Issue'\n    AND ref_type = 'repository'\nGROUP BY \n    repo_name\nORDER BY \n    comment_to_issue_ratio DESC\nLIMIT 10\n\n\nThis query will:\n1. Calculate the ratio of commented issues to total issues (created, added, commented) for each repository\n2. Return the top 10 repositories based on this ratio\n3. Use proper SQL syntax and formatting for ClickHouse/Tinybird"
       }
     },
     "humanResults": {
@@ -22084,6 +22556,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  number AS issue_number,\n  comments\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n  AND action = 'opened'\nORDER BY comments DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT \n    ref AS repo_name,\n    number AS issue_number,\n    COUNT(*) AS comment_count\nFROM \n    github_events\nWHERE \n    action = 'create_comment' AND \n    comment_count > 0\nGROUP BY \n    ref, number\nORDER BY \n    comment_count DESC\nLIMIT 10\n\n\nThe key changes made:\n1. Removed the leading \"Let me help fix the SQL query...\" text which was causing syntax issues\n2. Ensured proper column aliases and ordering\n3. Maintained the same grouping, ordering, and limiting logic\n4. Kept the core query structure intact\n\nThis should now work correctly to find the top 10 issues by number of comments created."
       }
     },
     "humanResults": {
@@ -22724,6 +23210,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    number,\n    count() as comment_count,\n    uniq(actor_login) as unique_authors\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\n  AND number > 10\nGROUP BY repo_name, number\nHAVING comment_count >= 10\nORDER BY comment_count DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "To fix the SQL query, we need to:\n1. Remove the invalid subquery syntax\n2. Use proper counting for distinct authors\n3. Fix the WHERE clause syntax\n\nHere's the corrected SQL query:\n\n\n<sql>\nSELECT \n    i.issue_number,\n    i.repo_name,\n    COUNT(CASE \n        WHEN e.action = 'commented' \n        THEN 1\n    END) AS total_comments,\n    COUNT(DISTINCT e.author_association) AS total_authors\nFROM \n    github_events e\nJOIN \n    github_issues i \nON \n    e.repo_name = i.repo_name AND \n    e.issue_type = 'Issue' AND \n    e.ref_type = 'Repository'\nWHERE \n    e.action IN ('commented')\n    AND i.issue_type = 'Issue'\n    AND i.ref_type = 'Repository'\n    AND COUNT(CASE \n        WHEN e.action = 'commented' \n        THEN 1\n    END) >= 10\nORDER BY \n    total_comments DESC\nLIMIT 10\n</sql>\n\n\nThe key changes are:\n1. Removed the invalid subquery syntax with `e2`\n2. Fixed the COUNT syntax for distinct authors\n3. Simplified the WHERE clause condition\n4. Added ORDER BY and LIMIT to get top 10 results\n\nThis should now work correctly for Tinybird/ClickHouse."
       }
     },
     "humanResults": {
@@ -23364,6 +23864,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() as event_count\nFROM github_events\nWHERE body ILIKE '%tensorflow%'\nGROUP BY repo_name\nORDER BY event_count DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help fix the SQL query. Based on your description and the provided schema, we need to modify the query to properly join the tables and handle the data correctly. Here's the corrected SQL:\n\n\nSELECT \n    owner_login AS repo_owner,\n    repo_name,\n    COUNT(*) AS num_events\nFROM \n    github_events\nLEFT JOIN \n    github_repos ON github_events.repo_name = github_repos.repo_name\nWHERE \n    event_type IN ('PullRequestEvent', 'PushEvent')\nGROUP BY \n    owner_login, repo_name\nORDER BY \n    num_events DESC\nLIMIT 10\n\n\nThis query:\n1. Uses a LEFT JOIN to properly associate events with repositories\n2. Filters for events related to PullRequests or Pushes (which are common GitHub events related to contributions)\n3. Groups by repository and owner\n4. Limits the result to 10 repositories with the most events\n\nLet me know if you need any clarification or adjustments!"
       }
     },
     "humanResults": {
@@ -23990,6 +24504,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() as commit_comment_count\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY commit_comment_count DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT \n    ref_type AS repository_type,\n    COUNT(comment_id) AS comment_count\nFROM \n    github_events\nWHERE \n    action = 'comment'\nGROUP BY \n    ref_type\nORDER BY \n    comment_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -24616,6 +25144,11 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    concat('https://github.com/', repo_name, '/commit/', commit_id) AS commit_url,\n    count() AS total_comments,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name, commit_id\nHAVING unique_authors >= 10\nORDER BY total_comments DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "reason": "Missing data in results",
+        "sql": null
       }
     },
     "humanResults": {
@@ -25256,6 +25789,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    concat('https://github.com/', repo_name, '/pull/', toString(number)) AS pr_url,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\n  AND action = 'created'\nGROUP BY repo_name, number\nORDER BY unique_authors DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help you fix the SQL query. The issue is that COUNT(DISTINCT) isn't supported in this context. Instead, we can count the number of comments per PR, which will effectively give us the number of unique authors since each comment is from a single user.\n\nHere's the fixed SQL query:\n\n\nSELECT \n    github_prs.*, \n    COUNT(github_events.user_association) AS num_authors\nFROM \n    github_prs\nJOIN \n    github_events ON github_prs.pr_number = github_events.pr_number\nWHERE \n    github_events.action = 'commented'\nORDER BY \n    num_authors DESC\nLIMIT 10\n\n\nThis query will:\n1. Join the github_prs table with github_events on pr_number\n2. Filter for events where action is 'commented' (i.e., comments on PRs)\n3. Count the number of comments per PR (which corresponds to the number of unique authors)\n4. Order the results by number of comments in descending order\n5. Limit the results to the top 10\n\nNote: The actual table name may need to be adjusted if the PR details table has a different name."
       }
     },
     "humanResults": {
@@ -25882,6 +26429,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    actor_login,\n    count() as push_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY push_count DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help you fix the SQL query formatting. The main issue appears to be with the formatting of the query and the GROUP BY clause. Here's the corrected version:\n\n\nSELECT \n    actor_login AS author,\n    COUNT(action) AS push_count\nFROM \n    github_events\nWHERE \n    action = 'push'\nGROUP BY \n    actor_login\nORDER BY \n    push_count DESC\nLIMIT 10\n\n\nThe key changes made:\n1. Removed extra spaces and line breaks in the GROUP BY and ORDER BY clauses\n2. Ensured proper formatting for the query syntax\n3. Maintained the same logic: count pushes by author and return top 10\n\nThis should now work correctly to return the top 10 authors with the most pushes."
       }
     },
     "humanResults": {
@@ -26508,6 +27069,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    splitByChar('/', repo_name)[1] as organization,\n    count() as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY organization\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help you generate the correct SQL query for your question: \"Top 10 users/organizations by the number of stars (get the organization name from the repo_name)\".\n\nThe query needs to:\n1. Count the number of star events (both 'star' and 'star_request')\n2. Group by repository name\n3. Order by total stars in descending order\n4. Limit the result to top 10 entries\n5. Use proper parameterization and sorting functions\n\nHere's the fixed SQL query:\n\n\nSELECT \n    repo_name AS organization_name,\n    COUNT(*) AS total_stars\nFROM \n    github_events\nWHERE \n    action IN (10, 11)  -- 10 = star, 11 = star_request\nGROUP BY \n    repo_name\nORDER BY \n    total_stars DESC\nLIMIT 10\n\n\nThis query will:\n1. Count total star events for each repository\n2. Group by repository name\n3. Order by total stars descending\n4. Limit to top 10 results\n5. Alias repository name as organization_name for clarity\n\nThe query follows ClickHouse best practices and uses supported functions. Make sure to execute it in a ClickHouse-compatible environment with proper authentication."
       }
     },
     "humanResults": {
@@ -27120,6 +27695,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    splitByChar('/', repo_name)[1] AS organization,\n    uniq(repo_name) AS repository_count\nFROM github_events\nGROUP BY organization\nORDER BY repository_count DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help you fix the SQL query for getting the top 10 organizations by the number of repositories. The goal is to extract the organization name from the repo_name and count the repositories per organization.\n\nHere's the corrected SQL query using proper ClickHouse/Tinybird syntax:\n\n\nSELECT \n    SUBSTRING(repo_name, 0, FIND(repo_name, '/')) AS org_name,\n    COUNT(DISTINCT repo_name) AS repo_count\nFROM \n    github_events\nGROUP BY \n    org_name\nORDER BY \n    repo_count DESC\nLIMIT 10\n\n\nThis query:\n1. Uses `SUBSTRING` and `FIND` to extract the organization name from the start of `repo_name` up to the first '/'\n2. Counts the number of repositories (using DISTINCT to count unique repositories)\n3. Groups by organization name\n4. Orders by repository count descending\n5. Limits the result to the top 10 organizations\n\nThe query is simpler and uses proper ClickHouse/Tinybird syntax while achieving the desired result."
       }
     },
     "humanResults": {
@@ -27746,6 +28335,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name AS repo,\n    count() AS pr_count,\n    uniq(actor_login) AS unique_authors,\n    sum(additions) AS total_adds,\n    sum(deletions) AS total_dels\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND additions < 10000\n  AND deletions < 10000\nGROUP BY repo\nORDER BY (total_adds + total_dels) DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me fix the SQL query properly. The main issue was the inline comment syntax and missing proper query structure. Here's the corrected version:\n\n\nSELECT \n    repo_name,\n    SUM(adds) AS total_adds,\n    SUM(dels) AS total_dels,\n    COUNT(DISTINCT pr_number) AS pr_count,\n    COUNT(DISTINCT user_login) AS unique_authors\nFROM \n    github_events\nWHERE \n    action = 'pull_request_opened'\n    AND action = 'pull_request'\n    AND total_adds < 10000\n    AND total_dels < 10000\nORDER BY \n    (total_adds + total_dels) DESC\nLIMIT 10\n\n\nThe query is now properly formatted as a single SQL statement without any inline comments that could cause parsing issues. This should resolve the syntax error you encountered."
       }
     },
     "humanResults": {
@@ -28414,6 +29017,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    actor_login AS author,\n    count() AS pr_comments_created,\n    uniq(repo_name) AS unique_repositories,\n    uniq(repo_name, number) AS unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\n  AND action = 'created'\nGROUP BY actor_login\nORDER BY pr_comments_created DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me fix the SQL query properly for your original question. The main issues were with the grouping columns, proper referencing, and LIMIT placement. Here's the corrected version:\n\n\nSELECT \n    author_login AS author,\n    COUNT(DISTINCT ref_type) AS unique_repos,\n    COUNT(DISTINCT \n        CASE \n            WHEN ref_type = 'repository' THEN author_login \n        END\n    ) AS pr_comments,\n    COUNT(DISTINCT \n        CASE \n            WHEN ref_type = 'pull_request_review_request' THEN author_login \n        END\n    ) AS pr_reviews\nFROM \n    github_events\nWHERE \n    event_type IN ('PullRequestReviewComment', 'PullRequestReviewRequest', 'PullRequestReview')\n    AND action IN ('created', 'review_requested', 'reviewed')\nGROUP BY \n    author_login\nORDER BY \n    pr_comments DESC\nLIMIT 10\n\n\nChanges made:\n1. Fixed the aliasing by properly referencing `author_login` with a backslash\n2. Simplified the COUNT logic using proper syntax\n3. Ensured proper ordering of clauses\n4. Added proper LIMIT placement\n5. Fixed the grouping columns placement\n\nThis should now correctly return the top 10 authors with their review activity counts."
       }
     },
     "humanResults": {
@@ -29054,6 +29671,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    label,\n    COUNT(*) AS usage_count\nFROM github_events\nARRAY JOIN labels AS label\nWHERE event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')\n  AND action IN ('created', 'opened', 'labeled')\n  AND label != ''\nGROUP BY label\nORDER BY usage_count DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me fix the SQL query to correctly answer your original question. The main issues were the syntax error and proper formatting of the aliases.\n\nHere's the corrected SQL query:\n\n\nSELECT \n    label,\n    SUM(CASE WHEN action = 'issue' THEN count ELSE 0 END) AS issue_count,\n    SUM(CASE WHEN action = 'pull_request' THEN count ELSE 0 END) AS pull_request_count,\n    SUM(CASE WHEN action = 'issue_comment' THEN count ELSE 0 END) AS issue_comment_count,\n    SUM(CASE WHEN action = 'pull_request_comment' THEN count ELSE 0 END) AS pull_request_comment_count,\n    SUM(CASE WHEN action = 'label' THEN count ELSE 0 END) AS label_count,\n    SUM(CASE WHEN action = 'unlabeled' THEN count ELSE 0 END) AS unlabeled_count,\n    (SUM(CASE WHEN action = 'issue' THEN count ELSE 0 END) \n     + SUM(CASE WHEN action = 'pull_request' THEN count ELSE 0 END) \n     + SUM(CASE WHEN action = 'issue_comment' THEN count ELSE 0 END) \n     + SUM(CASE WHEN action = 'pull_request_comment' THEN count ELSE 0 END) \n     + SUM(CASE WHEN action = 'label' THEN count ELSE 0 END) \n     + SUM(CASE WHEN action = 'unlabeled' THEN count ELSE 0 END)) AS total_count\nFROM github_events\nGROUP BY label\nORDER BY total_count DESC\nLIMIT 10\n\n\nThis query:\n1. Groups by label\n2. Calculates counts for each action type (issue, pull_request, issue_comment, pull_request_comment, label, unlabeled)\n3. Calculates a total count by summing all individual counts\n4. Orders by total count in descending order\n5. Limits the results to top 10 labels\n\nThe query uses proper ClickHouse syntax and should work without errors."
       }
     },
     "humanResults": {
@@ -29666,6 +30297,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    splitByChar('/', repo_name)[1] AS organization,\n    uniq(actor_login) AS unique_authors,\n    uniqIf(actor_login, event_type = 'PullRequestEvent' AND action = 'opened') AS unique_pr_authors,\n    uniqIf(actor_login, event_type = 'IssuesEvent' AND action = 'opened') AS unique_issue_authors,\n    uniqIf(actor_login, event_type = 'IssueCommentEvent') AS unique_issue_comment_authors,\n    uniqIf(actor_login, event_type = 'PushEvent') AS unique_push_authors\nFROM github_events\nGROUP BY organization\nORDER BY unique_authors DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help fix the SQL query. The main issue appears to be with the subquery and proper grouping. Here's the corrected version:\n\n\nSELECT \n    org_name AS organization_name,\n    COUNT(DISTINCT author_association) AS unique_authors,\n    COUNT(DISTINCT pull_request_author) AS unique_pr_authors,\n    COUNT(DISTINCT issue_author) AS unique_issue_authors,\n    COUNT(DISTINCT issue_comment_author) AS unique_issue_comment_authors,\n    COUNT(DISTINCT push_author) AS unique_push_authors\nFROM github_events\nWHERE event_type IN (\n    SELECT \n        event_type, \n        org_name \n    FROM github_events \n    GROUP BY org_name, event_type \n    ORDER BY COUNT(DISTINCT author_association) DESC \n    LIMIT 1\n)\nGROUP BY org_name\nORDER BY COUNT(DISTINCT author_association) DESC\nLIMIT 10\n\n\nChanges made:\n1. Fixed the subquery to properly associate event_type with org_name\n2. Ensured all column names match exactly with the schema\n3. Added proper ordering and limiting\n4. Used consistent formatting for aliases and functions\n\nThis query will now correctly return the top 10 organizations by the size of their community, showing:\n- organization name\n- number of unique authors\n- number of unique pull request authors\n- number of unique issue authors\n- number of unique issue comment authors\n- number of unique push authors"
       }
     },
     "humanResults": {
@@ -30362,6 +31007,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    length(repo_name) AS name_length\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND action = 'started'\nGROUP BY repo_name\nHAVING count() >= 1\nORDER BY name_length DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "<sql>\nSELECT\n    first_value(repo_name) AS repository_name,\n    first_value(length(repo_name)) AS repository_name_length\nFROM\n    events\nWHERE\n    action = 'star'\nGROUP BY\n    repo_name\nORDER BY\n    repository_name_length DESC\nLIMIT 10\n</sql>"
       }
     },
     "humanResults": {
@@ -30974,6 +31633,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING count() >= 1\nORDER BY length(repo_name) ASC\nLIMIT 10"
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Let me help fix the SQL query. The issue appears to be with the JSON formatting and subquery syntax. Here's the corrected version:\n\n\nSELECT \n    name \nFROM \n    github_events \nWHERE \n    action = 'createEvent' \n    AND \n    name IS NOT NULL \n    AND \n    substr(name, 0, 1) = 'star' \nGROUP BY \n    name \nORDER BY \n    COUNT(name) DESC \nLIMIT 10\n\n\nThis query will:\n1. Filter events where action is 'createEvent'\n2. Ensure the repository name is not null\n3. Check if the name starts with 'star' (using substr)\n4. Group by name\n5. Order by count of repositories in descending order\n6. Limit to top 10 results\n\nThe key changes from your original query were:\n1. Removed the unnecessary subquery syntax\n2. Simplified the grouping and ordering logic\n3. Kept the LIMIT 10 at the end\n\nLet me know if you need any clarification or run into other issues!"
       }
     },
     "humanResults": {
@@ -31347,6 +32020,14 @@
         "avgExactDistance": 0.47231474407945007,
         "avgNumericDistance": 0.35673295021897433,
         "avgFScore": 0.539
+      },
+      "deepseek/deepseek-r1-distill-qwen-7b": {
+        "totalMatches": 0,
+        "exactMatches": 0,
+        "numericMatches": 0,
+        "avgExactDistance": 0.94,
+        "avgNumericDistance": 0.94,
+        "avgFScore": 0
       }
     }
   }
