@@ -68,11 +68,11 @@
     },
     "moonshotai": {
       "models": [
+        "kimi-k2"
       ]
     },
     "gryphe": {
-      "models": [
-      ]
+      "models": []
     }
   }
 }
