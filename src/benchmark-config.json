@@ -73,6 +73,18 @@
     },
     "gryphe": {
       "models": []
+    },
+    "morph": {
+      "models": []
+    },
+    "tencent": {
+      "models": []
+    },
+    "cognitivecomputations": {
+      "models": []
+    },
+    "agentica-org": {
+      "models": []
     }
   }
 }
