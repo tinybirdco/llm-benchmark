@@ -68,7 +68,8 @@
     },
     "moonshotai": {
       "models": [
-        "kimi-k2"
+        "kimi-k2",
+        "kimi-vl-a3b-thinking"
       ]
     },
     "gryphe": {
