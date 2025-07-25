@@ -44,7 +44,7 @@ jobs:
           NORMALIZED_MODEL=$(echo "$MODEL_NAME" | sed 's/[\/\s_\.:]/-/g')
           echo "branch_name=benchmark/$NORMALIZED_MODEL-${{ github.run_id }}" >> $GITHUB_OUTPUT
 
-- name: Create Pull Request
+      - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
