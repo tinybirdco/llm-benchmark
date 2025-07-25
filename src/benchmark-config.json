@@ -72,7 +72,9 @@
       ]
     },
     "morph": {
-      "models": []
+      "models": [
+        "morph-v3-large"
+      ]
     }
   }
 }
