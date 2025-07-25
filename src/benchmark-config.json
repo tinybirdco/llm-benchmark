@@ -72,20 +72,6 @@
       ]
     },
     "gryphe": {
-      "models": [
-        "mythomax-l2-13b"
-      ]
-    },
-    "morph": {
-      "models": []
-    },
-    "tencent": {
-      "models": []
-    },
-    "cognitivecomputations": {
-      "models": []
-    },
-    "agentica-org": {
       "models": []
     },
     "morph": {
