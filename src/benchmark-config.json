@@ -87,6 +87,18 @@
     },
     "agentica-org": {
       "models": []
+    },
+    "morph": {
+      "models": []
+    },
+    "tencent": {
+      "models": []
+    },
+    "cognitivecomputations": {
+      "models": []
+    },
+    "agentica-org": {
+      "models": []
     }
   }
 }
