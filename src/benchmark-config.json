@@ -78,7 +78,9 @@
       "models": []
     },
     "tencent": {
-      "models": []
+      "models": [
+        "hunyuan-a13b-instruct"
+      ]
     },
     "cognitivecomputations": {
       "models": []
