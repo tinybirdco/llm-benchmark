@@ -30,7 +30,7 @@ jobs:
 
       - name: Run benchmark
         working-directory: src
-        run: npm run benchmark -- --model="${{ github.event.inputs.model }}"
+        run: npm run benchmark -- --model="${{ github.event.inputs.model }}" --debug
         env:
           TINYBIRD_API_HOST: ${{ vars.TINYBIRD_API_HOST }}
           TINYBIRD_WORKSPACE_TOKEN: ${{ secrets.WORKSPACE_TOKEN }}
