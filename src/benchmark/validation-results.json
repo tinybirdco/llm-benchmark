@@ -560,6 +560,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count() as total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT count(*) as total_stars FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10"
       }
     },
     "humanResults": {
@@ -1145,6 +1159,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    COUNT(*) as stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, COUNT(*) as stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -1771,6 +1799,20 @@
         "humanRowCount": 5,
         "llmRowCount": 5,
         "sql": "SELECT\n    pow(10, floor(log10(stars))) as star_bucket,\n    count() as repo_count\nFROM (\n    SELECT\n        repo_name,\n        count() as stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n)\nGROUP BY star_bucket\nORDER BY star_bucket ASC\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 5,
+        "llmRowCount": 5,
+        "sql": "SELECT \n    CASE \n        WHEN stars BETWEEN 0 AND 9 THEN 1\n        WHEN stars BETWEEN 10 AND 99 THEN 10\n        WHEN stars BETWEEN 100 AND 999 THEN 100\n        WHEN stars BETWEEN 1000 AND 9999 THEN 1000\n        WHEN stars BETWEEN 10000 AND 99999 THEN 10000\n        WHEN stars BETWEEN 100000 AND 999999 THEN 100000\n        ELSE 1000000\n    END AS star_group,\n    COUNT(*) AS repo_count\nFROM (\n    SELECT \n        repo_name, \n        COUNT(*) AS stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n)\nGROUP BY star_group\nORDER BY star_group ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -2377,6 +2419,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT countDistinct(repo_name) as total_repositories FROM github_events LIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(DISTINCT repo_name) as total_repositories FROM github_events LIMIT 10"
       }
     },
     "humanResults": {
@@ -2962,6 +3018,20 @@
         "humanRowCount": 10,
         "llmRowCount": 100,
         "sql": "SELECT \n    toYear(created_at) as year,\n    repo_name,\n    count() as total_events\nFROM github_events\nWHERE created_at >= '2015-01-01'\nGROUP BY year, repo_name\nORDER BY year ASC, total_events DESC\nLIMIT 100"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.9,
+          "numeric": 1,
+          "fScore": 0.18181818181818188
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 100,
+        "sql": "SELECT \n    repo_name, \n    COUNT(*) as total_events, \n    toYear(created_at) as year\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name, year\nORDER BY year, total_events DESC\nLIMIT 100"
       }
     },
     "humanResults": {
@@ -3602,6 +3672,20 @@
         "humanRowCount": 2,
         "llmRowCount": 2,
         "sql": "SELECT\n    toYear(created_at) AS year,\n    count() AS total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year DESC\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 2,
+        "llmRowCount": 2,
+        "sql": "SELECT\n    toYear(created_at) as year,\n    count(*) as total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -4182,6 +4266,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT actor_login, count() as stars_given\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY stars_given DESC\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT actor_login, COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY star_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -4808,6 +4906,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login \n        FROM github_events \n        WHERE event_type = 'WatchEvent' \n            AND repo_name = 'tensorflow/tensorflow'\n    )\n    AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 1,
+        "sql": "SELECT \n    repo_name, \n    COUNT(*) as star_count \nFROM github_events \nWHERE \n    event_type = 'WatchEvent' \n    AND repo_name IN (\n        SELECT DISTINCT repo_name \n        FROM github_events \n        WHERE \n            event_type = 'WatchEvent' \n            AND repo_name = 'tensorflow/tensorflow'\n    )\nGROUP BY repo_name \nORDER BY star_count DESC \nLIMIT 10"
       }
     },
     "humanResults": {
@@ -5420,6 +5532,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    actor_login AS user_name,\n    sumIf(1, repo_name LIKE 'javisantana/%') AS javisantana_stars,\n    sumIf(1, repo_name NOT LIKE 'javisantana/%') AS other_stars,\n    sumIf(1, repo_name LIKE 'javisantana/%') / sum(1) AS ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nHAVING sum(1) >= 10\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT \n    actor_login,\n    COUNT(DISTINCT CASE WHEN repo_name LIKE 'javisantana/%' THEN repo_name END) as javisantana_stars,\n    COUNT(DISTINCT CASE WHEN repo_name NOT LIKE 'javisantana/%' THEN repo_name END) as other_stars,\n    ROUND(javisantana_stars / (javisantana_stars + other_stars), 4) as javisantana_star_ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nHAVING javisantana_stars > 0\nORDER BY javisantana_star_ratio DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -6060,6 +6186,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    uniq(actor_login) AS unique_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND repo_name NOT LIKE '%tensorflow%'\n  AND actor_login IN (\n      SELECT DISTINCT actor_login\n      FROM github_events\n      WHERE event_type = 'PullRequestEvent'\n        AND action = 'opened'\n        AND repo_name LIKE '%tensorflow%'\n  )\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name, \n    COUNT(DISTINCT actor_login) as unique_tensorflow_contributors,\n    COUNT(*) as total_pull_requests\nFROM github_events\nWHERE \n    event_type = 'PullRequestEvent' \n    AND action = 'opened'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login \n        FROM github_events \n        WHERE repo_name LIKE '%tensorflow%'\n    )\n    AND repo_name NOT LIKE '%tensorflow%'\nGROUP BY repo_name\nORDER BY unique_tensorflow_contributors DESC, total_pull_requests DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -6686,6 +6826,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    actor_login,\n    count() as issues_count\nFROM github_events\nWHERE event_type = 'IssuesEvent' \n    AND action = 'opened'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login \n        FROM github_events \n        WHERE event_type = 'IssuesEvent' \n            AND action = 'opened' \n            AND repo_name = 'tensorflow/tensorflow'\n    )\n    AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name, actor_login\nORDER BY issues_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.8888888888888888,
+          "numeric": 1,
+          "fScore": 0.20000000000000007
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name, \n    COUNT(DISTINCT actor_login) as unique_authors,\n    COUNT(*) as total_issues\nFROM github_events\nWHERE \n    event_type = 'IssuesEvent' \n    AND action = 'opened'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login \n        FROM github_events \n        WHERE \n            event_type = 'IssuesEvent' \n            AND action = 'opened' \n            AND repo_name = 'tensorflow/tensorflow'\n    )\nGROUP BY repo_name\nORDER BY unique_authors DESC, total_issues DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -7317,6 +7471,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() as stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name, \n    COUNT(DISTINCT actor_login) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -7957,6 +8125,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    sumIf(1, toYear(created_at) = 2016) AS stars_2016,\n    sumIf(1, toYear(created_at) = 2017) AS stars_2017,\n    CASE\n        WHEN stars_2016 = 0 THEN CAST(stars_2017, 'Float64')\n        ELSE CAST((stars_2017 - stars_2016), 'Float64') / CAST(stars_2016, 'Float64')\n    END AS growth_rate\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND created_at >= '2016-01-01'\n  AND created_at < '2018-01-01'\nGROUP BY repo_name\nHAVING stars_2016 >= 1\nORDER BY growth_rate DESC\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name, \n    COUNT(*) as star_count_2016,\n    (SELECT COUNT(*) FROM github_events WHERE event_type = 'WatchEvent' AND repo_name = repo_name AND created_at BETWEEN '2017-01-01' AND '2017-12-31') as star_count_2017,\n    (star_count_2017 - star_count_2016) as star_growth\nFROM github_events\nWHERE \n    event_type = 'WatchEvent' \n    AND created_at BETWEEN '2016-01-01' AND '2016-12-31'\nGROUP BY repo_name\nHAVING star_count_2016 >= 1 AND star_count_2017 > 0\nORDER BY star_growth DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -8611,6 +8793,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    stars_2016,\n    stars_2017,\n    (stars_2017 - stars_2016) AS stagnation_score\nFROM (\n    SELECT \n        repo_name,\n        SUM(CASE WHEN toYear(created_at) = 2016 AND event_type = 'WatchEvent' THEN 1 ELSE 0 END) AS stars_2016,\n        SUM(CASE WHEN toYear(created_at) = 2017 AND event_type = 'WatchEvent' THEN 1 ELSE 0 END) AS stars_2017\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n      AND repo_name IN (\n          SELECT DISTINCT repo_name \n          FROM github_events \n          WHERE event_type = 'WatchEvent' \n            AND toYear(created_at) = 2017\n      )\n    GROUP BY repo_name\n    HAVING stars_2017 >= 1\n)\nORDER BY stagnation_score ASC\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name, \n    COUNT(DISTINCT CASE WHEN created_at >= '2016-01-01' AND created_at < '2017-01-01' THEN actor_login END) as stars_2016,\n    COUNT(DISTINCT CASE WHEN created_at >= '2017-01-01' AND created_at < '2018-01-01' THEN actor_login END) as stars_2017,\n    stars_2016 - stars_2017 as star_difference\nFROM github_events\nWHERE event_type = 'WatchEvent' \n    AND (created_at >= '2016-01-01' AND created_at < '2018-01-01')\nGROUP BY repo_name\nHAVING stars_2017 > 0\nORDER BY star_difference DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -9251,6 +9447,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    count() as total_stars,\n    count() / date_diff('day', min(created_at), max(created_at)) as stars_per_day\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING date_diff('day', min(created_at), max(created_at)) > 30\nORDER BY stars_per_day DESC\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name, \n    COUNT(*) as total_stars,\n    toStartOfMonth(created_at) as month,\n    COUNT(*) / (DATEDIFF('month', MIN(toStartOfMonth(created_at)), MAX(toStartOfMonth(created_at))) + 1) as monthly_star_rate\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name, month\nORDER BY monthly_star_rate DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -9896,6 +10106,20 @@
         "humanRowCount": 7,
         "llmRowCount": 1,
         "sql": "SELECT\n    dayOfWeek(created_at) AS day_of_week,\n    count() AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY star_count DESC\nLIMIT 1"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 7,
+        "llmRowCount": 7,
+        "sql": "SELECT \n    DAYOFWEEK(created_at) as day_of_week, \n    COUNT(*) as star_count \nFROM github_events \nWHERE event_type = 'WatchEvent' \nGROUP BY day_of_week \nORDER BY star_count DESC \nLIMIT 10"
       }
     },
     "humanResults": {
@@ -10510,6 +10734,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT countDistinct(actor_login) AS total_users\nFROM github_events\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.000052934128674804696,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(DISTINCT actor_login) as total_github_users FROM github_events LIMIT 10"
       }
     },
     "humanResults": {
@@ -11095,6 +11333,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT countDistinct(actor_login) AS total_users\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0014793406252330366,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(DISTINCT actor_login) as total_star_users FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10"
       }
     },
     "humanResults": {
@@ -11666,6 +11918,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT COUNT(DISTINCT actor_login) AS total_users\nFROM github_events\nWHERE event_type = 'PushEvent'\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0018759619527295886,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(DISTINCT actor_login) FROM github_events WHERE event_type = 'PushEvent' LIMIT 10"
       }
     },
     "humanResults": {
@@ -12237,6 +12503,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT COUNT(DISTINCT actor_login) AS total_users\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0017507922334856522,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(DISTINCT actor_login) as total_users_with_prs FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' LIMIT 10"
       }
     },
     "humanResults": {
@@ -12822,6 +13102,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND actor_login IN (\n    SELECT DISTINCT actor_login \n    FROM github_events \n    WHERE event_type = 'PullRequestEvent' \n      AND action = 'opened'\n  )\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.9696758949430176,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name, \n    COUNT(*) as star_count \nFROM github_events \nWHERE \n    event_type = 'WatchEvent' \n    AND repo_name IN (\n        SELECT DISTINCT repo_name \n        FROM github_events \n        WHERE event_type = 'PullRequestEvent' AND action = 'opened'\n    )\nGROUP BY repo_name \nORDER BY star_count DESC \nLIMIT 10"
       }
     },
     "humanResults": {
@@ -13434,6 +13728,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    actor_login,\n    COUNT(*) as pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' \n    AND action = 'opened'\nGROUP BY repo_name, actor_login\nHAVING pr_count >= 10\nORDER BY pr_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name, \n    COUNT(DISTINCT actor_login) as unique_authors,\n    COUNT(*) as total_prs\nFROM github_events\nWHERE \n    event_type = 'PullRequestEvent' \n    AND action = 'opened'\nGROUP BY repo_name\nHAVING unique_authors >= 10\nORDER BY total_prs DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -14060,6 +14368,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() as pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY pr_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name, \n    COUNT(*) as pull_request_count \nFROM github_events \nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name \nORDER BY pull_request_count DESC \nLIMIT 10"
       }
     },
     "humanResults": {
@@ -14686,6 +15008,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    uniq(actor_login) as pr_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent' \n    AND action = 'opened'\nGROUP BY repo_name\nORDER BY pr_contributors DESC\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name, \n    COUNT(DISTINCT actor_login) as contributor_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY contributor_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -15312,6 +15648,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() as issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name, \n    COUNT(*) as issue_count \nFROM github_events \nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nGROUP BY repo_name \nORDER BY issue_count DESC \nLIMIT 10"
       }
     },
     "humanResults": {
@@ -15924,6 +16274,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    uniq(actor_login) as push_access_users\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY repo_name\nORDER BY push_access_users DESC\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name, \n    COUNT(DISTINCT actor_login) as push_access_count\nFROM github_events \nWHERE event_type = 'PushEvent'\nGROUP BY repo_name\nORDER BY push_access_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -16536,6 +16900,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    uniq(actor_login) as pushers_count\nFROM github_events\nWHERE event_type = 'PushEvent'\n  AND ref = 'refs/heads/main'\nGROUP BY repo_name\nORDER BY pushers_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.8888888888888888,
+          "numeric": 0.8912164134235107,
+          "fScore": 0.20000000000000007
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name, \n    COUNT(DISTINCT actor_login) as push_access_count\nFROM github_events \nWHERE event_type = 'PushEvent' \nGROUP BY repo_name \nORDER BY push_access_count DESC \nLIMIT 10"
       }
     },
     "humanResults": {
@@ -17162,6 +17540,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "SELECT \n    repo_name,\n    COUNT(DISTINCT actor_login) as push_access_users\nFROM github_events\nWHERE event_type = 'PushEvent'\n    AND ref = 'refs/heads/main'\n    AND repo_name IN (\n        SELECT repo_name \n        FROM github_events \n        WHERE event_type = 'WatchEvent' \n        GROUP BY repo_name \n        HAVING COUNT(*) > 99\n    )\nGROUP BY repo_name\nORDER BY push_access_users DESC\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name, \n    COUNT(DISTINCT actor_login) as push_access_count,\n    COUNT(DISTINCT CASE WHEN event_type = 'WatchEvent' THEN actor_login END) as star_count\nFROM github_events\nWHERE \n    event_type IN ('PushEvent', 'WatchEvent')\nGROUP BY repo_name\nHAVING star_count > 99\nORDER BY push_access_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -17802,6 +18194,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() as member_invitations_count\nFROM github_events\nWHERE event_type = 'MemberEvent' AND action = 'added'\nGROUP BY repo_name\nORDER BY member_invitations_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name, \n    COUNT(*) as member_invitation_count \nFROM github_events \nWHERE event_type = 'MemberEvent' \nGROUP BY repo_name \nORDER BY member_invitation_count DESC \nLIMIT 10"
       }
     },
     "humanResults": {
@@ -18428,6 +18834,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() as fork_count\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY fork_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, COUNT(*) as fork_count\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY fork_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -19040,6 +19460,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    sumIf(1, event_type = 'WatchEvent') AS stars,\n    sumIf(1, event_type = 'ForkEvent') AS forks,\n    if(forks > 0, stars / forks, 0) AS star_fork_ratio\nFROM github_events\nGROUP BY repo_name\nHAVING forks > 0\nORDER BY star_fork_ratio DESC\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name, \n    countIf(event_type = 'WatchEvent') as stars, \n    countIf(event_type = 'ForkEvent') as forks,\n    stars / forks as star_fork_ratio\nFROM github_events\nWHERE event_type IN ('WatchEvent', 'ForkEvent')\nGROUP BY repo_name\nHAVING forks > 0\nORDER BY star_fork_ratio DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -19680,6 +20114,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT\n    sum(if(event_type = 'WatchEvent', 1, 0)) AS total_stars,\n    sum(if(event_type = 'ForkEvent', 1, 0)) AS total_forks,\n    round(\n        sum(if(event_type = 'WatchEvent', 1, 0)) / \n        greatest(sum(if(event_type = 'ForkEvent', 1, 0)), 1),\n        2\n    ) AS star_fork_ratio\nFROM github_events\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT \n    COUNT(CASE WHEN event_type = 'WatchEvent' THEN 1 END) as total_stars,\n    COUNT(CASE WHEN event_type = 'ForkEvent' THEN 1 END) as total_forks,\n    ROUND(COUNT(CASE WHEN event_type = 'WatchEvent' THEN 1 END) / \n          GREATEST(COUNT(CASE WHEN event_type = 'ForkEvent' THEN 1 END), 1), 2) as stars_to_forks_ratio\nFROM github_events\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -20247,6 +20695,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count() AS total_issues_opened\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n  AND action = 'opened'\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(*) as total_issues FROM github_events WHERE event_type = 'IssuesEvent' AND action = 'opened' LIMIT 10"
       }
     },
     "humanResults": {
@@ -20832,6 +21294,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, COUNT(*) as issue_comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY issue_comment_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, COUNT(*) as comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY comment_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -21444,6 +21920,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    SUM(CASE WHEN event_type = 'IssueCommentEvent' THEN 1 ELSE 0 END) AS issue_comments,\n    SUM(CASE WHEN event_type = 'IssuesEvent' AND action = 'opened' THEN 1 ELSE 0 END) AS issues,\n    if(issues > 0, issue_comments / issues, 0) AS ratio\nFROM github_events\nGROUP BY repo_name\nHAVING issues > 0\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name, \n    countIf(event_type = 'IssuesEvent' AND action = 'opened') as total_issues,\n    countIf(event_type = 'IssueCommentEvent') as total_issue_comments,\n    total_issue_comments / NULLIF(total_issues, 0) as issue_comment_ratio\nFROM github_events\nGROUP BY repo_name\nHAVING total_issues > 0\nORDER BY issue_comment_ratio DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -22084,6 +22574,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  number AS issue_number,\n  comments\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n  AND action = 'opened'\nORDER BY comments DESC\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name, \n    number AS issue_number, \n    comments AS comment_count\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nORDER BY comment_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -22724,6 +23228,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    number,\n    count() as comment_count,\n    uniq(actor_login) as unique_authors\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\n  AND number > 10\nGROUP BY repo_name, number\nHAVING comment_count >= 10\nORDER BY comment_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name, \n    number AS issue_number, \n    comments AS total_comments,\n    uniq(actor_login) AS unique_comment_authors\nFROM github_events\nWHERE \n    event_type = 'IssueCommentEvent' AND \n    comments >= 10\nGROUP BY \n    repo_name, \n    number, \n    comments\nORDER BY \n    total_comments DESC, \n    unique_comment_authors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -23364,6 +23882,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() as event_count\nFROM github_events\nWHERE body ILIKE '%tensorflow%'\nGROUP BY repo_name\nORDER BY event_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, COUNT(*) as event_count \nFROM github_events \nWHERE repo_name LIKE '%tensorflow%' \nGROUP BY repo_name \nORDER BY event_count DESC \nLIMIT 10"
       }
     },
     "humanResults": {
@@ -23990,6 +24522,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() as commit_comment_count\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY commit_comment_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, COUNT(*) as comment_count\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY comment_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -24616,6 +25162,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    concat('https://github.com/', repo_name, '/commit/', commit_id) AS commit_url,\n    count() AS total_comments,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name, commit_id\nHAVING unique_authors >= 10\nORDER BY total_comments DESC\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name || '/commit/' || commit_id AS full_commit_url,\n    COUNT(DISTINCT actor_login) AS distinct_commenters,\n    COUNT(*) AS total_comments,\n    COUNT(DISTINCT creator_user_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY full_commit_url\nHAVING distinct_commenters >= 10\nORDER BY total_comments DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -25256,6 +25816,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    concat('https://github.com/', repo_name, '/pull/', toString(number)) AS pr_url,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\n  AND action = 'created'\nGROUP BY repo_name, number\nORDER BY unique_authors DESC\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0.18181818181818177,
+          "numeric": 0,
+          "fScore": 0.9
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    concat('https://github.com/', repo_name, '/pull/', toString(number)) as pr_url,\n    uniq(actor_login) as unique_authors_count\nFROM github_events\nWHERE \n    event_type = 'PullRequestReviewCommentEvent'\nGROUP BY repo_name, number\nORDER BY unique_authors_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -25882,6 +26456,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    actor_login,\n    count() as push_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY push_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT actor_login, COUNT(*) as push_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY push_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -26508,6 +27096,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    splitByChar('/', repo_name)[1] as organization,\n    count() as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY organization\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    SUBSTRING_INDEX(repo_name, '/', 1) as org_name, \n    COUNT(*) as star_count \nFROM github_events \nWHERE event_type = 'WatchEvent' \nGROUP BY org_name \nORDER BY star_count DESC \nLIMIT 10"
       }
     },
     "humanResults": {
@@ -27120,6 +27722,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    splitByChar('/', repo_name)[1] AS organization,\n    uniq(repo_name) AS repository_count\nFROM github_events\nGROUP BY organization\nORDER BY repository_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    substring(repo_name, 1, position(repo_name, '/') - 1) AS organization, \n    COUNT(DISTINCT repo_name) AS repo_count \nFROM github_events \nGROUP BY organization \nORDER BY repo_count DESC \nLIMIT 10"
       }
     },
     "humanResults": {
@@ -27746,6 +28362,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name AS repo,\n    count() AS pr_count,\n    uniq(actor_login) AS unique_authors,\n    sum(additions) AS total_adds,\n    sum(deletions) AS total_dels\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND additions < 10000\n  AND deletions < 10000\nGROUP BY repo\nORDER BY (total_adds + total_dels) DESC\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.75,
+          "numeric": 1,
+          "fScore": 0.40000000000000013
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name, \n    COUNT(DISTINCT number) as pr_count, \n    COUNT(DISTINCT actor_login) as unique_authors, \n    SUM(additions) as total_adds, \n    SUM(deletions) as total_dels\nFROM github_events \nWHERE \n    event_type = 'PullRequestEvent' \n    AND action = 'opened'\n    AND additions < 10000 \n    AND deletions < 10000\nGROUP BY repo_name\nORDER BY (total_adds + total_dels) DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -28414,6 +29044,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    actor_login AS author,\n    count() AS pr_comments_created,\n    uniq(repo_name) AS unique_repositories,\n    uniq(repo_name, number) AS unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\n  AND action = 'created'\nGROUP BY actor_login\nORDER BY pr_comments_created DESC\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    actor_login as author, \n    COUNT(*) as total_code_reviews, \n    COUNT(DISTINCT repo_name) as unique_repos, \n    COUNT(DISTINCT number) as unique_prs\nFROM github_events \nWHERE event_type = 'PullRequestReviewCommentEvent'\nGROUP BY actor_login\nORDER BY total_code_reviews DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -29054,6 +29698,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    label,\n    COUNT(*) AS usage_count\nFROM github_events\nARRAY JOIN labels AS label\nWHERE event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')\n  AND action IN ('created', 'opened', 'labeled')\n  AND label != ''\nGROUP BY label\nORDER BY usage_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    labels as label, \n    COUNT(*) as label_count \nFROM github_events \nARRAY JOIN labels \nWHERE \n    (event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')) \n    AND (action IN ('opened', 'created', 'labeled')) \n    AND length(labels) > 0 \nGROUP BY label \nORDER BY label_count DESC \nLIMIT 10"
       }
     },
     "humanResults": {
@@ -29666,6 +30324,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    splitByChar('/', repo_name)[1] AS organization,\n    uniq(actor_login) AS unique_authors,\n    uniqIf(actor_login, event_type = 'PullRequestEvent' AND action = 'opened') AS unique_pr_authors,\n    uniqIf(actor_login, event_type = 'IssuesEvent' AND action = 'opened') AS unique_issue_authors,\n    uniqIf(actor_login, event_type = 'IssueCommentEvent') AS unique_issue_comment_authors,\n    uniqIf(actor_login, event_type = 'PushEvent') AS unique_push_authors\nFROM github_events\nGROUP BY organization\nORDER BY unique_authors DESC\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    SUBSTRING_INDEX(repo_name, '/', 1) AS organization_name,\n    COUNT(DISTINCT actor_login) AS total_unique_authors,\n    COUNT(DISTINCT CASE WHEN event_type = 'PullRequestEvent' THEN actor_login END) AS unique_pr_authors,\n    COUNT(DISTINCT CASE WHEN event_type = 'IssuesEvent' THEN actor_login END) AS unique_issue_authors,\n    COUNT(DISTINCT CASE WHEN event_type = 'IssueCommentEvent' THEN actor_login END) AS unique_issue_comment_authors,\n    COUNT(DISTINCT CASE WHEN event_type = 'PushEvent' THEN actor_login END) AS unique_push_authors\nFROM github_events\nWHERE repo_name LIKE '%/%'\nGROUP BY organization_name\nORDER BY total_unique_authors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -30362,6 +31034,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    length(repo_name) AS name_length\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND action = 'started'\nGROUP BY repo_name\nHAVING count() >= 1\nORDER BY name_length DESC\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, length(repo_name) as repo_name_length\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY repo_name_length DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -30974,6 +31660,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING count() >= 1\nORDER BY length(repo_name) ASC\nLIMIT 10"
+      },
+      "anthropic/claude-3.5-haiku": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.5714285714285714,
+          "numeric": 1,
+          "fScore": 0.6
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT DISTINCT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY LENGTH(repo_name) ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -31347,6 +32047,14 @@
         "avgExactDistance": 0.47231474407945007,
         "avgNumericDistance": 0.35673295021897433,
         "avgFScore": 0.539
+      },
+      "anthropic/claude-3.5-haiku": {
+        "totalMatches": 26,
+        "exactMatches": 20,
+        "numericMatches": 26,
+        "avgExactDistance": 0.5636204906204907,
+        "avgNumericDistance": 0.477321026746133,
+        "avgFScore": 0.4496363636363636
       }
     }
   }
