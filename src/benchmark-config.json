@@ -72,7 +72,9 @@
       ]
     },
     "agentica-org": {
-      "models": []
+      "models": [
+        "deepcoder-14b-preview"
+      ]
     }
   }
 }
