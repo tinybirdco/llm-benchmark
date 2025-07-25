@@ -75,7 +75,9 @@
       "models": []
     },
     "morph": {
-      "models": []
+      "models": [
+        "morph-v3-large"
+      ]
     },
     "tencent": {
       "models": []
