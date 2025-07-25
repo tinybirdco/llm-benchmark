@@ -65,6 +65,14 @@
         "qwen/qwen3-235b-a22b-07-25",
         "qwen3-coder"
       ]
+    },
+    "moonshotai": {
+      "models": [
+      ]
+    },
+    "gryphe": {
+      "models": [
+      ]
     }
   }
 }
