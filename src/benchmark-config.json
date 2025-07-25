@@ -67,11 +67,11 @@
       ]
     },
     "moonshotai": {
-      "models": [
-      ]
+      "models": []
     },
     "gryphe": {
       "models": [
+        "mythomax-l2-13b"
       ]
     }
   }

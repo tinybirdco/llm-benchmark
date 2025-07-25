@@ -546,6 +546,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": " SELECT COUNT(*) FROM github_events WHERE event_type = 'WatchEvent' AND action = 'gave_star'"
       }
     },
     "humanResults": {
@@ -1117,6 +1131,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n  repo_name,\n  count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " SELECT repo_name, COUNT(*) AS stars_count\nFROM github_events\nWHERE event_type = 'CreateEvent'\nAND action = 'created'\nAND author_association = 'NONE'\nAND state = 'opened'\nAND locked = 0\nAND merged = 0\nAND rebaseable = 0\nAND mergeable = 0\nAND assignees IS NULL\nAND creator_user_login IS NOT NULL\nAND repo_name IS NOT NULL\nGROUP BY repo_name\nORDER BY stars_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -1729,6 +1757,20 @@
         "humanRowCount": 5,
         "llmRowCount": 5,
         "sql": "SELECT \n    pow(10, number) AS star_count,\n    count(*) AS repository_count\nFROM (\n    SELECT \n        repo_name,\n        count(*) AS stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n) AS repo_stars\nJOIN (\n    SELECT number\n    FROM system.numbers\n    WHERE number BETWEEN 0 AND 6\n) AS powers\nON repo_stars.stars >= pow(10, powers.number) AND repo_stars.stars < pow(10, powers.number + 1)\nGROUP BY star_count\nORDER BY star_count\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 5,
+        "llmRowCount": 0,
+        "sql": " The original query was missing the `repo_name` column from the `github_events` table. Here's the fixed SQL query:\n\n\nSELECT\n  log10(COUNT(DISTINCT repo_name), 2) AS log10_stars,\n  COUNT(DISTINCT repo_name) AS count\nFROM github_events\nWHERE action = 'give_star'\nGROUP BY log10(COUNT(DISTINCT repo_name), 2)\nORDER BY log10_stars ASC\nLIMIT 10\n\n\nThis query calculates the logarithm of the number of repositories with approximately that many stars (base 10) for each repository and then counts the number of repositories with that many stars. The `GROUP BY` clause groups the results by the logarithm of the star count, and the `ORDER BY` clause orders the results from smallest to largest star count. The `LIMIT` clause limits the results to the first 10 entries."
       }
     },
     "humanResults": {
@@ -2321,6 +2363,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT COUNT(DISTINCT repo_name) AS total_repositories\nFROM github_events\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.6356415266938593,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": " SELECT COUNT(*) FROM github_events WHERE event_type = 'CreateEvent'"
       }
     },
     "humanResults": {
@@ -2892,6 +2948,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "%\nSELECT \n    repo_name,\n    count(*) AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND toYear(created_at) >= 2015\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10\n"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " The error message indicates that there is a syntax error in the SQL query. The closing parenthesis of the `GROUP BY` clause is missing. Here's the fixed SQL query:\n\n\nSELECT repo_name, EXTRACT(YEAR FROM to_unixtime(created_at)) year, COUNT(*) cnt\nFROM github_events\nWHERE action = 'created'\n  AND event_type IN ('CreateEvent', 'ForkEvent', 'IssueCommentEvent', 'PullRequestEvent', 'PullRequestReviewCommentEvent', 'PushEvent', 'ReleaseEvent')\n  AND author_association = 'OWNER'\n  AND repo_name IN ('REPO_NAME_1', 'REPO_NAME_2', 'REPO_NAME_3', 'REPO_NAME_4', 'REPO_NAME_5')\nGROUP BY repo_name, year\nORDER BY year DESC\nLIMIT 10\n\n\nThis query will return the top 10 repositories and their corresponding years where the owner has created events from 2015 onwards."
       }
     },
     "humanResults": {
@@ -3518,6 +3588,20 @@
         "humanRowCount": 2,
         "llmRowCount": 2,
         "sql": "SELECT \n    toYear(created_at) AS year,\n    count(*) AS total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 2,
+        "llmRowCount": 0,
+        "sql": " SELECT DATE_TRUNC('year', created_at) AS year, COUNT(*) AS total_stars\nFROM github_events\nWHERE action = 'given'\nGROUP BY year\nORDER BY year ASC"
       }
     },
     "humanResults": {
@@ -4084,6 +4168,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    actor_login,\n    count(*) AS stars_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY stars_count DESC\nLIMIT 10\n"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " The correct SQL query to answer the original question \"Who are top 10 people giving stars?\" is:\n\n\nSELECT author_association, COUNT(*) cnt\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY author_association\nORDER BY cnt DESC\nLIMIT 10\n\n\nThis query selects the `author_association` column and counts the number of times each user has given a star to a repo. It then groups the results by `author_association` and orders them in descending order by the count. Finally, it limits the results to the top 10 users."
       }
     },
     "humanResults": {
@@ -4696,6 +4794,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND actor_login IN (\n        SELECT actor_login\n        FROM github_events\n        WHERE event_type = 'WatchEvent'\n            AND repo_name = 'tensorflow/tensorflow'\n    )\n    AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " SELECT repo_name, COUNT(*) AS stars\nFROM github_events\nWHERE action = 'given' AND event_type = 'WatchEvent' AND actor_login IN ('NONE', 'CONTRIBUTOR', 'OWNER', 'COLLABORATOR', 'MEMBER')\nAND repo_name LIKE 'tensorflow/%'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -5294,6 +5406,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "SELECT \n    actor_login AS user_name,\n    sumIf(1, repo_name LIKE 'javisantana/%') AS javisantana_stars,\n    sumIf(1, repo_name NOT LIKE 'javisantana/%') AS other_stars,\n    round(javisantana_stars / (javisantana_stars + other_stars), 4) AS ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nHAVING javisantana_stars > 0\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " The SQL query should be:\n\nSELECT \n  users.login,\n  COUNT(CASE WHEN events.repo_name = 'javisantana' AND events.action = 'give_star' THEN 1 END) AS stars_to_javisantana,\n  COUNT(CASE WHEN events.repo_name != 'javisantana' AND events.action = 'give_star' THEN 1 END) AS stars_to_other_repos,\n  COUNT(CASE WHEN events.repo_name = 'javisantana' AND events.action = 'give_star' THEN 1 END) / COUNT(CASE WHEN events.repo_name != 'javisantana' AND events.action = 'give_star' THEN 1 END) AS ratio\nFROM github_events AS events\nLEFT JOIN users ON events.actor_login = users.login\nGROUP BY users.login\nORDER BY ratio DESC\nLIMIT 10\n\nThis query assumes that the `users` table is available in the database. If it's not, you'll need to replace it with the appropriate table that contains the user information."
       }
     },
     "humanResults": {
@@ -5920,6 +6046,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "%\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_contributors\nFROM github_events\nWHERE \n    event_type = 'PullRequestEvent' \n    AND action = 'opened'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login\n        FROM github_events\n        WHERE repo_name = 'tensorflow/tensorflow'\n    )\n    AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": " SELECT repo_name, COUNT(DISTINCT creator_user_login) AS num_contributors\nFROM github_events\nWHERE action = 'opened' AND event_type = 'PullRequestEvent' AND repo_name LIKE '%tensorflow%'\nGROUP BY repo_name\nORDER BY num_contributors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -6532,6 +6672,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "%\nSELECT \n    repo_name,\n    count(*) AS issues_count\nFROM github_events\nWHERE \n    event_type = 'IssuesEvent' \n    AND action = 'opened' \n    AND actor_login IN (\n        SELECT DISTINCT actor_login\n        FROM github_events\n        WHERE \n            event_type = 'IssuesEvent' \n            AND action = 'opened' \n            AND repo_name = 'tensorflow/tensorflow'\n    )\n    AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name\nORDER BY issues_count DESC\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " The error message indicates that there is an issue with the format of the SQL query. Specifically, it seems that there is an extra newline character after the LIMIT 10 clause. Here's the corrected SQL query:\n\n\nSELECT repo_name, author_login, COUNT(*) AS num_issues\nFROM github_events\nWHERE action = 'opened'\nAND event_type = 'IssueCommentEvent'\nAND author_association = 'OWNER'\nAND repo_name IN (\n  SELECT repo_name\n  FROM github_events\n  WHERE action = 'opened'\n  AND event_type = 'IssueCommentEvent'\n  AND author_association = 'OWNER'\n  AND repo_name = 'tensorflow/tensorflow'\n  LIMIT 10\n)\nGROUP BY repo_name, author_login\nORDER BY num_issues DESC\nLIMIT 10\n\n\nThis should correctly answer the original question by returning the top 10 repositories with the most issues from users who also opened issues in tensorflow/tensorflow, ranked by author."
       }
     },
     "humanResults": {
@@ -7149,6 +7303,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "%\nSELECT \n    repo_name,\n    count(*) AS star_count\nFROM github_events\nWHERE \n    event_type = 'WatchEvent'\n    AND created_at >= {{{{DateTime(start_date, '2023-01-01 00:00:00')}}}}\n    AND created_at < {{{{DateTime(end_date, '2023-01-02 00:00:00')}}}}\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " SELECT repo_name, COUNT(*) cnt\nFROM github_events\nWHERE action = 'given_star'\nAND created_at >= now() - interval 1 day\nGROUP BY repo_name\nORDER BY cnt DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -7775,6 +7943,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    countIf(toYear(created_at) = 2016 AND event_type = 'WatchEvent') AS stars_2016,\n    countIf(toYear(created_at) = 2017 AND event_type = 'WatchEvent') AS stars_2017,\n    stars_2017 - stars_2016 AS growth\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND toYear(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING stars_2016 >= 1 AND stars_2017 >= 1\nORDER BY growth DESC\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " SELECT repo_name, COUNT(*) AS stars_count\nFROM github_events\nWHERE action = 'gave_star'\nAND event_type = 'WatchEvent'\nAND year(created_at) IN (2016, 2017)\nGROUP BY repo_name\nORDER BY stars_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -8415,6 +8597,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "%\nSELECT \n    repo_name,\n    countIf(toYear(created_at) = 2016) AS stars_2016,\n    countIf(toYear(created_at) = 2017) AS stars_2017,\n    (stars_2016 - stars_2017) AS stagnation\nFROM github_events\nWHERE \n    event_type = 'WatchEvent'\n    AND (toYear(created_at) = 2016 OR toYear(created_at) = 2017)\n    AND repo_name IN (\n        SELECT repo_name\n        FROM github_events\n        WHERE event_type = 'WatchEvent'\n        AND toYear(created_at) = 2017\n        GROUP BY repo_name\n        HAVING count(*) >= 1\n    )\nGROUP BY repo_name\nORDER BY stagnation DESC\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " SELECT repo_name, state\nFROM (\n    SELECT repo_name, action, state, COUNT(*) cnt\n    FROM github_events\n    WHERE action = 'fork'\n    AND event_type = 'CreateEvent'\n    AND year(created_at) = 2016\n    GROUP BY repo_name, action, state\n    UNION ALL\n    SELECT repo_name, action, state, COUNT(*) cnt\n    FROM github_events\n    WHERE action = 'fork'\n    AND event_type = 'CreateEvent'\n    AND year(created_at) = 2017\n    GROUP BY repo_name, action, state\n)\nWHERE state = 'fork'\nORDER BY cnt DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -9041,6 +9237,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "%\nSELECT \n    repo_name,\n    count(*) AS star_count,\n    min(created_at) AS first_star_at,\n    max(created_at) AS last_star_at,\n    date_diff('day', first_star_at, last_star_at) AS days_between_first_and_last_star,\n    star_count / greatest(days_between_first_and_last_star, 1) AS stars_per_day\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING days_between_first_and_last_star > 0\nORDER BY stars_per_day DESC\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " The error message indicates that there is a syntax error in the query. The correct SQL query should be:\n\n\nSELECT repo_name, DATE_TRUNC('day', created_at) date, COUNT(*) stars_per_day\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name, DATE_TRUNC('day', created_at)\nHAVING COUNT(*) > 0\nORDER BY avg(stars_per_day) DESC\nLIMIT 10\n\n\nThis query selects the repository name, the date when the star was added, and the number of stars added on that date. It then groups the results by repository and date, calculates the average number of stars added per day, and filters out rows where there are no stars. Finally, it orders the results by the average star growth rate in descending order and limits them to the top 10."
       }
     },
     "humanResults": {
@@ -9672,6 +9882,20 @@
         "humanRowCount": 7,
         "llmRowCount": 7,
         "sql": "%\nSELECT \n    DAYOFWEEK(created_at) AS day_of_week,\n    COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 7,
+        "llmRowCount": 0,
+        "sql": " The correct SQL query to answer the question \"What is the best day of the week to catch a star?\" is:\n\n\nSELECT dayofweek, count(*) as star_count FROM github_events WHERE event_type = 'give_star' GROUP BY dayofweek ORDER BY star_count DESC LIMIT 1\n\n\nThis query selects the day of the week column and counts the number of times it appears in the events table where the event type is 'give_star'. It then orders the results by the count of stars in descending order and limits the output to the first row."
       }
     },
     "humanResults": {
@@ -10272,6 +10496,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT COUNT(DISTINCT actor_login) AS total_users\nFROM github_events\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": " SELECT COUNT(*) FROM github_events WHERE event_type = 'CreateEvent'"
       }
     },
     "humanResults": {
@@ -10843,6 +11081,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT COUNT(DISTINCT actor_login) AS total_users\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": " SELECT COUNT(*) FROM github_events WHERE event_type = 'WatchEvent' AND action = 'gave_star' AND state = 'NONE'"
       }
     },
     "humanResults": {
@@ -11400,6 +11652,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT COUNT(DISTINCT actor_login) AS total_users\nFROM github_events\nWHERE event_type = 'PushEvent'\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": " SELECT COUNT(*) FROM github_events WHERE action = 'push' AND author_association = 'NONE' AND merged = 0 AND rebaseable = 0 AND mergeable = 0"
       }
     },
     "humanResults": {
@@ -11957,6 +12223,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT COUNT(DISTINCT actor_login) AS total_users_with_pr\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": " SELECT COUNT(*) FROM github_events WHERE event_type = 'CreateEvent' AND action = 'created' AND author_association = 'CONTRIBUTOR'"
       }
     },
     "humanResults": {
@@ -12528,6 +12808,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    count() AS stars_count\nFROM github_events\nWHERE \n    event_type = 'WatchEvent'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login\n        FROM github_events\n        WHERE event_type = 'PullRequestEvent'\n            AND action = 'opened'\n    )\nGROUP BY repo_name\nORDER BY stars_count DESC\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " SELECT repo_name, COUNT(*) AS stars\nFROM github_events\nWHERE action = 'created' AND event_type = 'WatchEvent' AND author_association = 'NONE'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -13126,6 +13420,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    actor_login,\n    count(*) AS pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name, actor_login\nHAVING pr_count >= 10\nORDER BY pr_count DESC\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " The original SQL query was missing the `GROUP BY` clause, which is required for aggregate functions like `COUNT(*)` to work correctly. Here's the fixed SQL query:\n\n\nSELECT repo_name, author_name, COUNT(*) AS num_prs\nFROM github_events\nWHERE action = 'opened'\nGROUP BY repo_name, author_name\nHAVING COUNT(*) >= 10\nORDER BY num_prs DESC\nLIMIT 10\n\n\nThis query will return the top 10 repositories with authors who have made at least 10 pull requests."
       }
     },
     "humanResults": {
@@ -13738,6 +14046,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    COUNT(*) AS pull_request_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY pull_request_count DESC\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.8235294117647058,
+          "numeric": 1,
+          "fScore": 0.30000000000000004
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": " SELECT repo_name, COUNT(*) AS num_pull_requests\nFROM github_events\nWHERE action = 'opened'\nGROUP BY repo_name\nORDER BY num_pull_requests DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -14350,6 +14672,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    uniq(actor_login) AS contributor_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY contributor_count DESC\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " The error message indicates that the query is not valid for Tinybird/ClickHouse. The corrected SQL query should be:\n\n\nSELECT repo_name, COUNT(DISTINCT author_association) AS num_contributors\nFROM github_events\nWHERE action = 'opened'\nGROUP BY repo_name\nORDER BY num_contributors DESC\nLIMIT 10\n\n\nThis query counts the distinct values of the `author_association` column, which stores the association type of the author (contributor, owner, collaborator, etc.) for each event. Since we only care about the number of contributors, we can use `COUNT(DISTINCT author_association)` to get the count of unique contributors for each repository. The `repo_name` column is used as the grouping key and the `ORDER BY` clause sorts the results in descending order by the number of contributors. Finally, the `LIMIT` clause limits the results to the top 10 repositories."
       }
     },
     "humanResults": {
@@ -14962,6 +15298,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    COUNT(*) AS issues_count\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY issues_count DESC\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.6666666666666667,
+          "numeric": 0.7423662929097522,
+          "fScore": 0.5
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": " SELECT repo_name, COUNT(*) AS num_issues\nFROM github_events\nWHERE event_type = 'IssuesEvent'\nGROUP BY repo_name\nORDER BY num_issues DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -15560,6 +15910,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    uniq(actor_login) AS unique_pushers\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY repo_name\nORDER BY unique_pushers DESC\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " SELECT repo_name, COUNT(*) as num_collaborators\nFROM github_events\nWHERE action = 'push'\nGROUP BY repo_name\nORDER BY num_collaborators DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -16158,6 +16522,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    countDistinct(actor_login) as push_access_count\nFROM github_events\nWHERE event_type = 'PushEvent'\n    AND ref = 'refs/heads/main'\nGROUP BY repo_name\nORDER BY push_access_count DESC\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " SELECT repo_name, COUNT(*) as num_collaborators\nFROM github_events\nWHERE action = 'push' AND ref_type = 'branch' AND ref = 'main'\nGROUP BY repo_name\nORDER BY num_collaborators DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -16770,6 +17148,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "SELECT \n    repo_name,\n    uniq(actor_login) AS unique_pushers\nFROM github_events\nWHERE \n    event_type = 'PushEvent'\n    AND repo_name IN (\n        SELECT repo_name\n        FROM github_events\n        WHERE event_type = 'WatchEvent'\n        GROUP BY repo_name\n        HAVING count() > 99\n    )\nGROUP BY repo_name\nORDER BY unique_pushers DESC\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " SELECT repo_name, COUNT(*) as num_stars\nFROM github_events\nWHERE action = 'push' AND ref_type = 'branch' AND ref = 'main' AND state = 'clean'\nGROUP BY repo_name\nORDER BY num_stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -17396,6 +17788,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    COUNT(*) AS member_invitations\nFROM github_events\nWHERE event_type = 'MemberEvent' AND action = 'added'\nGROUP BY repo_name\nORDER BY member_invitations DESC\nLIMIT 10\n"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " The error message indicates that the query is not a valid SQL query for Tinybird/ClickHouse. The correct SQL query should be:\n\n\nSELECT repo_name, MAX(member_login) AS max_invitations\nFROM github_events\nWHERE event_type = 'MemberEvent'\nGROUP BY repo_name\nORDER BY max_invitations DESC\nLIMIT 10\n\n\nThis query selects the `repo_name` and the maximum value of the `member_login` column, which represents the maximum number of member invitations for each repository. It groups the results by `repo_name`, orders them by the maximum number of invitations in descending order, and limits the output to the top 10 results."
       }
     },
     "humanResults": {
@@ -18008,6 +18414,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    COUNT(*) AS fork_count\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY fork_count DESC\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " SELECT repo_name, COUNT(*) AS forks_count\nFROM github_events\nWHERE action = 'forked'\nGROUP BY repo_name\nORDER BY forks_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -18606,6 +19026,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    countIf(event_type = 'WatchEvent') AS stars,\n    countIf(event_type = 'ForkEvent') AS forks,\n    stars / forks AS ratio\nFROM github_events\nGROUP BY repo_name\nHAVING forks > 0\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " The error message indicates that there is an issue with the formatting of the SQL query. To fix this, we need to add the `FORMAT JSON` statement at the end of the query.\n\nHere's the corrected SQL query:\n\n\nSELECT repo_name, file_time.comments / file_time.forces AS ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nORDER BY ratio DESC\nLIMIT 10\nFORMAT JSON\n\n\nThis query will return the top 10 repositories by the ratio of stars to forks, filtered to only include `WatchEvent` events."
       }
     },
     "humanResults": {
@@ -19232,6 +19666,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT \n    SUM(CASE WHEN event_type = 'WatchEvent' THEN 1 ELSE 0 END) AS total_stars,\n    SUM(CASE WHEN event_type = 'ForkEvent' THEN 1 ELSE 0 END) AS total_forks,\n    ROUND(\n        SUM(CASE WHEN event_type = 'WatchEvent' THEN 1 ELSE 0 END) / \n        NULLIF(SUM(CASE WHEN event_type = 'ForkEvent' THEN 1 ELSE 0 END), 0), \n        2\n    ) AS stars_to_forks_ratio\nFROM github_events\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": " The error message indicates that the query is not a valid SQL query for Tinybird/ClickHouse. The correct SQL query should be:\n\n\nSELECT\n  ROUND(COUNT(*) AS Float32) / COUNT(DISTINCT(repo_name)) AS ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nLIMIT 10\n\n\nThis query will calculate the total number of stars and forks for each repository, and then calculate the ratio of stars to forks rounded to 2 decimal places."
       }
     },
     "humanResults": {
@@ -19785,6 +20233,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT \n    COUNT(*) AS total_issues_opened\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": " SELECT COUNT(*) FROM github_events WHERE event_type = 'IssueCommentEvent' OR event_type = 'CreateEvent' OR event_type = 'DeleteEvent' OR event_type = 'ForkEvent' OR event_type = 'IssuesEvent' OR event_type = 'MemberEvent' OR event_type = 'PublicEvent' OR event_type = 'PullRequestEvent' OR event_type = 'PullRequestReviewCommentEvent' OR event_type = 'PushEvent' OR event_type = 'ReleaseEvent' OR event_type = 'SponsorshipEvent' OR event_type = 'WatchEvent' OR event_type = 'GistEvent' OR event_type = 'FollowEvent' OR event_type = 'DownloadEvent' OR event_type = 'PullRequestReviewEvent' OR event_type = 'ForkApplyEvent' OR event_type = 'Event' OR event_type = 'TeamAddEvent'\n\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -20356,6 +20818,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    COUNT(*) AS issue_comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY issue_comment_count DESC\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": " SELECT repo_name, COUNT(*) AS num_comments\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY num_comments DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -20954,6 +21430,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    countIf(event_type = 'IssueCommentEvent') AS issue_comments,\n    countIf(event_type = 'IssuesEvent' AND action = 'opened') AS issues,\n    if(issues = 0, 0, issue_comments / issues) AS ratio\nFROM github_events\nGROUP BY repo_name\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " The correct SQL query for this scenario is:\n\nSELECT repo_name, issues / comment_count() AS ratio\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY ratio DESC\nLIMIT 10\n\nThis query calculates the ratio of issues to issue comments for each repository and orders them in descending order. The `comment_count()` function is a built-in function in ClickHouse that counts the number of comments for each row. Since it is not a custom function, it should be available in the database."
       }
     },
     "humanResults": {
@@ -21580,6 +22070,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n  repo_name,\n  number AS issue_number,\n  comments AS comment_count\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nORDER BY comments DESC\nLIMIT 10\n"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " The issue with the previous SQL query is that it uses the `issue_num` alias instead of the original column name `issue_number`. To fix this, we need to use the `issue_number` column in the SELECT list as an expression, like this:\n\n\nSELECT repo_name, issue_number AS issue_num, COUNT(*) AS comments_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name, issue_number\nORDER BY comments_count DESC\nLIMIT 10\n\n\nThis will return the top 10 GitHub issues (repo name and issue number) by the number of comments created."
       }
     },
     "humanResults": {
@@ -22206,6 +22710,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    number AS issue_number,\n    COUNT(*) AS comment_count,\n    COUNT(DISTINCT actor_login) AS unique_comment_authors\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\n    AND number > 10\nGROUP BY repo_name, number\nHAVING comment_count >= 10\nORDER BY comment_count DESC\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " The issue with the previous SQL query was that it was missing a comma after the WHERE clause. Here's the corrected SQL query:\n\n\nSELECT repo_name, issue_number, COUNT(*) AS comments_count, COUNT(DISTINCT author_login) AS authors_count\nFROM github_events\nWHERE action = 'created'\nAND event_type = 'IssueCommentEvent'\nAND comment_id IS NOT NULL\nAND repo_name IS NOT NULL\nAND issue_number > 10\nGROUP BY repo_name, issue_number\nORDER BY comments_count DESC\nLIMIT 10\n\n\nThis query will return the top 10 GitHub issues (by number of comments) where the action is 'created', the event type is 'IssueCommentEvent', the comment ID is not null, and the issue number is greater than 10. It will also count the number of distinct authors for each issue."
       }
     },
     "humanResults": {
@@ -22832,6 +23350,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    COUNT(*) AS event_count\nFROM github_events\nWHERE \n    repo_name ILIKE '%tensorflow%'\nGROUP BY \n    repo_name\nORDER BY \n    event_count DESC\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " SELECT repo_name, COUNT(*) AS num_events\nFROM github_events\nWHERE event_type = 'CreateEvent' AND action = 'created' AND ref_type = 'branch' AND ref LIKE '%tensorflow%'\nGROUP BY repo_name\nORDER BY num_events DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -23444,6 +23976,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    COUNT(*) AS commit_comments_count\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY commit_comments_count DESC\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": " SELECT repo_name, COUNT(*) AS commit_comments_count\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY commit_comments_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -24056,6 +24602,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    concat('https://github.com/', repo_name, '/commit/', commit_id) AS commit_url,\n    commit_id,\n    count(*) AS total_comments,\n    countDistinct(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name, commit_id\nHAVING unique_authors >= 10\nORDER BY total_comments DESC\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " The error message indicates that the query is not valid for ClickHouse. To fix this, we need to use the correct syntax for ClickHouse. Here's the fixed SQL query:\n\n\nSELECT author_login, COUNT(*) total_comments, GROUP_CONCAT(DISTINCT author_login) unique_authors\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY author_login\nORDER BY total_comments DESC\nLIMIT 10\n\n\nThis query groups by the `author_login` column, which is the unique identifier for each commenter, and counts the number of comments made by each commenter. It then concatenates the distinct `author_login` values for each commit and orders the results by the total number of comments in descending order. Finally, it limits the output to the top 10 results."
       }
     },
     "humanResults": {
@@ -24682,6 +25242,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    concat('https://github.com/', repo_name, '/pull/', number) AS pr_url,\n    countDistinct(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\nGROUP BY repo_name, number\nORDER BY unique_authors DESC\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " The error message indicates that the query is not a valid SQL query for Tinybird/ClickHouse. Here's the corrected SQL query:\n\n\nSELECT \n  repo_name,\n  action,\n  number,\n  author_association,\n  comments,\n  COUNT(DISTINCT(actor_login) AS num_authors)\nFROM github_events\nWHERE action = 'opened'\nGROUP BY repo_name, action, number, author_association\nORDER BY num_authors DESC\nLIMIT 10\n\n\nThis query will return the top 10 PRs with the most unique authors who have commented on them."
       }
     },
     "humanResults": {
@@ -25294,6 +25868,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    actor_login AS author,\n    COUNT(*) AS push_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY push_count DESC\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " The correct SQL query to answer the original question \"Top 10 authors with the most pushes\" is:\n\n\nSELECT author_name, COUNT(*) AS push_count\nFROM github_events\nWHERE action = 'push'\nGROUP BY author_name\nORDER BY push_count DESC\nLIMIT 10\n\n\nThis query selects the `author_name` column and counts the number of `pushes` for each author. It then groups the results by `author_name` and orders them in descending order by the `push_count`. Finally, it limits the results to the top 10 authors."
       }
     },
     "humanResults": {
@@ -25906,6 +26494,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    splitByChar('/', repo_name)[1] AS organization,\n    count(*) AS stars_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY organization\nORDER BY stars_count DESC\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.6336230671198414,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": " SELECT repo_name, COUNT(*) AS num_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY num_stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -26504,6 +27106,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    splitByChar('/', repo_name)[1] AS organization,\n    countDistinct(repo_name) AS num_repositories\nFROM github_events\nGROUP BY organization\nORDER BY num_repositories DESC\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " The error message indicates that there is an issue with the syntax of the SQL query. The query should not contain any blank lines or extra whitespace. Here's the fixed SQL query:\n\nSELECT repo_name, COUNT(*) AS num_repositories\nFROM github_events\nWHERE action = 'created'\nGROUP BY repo_name\nORDER BY num_repositories DESC\nLIMIT 10\n\nThis query will return the top 10 organizations (represented by their repo_name) by the number of repositories they have created."
       }
     },
     "humanResults": {
@@ -27116,6 +27732,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    count(*) AS pr_count,\n    uniq(actor_login) AS unique_authors,\n    sum(additions) AS total_adds,\n    sum(deletions) AS total_dels\nFROM github_events\nWHERE \n    event_type = 'PullRequestEvent' \n    AND action = 'opened'\n    AND additions < 10000 \n    AND deletions < 10000\nGROUP BY repo_name\nORDER BY (total_adds + total_dels) DESC\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " The error message indicates that there is an issue with the GROUP BY clause. The column `pr_count` is not defined in the SELECT clause and cannot be used in the GROUP BY clause. To fix this, we need to either add it to the SELECT clause or alias it in the GROUP BY clause. Here's the corrected SQL query:\n\n\nSELECT repo, COUNT(*) AS pr_count, COUNT(DISTINCT author_login) AS unique_authors, SUM(additions) AS total_adds, SUM(deletions) AS total_dels\nFROM github_events\nWHERE action = 'opened'\nAND event_type = 'PullRequestEvent'\nAND pr_count < 10000\nGROUP BY repo\nORDER BY total_adds DESC\nLIMIT 10\n\n\nThis query will return the top 10 repos ranked by total code churn (adds + dels) from pull requests opened, only including PRs with <10 000 adds & <10 000 dels. It will also include the number of PRs, unique authors, and the total number of adds and dels for each repo."
       }
     },
     "humanResults": {
@@ -27770,6 +28400,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    actor_login AS author,\n    count(*) AS pr_comments_count,\n    uniq(repo_name) AS unique_repos,\n    uniq(number) AS unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\nGROUP BY actor_login\nORDER BY pr_comments_count DESC\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " The correct SQL query to answer the original question is:\n\nSELECT author, COUNT(*) AS num_pull_request_comments, COUNT(DISTINCT repo_name) AS num_unique_repos, COUNT(DISTINCT pull_request_id) AS num_unique_prs\nFROM github_events\nWHERE action = 'opened'\nGROUP BY author\nORDER BY num_pull_request_comments DESC\nLIMIT 10\n\nThis query will return the top 10 authors with the most pull request comments, along with the number of unique repositories and pull requests they have contributed to."
       }
     },
     "humanResults": {
@@ -28396,6 +29040,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    label,\n    COUNT(*) AS usage_count\nFROM (\n    SELECT \n        arrayJoin(labels) AS label\n    FROM github_events\n    WHERE event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')\n      AND action IN ('opened', 'created', 'labeled')\n)\nGROUP BY label\nORDER BY usage_count DESC\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " The corrected SQL query should be:\n\n\nSELECT label, COUNT(*) as total_count, SUM(CASE WHEN action = 'opened' OR action = 'created' OR action = 'labeled' THEN 1 ELSE 0 END) as opened_or_created_or_labeled, SUM(CASE WHEN action = 'commented' THEN 1 ELSE 0 END) as commented\nFROM github_events\nWHERE event_type IN ('IssuesEvent', 'PullRequestEvent')\nGROUP BY label\nORDER BY total_count DESC\nLIMIT 10\n\n\nThis query will return the top 10 most popular labels for issues and pull requests, along with the number of times they have been used in issues, pull requests, and issue comments created, opened, or labeled."
       }
     },
     "humanResults": {
@@ -28994,6 +29652,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    splitByChar('/', repo_name)[1] AS organization_name,\n    uniq(actor_login) AS unique_authors,\n    uniqIf(actor_login, event_type = 'PullRequestEvent' AND action = 'opened') AS unique_pr_authors,\n    uniqIf(actor_login, event_type = 'IssuesEvent' AND action = 'opened') AS unique_issue_authors,\n    uniqIf(actor_login, event_type = 'IssueCommentEvent') AS unique_issue_comment_authors,\n    uniqIf(actor_login, event_type = 'PushEvent') AS unique_push_authors\nFROM github_events\nWHERE repo_name != ''\nGROUP BY organization_name\nORDER BY unique_authors DESC\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " The original SQL query was missing the table alias for the organization name. Here's the corrected SQL query:\n\n\nSELECT \n    repo_name AS org_name, \n    COUNT(DISTINCT author_login) AS num_unique_authors, \n    COUNT(DISTINCT pull_request_author_login) AS num_unique_pull_request_authors, \n    COUNT(DISTINCT issue_author_login) AS num_unique_issue_authors, \n    COUNT(DISTINCT issue_comment_author_login) AS num_unique_issue_comment_authors, \n    COUNT(DISTINCT push_author_login) AS num_unique_push_authors\nFROM github_events\nWHERE action = 'opened'\nGROUP BY repo_name\nORDER BY num_unique_authors DESC\nLIMIT 10\n\n\nThis SQL query should now be valid for Tinybird/ClickHouse."
       }
     },
     "humanResults": {
@@ -29676,6 +30348,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    CHAR_LENGTH(repo_name) AS repo_name_length\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY repo_name_length DESC\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " SELECT repo_name, length(repo_name) AS length\nFROM github_events\nWHERE action = 'created'\n  AND event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY length DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -30274,6 +30960,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING count(*) >= 1\nORDER BY length(repo_name) ASC\nLIMIT 10"
+      },
+      "gryphe/mythomax-l2-13b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " SELECT repo_name\nFROM github_events\nWHERE action = 'give_star'\nORDER BY repo_name\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -30639,6 +31339,14 @@
         "avgExactDistance": 0.5100649350649351,
         "avgNumericDistance": 0.4137969216344831,
         "avgFScore": 0.498
+      },
+      "gryphe/mythomax-l2-13b": {
+        "totalMatches": 2,
+        "exactMatches": 2,
+        "numericMatches": 2,
+        "avgExactDistance": 0.9498039215686275,
+        "avgNumericDistance": 0.9402326177344691,
+        "avgFScore": 0.055999999999999994
       }
     }
   }
