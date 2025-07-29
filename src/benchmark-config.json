@@ -74,6 +74,7 @@
     },
     "cognitivecomputations": {
       "models": []
-    }
+    },
+    "z-ai": {"models": []}
   }
 }
