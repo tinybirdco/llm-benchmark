@@ -75,6 +75,10 @@
     "cognitivecomputations": {
       "models": []
     },
-    "z-ai": {"models": []}
+    "z-ai": {
+      "models": [
+        "glm-4.5-air"
+      ]
+    }
   }
 }
