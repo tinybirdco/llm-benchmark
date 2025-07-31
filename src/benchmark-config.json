@@ -75,6 +75,9 @@
     "cognitivecomputations": {
       "models": []
     },
-    "z-ai": {"models": []}
+    "z-ai": {"models": []},
+    "openrouter": {
+      "models": ["horizon-alpha"]
+    }
   }
 }
