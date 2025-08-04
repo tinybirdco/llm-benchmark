@@ -43,7 +43,8 @@
         "mistral-nemo",
         "magistral-small-2506",
         "devstral-medium",
-        "devstral-small"
+        "devstral-small",
+        "codestral-2508"
       ]
     },
     "openai": {
