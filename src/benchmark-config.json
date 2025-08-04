@@ -82,7 +82,8 @@
     },
     "openrouter": {
       "models": [
-        "horizon-alpha"
+        "horizon-alpha",
+        "horizon-beta"
       ]
     }
   }

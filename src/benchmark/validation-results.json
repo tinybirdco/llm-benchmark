@@ -616,6 +616,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT COUNT(*) AS total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT count() AS total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -1257,6 +1271,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(*) AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  count() stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -1939,6 +1967,20 @@
         "humanRowCount": 5,
         "llmRowCount": 5,
         "sql": "SELECT\n  CASE\n    WHEN stars BETWEEN 1 AND 9 THEN 1\n    WHEN stars BETWEEN 10 AND 99 THEN 10\n    WHEN stars BETWEEN 100 AND 999 THEN 100\n    WHEN stars BETWEEN 1000 AND 9999 THEN 1000\n    WHEN stars BETWEEN 10000 AND 99999 THEN 10000\n    WHEN stars BETWEEN 100000 AND 999999 THEN 100000\n    WHEN stars BETWEEN 1000000 AND 9999999 THEN 1000000\n    WHEN stars BETWEEN 10000000 AND 99999999 THEN 10000000\n    WHEN stars >= 100000000 THEN 100000000\n  END AS star_range,\n  COUNT(DISTINCT repo_name) AS repo_count\nFROM (\n  SELECT\n    repo_name,\n    COUNT(*) AS stars\n  FROM github_events\n  WHERE event_type = 'WatchEvent'\n  GROUP BY repo_name\n)\nGROUP BY star_range\nORDER BY star_range ASC\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 5,
+        "llmRowCount": 5,
+        "sql": "SELECT\n  pow10 stars_bucket,\n  count() repos_count\nFROM\n(\n  SELECT\n    repo_name,\n    pow(10, floor(log10(stars_count))) pow10\n  FROM\n  (\n    SELECT\n      repo_name,\n      countIf(event_type = 'WatchEvent') stars_count\n    FROM github_events\n    GROUP BY repo_name\n  )\n  WHERE stars_count > 0\n)\nGROUP BY stars_bucket\nORDER BY stars_bucket ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -2601,6 +2643,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT\n    COUNT(DISTINCT repo_name) AS total_repositories\nFROM github_events\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT countDistinct(repo_name) total_repositories FROM github_events LIMIT 10"
       }
     },
     "humanResults": {
@@ -3242,6 +3298,20 @@
         "humanRowCount": 10,
         "llmRowCount": 20,
         "sql": "SELECT\n  YEAR(created_at) AS year,\n  repo_name,\n  COUNT(*) AS event_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND YEAR(created_at) BETWEEN 2015 AND YEAR(NOW())\nGROUP BY year, repo_name\nORDER BY year, event_count DESC\nLIMIT 10 BY year"
+      },
+      "openrouter/horizon-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  YEAR(created_at) year,\n  repo_name,\n  count() stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND created_at >= toDateTime('2015-01-01 00:00:00')\nGROUP BY\n  YEAR(created_at),\n  repo_name\nORDER BY\n  year ASC,\n  stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -3938,6 +4008,20 @@
         "humanRowCount": 2,
         "llmRowCount": 2,
         "sql": "SELECT\n  toYear(created_at) AS year,\n  count() AS total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year"
+      },
+      "openrouter/horizon-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.75,
+          "numeric": 1,
+          "fScore": 0.4
+        },
+        "details": "Results don't match",
+        "humanRowCount": 2,
+        "llmRowCount": 8,
+        "sql": "SELECT\n  toYear(created_at) year,\n  countIf(event_type = 'WatchEvent') stars_gained\nFROM github_events\nGROUP BY toYear(created_at)\nORDER BY year\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -4574,6 +4658,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT actor_login, COUNT(*) as stars_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY stars_count DESC\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  actor_login,\n  count() stars_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY stars_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -5256,6 +5354,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, COUNT(*) AS stars_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nAND repo_name IN (\n    SELECT repo_name\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    AND actor_login IN (\n        SELECT actor_login\n        FROM github_events\n        WHERE event_type = 'WatchEvent'\n        AND repo_name = 'tensorflow/tensorflow'\n    )\n)\nGROUP BY repo_name\nORDER BY stars_count DESC\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.18181818181818177,
+          "numeric": 0.530949015185979,
+          "fScore": 0.9
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  count() stars_from_tf_stargazers\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND actor_login IN (\n    SELECT actor_login\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n      AND repo_name = 'tensorflow/tensorflow'\n  )\nGROUP BY repo_name\nORDER BY stars_from_tf_stargazers DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -5924,6 +6036,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    actor_login AS user_name,\n    SUM(CASE WHEN repo_name LIKE 'javisantana/%' THEN 1 ELSE 0 END) AS javisantana_stars,\n    SUM(CASE WHEN repo_name NOT LIKE 'javisantana/%' THEN 1 ELSE 0 END) AS other_stars,\n    SUM(CASE WHEN repo_name LIKE 'javisantana/%' THEN 1 ELSE 0 END) * 1.0 / SUM(1) AS ratio_javisantana_to_total\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY ratio_javisantana_to_total DESC\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT\n  actor_login,\n  sum(CASE WHEN repo_name LIKE 'javisantana/%' THEN 1 ELSE 0 END) stars_to_javisantana,\n  sum(CASE WHEN repo_name NOT LIKE 'javisantana/%' THEN 1 ELSE 0 END) stars_to_others,\n  sum(CASE WHEN repo_name LIKE 'javisantana/%' THEN 1 ELSE 0 END) / toFloat64(count()) ratio_javisantana_to_total\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nHAVING count() > 0 AND sum(CASE WHEN repo_name LIKE 'javisantana/%' THEN 1 ELSE 0 END) > 0\nORDER BY ratio_javisantana_to_total DESC, count() DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -6620,6 +6746,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  COUNT(DISTINCT actor_login) AS unique_contributors,\n  COUNT(*) AS total_pull_requests\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND repo_name NOT LIKE '%tensorflow%'\n  AND actor_login IN (\n    SELECT DISTINCT actor_login\n    FROM github_events\n    WHERE repo_name LIKE '%tensorflow%'\n  )\nGROUP BY repo_name\nORDER BY unique_contributors DESC, total_pull_requests DESC\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  uniq(actor_login) unique_contributors,\n  countIf(event_type = 'PullRequestEvent' AND action = 'opened') total_opened_prs\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND author_association IN ('MEMBER', 'OWNER', 'COLLABORATOR')\n  AND positionCaseInsensitive(repo_name, 'tensorflow') = 0\nGROUP BY repo_name\nORDER BY unique_contributors DESC, total_opened_prs DESC, repo_name ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -7302,6 +7442,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    actor_login,\n    COUNT(*) AS issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n    AND action = 'opened'\n    AND actor_login IN (\n        SELECT actor_login\n        FROM github_events\n        WHERE event_type = 'IssuesEvent'\n            AND action = 'opened'\n            AND repo_name = 'tensorflow/tensorflow'\n    )\nGROUP BY repo_name, actor_login\nORDER BY issue_count DESC\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  actor_login author,\n  count() issues_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n  AND action = 'opened'\n  AND actor_login IN (\n    SELECT actor_login\n    FROM github_events\n    WHERE event_type = 'IssuesEvent'\n      AND action = 'opened'\n      AND repo_name = 'tensorflow/tensorflow'\n    GROUP BY actor_login\n  )\nGROUP BY repo_name, actor_login\nORDER BY issues_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -7989,6 +8143,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "SELECT\n  repo_name,\n  count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND created_at >= now() - INTERVAL 1 DAY\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  toDate(min(created_at)) first_star_date,\n  toDate(max(created_at)) last_star_date,\n  count() stars_in_day\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY\n  repo_name,\n  date_trunc('day', created_at),\n  actor_login\nHAVING\n  min(created_at) >= date_trunc('day', min(created_at))\n  AND max(created_at) < date_trunc('day', min(created_at)) + INTERVAL 1 DAY\nORDER BY stars_in_day DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -8685,6 +8853,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    countIf(event_type = 'WatchEvent', created_at >= '2016-01-01' AND created_at < '2017-01-01') AS stars_2016,\n    countIf(event_type = 'WatchEvent', created_at >= '2017-01-01' AND created_at < '2018-01-01') AS stars_2017,\n    (countIf(event_type = 'WatchEvent', created_at >= '2017-01-01' AND created_at < '2018-01-01') - countIf(event_type = 'WatchEvent', created_at >= '2016-01-01' AND created_at < '2017-01-01')) AS growth\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND created_at >= '2016-01-01'\n    AND created_at < '2018-01-01'\nGROUP BY repo_name\nHAVING stars_2016 >= 1\nORDER BY growth DESC\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  sumIf(1, event_type = 'WatchEvent' AND toYear(created_at) = 2016) stars_2016,\n  sumIf(1, event_type = 'WatchEvent' AND toYear(created_at) = 2017) stars_2017,\n  (sumIf(1, event_type = 'WatchEvent' AND toYear(created_at) = 2017) - sumIf(1, event_type = 'WatchEvent' AND toYear(created_at) = 2016)) yoy_growth\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND toYear(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING stars_2016 >= 1\nORDER BY yoy_growth DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -9395,6 +9577,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(DISTINCT CASE WHEN YEAR(created_at) = 2016 THEN actor_login END) AS stars_2016,\n    COUNT(DISTINCT CASE WHEN YEAR(created_at) = 2017 THEN actor_login END) AS stars_2017,\n    COUNT(DISTINCT CASE WHEN YEAR(created_at) = 2016 THEN actor_login END) - COUNT(DISTINCT CASE WHEN YEAR(created_at) = 2017 THEN actor_login END) AS stagnation\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND YEAR(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING stars_2016 > 0 AND stars_2017 > 0\nORDER BY stagnation DESC\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  uniqIf(actor_login, event_type = 'WatchEvent' AND toYear(created_at) = 2016) stars_2016,\n  uniqIf(actor_login, event_type = 'WatchEvent' AND toYear(created_at) = 2017) stars_2017,\n  (uniqIf(actor_login, event_type = 'WatchEvent' AND toYear(created_at) = 2017) - uniqIf(actor_login, event_type = 'WatchEvent' AND toYear(created_at) = 2016)) delta_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING stars_2017 > 0\nORDER BY delta_stars ASC, stars_2017 ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -10091,6 +10287,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(*) AS star_count,\n    COUNT(*) / DATEDIFF('day', MIN(created_at), MAX(created_at)) AS growth_rate\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY growth_rate DESC\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  countIf(event_type = 'WatchEvent') stars_total,\n  minIf(created_at, event_type = 'WatchEvent') first_star_at,\n  maxIf(created_at, event_type = 'WatchEvent') last_star_at,\n  stars_total / nullIf(TIMESTAMP_DIFF('day', toDate(minIf(created_at, event_type = 'WatchEvent')), toDate(maxIf(created_at, event_type = 'WatchEvent'))), 0) stars_per_day,\n  stddevSamp(\n    toUInt32(date_trunc('day', created_at))\n  ) / nullIf(countIf(event_type = 'WatchEvent'), 0) star_time_dispersion_score\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING stars_total >= 100\n   AND last_star_at > first_star_at\nORDER BY star_time_dispersion_score ASC, stars_per_day DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -10792,6 +11002,20 @@
         "humanRowCount": 7,
         "llmRowCount": 1,
         "sql": "SELECT\n    toDayOfWeek(created_at) AS day_of_week,\n    COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY star_count DESC\nLIMIT 1"
+      },
+      "openrouter/horizon-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 7,
+        "llmRowCount": 7,
+        "sql": "SELECT\n  dayofweek(created_at) day_of_week,\n  count() stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -11462,6 +11686,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT COUNT(DISTINCT actor_login) FROM github_events LIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.000052934128674804696,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT countDistinct(actor_login) total_users\nFROM github_events\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -12103,6 +12341,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT COUNT(DISTINCT actor_login) FROM github_events WHERE event_type = 'WatchEvent'"
+      },
+      "openrouter/horizon-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT\n  uniq(actor_login) total_users_starred\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -12730,6 +12982,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT COUNT(DISTINCT actor_login) AS total_users\nFROM github_events\nWHERE event_type = 'PushEvent'\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT uniq(actor_login) AS total_users_with_push\nFROM github_events\nWHERE event_type = 'PushEvent'\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -13357,6 +13623,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT\n    COUNT(DISTINCT actor_login) AS total_users\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'created'\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT uniq(actor_login) total_users_with_created_prs\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -13998,6 +14278,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login\n        FROM github_events\n        WHERE event_type = 'PullRequestEvent'\n            AND action = 'opened'\n    )\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  count() stars_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND actor_login IN (\n    SELECT actor_login\n    FROM github_events\n    WHERE event_type = 'PullRequestEvent' AND action = 'opened'\n    GROUP BY actor_login\n    HAVING count() >= 1\n  )\nGROUP BY repo_name\nORDER BY stars_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -14666,6 +14960,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS pr_authors_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\nGROUP BY repo_name\nHAVING pr_authors_count >= 10\nORDER BY pr_authors_count DESC\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  actor_login author,\n  countIf(event_type = 'PullRequestEvent' AND action = 'opened') pr_opened_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\nGROUP BY repo_name, actor_login\nHAVING pr_opened_count >= 10\nORDER BY pr_opened_count DESC, repo_name ASC, author ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -15348,6 +15656,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(*) AS pull_request_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\nGROUP BY repo_name\nORDER BY pull_request_count DESC\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  countIf(event_type = 'PullRequestEvent' AND action = 'opened') pr_opened_count\nFROM github_events\nGROUP BY repo_name\nORDER BY pr_opened_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -16030,6 +16352,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, COUNT(DISTINCT actor_login) AS contributor_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY contributor_count DESC\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  uniqIf(actor_login, event_type = 'PullRequestEvent' AND action = 'opened') pr_contributors\nFROM github_events\nGROUP BY repo_name\nORDER BY pr_contributors DESC, repo_name ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -16712,6 +17048,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, COUNT(*) AS issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  countIf(event_type = 'IssuesEvent' AND action = 'opened') issues_opened_count\nFROM github_events\nGROUP BY repo_name\nORDER BY issues_opened_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -17380,6 +17730,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS push_access_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY repo_name\nORDER BY push_access_count DESC\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT\n  repo_name,\n  uniq(actor_login) contributors_count\nFROM github_events\nWHERE event_type = 'MemberEvent'\n  AND action = 'added'\n  AND author_association IN ('MEMBER', 'COLLABORATOR', 'OWNER')\nGROUP BY repo_name\nORDER BY contributors_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -18048,6 +18412,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  COUNT(DISTINCT actor_login) AS push_access_count\nFROM github_events\nWHERE event_type = 'PushEvent' AND ref = 'refs/heads/main'\nGROUP BY repo_name\nORDER BY push_access_count DESC\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  countIf(event_type = 'MemberEvent' AND action = 'added') members_added,\n  uniqIf(actor_login, event_type = 'MemberEvent' AND action = 'added') unique_members_added\nFROM github_events\nWHERE event_type = 'MemberEvent'\nGROUP BY repo_name\nORDER BY unique_members_added DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -18730,6 +19108,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "SELECT\n  repo_name,\n  COUNT(DISTINCT actor_login) AS push_access_count\nFROM github_events\nWHERE event_type = 'PushEvent'\n  AND ref = 'refs/heads/main'\n  AND repo_name IN (\n    SELECT repo_name\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n    HAVING COUNT(DISTINCT actor_login) > 99\n  )\nGROUP BY repo_name\nORDER BY push_access_count DESC\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  countIf(event_type = 'MemberEvent' AND action = 'added') members_with_push_access,\n  sum(event_type = 'WatchEvent') stars\nFROM github_events\nGROUP BY repo_name\nHAVING stars > 99\nORDER BY members_with_push_access DESC, stars DESC, repo_name ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -19426,6 +19818,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(*) AS member_invitations_count\nFROM github_events\nWHERE event_type = 'MemberEvent'\nGROUP BY repo_name\nORDER BY member_invitations_count DESC\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  countIf(event_type = 'MemberEvent' AND action = 'added') max_member_invitations\nFROM github_events\nGROUP BY repo_name\nORDER BY max_member_invitations DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -20108,6 +20514,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, COUNT(*) AS fork_count\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY fork_count DESC\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  countIf(event_type = 'ForkEvent') forks\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY forks DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -20776,6 +21196,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(DISTINCT CASE WHEN event_type = 'WatchEvent' THEN actor_login END) AS stars,\n    COUNT(DISTINCT CASE WHEN event_type = 'ForkEvent' THEN actor_login END) AS forks,\n    COUNT(DISTINCT CASE WHEN event_type = 'WatchEvent' THEN actor_login END) / NULLIF(COUNT(DISTINCT CASE WHEN event_type = 'ForkEvent' THEN actor_login END), 0) AS star_fork_ratio\nFROM github_events\nGROUP BY repo_name\nORDER BY star_fork_ratio DESC\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  sum(event_type = 'WatchEvent') stars,\n  sum(event_type = 'ForkEvent') forks,\n  if(sum(event_type = 'ForkEvent') = 0, 0, sum(event_type = 'WatchEvent') / sum(event_type = 'ForkEvent')) star_fork_ratio\nFROM github_events\nGROUP BY repo_name\nHAVING stars > 0 OR forks > 0\nORDER BY star_fork_ratio DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -21472,6 +21906,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT\n    COUNT(DISTINCT CASE WHEN event_type = 'WatchEvent' THEN actor_login END) AS stars,\n    COUNT(DISTINCT CASE WHEN event_type = 'ForkEvent' THEN actor_login END) AS forks,\n    ROUND(\n        COUNT(DISTINCT CASE WHEN event_type = 'WatchEvent' THEN actor_login END) /\n        NULLIF(COUNT(DISTINCT CASE WHEN event_type = 'ForkEvent' THEN actor_login END), 0),\n        2\n    ) AS stars_to_forks_ratio\nFROM github_events\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT\n  sum(event_type = 'WatchEvent') stars,\n  sum(event_type = 'ForkEvent') forks,\n  round(if(sum(event_type = 'ForkEvent') = 0, 0, sum(event_type = 'WatchEvent') / sum(event_type = 'ForkEvent')), 2) stars_to_forks_ratio\nFROM github_events\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -22095,6 +22543,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT\n    COUNT(*) AS total_issues_opened\nFROM\n    github_events\nWHERE\n    event_type = 'IssuesEvent'\n    AND action = 'opened'\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT count() total_issues_opened\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n  AND action = 'opened'\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -22736,6 +23198,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, COUNT(*) AS issue_comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY issue_comment_count DESC\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  count() AS event_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY event_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -23404,6 +23880,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(DISTINCT CASE WHEN event_type = 'IssuesEvent' AND action = 'opened' THEN number END) AS issues_count,\n    COUNT(DISTINCT CASE WHEN event_type = 'IssueCommentEvent' THEN comment_id END) AS issue_comments_count,\n    COUNT(DISTINCT CASE WHEN event_type = 'IssueCommentEvent' THEN comment_id END) / NULLIF(COUNT(DISTINCT CASE WHEN event_type = 'IssuesEvent' AND action = 'opened' THEN number END), 0) AS ratio\nFROM github_events\nWHERE event_type IN ('IssuesEvent', 'IssueCommentEvent')\nGROUP BY repo_name\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  sum(event_type = 'IssueCommentEvent') issue_comments,\n  sum(event_type = 'IssuesEvent' AND action = 'opened') issues_opened,\n  if(sum(event_type = 'IssuesEvent' AND action = 'opened') = 0, 0, sum(event_type = 'IssueCommentEvent') / sum(event_type = 'IssuesEvent' AND action = 'opened')) ratio_issue_comments_per_issue\nFROM github_events\nGROUP BY repo_name\nHAVING issues_opened > 0\nORDER BY ratio_issue_comments_per_issue DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -24100,6 +24590,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  number,\n  COUNT(comment_id) AS comment_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n  AND action = 'opened'\nGROUP BY repo_name, number\nORDER BY comment_count DESC\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  number,\n  sum(comments) total_comments\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n  AND action = 'opened'\nGROUP BY repo_name, number\nORDER BY total_comments DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -24796,6 +25300,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "SELECT\n    repo_name,\n    number,\n    COUNT(DISTINCT comment_id) AS comment_count,\n    COUNT(DISTINCT actor_login) AS comment_author_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n    AND action = 'opened'\n    AND number > 10\nGROUP BY repo_name, number\nHAVING comment_count >= 10\nORDER BY comment_count DESC\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  number,\n  countIf(event_type = 'IssueCommentEvent' AND action = 'created') comments_count,\n  uniqIf(actor_login, event_type = 'IssueCommentEvent' AND action = 'created') comment_authors_count\nFROM github_events\nWHERE event_type IN ('IssuesEvent', 'IssueCommentEvent')\n  AND number > 10\nGROUP BY\n  repo_name,\n  number\nHAVING comments_count >= 10 AND comment_authors_count >= 10\nORDER BY comments_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -25492,6 +26010,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  COUNT(*) AS event_count\nFROM github_events\nWHERE\n  event_type = 'IssuesEvent'\n  AND body LIKE '%tensorflow%'\nGROUP BY repo_name\nORDER BY event_count DESC\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  count() AS events_count\nFROM github_events\nWHERE (lower(repo_name) LIKE '%tensorflow%' OR (body IS NOT NULL AND lower(body) LIKE '%tensorflow%') OR (title IS NOT NULL AND lower(title) LIKE '%tensorflow%'))\nGROUP BY repo_name\nORDER BY events_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -26174,6 +26706,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(*) AS commit_comments_count\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY commit_comments_count DESC\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  count() AS commit_comment_count\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY commit_comment_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -26856,6 +27402,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    commit_id,\n    COUNT(DISTINCT actor_login) AS unique_authors,\n    COUNT(*) AS total_comments,\n    CONCAT('https://github.com/', repo_name, '/commit/', commit_id) AS commit_url\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY commit_id, repo_name\nHAVING unique_authors >= 10\nORDER BY total_comments DESC\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  concat('https://github.com/', repo_name, '/commit/', commit_id) commit_url,\n  count() total_comments,\n  uniq(actor_login) unique_authors\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name, commit_id\nHAVING uniq(actor_login) >= 10\nORDER BY total_comments DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -27552,6 +28112,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    CONCAT('https://github.com/', repo_name, '/pull/', number) AS pr_url,\n    COUNT(DISTINCT actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\nGROUP BY repo_name, number\nORDER BY unique_authors DESC\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0.18181818181818177,
+          "numeric": 0,
+          "fScore": 0.9
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  concat('https://github.com/', repo_name, '/pull/', toString(number)) pr_url,\n  uniq(actor_login) unique_authors\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\nGROUP BY repo_name, number\nORDER BY unique_authors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -28234,6 +28808,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT actor_login, COUNT(*) as push_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY push_count DESC\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  actor_login,\n  countIf(event_type = 'PushEvent') pushes\nFROM github_events\nGROUP BY actor_login\nORDER BY pushes DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -28916,6 +29504,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  splitByString('/', repo_name)[1] AS organization,\n  COUNT(*) AS stars_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY organization\nORDER BY stars_count DESC\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  splitByChar('/', repo_name)[1] org,\n  countIf(event_type = 'WatchEvent') stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY org\nORDER BY stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -29584,6 +30186,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  splitByString('/', repo_name)[1] AS organization,\n  COUNT(DISTINCT repo_name) AS repository_count\nFROM github_events\nGROUP BY organization\nORDER BY repository_count DESC\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  splitByChar('/', repo_name)[1] org,\n  uniqExact(repo_name) repo_count\nFROM github_events\nWHERE repo_name != ''\nGROUP BY org\nORDER BY repo_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -30266,6 +30882,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name AS repo,\n    COUNT(DISTINCT number) AS pr_count,\n    COUNT(DISTINCT actor_login) AS unique_authors,\n    SUM(additions) AS total_adds,\n    SUM(deletions) AS total_dels\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\n    AND additions < 10000\n    AND deletions < 10000\nGROUP BY repo_name\nORDER BY (total_adds + total_dels) DESC\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  countIf(event_type = 'PullRequestEvent' AND action = 'opened') pr_count,\n  uniqIf(actor_login, event_type = 'PullRequestEvent' AND action = 'opened' AND additions < 10000 AND deletions < 10000) unique_authors,\n  sumIf(additions, event_type = 'PullRequestEvent' AND action = 'opened' AND additions < 10000 AND deletions < 10000) total_adds,\n  sumIf(deletions, event_type = 'PullRequestEvent' AND action = 'opened' AND additions < 10000 AND deletions < 10000) total_dels\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND additions < 10000\n  AND deletions < 10000\nGROUP BY repo_name\nORDER BY (sumIf(additions, event_type = 'PullRequestEvent' AND action = 'opened' AND additions < 10000 AND deletions < 10000) + sumIf(deletions, event_type = 'PullRequestEvent' AND action = 'opened' AND additions < 10000 AND deletions < 10000)) DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -30990,6 +31620,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    actor_login AS author,\n    COUNT(DISTINCT comment_id) AS number_of_pull_request_comments,\n    COUNT(DISTINCT repo_name) AS number_of_unique_repositories,\n    COUNT(DISTINCT number) AS number_of_unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\nGROUP BY actor_login\nORDER BY number_of_pull_request_comments DESC\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  actor_login author,\n  countIf(event_type = 'PullRequestReviewCommentEvent' AND action = 'created') pr_review_comments_count,\n  uniqIf(repo_name, event_type = 'PullRequestReviewCommentEvent' AND action = 'created') unique_repos_count,\n  uniqIf(concat(repo_name, '#', toString(number)), event_type = 'PullRequestReviewCommentEvent' AND action = 'created') unique_prs_count\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\n  AND action = 'created'\nGROUP BY actor_login\nORDER BY pr_review_comments_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -31686,6 +32330,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    label,\n    COUNT(*) AS count\nFROM (\n    SELECT\n        arrayJoin(labels) AS label\n    FROM github_events\n    WHERE event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')\n    AND action IN ('created', 'opened', 'labeled')\n    AND labels != []\n)\nGROUP BY label\nORDER BY count DESC\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  arrayJoin(labels) label,\n  count() uses\nFROM github_events\nWHERE event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')\n  AND action IN ('created', 'opened', 'labeled')\n  AND length(labels) > 0\nGROUP BY label\nORDER BY uses DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -32354,6 +33012,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    splitByString('/', repo_name)[1] AS organization_name,\n    uniq(actor_login) AS unique_authors,\n    uniqIf(actor_login, event_type = 'PullRequestEvent') AS unique_pr_authors,\n    uniqIf(actor_login, event_type = 'IssuesEvent') AS unique_issue_authors,\n    uniqIf(actor_login, event_type = 'IssueCommentEvent') AS unique_issue_comment_authors,\n    uniqIf(actor_login, event_type = 'PushEvent') AS unique_push_authors\nFROM github_events\nGROUP BY organization_name\nORDER BY unique_authors DESC\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  splitByChar('/', repo_name)[1] org,\n  uniq(actor_login) unique_authors,\n  uniqIf(actor_login, event_type = 'PullRequestEvent' AND action = 'opened') unique_pr_authors,\n  uniqIf(actor_login, event_type = 'IssuesEvent' AND action = 'opened') unique_issue_authors,\n  uniqIf(actor_login, event_type = 'IssueCommentEvent') unique_issue_comment_authors,\n  uniqIf(actor_login, event_type = 'PushEvent') unique_push_authors\nFROM github_events\nWHERE repo_name != ''\nGROUP BY org\nORDER BY unique_authors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -33106,6 +33778,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  length(repo_name) AS repo_name_length\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY repo_name_length DESC\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0.18181818181818177,
+          "numeric": 0,
+          "fScore": 0.9
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  CHARACTER_LENGTH(repo_name) repo_name_length\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND repo_name != ''\nGROUP BY repo_name\nORDER BY repo_name_length DESC, repo_name ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -33774,6 +34460,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY LENGTH(repo_name) ASC\nLIMIT 10"
+      },
+      "openrouter/horizon-beta": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.75,
+          "numeric": 1,
+          "fScore": 0.40000000000000013
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND repo_name != ''\nGROUP BY repo_name\nORDER BY length(repo_name) ASC, repo_name ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -34179,6 +34879,14 @@
         "avgExactDistance": 0.5524458874458875,
         "avgNumericDistance": 0.45888129230872726,
         "avgFScore": 0.4603333333333333
+      },
+      "openrouter/horizon-beta": {
+        "totalMatches": 29,
+        "exactMatches": 25,
+        "numericMatches": 29,
+        "avgExactDistance": 0.4409090909090909,
+        "avgNumericDistance": 0.41062003898629307,
+        "avgFScore": 0.57
       }
     }
   }
