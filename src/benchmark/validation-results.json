@@ -658,6 +658,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count(*) AS total_stars FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT count() AS total_stars FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10"
       }
     },
     "humanResults": {
@@ -1341,6 +1355,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count(*) AS stars FROM github_events WHERE event_type = 'WatchEvent' GROUP BY repo_name ORDER BY stars DESC LIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -2065,6 +2093,20 @@
         "humanRowCount": 5,
         "llmRowCount": 5,
         "sql": "SELECT bucket, count(*) AS repo_count\nFROM (\n    SELECT\n        CASE\n            WHEN count(*) < 10 THEN 1\n            WHEN count(*) < 100 THEN 10\n            WHEN count(*) < 1000 THEN 100\n            WHEN count(*) < 10000 THEN 1000\n            WHEN count(*) < 100000 THEN 10000\n            WHEN count(*) < 1000000 THEN 100000\n            WHEN count(*) < 10000000 THEN 1000000\n            WHEN count(*) < 100000000 THEN 10000000\n            WHEN count(*) < 1000000000 THEN 100000000\n            ELSE 1000000000\n        END AS bucket\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n) AS repo_buckets\nGROUP BY bucket\nORDER BY bucket\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 5,
+        "llmRowCount": 5,
+        "sql": "SELECT\n    bucket,\n    COUNT(*) AS repo_count\nFROM\n(\n    SELECT\n        repo_name,\n        COUNT() AS stars,\n        CASE\n            WHEN COUNT() < 10 THEN 1\n            WHEN COUNT() < 100 THEN 10\n            WHEN COUNT() < 1000 THEN 100\n            WHEN COUNT() < 10000 THEN 1000\n            WHEN COUNT() < 100000 THEN 10000\n            WHEN COUNT() < 1000000 THEN 100000\n            ELSE 1000000\n        END AS bucket\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n) \nGROUP BY bucket\nORDER BY bucket ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -2769,6 +2811,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count(DISTINCT repo_name) AS total_repos FROM github_events LIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT countDistinct(repo_name) AS total_repositories FROM github_events LIMIT 10"
       }
     },
     "humanResults": {
@@ -3452,6 +3508,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  toYear(created_at) AS year,\n  repo_name,\n  count(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND toYear(created_at) >= 2015\nGROUP BY year, repo_name\nORDER BY year, star_count DESC\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.5,
+          "numeric": 0.4884875640384983,
+          "fScore": 0.6666666666666666
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 20,
+        "sql": "SELECT\n    toYear(created_at) AS year,\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent' AND toYear(created_at) >= 2015\nGROUP BY year, repo_name\nORDER BY year, stars DESC\nLIMIT 10 BY year"
       }
     },
     "humanResults": {
@@ -4190,6 +4260,20 @@
         "humanRowCount": 2,
         "llmRowCount": 2,
         "sql": "SELECT\n  year(created_at) AS year,\n  count(*) AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 2,
+        "llmRowCount": 2,
+        "sql": "SELECT\n  toYear(created_at) AS year,\n  count() AS stars,\n  sum(count()) OVER (ORDER BY toYear(created_at)) AS total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year\nLIMIT 100"
       }
     },
     "humanResults": {
@@ -4868,6 +4952,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT actor_login, count(*) AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT actor_login, count() stars_given\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY stars_given DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -5592,6 +5690,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT e.repo_name, count(*) AS star_count\nFROM github_events e\nJOIN (\n  SELECT actor_login\n  FROM github_events\n  WHERE event_type='WatchEvent' AND repo_name='tensorflow/tensorflow'\n) AS tf_stargazers\nON e.actor_login = tf_stargazers.actor_login\nWHERE e.event_type='WatchEvent' AND e.repo_name != 'tensorflow/tensorflow'\nGROUP BY e.repo_name\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  e2.repo_name,\n  count() AS stars\nFROM github_events AS e1\nJOIN github_events AS e2\n  ON e1.actor_login = e2.actor_login\nWHERE e1.event_type = 'WatchEvent'\n  AND e1.repo_name = 'tensorflow/tensorflow'\n  AND e2.event_type = 'WatchEvent'\n  AND e2.repo_name != 'tensorflow/tensorflow'\nGROUP BY e2.repo_name\nORDER BY stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -6302,6 +6414,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    actor_login,\n    sum(if(repo_name LIKE 'javisantana/%', 1, 0)) AS javisantana_stars,\n    sum(if(repo_name LIKE 'javisantana/%', 0, 1)) AS other_stars,\n    toFloat64(sum(if(repo_name LIKE 'javisantana/%', 1, 0))) /\n    toFloat64(sum(if(repo_name LIKE 'javisantana/%', 1, 0)) + sum(if(repo_name LIKE 'javisantana/%', 0, 1))) AS ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND actor_login != ''\nGROUP BY actor_login\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.4022967426109692,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  actor_login,\n  sum(CASE WHEN repo_name LIKE 'javisantana/%' THEN 1 ELSE 0 END) AS javisantana_stars,\n  sum(CASE WHEN repo_name NOT LIKE 'javisantana/%' THEN 1 ELSE 0 END) AS other_stars,\n  (sum(CASE WHEN repo_name LIKE 'javisantana/%' THEN 1 ELSE 0 END) / \n   (sum(CASE WHEN repo_name LIKE 'javisantana/%' THEN 1 ELSE 0 END) + \n    sum(CASE WHEN repo_name NOT LIKE 'javisantana/%' THEN 1 ELSE 0 END))\n  ) AS ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nHAVING (sum(CASE WHEN repo_name LIKE 'javisantana/%' THEN 1 ELSE 0 END) + \n        sum(CASE WHEN repo_name NOT LIKE 'javisantana/%' THEN 1 ELSE 0 END)) > 0\nORDER BY ratio DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -7040,6 +7166,20 @@
         "humanRowCount": 10,
         "llmRowCount": 1,
         "sql": "SELECT repo_name, countDistinct(actor_login) AS unique_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND actor_login LIKE 'tensorflow%'\n  AND repo_name NOT LIKE 'tensorflow/%'\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.18095166080355407,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  e.repo_name,\n  countDistinct(e.actor_login) AS unique_contributors\nFROM github_events e\nJOIN github_events tf\n  ON e.actor_login = tf.actor_login\nWHERE e.event_type = 'PullRequestEvent'\n  AND e.action = 'opened'\n  AND e.repo_name != 'tensorflow/tensorflow'\n  AND tf.event_type = 'PullRequestEvent'\n  AND tf.action = 'opened'\n  AND tf.repo_name = 'tensorflow/tensorflow'\nGROUP BY e.repo_name\nORDER BY unique_contributors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -7764,6 +7904,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  count(*) AS issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n  AND action = 'opened'\n  AND repo_name != 'tensorflow/tensorflow'\n  AND actor_login IN (\n    SELECT actor_login\n    FROM github_events\n    WHERE event_type = 'IssuesEvent'\n      AND action = 'opened'\n      AND repo_name = 'tensorflow/tensorflow'\n  )\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.9829065255393008,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    e1.repo_name,\n    e1.actor_login,\n    COUNT(DISTINCT e1.number) AS issue_count\nFROM github_events AS e1\nJOIN github_events AS tf\n    ON e1.actor_login = tf.actor_login\nWHERE e1.event_type = 'IssuesEvent'\n  AND e1.action = 'opened'\n  AND tf.event_type = 'IssuesEvent'\n  AND tf.action = 'opened'\n  AND tf.repo_name = 'tensorflow/tensorflow'\nGROUP BY e1.repo_name, e1.actor_login\nORDER BY issue_count DESC, e1.actor_login\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -8498,6 +8652,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count(*) AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT\n  repo_name,\n  max(countMerge(cnt_state)) AS max_daily_stars\nFROM (\n  SELECT\n    repo_name,\n    toDate(created_at) AS day,\n    countState() AS cnt_state\n  FROM github_events\n  WHERE event_type = 'WatchEvent'\n  GROUP BY\n    repo_name,\n    day\n)\nGROUP BY\n  repo_name\nORDER BY\n  max_daily_stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -9236,6 +9404,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  sumIf(1, toYear(created_at) = 2016) AS stars2016,\n  sumIf(1, toYear(created_at) = 2017) AS stars2017,\n  stars2017 / stars2016 AS growth\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND toYear(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING stars2016 >= 1\nORDER BY growth DESC\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  sumIf(1, event_type = 'WatchEvent' AND toYear(created_at) = 2016) AS stars_2016,\n  sumIf(1, event_type = 'WatchEvent' AND toYear(created_at) = 2017) AS stars_2017,\n  (stars_2017 - stars_2016) AS growth\nFROM github_events\nWHERE event_type = 'WatchEvent' AND toYear(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING stars_2016 >= 1\nORDER BY growth DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -9988,6 +10170,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  sum(toUInt8(event_type = 'WatchEvent' AND toYear(created_at) = 2016)) AS stars2016,\n  sum(toUInt8(event_type = 'WatchEvent' AND toYear(created_at) = 2017)) AS stars2017,\n  (stars2017 - stars2016) AS diff\nFROM github_events\nGROUP BY repo_name\nHAVING stars2017 > 0\nORDER BY diff ASC\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    sumIf(event_type = 'WatchEvent' AND YEAR(created_at) = 2016, 1) AS stars_2016,\n    sumIf(event_type = 'WatchEvent' AND YEAR(created_at) = 2017, 1) AS stars_2017,\n    (sumIf(event_type = 'WatchEvent' AND YEAR(created_at) = 2017, 1) - sumIf(event_type = 'WatchEvent' AND YEAR(created_at) = 2016, 1)) AS diff\nFROM github_events\nWHERE event_type = 'WatchEvent' AND YEAR(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING stars_2017 >= 1\nORDER BY diff ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -10726,6 +10922,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name,\n       avg(stars) AS avg_daily,\n       stddevPop(stars) AS stddev_daily,\n       avg(stars)/stddevPop(stars) AS steadiness\nFROM (\n  SELECT repo_name, toDate(created_at) AS day, count(*) AS stars\n  FROM github_events\n  WHERE event_type = 'WatchEvent'\n  GROUP BY repo_name, day\n) AS daily_counts\nGROUP BY repo_name\nORDER BY steadiness DESC\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  count() AS total_stars,\n  uniqExact(toDate(created_at)) AS active_days,\n  count() / uniqExact(toDate(created_at)) AS avg_stars_per_day\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY avg_stars_per_day DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -11474,6 +11684,20 @@
         "humanRowCount": 7,
         "llmRowCount": 7,
         "sql": "SELECT\n    DAYOFWEEK(created_at) AS day_of_week,\n    count(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.8571428571428572,
+          "numeric": 0.7081035047179752,
+          "fScore": 0.25
+        },
+        "details": "Results don't match",
+        "humanRowCount": 7,
+        "llmRowCount": 1,
+        "sql": "SELECT\n  DAYOFWEEK(created_at) AS day_of_week,\n  count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY stars DESC\nLIMIT 1"
       }
     },
     "humanResults": {
@@ -12186,6 +12410,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count(DISTINCT actor_login) AS total_users FROM github_events LIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT uniq(actor_login) AS total_users FROM github_events LIMIT 10"
       }
     },
     "humanResults": {
@@ -12869,6 +13107,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count(DISTINCT actor_login) AS total_users\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0014793406252330366,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT countDistinct(actor_login) AS total_users\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -13538,6 +13790,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count(DISTINCT actor_login) AS total_users FROM github_events WHERE event_type='PushEvent' AND push_size>0 LIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0018759619527295886,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT countDistinct(actor_login) AS total_users\nFROM github_events\nWHERE event_type = 'PushEvent'\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -14207,6 +14473,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count(DISTINCT actor_login) AS total_users FROM github_events WHERE event_type='PullRequestEvent' AND action='opened' LIMIT 1"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0017507922334856522,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT countDistinct(actor_login) AS total_users\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -14890,6 +15170,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT s.repo_name, count(*) AS star_count\nFROM github_events s\nWHERE s.event_type = 'WatchEvent'\n  AND s.actor_login IN (\n    SELECT actor_login\n    FROM github_events\n    WHERE event_type = 'PullRequestEvent'\n      AND action = 'opened'\n  )\nGROUP BY s.repo_name\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  e.repo_name,\n  count() AS stars\nFROM github_events AS e\nJOIN (\n    SELECT DISTINCT actor_login\n    FROM github_events\n    WHERE event_type = 'PullRequestEvent' AND action = 'opened'\n) AS pr_users\nON e.actor_login = pr_users.actor_login\nWHERE e.event_type = 'WatchEvent'\nGROUP BY e.repo_name\nORDER BY stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -15600,6 +15894,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, COUNT(*) AS authors_with_10_plus\nFROM (\n    SELECT repo_name, actor_login\n    FROM github_events\n    WHERE event_type = 'PullRequestEvent'\n      AND action = 'opened'\n    GROUP BY repo_name, actor_login\n    HAVING COUNT(*) >= 10\n)\nGROUP BY repo_name\nORDER BY authors_with_10_plus DESC\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT\n    repo_name,\n    countDistinct(actor_login) AS authors_with_10plus_prs\nFROM (\n    SELECT\n        repo_name,\n        actor_login,\n        count() AS pr_count\n    FROM github_events\n    WHERE event_type = 'PullRequestEvent' AND action = 'opened'\n    GROUP BY repo_name, actor_login\n    HAVING pr_count >= 10\n)\nGROUP BY repo_name\nORDER BY authors_with_10pr\n\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -16324,6 +16632,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  count(*) AS pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\nGROUP BY repo_name\nORDER BY pr_count DESC\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  count() AS total_pull_requests\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY total_pull_requests DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -17048,6 +17370,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  countDistinct(actor_login) AS contributor_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\nGROUP BY repo_name\nORDER BY contributor_count DESC\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  uniq(actor_login) AS contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\nGROUP BY repo_name\nORDER BY contributors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -17772,6 +18108,16 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count(*) AS issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": false,
+        "reason": "Missing data in results",
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "sql": null
       }
     },
     "humanResults": {
@@ -18482,6 +18828,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  count(DISTINCT actor_login) AS push_users\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY repo_name\nORDER BY push_users DESC\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  countDistinct(actor_login) push_users\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY repo_name\nORDER BY push_users DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -19192,6 +19552,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "SELECT\n  repo_name,\n  count(DISTINCT actor_login) AS push_users\nFROM github_events\nWHERE event_type = 'PushEvent'\n  AND ref_type = 'branch'\n  AND ref = 'refs/heads/main'\nGROUP BY repo_name\nORDER BY push_users DESC\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT\n  repo_name,\n  countDistinct(actor_login) AS pushers\nFROM github_events\nWHERE event_type = 'PushEvent' AND ref = 'main'\nGROUP BY repo_name\nORDER BY pushers DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -19916,6 +20290,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "SELECT\n  repo_name,\n  COUNT(DISTINCT actor_login) AS push_access_count\nFROM github_events\nWHERE event_type = 'PushEvent'\n  AND ref_type = 'branch'\n  AND ref = 'refs/heads/main'\nGROUP BY repo_name\nORDER BY push_access_count DESC\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT\n  p.repo_name,\n  countDistinct(p.actor_login) AS pushers\nFROM github_events AS p\nJOIN (\n  SELECT\n    repo_name,\n    countDistinct(actor_login) AS watchers\n  FROM github_events\n  WHERE event_type = 'WatchEvent'\n  GROUP BY repo_name\n  HAVING countDistinct(actor_login) > 99\n) AS w ON w.repo_name = p.repo_name\nWHERE p.event_type = 'PushEvent' AND p.ref = 'main'\nGROUP BY p.repo_name\nORDER BY pushers DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -20654,6 +21042,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  count(*) AS invitations\nFROM github_events\nWHERE event_type = 'MemberEvent'\n  AND action = 'added'\nGROUP BY repo_name\nORDER BY invitations DESC\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  count() AS invitations\nFROM github_events\nWHERE event_type = 'MemberEvent'\nGROUP BY repo_name\nORDER BY invitations DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -21378,6 +21780,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  count(*) AS forks\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY forks DESC\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name repo, count() forks FROM github_events WHERE event_type = 'ForkEvent' GROUP BY repo_name ORDER BY forks DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -22088,6 +22504,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  sum(event_type = 'WatchEvent') AS stars,\n  sum(event_type = 'ForkEvent') AS forks,\n  stars / forks AS ratio\nFROM github_events\nGROUP BY repo_name\nHAVING forks > 0\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  countIf(event_type = 'WatchEvent') AS stars,\n  countIf(event_type = 'ForkEvent') AS forks,\n  stars / forks AS ratio\nFROM github_events\nWHERE event_type IN ('WatchEvent', 'ForkEvent')\nGROUP BY repo_name\nHAVING forks > 0\nORDER BY ratio DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -22826,6 +23256,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT\n    sum(event_type = 'WatchEvent') AS stars,\n    sum(event_type = 'ForkEvent') AS forks,\n    round(\n        sum(event_type = 'WatchEvent') / nullIf(sum(event_type = 'ForkEvent'), 0),\n        2\n    ) AS ratio\nFROM github_events\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT\n  countIf(event_type = 'WatchEvent') AS total_stars,\n  countIf(event_type = 'ForkEvent') AS total_forks,\n  round(\n    countIf(event_type = 'WatchEvent') / NULLIF(countIf(event_type = 'ForkEvent'), 0),\n    2\n  ) AS ratio\nFROM github_events\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -23491,6 +23935,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count(*) AS total_issues_opened FROM github_events WHERE event_type='IssuesEvent' AND action='opened' LIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT count() AS total_issues FROM github_events WHERE event_type = 'IssuesEvent' AND action = 'opened' LIMIT 10"
       }
     },
     "humanResults": {
@@ -24174,6 +24632,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  count(*) AS comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY comment_count DESC\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  count() AS issue_comment_events\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY issue_comment_events DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -24880,6 +25352,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  countIf(event_type = 'IssuesEvent' AND action = 'opened') AS issues,\n  countIf(event_type = 'IssueCommentEvent') AS comments,\n  comments / NULLIF(issues, 0) AS ratio\nFROM github_events\nGROUP BY repo_name\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  countIf(event_type = 'IssueCommentEvent') AS comment_count,\n  countIf(event_type = 'IssuesEvent' AND action = 'opened') AS issue_count,\n  countIf(event_type = 'IssueCommentEvent') / countIf(event_type = 'IssuesEvent' AND action = 'opened') AS ratio\nFROM github_events\nWHERE event_type IN ('IssueCommentEvent', 'IssuesEvent')\nGROUP BY repo_name\nHAVING issue_count > 0\nORDER BY ratio DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -25618,6 +26104,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT DISTINCT repo_name, number, comments\nFROM github_events\nORDER BY comments DESC\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  number AS issue_number,\n  count() AS comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\n  AND action = 'created'\nGROUP BY repo_name, number\nORDER BY comment_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -26356,6 +26856,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  number,\n  count(*) AS comment_count,\n  countDistinct(actor_login) AS author_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\n  AND number > 10\nGROUP BY repo_name, number\nHAVING comment_count >= 10\nORDER BY comment_count DESC\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  number,\n  count() AS comments,\n  uniqExact(actor_login) AS distinct_authors\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\n  AND number > 10\nGROUP BY\n  repo_name,\n  number\nHAVING\n  comments >= 10\n  AND distinct_authors >= 10\nORDER BY comments DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -27094,6 +27608,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  count(*) AS event_count\nFROM github_events\nWHERE\n  (body IS NOT NULL AND lower(body) LIKE '%tensorflow%')\n  OR\n  (title IS NOT NULL AND lower(title) LIKE '%tensorflow%')\nGROUP BY repo_name\nORDER BY event_count DESC\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.9230778668143195,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  count(*) AS event_count\nFROM github_events\nWHERE\n  lower(coalesce(body, '')) LIKE '%tensorflow%' OR\n  lower(coalesce(title, '')) LIKE '%tensorflow%'\nGROUP BY repo_name\nORDER BY event_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -27806,6 +28334,20 @@
         "sql": "\nSELECT \n    repo_name,\n    count() AS commit_comments\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY commit_comments DESC\nLIMIT 10\n"
       },
       "openai/gpt-oss-20b": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  count(*) AS comment_count\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY comment_count DESC\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
         "matches": true,
         "exactMatches": true,
         "numericMatches": true,
@@ -28542,6 +29084,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  concat('https://github.com/', repo_name, '/commit/', commit_id) AS commit_url,\n  count() AS total_comments,\n  countDistinct(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY commit_id, repo_name\nHAVING countDistinct(actor_login) >= 10\nORDER BY total_comments DESC\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  concat('https://github.com/', repo_name, '/commit/', commit_id) AS commit_url,\n  count() AS total_comments,\n  uniqExact(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name, commit_id\nHAVING uniqExact(actor_login) >= 10\nORDER BY total_comments DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -29280,6 +29836,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  concat('https://github.com/', repo_name, '/pull/', number) url,\n  uniq(actor_login) unique_authors\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\nGROUP BY repo_name, number\nORDER BY unique_authors DESC\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  concat('https://github.com/', repo_name, '/pull/', toString(number)) AS url,\n  countDistinct(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type IN ('IssueCommentEvent', 'PullRequestReviewCommentEvent')\nGROUP BY repo_name, number\nORDER BY unique_authors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -30004,6 +30574,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT actor_login, count(*) AS push_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY push_count DESC\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  actor_login,\n  count() AS push_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY push_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -30728,6 +31312,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  arrayElement(splitByString('/', repo_name), 1) organization,\n  count(*) star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY organization\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  splitByChar('/', repo_name)[1] AS organization,\n  count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY organization\nORDER BY stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -31438,6 +32036,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  regexpExtract(repo_name, '^(.*?)/') AS org,\n  countDistinct(repo_name) AS repo_count\nFROM github_events\nGROUP BY org\nORDER BY repo_count DESC\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  splitByChar('/', repo_name)[1] AS organization,\n  countDistinct(repo_name) AS repo_count\nFROM github_events\nWHERE repo_name != ''\nGROUP BY organization\nORDER BY repo_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -32162,6 +32774,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name AS repo,\n    count(*) AS pr_count,\n    countDistinct(actor_login) AS unique_authors,\n    sum(additions) AS total_adds,\n    sum(deletions) AS total_dels\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND additions < 10000\n  AND deletions < 10000\nGROUP BY repo_name\nORDER BY total_adds + total_dels DESC\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.8367030125422139,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  count() AS pr_count,\n  uniqExact(actor_login) AS unique_authors,\n  sum(additions) AS total_adds,\n  sum(deletions) AS total_dels,\n  (sum(additions) + sum(deletions)) AS total_churn\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND additions < 10000\n  AND deletions < 10000\nGROUP BY repo_name\nORDER BY total_churn DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -32928,6 +33554,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  actor_login AS author,\n  COUNT(*) AS pull_request_comments_created,\n  COUNT(DISTINCT repo_name) AS unique_repositories,\n  COUNT(DISTINCT number) AS unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\nGROUP BY actor_login\nORDER BY pull_request_comments_created DESC\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    actor_login AS author,\n    count() AS review_comments,\n    uniq(repo_name) AS unique_repos,\n    uniq(number) AS unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\nGROUP BY author\nORDER BY review_comments DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -33666,6 +34306,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  label,\n  count(*) AS usage_count\nFROM github_events\nARRAY JOIN labels AS label\nWHERE event_type IN ('IssuesEvent','PullRequestEvent','IssueCommentEvent','PullRequestReviewCommentEvent')\n  AND action IN ('opened','created','labeled')\nGROUP BY label\nORDER BY usage_count DESC\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    arrayJoin(labels) AS label,\n    count() AS usage_count\nFROM github_events\nWHERE event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')\n  AND action IN ('created', 'opened', 'labeled')\nGROUP BY label\nORDER BY usage_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -34376,6 +35030,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  substringIndex(repo_name, '/', 1) AS org,\n  countDistinct(actor_login) AS unique_authors,\n  countDistinctIf(actor_login, event_type = 'PullRequestEvent') AS unique_pr_authors,\n  countDistinctIf(actor_login, event_type = 'IssuesEvent') AS unique_issue_authors,\n  countDistinctIf(actor_login, event_type = 'IssueCommentEvent') AS unique_issue_comment_authors,\n  countDistinctIf(actor_login, event_type = 'PushEvent') AS unique_push_authors\nFROM github_events\nGROUP BY org\nORDER BY unique_authors DESC\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  splitByString('/', repo_name)[1] AS organization_name,\n  count(distinct actor_login) AS unique_authors,\n  count(distinct if(event_type = 'PullRequestEvent' AND action = 'opened', actor_login, NULL)) AS unique_pr_authors,\n  count(distinct if(event_type = 'IssuesEvent' AND action = 'opened', actor_login, NULL)) AS unique_issue_authors,\n  count(distinct if(event_type = 'IssueCommentEvent' AND action = 'created', actor_login, NULL)) AS unique_issue_comment_authors,\n  count(distinct if(event_type = 'PushEvent', actor_login, NULL)) AS unique_push_authors\nFROM github_events\nGROUP BY organization_name\nORDER BY unique_authors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -35170,6 +35838,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  CHAR_LENGTH(repo_name) AS repo_name_length\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING COUNT(*) >= 1\nORDER BY repo_name_length DESC, repo_name\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0.18181818181818177,
+          "numeric": 0,
+          "fScore": 0.9
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  char_length(repo_name) repo_name_length\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY repo_name_length DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -35880,6 +36562,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING count(*) >= 1\nORDER BY CHARACTER_LENGTH(repo_name) ASC\nLIMIT 10"
+      },
+      "openai/gpt-oss-120b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.8888888888888888,
+          "numeric": 1,
+          "fScore": 0.20000000000000007
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY character_length(repo_name) ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -36309,6 +37005,14 @@
         "avgExactDistance": 0.5278427128427129,
         "avgNumericDistance": 0.42021283811342114,
         "avgFScore": 0.482
+      },
+      "openai/gpt-oss-120b": {
+        "totalMatches": 26,
+        "exactMatches": 20,
+        "numericMatches": 26,
+        "avgExactDistance": 0.5485569985569986,
+        "avgNumericDistance": 0.4105526594375656,
+        "avgFScore": 0.4603333333333333
       }
     }
   }
