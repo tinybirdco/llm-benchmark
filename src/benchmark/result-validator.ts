@@ -26,6 +26,11 @@ export function compareResults(humanResult: any, llmResult: any): any {
     return {
       matches: false,
       reason: "Missing data in results",
+      distance: {
+        exact: 0,
+        numeric: 0,
+        fScore: 1
+      }
     };
   }
 
