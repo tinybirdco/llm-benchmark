@@ -58,7 +58,8 @@
         "o3-pro",
         "o4-mini",
         "o4-mini-high",
-        "gpt-oss-20b"
+        "gpt-oss-20b",
+        "gpt-oss-120b"
       ]
     },
     "qwen": {
