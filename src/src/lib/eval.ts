@@ -187,13 +187,32 @@ function blendedExactnessScore(provider: string, model: string) {
     return 0;
   }
 
-  const { avgExactDistance, avgNumericDistance, avgFScore } =
+  const { totalMatches, exactMatches, avgExactDistance, avgNumericDistance, avgFScore } =
     validationSummaries.modelStats[
       modelKey as keyof typeof validationSummaries.modelStats
     ];
 
-  // strong preference for exact, numeric as backup, fscore as minor fallback (it's correlated with jaccard)
-  return blendScore(avgExactDistance, avgNumericDistance, avgFScore);
+  // Calculate match rates
+  const totalMatchRate = totalMatches / validationSummaries.totalQuestions;
+  const exactMatchRate = exactMatches / validationSummaries.totalQuestions;
+  const failedMatchRate = 1 - totalMatchRate;
+
+  // Calculate quality score for successful matches
+  const qualityScore = blendScore(avgExactDistance, avgNumericDistance, avgFScore);
+  
+  // Calculate comprehensive exactness score with penalties for failures
+  // Base score from successful matches
+  const baseScore = totalMatchRate * qualityScore;
+  
+  // Penalty for failed matches (each failed match reduces score)
+  const failurePenalty = failedMatchRate * 1; // score here if needed
+  
+  // Bonus for exact matches
+  const exactMatchBonus = exactMatchRate * 1; // score here if needed
+  
+  const comprehensiveScore = Math.max(0, baseScore - failurePenalty + exactMatchBonus);
+  
+  return comprehensiveScore;
 }
 
 function blendScore(exact: number, numeric: number, fscore: number) {
