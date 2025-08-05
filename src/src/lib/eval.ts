@@ -215,7 +215,7 @@ export function getExactnessScore(
 
   const modelResults = pipe.models[modelKey as keyof typeof pipe.models];
 
-  if (!modelResults || modelResults.sql === "") {
+  if (!modelResults || !modelResults.sql) {
     console.log(`No validation results found for m: ${modelKey}`);
     return 0;
   }
