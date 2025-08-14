@@ -61,7 +61,8 @@
         "gpt-oss-20b",
         "gpt-oss-120b",
         "gpt-5",
-        "gpt-5-nano"
+        "gpt-5-nano",
+        "gpt-5-mini"
       ]
     },
     "qwen": {
