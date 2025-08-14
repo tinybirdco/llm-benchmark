@@ -84,7 +84,9 @@
       "models": []
     },
     "z-ai": {
-      "models": []
+      "models": [
+        "glm-4.5v"
+      ]
     },
     "openrouter": {
       "models": [
