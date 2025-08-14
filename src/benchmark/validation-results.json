@@ -686,6 +686,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count() stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -1397,6 +1411,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  count() stars\nFROM github_events\nWHERE event_type = 'WatchEvent' AND repo_name != ''\nGROUP BY repo_name\nORDER BY stars DESC, repo_name ASC\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -2149,6 +2177,20 @@
         "humanRowCount": 5,
         "llmRowCount": 5,
         "sql": "SELECT\n  CASE\n    WHEN star_count < 10 THEN 1\n    WHEN star_count < 100 THEN 10\n    WHEN star_count < 1000 THEN 100\n    WHEN star_count < 10000 THEN 1000\n    WHEN star_count < 100000 THEN 10000\n    WHEN star_count < 1000000 THEN 100000\n    WHEN star_count < 10000000 THEN 1000000\n    WHEN star_count < 100000000 THEN 10000000\n    WHEN star_count < 1000000000 THEN 100000000\n    ELSE 1000000000\n  END star_bucket,\n  count() repos_count\nFROM\n(\n  SELECT repo_name, count() AS star_count\n  FROM github_events\n  WHERE event_type = 'WatchEvent' AND action = 'started'\n  GROUP BY repo_name\n)\nGROUP BY star_bucket\nORDER BY star_bucket ASC\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 5,
+        "llmRowCount": 5,
+        "sql": "SELECT bucket, count(*) AS repo_count\nFROM (\n  SELECT repo_name,\n         COUNT(*) AS stars,\n         CASE\n           WHEN COUNT(*) < 10 THEN 1\n           WHEN COUNT(*) < 100 THEN 10\n           WHEN COUNT(*) < 1000 THEN 100\n           WHEN COUNT(*) < 10000 THEN 1000\n           WHEN COUNT(*) < 100000 THEN 10000\n           WHEN COUNT(*) < 1000000 THEN 100000\n           WHEN COUNT(*) < 10000000 THEN 1000000\n           WHEN COUNT(*) < 100000000 THEN 10000000\n           WHEN COUNT(*) < 1000000000 THEN 100000000\n           ELSE 1000000000\n         END AS bucket\n  FROM github_events\n  WHERE event_type = 'WatchEvent'\n  GROUP BY repo_name\n) AS t\nGROUP BY bucket\nORDER BY bucket\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -2881,6 +2923,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniqExact(repo_name) total_repos FROM github_events WHERE repo_name != '' LIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT count(DISTINCT repo_name) AS total_repositories\nFROM github_events\nWHERE repo_name != ''\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -3592,6 +3648,20 @@
         "humanRowCount": 10,
         "llmRowCount": 2,
         "sql": "SELECT\n  year(created_at) y,\n  topK(10)(repo_name) top_repos_by_stars,\n  count() total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND created_at >= CAST('2015-01-01 00:00:00' AS DateTime)\nGROUP BY y\nORDER BY y ASC\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT year, repo_name, cnt\nFROM (\n  SELECT\n     toYear(created_at) AS year,\n     repo_name,\n     count() AS cnt,\n     ROW_NUMBER() OVER (PARTITION BY toYear(created_at) ORDER BY count() DESC) AS rn\n  FROM github_events\n  WHERE created_at >= '2015-01-01 00:00:00'\n  GROUP BY year, repo_name\n) AS t\nWHERE rn <= 10\nORDER BY year, cnt DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -4358,6 +4428,20 @@
         "humanRowCount": 2,
         "llmRowCount": 2,
         "sql": "SELECT\n  year(created_at) year,\n  count() stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 2,
+        "llmRowCount": 2,
+        "sql": "SELECT DATE_TRUNC('year', created_at) AS year, count(*) AS total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY DATE_TRUNC('year', created_at)\nORDER BY year ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -5064,6 +5148,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  actor_login,\n  count() stars_given\nFROM github_events\nWHERE event_type = 'WatchEvent' AND actor_login != ''\nGROUP BY actor_login\nORDER BY stars_given DESC, actor_login ASC\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  actor_login,\n  count() AS stars_given\nFROM github_events\nWHERE event_type = 'WatchEvent' AND actor_login != ''\nGROUP BY actor_login\nORDER BY stars_given DESC, actor_login ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -5816,6 +5914,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  ge2.repo_name,\n  count() stars\nFROM github_events ge2\nANY INNER JOIN github_events ge1\n  ON ge2.actor_login = ge1.actor_login\n     AND ge1.event_type = 'WatchEvent'\n     AND ge1.repo_name = 'tensorflow/tensorflow'\nWHERE ge2.event_type = 'WatchEvent'\nGROUP BY ge2.repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT e2.repo_name repo_name, COUNT(*) stars\nFROM github_events AS e2\nJOIN github_events AS e1\n  ON e1.actor_login = e2.actor_login\nWHERE e2.event_type = 'WatchEvent'\n  AND e1.event_type = 'WatchEvent'\n  AND e1.repo_name = 'tensorflow/tensorflow'\nGROUP BY e2.repo_name\nORDER BY stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -6554,6 +6666,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  actor_login,\n  sum(repo_name LIKE 'javisantana/%') stars_to_javisantana,\n  sum(repo_name NOT LIKE 'javisantana/%') stars_to_others,\n  sum(repo_name LIKE 'javisantana/%') / CAST(count(), 'Float64') ratio_javisantana_to_total\nFROM github_events\nWHERE event_type = 'WatchEvent' AND action = 'started' AND actor_login != ''\nGROUP BY actor_login\nORDER BY ratio_javisantana_to_total DESC, stars_to_javisantana DESC\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  actor_login AS user,\n  countIf(SUBSTRING_INDEX(repo_name, '/', 1) = 'javisantana') AS javisantana_stars,\n  countIf(SUBSTRING_INDEX(repo_name, '/', 1) != 'javisantana') AS other_stars,\n  toFloat64(countIf(SUBSTRING_INDEX(repo_name, '/', 1) = 'javisantana')) / NULLIF(toFloat64(count()), 0) AS ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY ratio DESC, (javisantana_stars + other_stars) DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -7320,6 +7446,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  e_non.repo_name,\n  uniq(e_non.actor_login) unique_contributors\nFROM github_events AS e_non\nANY INNER JOIN github_events AS e_tf\n  ON e_non.actor_login = e_tf.actor_login\n  AND e_tf.event_type = 'PullRequestEvent'\n  AND e_tf.action = 'opened'\n  AND e_tf.repo_name LIKE 'tensorflow/%'\nWHERE\n  e_non.event_type = 'PullRequestEvent'\n  AND e_non.action = 'opened'\n  AND e_non.repo_name NOT LIKE 'tensorflow/%'\nGROUP BY e_non.repo_name\nORDER BY unique_contributors DESC, e_non.repo_name ASC\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  COUNT(DISTINCT actor_login) AS unique_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND repo_name NOT LIKE 'tensorflow/%'\n  AND author_association IN ('CONTRIBUTOR','OWNER','COLLABORATOR','MEMBER')\n  AND actor_login != ''\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -8072,6 +8212,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  a.actor_login,\n  a.repo_name,\n  count() issues_opened\nFROM github_events a\nANY INNER JOIN github_events b\n  ON a.actor_login = b.actor_login\n  AND b.event_type = 'IssuesEvent'\n  AND b.action = 'opened'\n  AND b.repo_name = 'tensorflow/tensorflow'\nWHERE\n  a.event_type = 'IssuesEvent'\n  AND a.action = 'opened'\nGROUP BY\n  a.actor_login,\n  a.repo_name\nORDER BY\n  a.actor_login ASC,\n  issues_opened DESC\nLIMIT 10 BY a.actor_login\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  e2.repo_name AS repo,\n  e2.actor_login AS author,\n  count(*) AS issues\nFROM github_events AS e2\nJOIN github_events AS e1\n  ON e1.actor_login = e2.actor_login\n  AND e1.event_type = 'IssuesEvent'\n  AND e1.action = 'opened'\n  AND e1.repo_name = 'tensorflow/tensorflow'\nWHERE e2.event_type = 'IssuesEvent'\n  AND e2.action = 'opened'\nGROUP BY repo, author\nORDER BY issues DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -8834,6 +8988,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  date_trunc('day', created_at) day,\n  count() stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name, day\nORDER BY stars DESC, day DESC, repo_name ASC\nLIMIT 1 BY repo_name\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  max(stars_per_day) AS max_stars_per_day\nFROM (\n  SELECT\n    repo_name,\n    toDate(created_at) AS day,\n    count() AS stars_per_day\n  FROM github_events\n  WHERE event_type = 'WatchEvent'\n  GROUP BY repo_name, day\n) AS daily_records\nGROUP BY repo_name\nORDER BY max_stars_per_day DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -9600,6 +9768,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  sum(cast(year(created_at) = 2016, 'UInt8')) stars_2016,\n  sum(cast(year(created_at) = 2017, 'UInt8')) stars_2017,\n  sum(cast(year(created_at) = 2017, 'UInt8')) - sum(cast(year(created_at) = 2016, 'UInt8')) yoy_growth\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND year(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING sum(cast(year(created_at) = 2016, 'UInt8')) = 1\nORDER BY yoy_growth DESC\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  sumIf(1, event_type = 'WatchEvent' AND toYear(created_at) = 2016) AS stars2016,\n  sumIf(1, event_type = 'WatchEvent' AND toYear(created_at) = 2017) AS stars2017\nFROM github_events\nWHERE event_type = 'WatchEvent' AND toYear(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING stars2016 >= 1\nORDER BY (stars2017 - stars2016) / stars2016 DESC, stars2017 DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -10380,6 +10562,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  countIf(year(created_at) = 2016) AS stars_2016,\n  countIf(year(created_at) = 2017) AS stars_2017,\n  countIf(year(created_at) = 2017) - countIf(year(created_at) = 2016) AS delta\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND year(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING countIf(year(created_at) = 2017) >= 1\nORDER BY delta ASC, stars_2017 ASC\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  SUM(CASE WHEN event_type = 'WatchEvent' AND created_at >= toDateTime('2017-01-01 00:00:00') AND created_at < toDateTime('2018-01-01 00:00:00') THEN 1 ELSE 0 END) AS stars_2017,\n  SUM(CASE WHEN event_type = 'WatchEvent' AND created_at >= toDateTime('2016-01-01 00:00:00') AND created_at < toDateTime('2017-01-01 00:00:00') THEN 1 ELSE 0 END) AS stars_2016\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND (created_at >= toDateTime('2016-01-01 00:00:00') AND created_at < toDateTime('2018-01-01 00:00:00'))\nGROUP BY repo_name\nHAVING stars_2017 > 0\nORDER BY (stars_2017 - stars_2016) ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -11146,6 +11342,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  count() stars,\n  min(created_at) first_star_at,\n  max(created_at) last_star_at,\n  (max(to_days(created_at)) - min(to_days(created_at)) + 1) total_days,\n  uniqExact(to_days(created_at)) distinct_star_days,\n  uniqExact(to_days(created_at)) / CAST((max(to_days(created_at)) - min(to_days(created_at)) + 1) AS Float32) day_coverage_ratio,\n  count() / CAST((max(to_days(created_at)) - min(to_days(created_at)) + 1) AS Float32) stars_per_day\nFROM github_events\nWHERE event_type = 'WatchEvent' AND action = 'started'\nGROUP BY repo_name\nORDER BY day_coverage_ratio DESC, stars_per_day DESC\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  covarPop(day_index, daily_stars) / varPop(day_index) AS growth_rate\nFROM (\n  SELECT\n    repo_name,\n    toUInt32(toDate(created_at)) AS day_index,\n    count(*) AS daily_stars\n  FROM github_events\n  WHERE event_type = 'WatchEvent'\n  GROUP BY repo_name, toUInt32(toDate(created_at))\n) AS daily\nGROUP BY repo_name\nHAVING count() > 1\nORDER BY growth_rate DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -11922,6 +12132,20 @@
         "humanRowCount": 7,
         "llmRowCount": 7,
         "sql": "SELECT\n  DAYOFWEEK(created_at) weekday_num,\n  DATE_FORMAT(created_at, '%W') weekday_name,\n  count() stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY weekday_num, weekday_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.013821492945413797,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 7,
+        "llmRowCount": 7,
+        "sql": "SELECT\n  CASE DAYOFWEEK(created_at)\n    WHEN 1 THEN 'Mon'\n    WHEN 2 THEN 'Tue'\n    WHEN 3 THEN 'Wed'\n    WHEN 4 THEN 'Thu'\n    WHEN 5 THEN 'Fri'\n    WHEN 6 THEN 'Sat'\n    WHEN 7 THEN 'Sun'\n  END AS day_of_week,\n  count(*) AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY\n  CASE DAYOFWEEK(created_at)\n    WHEN 1 THEN 'Mon'\n    WHEN 2 THEN 'Tue'\n    WHEN 3 THEN 'Wed'\n    WHEN 4 THEN 'Thu'\n    WHEN 5 THEN 'Fri'\n    WHEN 6 THEN 'Sat'\n    WHEN 7 THEN 'Sun'\n  END\nORDER BY stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -12662,6 +12886,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniqExact(actor_login) total_users\nFROM github_events\nWHERE actor_login != ''\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.012448734227588668,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT count(DISTINCT login) AS total_users\nFROM github_events\nARRAY JOIN [actor_login, creator_user_login, member_login] AS login\nWHERE login IS NOT NULL AND login != ''\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -13373,6 +13611,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniq(actor_login) users_with_stars\nFROM github_events\nWHERE event_type = 'WatchEvent' AND actor_login != ''\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0014793406252330366,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT uniqExact(actor_login) AS total_unique_stargazers\nFROM github_events\nWHERE event_type = 'WatchEvent' AND actor_login != '' AND actor_login IS NOT NULL\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -14070,6 +14322,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniqExact(actor_login) total_users_with_at_least_one_push\nFROM github_events\nWHERE event_type = 'PushEvent' AND actor_login != ''\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0018765427514039255,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT count(DISTINCT actor_login) AS total_users_with_push\nFROM github_events\nWHERE event_type = 'PushEvent'\n  AND actor_login != ''\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -14767,6 +15033,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniqExact(actor_login) total_users\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0017507922334856522,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT uniqExact(actor_login) AS total_users\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -15478,6 +15758,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  e.repo_name,\n  count() stars\nFROM github_events e\nANY INNER JOIN github_events p ON e.actor_login = p.actor_login AND p.event_type = 'PullRequestEvent' AND p.action = 'opened'\nWHERE e.event_type = 'WatchEvent' AND e.action = 'started'\nGROUP BY e.repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.2881151347249415,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  s.repo_name AS repo_name,\n  count(DISTINCT s.actor_login) AS stars\nFROM github_events AS s\nJOIN github_events AS p\n  ON s.actor_login = p.actor_login\n  AND p.event_type = 'PullRequestEvent'\n  AND p.action = 'opened'\nWHERE s.event_type = 'WatchEvent'\nGROUP BY s.repo_name\nORDER BY stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -16216,6 +16510,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  actor_login,\n  count() pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\nGROUP BY\n  repo_name,\n  actor_login\nHAVING pr_count >= 10\nORDER BY pr_count DESC\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  actor_login AS author,\n  count(*) AS pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\nGROUP BY repo_name, actor_login\nHAVING count(*) >= 10\nORDER BY pr_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -16968,6 +17276,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  count() pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\nGROUP BY repo_name\nORDER BY pr_count DESC\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, count() AS pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY pr_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -17720,6 +18042,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  uniq(actor_login) pr_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND repo_name != ''\n  AND actor_login != ''\nGROUP BY repo_name\nORDER BY pr_contributors DESC, repo_name ASC\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  countDistinct(actor_login) AS contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND actor_login != ''\nGROUP BY repo_name\nORDER BY contributors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -18468,6 +18804,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  count() issues_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n  AND action = 'opened'\nGROUP BY repo_name\nORDER BY issues_count DESC\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, count() AS issues_opened\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY issues_opened DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -19206,6 +19556,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  uniq(member_login) push_access_people\nFROM github_events\nWHERE event_type = 'MemberEvent'\n  AND action = 'added'\n  AND member_login != ''\nGROUP BY repo_name\nORDER BY push_access_people DESC\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0.18181818181818177,
+          "numeric": 0.00001729012635757336,
+          "fScore": 0.9
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, count(DISTINCT actor_login) AS push_users\nFROM github_events\nWHERE event_type = 'PushEvent' AND actor_login <> ''\nGROUP BY repo_name\nORDER BY push_users DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -19944,6 +20308,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  uniq(actor_login) people_who_pushed_main\nFROM github_events\nWHERE event_type = 'PushEvent'\n  AND actor_login != ''\n  AND ref IN ('refs/heads/main', 'heads/main', 'main')\nGROUP BY repo_name\nORDER BY people_who_pushed_main DESC\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT\n  repo_name,\n  count(DISTINCT actor_login) AS unique_pushers\nFROM github_events\nWHERE event_type = 'PushEvent'\n  AND ref_type = 'branch'\n  AND (ref = 'main' OR ref = 'master')\nGROUP BY repo_name\nORDER BY unique_pushers DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -20696,6 +21074,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  uniqExact(CASE WHEN event_type = 'PushEvent' AND (ref = 'refs/heads/main' OR ref = 'main') THEN actor_login ELSE '___ignore___' END) - 1 pushers_to_main,\n  sum(event_type = 'WatchEvent') stars\nFROM github_events\nWHERE event_type IN ('PushEvent', 'WatchEvent')\nGROUP BY repo_name\nHAVING stars > 99\nORDER BY pushers_to_main DESC\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.6666666666666667,
+          "numeric": 0.37134685706017195,
+          "fScore": 0.5
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  uniq(CASE WHEN event_type = 'PushEvent'\n            AND ref_type = 'branch'\n            AND (ref = 'main' OR ref = 'master')\n       THEN actor_login END) AS push_users_count,\n  SUM(CASE WHEN event_type = 'WatchEvent' THEN 1 ELSE 0 END) AS star_count\nFROM github_events\nGROUP BY repo_name\nHAVING star_count > 99\nORDER BY push_users_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -21462,6 +21854,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  count() invitations_count\nFROM github_events\nWHERE event_type = 'MemberEvent'\n  AND (action = 'added' OR action = 'created')\nGROUP BY repo_name\nORDER BY invitations_count DESC, repo_name ASC\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  count() AS invitations_count\nFROM github_events\nWHERE event_type = 'MemberEvent'\n  AND action IN ('added', 'created')\nGROUP BY repo_name\nORDER BY invitations_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -22214,6 +22620,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  count() forks\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY forks DESC\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, count(*) AS forks\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY forks DESC, repo_name ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -22952,6 +23372,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  sum(event_type = 'WatchEvent') stars,\n  sum(event_type = 'ForkEvent') forks,\n  CAST(sum(event_type = 'WatchEvent') AS Float64) / sum(event_type = 'ForkEvent') ratio\nFROM github_events\nWHERE repo_name != '' AND event_type IN ('WatchEvent', 'ForkEvent')\nGROUP BY repo_name\nHAVING sum(event_type = 'ForkEvent') > 0\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  sumIf(1, event_type = 'WatchEvent') AS stars,\n  sumIf(1, event_type = 'ForkEvent') AS forks,\n  toFloat64(sumIf(1, event_type = 'WatchEvent')) / (sumIf(1, event_type = 'ForkEvent') + if(sumIf(1, event_type = 'ForkEvent') = 0, 1, 0)) AS ratio\nFROM github_events\nWHERE event_type IN ('WatchEvent', 'ForkEvent')\nGROUP BY repo_name\nORDER BY ratio DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -23718,6 +24152,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT\n  sum(event_type = 'WatchEvent') stars,\n  sum(event_type = 'ForkEvent') forks,\n  CASE\n    WHEN sum(event_type = 'ForkEvent') = 0 THEN CAST(0, 'Decimal(10,2)')\n    ELSE CAST(sum(event_type = 'WatchEvent') / CAST(sum(event_type = 'ForkEvent'), 'Float64'), 'Decimal(10,2)')\n  END ratio\nFROM github_events\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT\n  sumIf(1, event_type = 'WatchEvent') AS stars,\n  sumIf(1, event_type = 'ForkEvent') AS forks,\n  IF(sumIf(1, event_type = 'ForkEvent') = 0, 0.0, round(toFloat64(sumIf(1, event_type = 'WatchEvent')) / toFloat64(sumIf(1, event_type = 'ForkEvent')), 2)) AS ratio\nFROM github_events\nWHERE event_type IN ('WatchEvent','ForkEvent')\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -24411,6 +24859,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count() total_issues FROM github_events WHERE event_type = 'IssuesEvent' AND action = 'opened' LIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT count(*) total_opened_issues\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -25122,6 +25584,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  count() issue_comment_events\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY issue_comment_events DESC\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, count(*) AS issue_comments\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY issue_comments DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -25856,6 +26332,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  sum(event_type = 'IssueCommentEvent') issue_comments,\n  sum((event_type = 'IssuesEvent') AND (action = 'opened')) issues_opened,\n  CAST(sum(event_type = 'IssueCommentEvent'), 'Float64') / sum((event_type = 'IssuesEvent') AND (action = 'opened')) comments_per_issue\nFROM github_events\nGROUP BY repo_name\nHAVING issues_opened > 0\nORDER BY comments_per_issue DESC, issue_comments DESC\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  countIf(event_type = 'IssueCommentEvent') AS issue_comments,\n  countIf(event_type = 'IssuesEvent' AND action = 'opened') AS issues_opened,\n  toFloat64(countIf(event_type = 'IssueCommentEvent')) / NULLIF(countIf(event_type = 'IssuesEvent' AND action = 'opened'), 0) AS ratio\nFROM github_events\nWHERE event_type IN ('IssueCommentEvent','IssuesEvent')\nGROUP BY repo_name\nORDER BY ratio DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -26622,6 +27112,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  ic.repo_name,\n  ic.number,\n  count() comment_count\nFROM github_events ic\nANY INNER JOIN github_events isue\n  ON ic.repo_name = isue.repo_name\n AND ic.number = isue.number\n AND isue.event_type = 'IssuesEvent'\n AND isue.action = 'opened'\nWHERE ic.event_type = 'IssueCommentEvent'\n  AND ic.action = 'created'\nGROUP BY\n  ic.repo_name,\n  ic.number\nORDER BY\n  comment_count DESC,\n  ic.repo_name ASC,\n  ic.number ASC\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.18181818181818177,
+          "numeric": 0.4581689048996311,
+          "fScore": 0.9
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  number,\n  count(*) AS comments_created\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\n  AND action = 'created'\nGROUP BY repo_name, number\nORDER BY comments_created DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -27388,6 +27892,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  number,\n  count() comments_count,\n  uniq(actor_login) comment_authors_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\n  AND action = 'created'\nGROUP BY repo_name, number\nHAVING count() >= 10\nORDER BY comments_count DESC\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  number,\n  count(*) AS comments,\n  count(DISTINCT actor_login) AS unique_comment_authors\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name, number\nHAVING count(*) >= 10 AND length(repo_name) + CAST(number AS UInt64) > 10\nORDER BY comments DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -28154,6 +28672,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  count() AS events_count\nFROM github_events\nWHERE title ILIKE '%tensorflow%' OR body ILIKE '%tensorflow%'\nGROUP BY repo_name\nORDER BY events_count DESC\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.9230778668143195,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "% \nSELECT\n  repo_name,\n  count(*) AS event_count\nFROM github_events\nWHERE REGEXP_EXTRACT(body, '(?i)(tensorflow)', 1) != '' OR REGEXP_EXTRACT(title, '(?i)(tensorflow)', 1) != ''\nGROUP BY repo_name\nORDER BY event_count DESC, repo_name\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -28906,6 +29438,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "SELECT\n  repo_name,\n  count() comments_count\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\n  AND action = 'created'\nGROUP BY repo_name\nORDER BY comments_count DESC\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, COUNT(*) commit_comments\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY commit_comments DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -29658,6 +30204,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  concat('https://github.com/', repo_name, '/commit/', commit_id) commit_url,\n  count() total_comments,\n  uniq(actor_login) unique_authors\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name, commit_id\nHAVING uniq(actor_login) >= 10\nORDER BY total_comments DESC\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  commit_id,\n  CONCAT('https://github.com/', repo_name, '/commit/', commit_id) AS commit_url,\n  count(*) AS commit_events_count,\n  SUM(CASE WHEN event_type = 'CommitCommentEvent' THEN 1 ELSE 0 END) AS total_comments,\n  uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE commit_id IS NOT NULL\nGROUP BY commit_id, repo_name\nHAVING SUM(CASE WHEN event_type = 'CommitCommentEvent' THEN 1 ELSE 0 END) >= 10\nORDER BY commit_events_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -30424,6 +30984,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  'https://github.com/' || repo_name || '/pull/' || CAST(number AS String) pr_url,\n  uniq(actor_login) unique_authors\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\n  AND action = 'created'\nGROUP BY repo_name, number\nORDER BY unique_authors DESC\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.18315198425951282,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  CONCAT('https://github.com/', e1.repo_name, '/pull/', toString(e1.number)) AS pr_url,\n  count(DISTINCT ifNull(e1.actor_login, e1.creator_user_login)) AS unique_authors\nFROM github_events AS e1\nJOIN github_events AS e2\n  ON e1.repo_name = e2.repo_name\n  AND e1.number = e2.number\nWHERE e1.event_type IN ('PullRequestReviewCommentEvent','IssueCommentEvent')\n  AND e2.event_type = 'PullRequestEvent'\n  AND e1.repo_name <> ''\nGROUP BY pr_url\nORDER BY unique_authors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -31176,6 +31750,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  actor_login,\n  count() pushes\nFROM github_events\nWHERE event_type = 'PushEvent' AND actor_login != ''\nGROUP BY actor_login\nORDER BY pushes DESC\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT actor_login, count(*) AS push_count\nFROM github_events\nWHERE event_type = 'PushEvent'\n  AND actor_login != ''\n  AND actor_login IS NOT NULL\nGROUP BY actor_login\nORDER BY push_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -31928,6 +32516,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT SUBSTRING_INDEX(repo_name, '/', 1) owner, count() stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY SUBSTRING_INDEX(repo_name, '/', 1)\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT SUBSTRING_INDEX(repo_name, '/', 1) AS owner, COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY owner\nORDER BY star_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -32666,6 +33268,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  substring_index(repo_name, '/', 1) org_name,\n  uniq(repo_name) repos_count\nFROM github_events\nWHERE repo_name != '' AND repo_name LIKE '%/%'\nGROUP BY substring_index(repo_name, '/', 1)\nORDER BY repos_count DESC\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  SUBSTRING_INDEX(repo_name, '/', 1) organization,\n  count(DISTINCT repo_name) repository_count\nFROM github_events\nWHERE repo_name LIKE '%/%' AND repo_name <> ''\nGROUP BY organization\nORDER BY repository_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -33418,6 +34034,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name repo,\n  uniq(number) pr_count,\n  uniq(actor_login) unique_authors,\n  sum(additions) total_adds,\n  sum(deletions) total_dels\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND additions < 10000\n  AND deletions < 10000\nGROUP BY repo_name\nORDER BY sum(additions) + sum(deletions) DESC\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.8368281461199322,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name AS repo,\n  count(*) AS pr_count,\n  uniqExact(creator_user_login) AS unique_authors,\n  sum(additions) AS total_additions,\n  sum(deletions) AS total_deletions,\n  sum(additions) + sum(deletions) AS code_churn\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND additions < 10000\n  AND deletions < 10000\nGROUP BY repo_name\nORDER BY code_churn DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -34212,6 +34842,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  actor_login author,\n  count() pr_review_comments,\n  uniqExact(repo_name) unique_repositories,\n  uniqExact(repo_name, number) unique_pull_requests\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\n  AND action = 'created'\nGROUP BY actor_login\nORDER BY pr_review_comments DESC\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  actor_login AS author,\n  sum(review_comments) AS total_pr_comments_created,\n  uniqExact(repo_name) AS unique_repos,\n  uniqExact(number) AS unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewEvent'\nGROUP BY actor_login\nORDER BY total_pr_comments_created DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -34978,6 +35622,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  label,\n  count() usage_count\nFROM github_events\nARRAY JOIN labels AS label\nWHERE\n  (\n    (event_type IN ('IssuesEvent','PullRequestEvent') AND action IN ('opened','labeled'))\n    OR\n    (event_type = 'IssueCommentEvent' AND action = 'created')\n  )\n  AND label != ''\nGROUP BY label\nORDER BY usage_count DESC, label ASC\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT label, count(*) AS uses\nFROM github_events\nARRAY JOIN labels AS label\nWHERE event_type IN ('IssuesEvent','PullRequestEvent','IssueCommentEvent')\n  AND action IN ('opened','created','labeled')\n  AND labels IS NOT NULL\nGROUP BY label\nORDER BY uses DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -35716,6 +36374,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  substring_index(repo_name, '/', 1) organization,\n  uniq(actor_login) unique_authors,\n  uniqIf(actor_login, event_type = 'PullRequestEvent' AND action = 'opened') unique_pr_authors,\n  uniqIf(actor_login, event_type = 'IssuesEvent' AND action = 'opened') unique_issue_authors,\n  uniqIf(actor_login, event_type = 'IssueCommentEvent') unique_issue_comment_authors,\n  uniqIf(actor_login, event_type = 'PushEvent') unique_push_authors\nFROM github_events\nWHERE actor_login != ''\nGROUP BY organization\nORDER BY unique_authors DESC\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  if(position(repo_name, '/') > 0, substring(repo_name, 1, position(repo_name, '/') - 1), repo_name) AS organization,\n  count(DISTINCT actor_login) AS unique_authors,\n  count(DISTINCT if(event_type = 'PullRequestEvent' AND action = 'opened', actor_login, NULL)) AS unique_pr_authors,\n  count(DISTINCT if(event_type = 'IssuesEvent' AND action = 'opened', actor_login, NULL)) AS unique_issue_authors,\n  count(DISTINCT if(event_type = 'IssueCommentEvent', actor_login, NULL)) AS unique_issue_comment_authors,\n  count(DISTINCT if(event_type = 'PushEvent', actor_login, NULL)) AS unique_push_authors\nFROM github_events\nWHERE actor_login != ''\nGROUP BY if(position(repo_name, '/') > 0, substring(repo_name, 1, position(repo_name, '/') - 1), repo_name)\nORDER BY organization\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -36538,6 +37210,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  char_length(repo_name) repo_name_length\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY repo_name_length DESC, repo_name ASC\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0.18181818181818177,
+          "numeric": 0,
+          "fScore": 0.9
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  CHAR_LENGTH(repo_name) AS repo_name_length\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name, CHAR_LENGTH(repo_name)\nORDER BY repo_name_length DESC, repo_name ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -37276,6 +37962,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent' AND repo_name != ''\nGROUP BY repo_name\nORDER BY char_length(repo_name) ASC, repo_name ASC\nLIMIT 10"
+      },
+      "openai/gpt-5-nano": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.75,
+          "numeric": 1,
+          "fScore": 0.40000000000000013
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY CHAR_LENGTH(repo_name) ASC, repo_name ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -37721,6 +38421,14 @@
         "avgExactDistance": 0.5906060606060607,
         "avgNumericDistance": 0.4474408094766264,
         "avgFScore": 0.4219999999999999
+      },
+      "openai/gpt-5-nano": {
+        "totalMatches": 24,
+        "exactMatches": 16,
+        "numericMatches": 24,
+        "avgExactDistance": 0.6192424242424244,
+        "avgNumericDistance": 0.4618416617357598,
+        "avgFScore": 0.39199999999999996
       }
     }
   }
