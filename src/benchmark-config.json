@@ -75,7 +75,8 @@
         "qwen-2.5-coder-32b-instruct",
         "qwen/qwen3-235b-a22b-07-25",
         "qwen3-coder",
-        "qwen3-30b-a3b-instruct-2507"
+        "qwen3-30b-a3b-instruct-2507",
+        "qwen3-30b-a3b-thinking-2507"
       ]
     },
     "moonshotai": {
