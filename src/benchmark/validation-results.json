@@ -728,6 +728,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT\n    COUNT(*) AS total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT count() AS star_count FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10"
       }
     },
     "humanResults": {
@@ -1481,6 +1495,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(*) AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, count() as stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -2275,6 +2303,20 @@
         "humanRowCount": 5,
         "llmRowCount": 5,
         "sql": "SELECT\n    floor(pow(10, floor(log10(star_count)))) AS star_power_of_10,\n    COUNT(DISTINCT repo_name) AS repo_count\nFROM (\n    SELECT\n        repo_name,\n        COUNT(*) AS star_count\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n)\nGROUP BY star_power_of_10\nORDER BY star_power_of_10 ASC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.16666666666666663,
+          "numeric": 1,
+          "fScore": 0.9090909090909091
+        },
+        "details": "Results don't match",
+        "humanRowCount": 5,
+        "llmRowCount": 6,
+        "sql": "SELECT\n    pow(10, floor(log10(star_count))) AS star_power,\n    count(*) AS repo_count\nFROM (\n    SELECT \n        repo_name,\n        countIf(event_type = 'WatchEvent') AS star_count\n    FROM github_events\n    GROUP BY repo_name\n)\nGROUP BY star_power\nORDER BY star_power\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -3049,6 +3091,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT COUNT(DISTINCT repo_name) AS total_repositories\nFROM github_events\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(DISTINCT repo_name) AS total_repositories FROM github_events LIMIT 10"
       }
     },
     "humanResults": {
@@ -3802,6 +3858,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    toYear(created_at) AS year,\n    repo_name,\n    COUNT(*) AS event_count\nFROM github_events\nWHERE toYear(created_at) >= 2015\nGROUP BY year, repo_name\nORDER BY year ASC, event_count DESC\nLIMIT 10 BY year\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    toYear(created_at) AS year,\n    repo_name,\n    count() AS event_count\nFROM github_events\nWHERE toYear(created_at) >= 2015\nGROUP BY year, repo_name\nORDER BY year, event_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -4610,6 +4680,20 @@
         "humanRowCount": 2,
         "llmRowCount": 2,
         "sql": "SELECT\n    toYear(created_at) AS year,\n    COUNT(*) AS total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year ASC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 2,
+        "llmRowCount": 2,
+        "sql": "SELECT\n    toYear(created_at) AS year,\n    count() AS total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -5358,6 +5442,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    actor_login,\n    COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT actor_login, COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY star_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -6152,6 +6250,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(*) AS star_count\nFROM github_events\nWHERE\n    event_type = 'WatchEvent'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login\n        FROM github_events\n        WHERE\n            event_type = 'WatchEvent'\n            AND repo_name = 'tensorflow/tensorflow'\n    )\n    AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nAND actor_login IN (\n    SELECT DISTINCT actor_login\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    AND repo_name = 'tensorflow/tensorflow'\n)\nAND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -6932,6 +7044,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    actor_login AS user_name,\n    COUNT(IF(repo_name LIKE '%javisantana/%', 1, NULL)) AS stars_to_javisantana,\n    COUNT(IF(repo_name NOT LIKE '%javisantana/%', 1, NULL)) AS stars_to_other_repos,\n    COUNT(IF(repo_name LIKE '%javisantana/%', 1, NULL)) / COUNT(*) AS javisantana_star_ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY javisantana_star_ratio DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT\n    actor_login,\n    COUNTIf(repo_name LIKE 'javisantana/%') AS stars_javisantana,\n    COUNTIf(repo_name NOT LIKE 'javisantana/%') AS stars_other,\n    stars_javisantana / (stars_javisantana + stars_other) AS ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nHAVING stars_javisantana > 0\nORDER BY ratio DESC, stars_javisantana DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -7740,6 +7866,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS unique_contributors\nFROM github_events\nWHERE\n    event_type = 'PullRequestEvent'\n    AND action = 'opened'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login\n        FROM github_events\n        WHERE repo_name LIKE '%tensorflow%'\n    )\n    AND repo_name NOT LIKE '%tensorflow%'\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.8680395436074987,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "%\nSELECT \n    repo_name,\n    COUNT(DISTINCT actor_login) AS unique_contributors,\n    COUNT(*) AS total_pull_requests\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND actor_login IN (\n      SELECT DISTINCT actor_login \n      FROM github_events \n      WHERE repo_name LIKE '%tensorflow%' \n        AND event_type IN ('PullRequestEvent', 'PushEvent', 'IssuesEvent')\n  )\n  AND repo_name NOT LIKE '%tensorflow%'\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -8534,6 +8674,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(*) AS issue_count,\n    groupArray(actor_login) AS authors\nFROM github_events\nWHERE\n    event_type = 'IssuesEvent'\n    AND action = 'opened'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login\n        FROM github_events\n        WHERE\n            event_type = 'IssuesEvent'\n            AND action = 'opened'\n            AND repo_name = 'tensorflow/tensorflow'\n    )\n    AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name\nORDER BY issue_count DESC, LENGTH(arrayStringConcat(groupUniqArray(actor_login))) DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, COUNT(*) AS issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\nAND action = 'opened'\nAND actor_login IN (\n    SELECT DISTINCT actor_login\n    FROM github_events\n    WHERE event_type = 'IssuesEvent'\n    AND action = 'opened'\n    AND repo_name = 'tensorflow/tensorflow'\n)\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -9338,6 +9492,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    uniq(actor_login) AS unique_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY unique_stars DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT \n    repo_name, \n    COUNT(DISTINCT actor_login) AS stars\nFROM github_events \nWHERE event_type = 'WatchEvent'\n  AND created_at >= toStartOfDay(now() - INTERVAL 1 DAY)\n  AND created_at < toStartOfDay(now())\nGROUP BY repo_name \nORDER BY stars DESC \nLIMIT 10"
       }
     },
     "humanResults": {
@@ -10146,6 +10314,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(IF(created_at BETWEEN '2016-01-01' AND '2016-12-31', 1, NULL)) AS stars_2016,\n    COUNT(IF(created_at BETWEEN '2017-01-01' AND '2017-12-31', 1, NULL)) AS stars_2017,\n    (COUNT(IF(created_at BETWEEN '2017-01-01' AND '2017-12-31', 1, NULL)) -\n     COUNT(IF(created_at BETWEEN '2016-01-01' AND '2016-12-31', 1, NULL))) AS growth,\n    ((COUNT(IF(created_at BETWEEN '2017-01-01' AND '2017-12-31', 1, NULL)) -\n      COUNT(IF(created_at BETWEEN '2016-01-01' AND '2016-12-31', 1, NULL))) /\n     NULLIF(COUNT(IF(created_at BETWEEN '2016-01-01' AND '2016-12-31', 1, NULL)), 0)) * 100 AS growth_percentage\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING stars_2016 >= 1\nORDER BY growth DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2016) AS stars_2016,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2017) AS stars_2017,\n    (stars_2017 - stars_2016) AS yoy_growth\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND toYear(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING stars_2016 >= 1\nORDER BY yoy_growth DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -10968,6 +11150,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    stars_2016,\n    stars_2017,\n    (stars_2017 - stars_2016) AS stagnation\nFROM (\n    SELECT\n        repo_name,\n        COUNT(IF(toYear(created_at) = 2016, 1, NULL)) AS stars_2016,\n        COUNT(IF(toYear(created_at) = 2017, 1, NULL)) AS stars_2017\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n    HAVING stars_2017 > 0\n)\nORDER BY stagnation ASC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    COUNTIf(toYear(created_at) = 2016 AND event_type = 'WatchEvent') as stars_2016,\n    COUNTIf(toYear(created_at) = 2017 AND event_type = 'WatchEvent') as stars_2017,\n    (stars_2017 - stars_2016) as star_change\nFROM github_events\nWHERE toYear(created_at) IN (2016, 2017)\n    AND event_type = 'WatchEvent'\n    AND repo_name IN (\n        SELECT DISTINCT repo_name \n        FROM github_events \n        WHERE toYear(created_at) = 2017 \n            AND event_type = 'WatchEvent'\n    )\nGROUP BY repo_name\nHAVING stars_2016 > 0 AND stars_2017 > 0\nORDER BY star_change ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -11776,6 +11972,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(*) AS total_stars,\n    COUNT(DISTINCT DATE(created_at)) AS days_with_stars,\n    COUNT(*) / COUNT(DISTINCT DATE(created_at)) AS avg_stars_per_day\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING COUNT(DISTINCT DATE(created_at)) > 30\nORDER BY avg_stars_per_day DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    countIf(event_type = 'WatchEvent') AS stars,\n    toStartOfMonth(created_at) AS month\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name, month\nORDER BY stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -12594,6 +12804,20 @@
         "humanRowCount": 7,
         "llmRowCount": 7,
         "sql": "SELECT\n    dayOfWeek(created_at) AS day_of_week,\n    COUNT(*) AS stars_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY stars_count DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 7,
+        "llmRowCount": 7,
+        "sql": "SELECT\n    toDayOfWeek(created_at) AS day_of_week,\n    count() AS stars_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY stars_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -13376,6 +13600,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT\n    COUNT(DISTINCT actor_login) AS total_users\nFROM github_events\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.000052934128674804696,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(DISTINCT actor_login) AS total_users FROM github_events LIMIT 10"
       }
     },
     "humanResults": {
@@ -14129,6 +14367,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT\n    COUNT(DISTINCT actor_login) AS total_users_starred\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0014793406252330366,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(DISTINCT actor_login) \nFROM github_events \nWHERE event_type = 'WatchEvent' \nLIMIT 10"
       }
     },
     "humanResults": {
@@ -14868,6 +15120,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT\n    COUNT(DISTINCT actor_login) AS total_users_with_push\nFROM github_events\nWHERE event_type = 'PushEvent'\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0018759619527295886,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(DISTINCT actor_login) \nFROM github_events \nWHERE event_type = 'PushEvent' \nLIMIT 10"
       }
     },
     "humanResults": {
@@ -15607,6 +15873,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT\n    COUNT(DISTINCT actor_login) AS total_users_with_pr\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\nAND action = 'opened'\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0017507922334856522,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(DISTINCT actor_login) \nFROM github_events \nWHERE event_type = 'PullRequestEvent' AND action = 'opened' \nLIMIT 10"
       }
     },
     "humanResults": {
@@ -16360,6 +16640,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(*) AS star_count\nFROM github_events\nWHERE\n    event_type = 'WatchEvent'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login\n        FROM github_events\n        WHERE event_type = 'PullRequestEvent'\n        AND action = 'opened'\n    )\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, COUNT(*) AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nAND actor_login IN (\n    SELECT DISTINCT actor_login\n    FROM github_events\n    WHERE event_type = 'PullRequestEvent' AND action = 'opened'\n)\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -17140,6 +17434,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    actor_login AS author,\n    COUNT(*) AS pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\nGROUP BY repo_name, actor_login\nHAVING COUNT(*) >= 10\nORDER BY pr_count DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, actor_login, COUNT(*) AS pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name, actor_login\nHAVING COUNT(*) >= 10\nORDER BY pr_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -18728,6 +19036,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS pr_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\nGROUP BY repo_name\nORDER BY pr_contributors DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, COUNT(DISTINCT actor_login) AS contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY contributors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -19518,6 +19840,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(*) AS issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, COUNT(*) AS issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -20298,6 +20634,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS unique_contributors\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, COUNT(DISTINCT actor_login) AS push_access_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY repo_name\nORDER BY push_access_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -21078,6 +21428,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "SELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS unique_contributors\nFROM github_events\nWHERE\n    event_type = 'PushEvent'\n    AND ref_type = 'branch'\n    AND ref = 'refs/heads/main'\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, COUNT(DISTINCT actor_login) AS push_users_count\nFROM github_events\nWHERE event_type = 'PushEvent' AND ref = 'refs/heads/main'\nGROUP BY repo_name\nORDER BY push_users_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -21872,6 +22236,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "SELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS unique_contributors,\n    COUNT(*) AS total_push_events\nFROM github_events\nWHERE\n    event_type = 'PushEvent'\n    AND ref_type = 'branch'\n    AND ref = 'refs/heads/main'\n    AND repo_name IN (\n        SELECT repo_name\n        FROM github_events\n        WHERE event_type = 'WatchEvent'\n        GROUP BY repo_name\n        HAVING COUNT(*) > 99\n    )\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT repo_name, COUNT(DISTINCT actor_login) AS push_users\nFROM github_events\nWHERE event_type = 'PushEvent' \n  AND ref = 'refs/heads/main'\n  AND repo_name IN (\n    SELECT repo_name\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n    HAVING COUNT(*) > 99\n  )\nGROUP BY repo_name\nORDER BY push_users DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -22680,6 +23058,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(*) AS member_invitations\nFROM github_events\nWHERE event_type = 'MemberEvent'\nGROUP BY repo_name\nORDER BY member_invitations DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "%\nSELECT \n    repo_name,\n    count(*) as invitation_count\nFROM github_events \nWHERE event_type = 'MemberEvent' \n    AND action = 'added'\nGROUP BY repo_name\nORDER BY invitation_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -23474,6 +23866,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(*) AS fork_count\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY fork_count DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, count() AS fork_count\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY fork_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -24254,6 +24660,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(CASE WHEN event_type = 'WatchEvent' THEN 1 END) AS stars,\n    COUNT(CASE WHEN event_type = 'ForkEvent' THEN 1 END) AS forks,\n    (COUNT(CASE WHEN event_type = 'WatchEvent' THEN 1 END) / NULLIF(COUNT(CASE WHEN event_type = 'ForkEvent' THEN 1 END), 0)) AS star_to_fork_ratio\nFROM github_events\nGROUP BY repo_name\nHAVING forks > 0\nORDER BY star_to_fork_ratio DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    COUNTIf(event_type = 'WatchEvent') AS stars,\n    COUNTIf(event_type = 'ForkEvent') AS forks,\n    stars / NULLIf(forks, 0) AS ratio\nFROM github_events\nWHERE event_type IN ('WatchEvent', 'ForkEvent')\nGROUP BY repo_name\nHAVING forks > 0\nORDER BY ratio DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -25062,6 +25482,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT\n    COUNTIf(event_type = 'WatchEvent') AS stars,\n    COUNTIf(event_type = 'ForkEvent') AS forks,\n    ROUND(COUNTIf(event_type = 'WatchEvent') / NULLIF(COUNTIf(event_type = 'ForkEvent'), 0), 2) AS stars_to_forks_ratio\nFROM github_events\nLIMIT 1"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT \n    COUNTIf(event_type = 'WatchEvent') AS stars,\n    COUNTIf(event_type = 'ForkEvent') AS forks,\n    ROUND(stars / NULLIf(forks, 0), 2) AS stars_forks_ratio\nFROM github_events\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -25797,6 +26231,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT COUNT(*) AS total_issues_opened\nFROM github_events\nWHERE event_type = 'IssuesEvent'\nAND action = 'opened'\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT count(*) AS total_issues FROM github_events WHERE event_type = 'IssuesEvent' AND action = 'opened' LIMIT 10"
       }
     },
     "humanResults": {
@@ -26550,6 +26998,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(*) AS issue_comment_events_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY issue_comment_events_count DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, count() AS comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY comment_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -27326,6 +27788,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(CASE WHEN event_type = 'IssueCommentEvent' THEN 1 END) AS issue_comments,\n    COUNT(CASE WHEN event_type = 'IssuesEvent' AND action = 'opened' THEN 1 END) AS issues,\n    (COUNT(CASE WHEN event_type = 'IssueCommentEvent' THEN 1 END) /\n     NULLIF(COUNT(CASE WHEN event_type = 'IssuesEvent' AND action = 'opened' THEN 1 END), 0)) AS comment_to_issue_ratio\nFROM github_events\nGROUP BY repo_name\nHAVING issues > 0\nORDER BY comment_to_issue_ratio DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    countIf(event_type = 'IssueCommentEvent') AS comment_count,\n    countIf(event_type = 'IssuesEvent' AND action = 'opened') AS issue_count,\n    if(issue_count = 0, 0, comment_count / issue_count) AS comment_ratio\nFROM github_events\nWHERE event_type IN ('IssueCommentEvent', 'IssuesEvent')\nGROUP BY repo_name\nHAVING issue_count > 0\nORDER BY comment_ratio DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -28134,6 +28610,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name repo,\n    number issue_number,\n    comments comment_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n    AND action = 'opened'\nORDER BY comment_count DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name, \n    number, \n    count() AS comment_count \nFROM github_events \nWHERE event_type = 'IssueCommentEvent' \nGROUP BY repo_name, number \nORDER BY comment_count DESC \nLIMIT 10"
       }
     },
     "humanResults": {
@@ -28942,6 +29432,16 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name repo,\n    number issue_number,\n    countIf(event_type = 'IssueCommentEvent') comments_count,\n    uniqIf(actor_login, event_type = 'IssueCommentEvent') comment_authors_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\n  AND number > 10\nGROUP BY repo_name, number\nHAVING comments_count >= 10\nORDER BY comments_count DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": false,
+        "reason": "Missing data in results",
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "sql": null
       }
     },
     "humanResults": {
@@ -29750,6 +30250,16 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  COUNT(*) AS event_count\nFROM github_events\nWHERE LOWER(body) LIKE '%tensorflow%'\nGROUP BY repo_name\nORDER BY event_count DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": false,
+        "reason": "Missing data in results",
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "sql": null
       }
     },
     "humanResults": {
@@ -30544,6 +31054,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(*) AS commit_comments_count\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY commit_comments_count DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, COUNT(*) AS comment_count\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY comment_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -31338,6 +31862,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    'https://github.com/' || repo_name || '/commit/' || commit_id AS commit_url,\n    COUNT(*) AS total_comments,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name, commit_id\nHAVING uniq(actor_login) >= 10\nORDER BY total_comments DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "%\nSELECT \n    concat('https://github.com/', repo_name, '/commit/', commit_id) as commit_url,\n    count() as total_comments,\n    uniq(actor_login) as unique_authors\nFROM github_events \nWHERE event_type = 'CommitCommentEvent'\n  AND commit_id != ''\nGROUP BY repo_name, commit_id\nHAVING unique_authors >= 10\nORDER BY total_comments DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -32146,6 +32684,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    'https://github.com/' || repo_name || '/pull/' || toString(number) AS pr_url,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\nGROUP BY repo_name, number\nORDER BY unique_authors DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.511794028534489,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    concat('https://github.com/', repo_name, '/pull/', toString(number)) as pr_url,\n    count(distinct actor_login) as unique_authors\nFROM github_events \nWHERE event_type = 'IssueCommentEvent' \n    AND action = 'created'\n    AND number > 0\nGROUP BY repo_name, number\nORDER BY unique_authors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -32940,6 +33492,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    actor_login AS author,\n    COUNT(*) AS push_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY push_count DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT actor_login, COUNT(*) AS push_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY push_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -33734,6 +34300,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    splitByChar('/', repo_name)[1] AS organization,\n    COUNT(*) AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY organization\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    splitByChar('/', repo_name)[1] AS organization, \n    count() AS star_count \nFROM github_events \nWHERE event_type = 'WatchEvent' \nGROUP BY organization \nORDER BY star_count DESC \nLIMIT 10"
       }
     },
     "humanResults": {
@@ -34514,6 +35094,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    splitByChar('/', repo_name)[1] AS organization,\n    COUNT(DISTINCT repo_name) AS repository_count\nFROM github_events\nGROUP BY organization\nORDER BY repository_count DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    splitByChar('/', repo_name)[1] AS organization,\n    count(DISTINCT repo_name) AS repo_count\nFROM github_events\nWHERE repo_name != ''\nGROUP BY organization\nORDER BY repo_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -35308,6 +35902,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name repo,\n    COUNT(*) pr_count,\n    uniq(actor_login) unique_authors,\n    SUM(additions) total_adds,\n    SUM(deletions) total_dels,\n    SUM(additions) + SUM(deletions) total_churn\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\n    AND additions < 10000\n    AND deletions < 10000\nGROUP BY repo_name\nORDER BY total_churn DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    count() AS pr_count,\n    uniq(actor_login) AS unique_authors,\n    sum(additions) AS total_additions,\n    sum(deletions) AS total_deletions\nFROM github_events\nWHERE event_type = 'PullRequestEvent' \n  AND action = 'opened'\n  AND additions < 10000\n  AND deletions < 10000\nGROUP BY repo_name\nORDER BY (total_additions + total_deletions) DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -36144,6 +36752,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    actor_login AS author,\n    COUNT(*) AS total_pr_comments,\n    uniq(repo_name) AS unique_repositories,\n    uniq(number) AS unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\nGROUP BY actor_login\nORDER BY total_pr_comments DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    actor_login AS author,\n    COUNT(*) AS num_comments,\n    COUNT(DISTINCT repo_name) AS num_repos,\n    COUNT(DISTINCT number) AS num_prs\nFROM github_events \nWHERE event_type = 'PullRequestReviewCommentEvent'\nGROUP BY actor_login\nORDER BY num_comments DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -36952,6 +37574,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    label,\n    COUNT(*) AS usage_count\nFROM (\n    SELECT arrayJoin(labels) AS label\n    FROM github_events\n    WHERE (event_type = 'IssuesEvent' OR event_type = 'PullRequestEvent' OR event_type = 'IssueCommentEvent')\n    AND (action = 'opened' OR action = 'created' OR action = 'labeled')\n)\nGROUP BY label\nORDER BY usage_count DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    label,\n    COUNT(*) AS count\nFROM github_events\nARRAY JOIN labels AS label\nWHERE event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')\n    AND action IN ('created', 'opened', 'labeled')\nGROUP BY label\nORDER BY count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -37732,6 +38368,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    splitByChar('/', repo_name)[1] AS organization_name,\n    uniq(actor_login) AS unique_authors,\n    uniqIf(actor_login, event_type = 'PullRequestEvent' AND action = 'opened') AS unique_pull_request_authors,\n    uniqIf(actor_login, event_type = 'IssuesEvent' AND action = 'opened') AS unique_issue_authors,\n    uniqIf(actor_login, event_type = 'IssueCommentEvent') AS unique_issue_comment_authors,\n    uniqIf(actor_login, event_type = 'PushEvent') AS unique_push_authors\nFROM github_events\nGROUP BY organization_name\nORDER BY unique_authors DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    splitByChar('/', repo_name)[1] AS org_name,\n    count(DISTINCT actor_login) AS unique_authors,\n    count(DISTINCT if(event_type = 'PullRequestEvent' AND action = 'opened', actor_login, NULL)) AS unique_pr_authors,\n    count(DISTINCT if(event_type = 'IssuesEvent' AND action = 'opened', actor_login, NULL)) AS unique_issue_authors,\n    count(DISTINCT if(event_type = 'IssueCommentEvent', actor_login, NULL)) AS unique_issue_comment_authors,\n    count(DISTINCT if(event_type = 'PushEvent', actor_login, NULL)) AS unique_push_authors\nFROM github_events\nGROUP BY org_name\nORDER BY unique_authors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -38596,6 +39246,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  CHAR_LENGTH(repo_name) AS repo_name_length\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY repo_name_length DESC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0.18181818181818177,
+          "numeric": 0,
+          "fScore": 0.9
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name, \n    CHAR_LENGTH(repo_name) AS name_length \nFROM github_events \nWHERE event_type = 'WatchEvent' \nGROUP BY repo_name \nHAVING COUNT(*) >= 1 \nORDER BY name_length DESC \nLIMIT 10"
       }
     },
     "humanResults": {
@@ -39376,6 +40040,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING COUNT(*) >= 1\nORDER BY CHAR_LENGTH(repo_name) ASC\nLIMIT 10"
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.75,
+          "numeric": 1,
+          "fScore": 0.40000000000000013
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING COUNT(*) >= 1\nORDER BY LENGTH(repo_name) ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -39845,6 +40523,14 @@
         "avgExactDistance": 0.5423456368193211,
         "avgNumericDistance": 0.4253774501041601,
         "avgFScore": 0.47
+      },
+      "deepseek/deepseek-chat-v3.1": {
+        "totalMatches": 27,
+        "exactMatches": 21,
+        "numericMatches": 27,
+        "avgExactDistance": 0.48196969696969694,
+        "avgNumericDistance": 0.3876998520216422,
+        "avgFScore": 0.5041818181818182
       }
     }
   }
