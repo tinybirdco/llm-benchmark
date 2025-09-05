@@ -784,6 +784,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT count() AS total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -1593,6 +1607,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(*) AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -2443,6 +2471,20 @@
         "humanRowCount": 5,
         "llmRowCount": 5,
         "sql": "SELECT\n    pow(10, floor(log10(star_count))) AS star_power,\n    count() AS repo_count\nFROM (\n    SELECT repo_name, count() AS star_count\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n)\nGROUP BY star_power\nORDER BY star_power\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 5,
+        "llmRowCount": 5,
+        "sql": "SELECT\n    pow(10, floor(log10(star_count))) as approx_stars,\n    count() as repo_count\nFROM (\n    SELECT repo_name, count() as star_count\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n)\nGROUP BY approx_stars\nORDER BY approx_stars ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -3273,6 +3315,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT COUNT(DISTINCT repo_name) AS total_repos FROM github_events LIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT countDistinct(repo_name) AS total_repositories\nFROM github_events\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -4082,6 +4138,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "%\nSELECT\n    toYear(created_at) AS year,\n    repo_name,\n    COUNT(*) AS event_count\nFROM github_events\nWHERE event_type != 'WatchEvent'\n    AND toYear(created_at) >= 2015\nGROUP BY year, repo_name\nORDER BY year ASC, event_count DESC\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "%\nSELECT\n    toYear(created_at) AS year,\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND created_at >= toDate('2015-01-01')\n  {{%if defined(start_year)%}}\n  AND toYear(created_at) >= {{UInt16(start_year, 2015)}}\n  {{%end%}}\n  {{%if defined(end_year)%}}\n  AND toYear(created_at) <= {{UInt16(end_year, 2024)}}\n  {{%end%}}\nGROUP BY year, repo_name\nORDER BY year ASC, stars DESC\nLIMIT 10 BY year"
       }
     },
     "humanResults": {
@@ -4946,6 +5016,20 @@
         "humanRowCount": 2,
         "llmRowCount": 2,
         "sql": "SELECT \n    toYear(created_at) AS year, \n    COUNT(*) AS total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 2,
+        "llmRowCount": 2,
+        "sql": "SELECT\n    toYear(created_at) AS year,\n    count() AS total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -5750,6 +5834,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT actor_login, COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT actor_login, count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -6600,6 +6698,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name, \n    COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent' \n  AND actor_login IN (\n      SELECT DISTINCT actor_login\n      FROM github_events\n      WHERE event_type = 'WatchEvent' \n        AND repo_name = 'tensorflow/tensorflow'\n  )\n  AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE (event_type = 'WatchEvent') AND (actor_login IN (\n    SELECT actor_login\n    FROM github_events\n    WHERE (event_type = 'WatchEvent') AND (repo_name = 'tensorflow/tensorflow')\n))\nAND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -7436,6 +7548,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    actor_login,\n    SUM(CASE WHEN repo_name LIKE 'javisantana/%' THEN 1 ELSE 0 END) AS stars_to_javisantana,\n    SUM(CASE WHEN repo_name NOT LIKE 'javisantana/%' THEN 1 ELSE 0 END) AS stars_to_others,\n    SUM(CASE WHEN repo_name LIKE 'javisantana/%' THEN 1 ELSE 0 END) / COUNT(*) AS ratio_javisantana_to_total\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY ratio_javisantana_to_total DESC\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    actor_login,\n    sum(if(repo_name LIKE 'javisantana/%', 1, 0)) AS javisantana_stars,\n    sum(if(repo_name NOT LIKE 'javisantana/%', 1, 0)) AS other_stars,\n    javisantana_stars / (javisantana_stars + other_stars) AS ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nHAVING (javisantana_stars + other_stars) > 0\nORDER BY ratio DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -8300,6 +8426,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS unique_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND repo_name NOT LIKE '%tensorflow%'\n  AND actor_login IN (\n      SELECT DISTINCT actor_login\n      FROM github_events\n      WHERE event_type = 'PullRequestEvent'\n        AND action = 'opened'\n        AND repo_name LIKE '%tensorflow%'\n  )\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    uniq(actor_login) AS unique_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND repo_name NOT LIKE '%tensorflow%'\n  AND actor_login IN (\n      SELECT DISTINCT actor_login\n      FROM github_events\n      WHERE repo_name LIKE '%tensorflow%'\n        AND event_type = 'PullRequestEvent'\n        AND action = 'opened'\n  )\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -9150,6 +9290,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    actor_login,\n    COUNT(*) AS issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n  AND action = 'opened'\n  AND actor_login IN (\n    SELECT DISTINCT actor_login\n    FROM github_events\n    WHERE event_type = 'IssuesEvent'\n      AND action = 'opened'\n      AND repo_name = 'tensorflow/tensorflow'\n  )\nGROUP BY repo_name, actor_login\nORDER BY issue_count DESC\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, actor_login, COUNT(*) AS issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n  AND action = 'opened'\n  AND actor_login IN (\n    SELECT DISTINCT actor_login\n    FROM github_events\n    WHERE event_type = 'IssuesEvent'\n      AND action = 'opened'\n      AND repo_name = 'tensorflow/tensorflow'\n  )\n  AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name, actor_login\nORDER BY issue_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -10010,6 +10164,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "SELECT\n    repo_name,\n    COUNT(*) AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND created_at >= today() - INTERVAL 1 DAY\n    AND created_at < today()\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, COUNT() AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -10874,6 +11042,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(CASE WHEN toYear(created_at) = 2016 THEN 1 END) AS stars_2016,\n    COUNT(CASE WHEN toYear(created_at) = 2017 THEN 1 END) AS stars_2017,\n    (COUNT(CASE WHEN toYear(created_at) = 2017 THEN 1 END) - COUNT(CASE WHEN toYear(created_at) = 2016 THEN 1 END)) AS yoy_growth\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND toYear(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING stars_2016 >= 1\nORDER BY yoy_growth DESC\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2016) AS stars_2016,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2017) AS stars_2017,\n    if(stars_2016 = 0, 0, (stars_2017 - stars_2016) / stars_2016) AS growth_rate\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND toYear(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING stars_2016 >= 1\nORDER BY growth_rate DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -11752,6 +11934,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    SUM(CASE WHEN toYear(created_at) = 2016 AND event_type = 'WatchEvent' THEN 1 ELSE 0 END) AS stars_2016,\n    SUM(CASE WHEN toYear(created_at) = 2017 AND event_type = 'WatchEvent' THEN 1 ELSE 0 END) AS stars_2017,\n    (stars_2017 - stars_2016) AS stagnation\nFROM github_events\nWHERE event_type = 'WatchEvent' \n  AND toYear(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING stars_2017 >= 1\nORDER BY stagnation ASC\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    sumIf(1, toYear(created_at) = 2016) AS events_2016,\n    sumIf(1, toYear(created_at) = 2017) AS events_2017,\n    if(events_2016 > 0, events_2017 / events_2016, 0) AS stagnation_ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND repo_name IN (\n      SELECT repo_name\n      FROM github_events\n      WHERE event_type = 'WatchEvent'\n        AND toYear(created_at) = 2017\n      GROUP BY repo_name\n  )\n  AND toYear(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING events_2016 > 0\nORDER BY stagnation_ratio ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -12616,6 +12812,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    COUNT(*) AS star_count,\n    MIN(created_at) AS first_star,\n    MAX(created_at) AS last_star,\n    (COUNT(*) / (MAX(created_at) - MIN(created_at))) AS star_growth_rate\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY star_growth_rate DESC\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    count() AS total_stars,\n    date_diff('day', min(created_at), max(created_at)) AS days_between,\n    total_stars / days_between AS stars_per_day\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING days_between > 0\nORDER BY stars_per_day DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -13490,6 +13700,20 @@
         "humanRowCount": 7,
         "llmRowCount": 7,
         "sql": "SELECT\n    toDayOfWeek(created_at) AS day_of_week,\n    COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.8571428571428572,
+          "numeric": 0.7081035047179752,
+          "fScore": 0.25
+        },
+        "details": "Results don't match",
+        "humanRowCount": 7,
+        "llmRowCount": 1,
+        "sql": "SELECT\n    dayOfWeek(created_at) AS day_of_week,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY stars DESC\nLIMIT 1"
       }
     },
     "humanResults": {
@@ -14314,6 +14538,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\n\nSELECT count(DISTINCT actor_login) AS total_users FROM github_events WHERE actor_login != '' LIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.000052934128674804696,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT countDistinct(actor_login) AS total_users\nFROM github_events\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -15123,6 +15361,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT COUNT(DISTINCT actor_login) AS total_users\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0014793406252330366,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT countDistinct(actor_login) AS total_users\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -15904,6 +16156,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\n\nSELECT count(DISTINCT actor_login) FROM github_events WHERE event_type = 'PushEvent' LIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT uniq(actor_login) AS total_users_with_push\nFROM github_events\nWHERE event_type = 'PushEvent'\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -16685,6 +16951,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\n\nSELECT count(DISTINCT actor_login) FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' LIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0017507922334856522,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT countDistinct(actor_login) AS total_users\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -17494,6 +17774,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND actor_login IN (\n      SELECT DISTINCT actor_login\n      FROM github_events\n      WHERE event_type = 'PullRequestEvent' AND action = 'opened'\n  )\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND actor_login IN (\n    SELECT DISTINCT actor_login\n    FROM github_events\n    WHERE event_type = 'PullRequestEvent'\n      AND action = 'opened'\n  )\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -18330,6 +18624,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    actor_login AS author,\n    COUNT(*) AS pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name, actor_login\nHAVING pr_count >= 10\nORDER BY pr_count DESC\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, actor_login, COUNT(*) as pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name, actor_login\nHAVING pr_count >= 10\nORDER BY pr_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -19166,6 +19474,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, COUNT(*) as pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY pr_count DESC\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, count() AS pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\nGROUP BY repo_name\nORDER BY pr_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -20016,6 +20338,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    COUNT(DISTINCT actor_login) AS contributor_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY contributor_count DESC\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    uniq(actor_login) AS pr_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\nGROUP BY repo_name\nORDER BY pr_contributors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -20862,6 +21198,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(*) AS issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, count() AS issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n  AND action = 'opened'\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -21698,6 +22048,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS people_with_push_access\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY repo_name\nORDER BY people_with_push_access DESC\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, uniq(actor_login) AS push_people\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY repo_name\nORDER BY push_people DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -22534,6 +22898,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, COUNT(DISTINCT actor_login) as push_access_count\nFROM github_events\nWHERE event_type = 'PushEvent' AND ref = 'refs/heads/main'\nGROUP BY repo_name\nORDER BY push_access_count DESC\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.8888888888888888,
+          "numeric": 0.8912164134235107,
+          "fScore": 0.20000000000000007
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, uniq(actor_login) AS push_access_users\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY repo_name\nORDER BY push_access_users DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -23384,6 +23762,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "SELECT \n    repo_name, \n    COUNT(DISTINCT actor_login) AS push_access_count\nFROM github_events\nWHERE event_type = 'PushEvent' \n  AND ref = 'refs/heads/main' \n  AND repo_name IN (\n      SELECT repo_name\n      FROM github_events\n      WHERE event_type = 'WatchEvent'\n      GROUP BY repo_name\n      HAVING COUNT(*) > 99\n  )\nGROUP BY repo_name\nORDER BY push_access_count DESC\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT\n    repo_name,\n    uniq(actor_login) AS pushers\nFROM github_events\nWHERE event_type = 'PushEvent'\n  AND ref = 'refs/heads/main'\n  AND repo_name IN (\n      SELECT repo_name\n      FROM github_events\n      WHERE event_type = 'WatchEvent'\n      AND action = 'started'\n      GROUP BY repo_name\n      HAVING count() > 99\n  )\nGROUP BY repo_name\nORDER BY pushers DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -24248,6 +24640,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(*) AS member_invitations\nFROM github_events\nWHERE event_type = 'MemberEvent' AND action = 'added'\nGROUP BY repo_name\nORDER BY member_invitations DESC\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, count() AS invitations\nFROM github_events\nWHERE event_type = 'MemberEvent'\n  AND action = 'added'\nGROUP BY repo_name\nORDER BY invitations DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -25098,6 +25504,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(*) AS fork_count\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY fork_count DESC\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    count() AS forks\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY forks DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -25934,6 +26354,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    COUNTIf(event_type = 'WatchEvent') AS stars,\n    COUNTIf(event_type = 'ForkEvent') AS forks,\n    (stars / NULLIF(forks, 0)) AS stars_forks_ratio\nFROM github_events\nWHERE event_type IN ('WatchEvent', 'ForkEvent')\nGROUP BY repo_name\nORDER BY stars_forks_ratio DESC\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT\n    repo_name,\n    countIf(event_type = 'WatchEvent') AS stars,\n    countIf(event_type = 'ForkEvent') AS forks,\n    if(forks > 0, stars / forks, 0) AS star_fork_ratio\nFROM github_events\nGROUP BY repo_name\nHAVING (stars > 0) AND (forks > 0)\nORDER BY star_fork_ratio DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -26798,6 +27232,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT \n    SUM(CASE WHEN event_type = 'WatchEvent' THEN 1 ELSE 0 END) AS total_stars,\n    SUM(CASE WHEN event_type = 'ForkEvent' THEN 1 ELSE 0 END) AS total_forks,\n    ROUND(SUM(CASE WHEN event_type = 'WatchEvent' THEN 1 ELSE 0 END) / NULLIF(SUM(CASE WHEN event_type = 'ForkEvent' THEN 1 ELSE 0 END), 0), 2) AS stars_to_forks_ratio\nFROM github_events\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT\n    countIf(event_type = 'WatchEvent') AS total_stars,\n    countIf(event_type = 'ForkEvent') AS total_forks,\n    round(total_stars / total_forks, 2) AS star_fork_ratio\nFROM github_events\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -27589,6 +28037,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count(*) as total_issues_opened\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT count() AS total_issues_opened\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n  AND action = 'opened'\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -28398,6 +28860,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, COUNT(*) AS issue_comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY issue_comment_count DESC\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, count() AS issue_comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY issue_comment_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -29230,6 +29706,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    countIf(event_type = 'IssueCommentEvent') / countIf(event_type = 'IssuesEvent' AND action = 'opened') AS ratio\nFROM github_events\nWHERE event_type IN ('IssueCommentEvent', 'IssuesEvent')\nGROUP BY repo_name\nHAVING countIf(event_type = 'IssuesEvent' AND action = 'opened') > 0\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    countIf(event_type = 'IssueCommentEvent') AS issue_comments,\n    countIf(event_type = 'IssuesEvent' AND action = 'opened') AS issues,\n    if(issues > 0, issue_comments / issues, 0) AS ratio\nFROM github_events\nGROUP BY repo_name\nHAVING issues > 0\nORDER BY ratio DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -30094,6 +30584,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    number,\n    comments\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nORDER BY comments DESC\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    number AS issue_number,\n    comments\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n  AND action = 'opened'\nORDER BY comments DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -30940,6 +31444,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\n\nSELECT repo_name, number, count(*) AS total_comments, count(distinct actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name, number\nHAVING total_comments >= 10\nORDER BY total_comments DESC\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    number,\n    count() AS comment_count,\n    uniq(actor_login) AS comment_authors\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\n  AND repo_name || '#' || toString(number) > '10'\nGROUP BY repo_name, number\nHAVING comment_authors >= 10\nORDER BY comment_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -31800,6 +32318,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, COUNT(*) as event_count\nFROM github_events\nWHERE body LIKE '%tensorflow%'\nGROUP BY repo_name\nORDER BY event_count DESC\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.9230778668143195,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, count() AS event_count\nFROM github_events\nWHERE positionCaseInsensitive(body, 'tensorflow') > 0\n   OR positionCaseInsensitive(title, 'tensorflow') > 0\nGROUP BY repo_name\nORDER BY event_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -32650,6 +33182,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, COUNT(*) as commit_comment_count\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY commit_comment_count DESC\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, COUNT(*) AS commit_comment_count\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY commit_comment_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -33500,6 +34046,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "SELECT\n    repo_name,\n    number,\n    concat('https://github.com/', repo_name, '/commit/', head_sha) AS commit_url,\n    comments AS total_comments,\n    arrayUniq(arrayConcat([actor_login], assignees)) AS unique_authors\nFROM github_events\nWHERE event_type = 'PushEvent'\n  AND comments >= 10\nORDER BY comments DESC\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    concat('https://github.com/', repo_name, '/commit/', commit_id) AS commit_url,\n    count() AS total_comments,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name, commit_id\nHAVING unique_authors >= 10\nORDER BY total_comments DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -34364,6 +34924,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "%\nSELECT \n    concat('https://github.com/', repo_name, '/pull/', toString(number)) AS pr_url,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\nGROUP BY repo_name, number\nORDER BY unique_authors DESC\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0.18181818181818177,
+          "numeric": 0,
+          "fScore": 0.9
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    concat('https://github.com/', repo_name, '/pull/', toString(number)) AS pr_url,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\nGROUP BY repo_name, number\nORDER BY unique_authors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -35214,6 +35788,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT actor_login, COUNT(*) AS push_count FROM github_events WHERE event_type = 'PushEvent' GROUP BY actor_login ORDER BY push_count DESC LIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    actor_login,\n    count() AS push_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY push_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -36064,6 +36652,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT splitByChar('/', repo_name)[1] AS organization, count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY organization\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    splitByChar('/', repo_name)[1] AS org_name,\n    COUNT() AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY org_name\nORDER BY star_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -36900,6 +37502,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT splitByChar('/', repo_name)[1] AS organization, COUNT(DISTINCT repo_name) AS repo_count FROM github_events GROUP BY organization ORDER BY repo_count DESC LIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    splitByChar('/', repo_name)[1] AS organization,\n    uniq(repo_name) AS repository_count\nFROM github_events\nGROUP BY organization\nORDER BY repository_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -37750,6 +38366,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(*) AS pr_count,\n    COUNT(DISTINCT actor_login) AS unique_authors,\n    SUM(additions) AS total_adds,\n    SUM(deletions) AS total_dels\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND additions < 10000\n  AND deletions < 10000\nGROUP BY repo_name\nORDER BY (total_adds + total_dels) DESC\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    count() AS pr_count,\n    uniq(actor_login) AS unique_authors,\n    sum(additions) AS total_adds,\n    sum(deletions) AS total_dels\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND additions < 10000\n  AND deletions < 10000\nGROUP BY repo_name\nORDER BY (total_adds + total_dels) DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -38642,6 +39272,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    actor_login AS author,\n    COUNT(*) AS pr_comments_created,\n    COUNT(DISTINCT repo_name) AS unique_repos,\n    COUNT(DISTINCT number) AS unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent' \n  AND action = 'created'\nGROUP BY actor_login\nORDER BY pr_comments_created DESC\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    actor_login AS author,\n    count() AS pr_comments_created,\n    uniq(repo_name) AS unique_repositories,\n    uniq(number) AS unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\n  AND action = 'created'\nGROUP BY actor_login\nORDER BY pr_comments_created DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -39506,6 +40150,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    label,\n    count() AS usage_count\nFROM github_events\nARRAY JOIN labels AS label\nWHERE event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')\n  AND action IN ('created', 'opened', 'labeled')\nGROUP BY label\nORDER BY usage_count DESC\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    label,\n    count() AS usage_count\nFROM (\n    SELECT\n        arrayJoin(labels) AS label\n    FROM github_events\n    WHERE event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')\n      AND action IN ('created', 'opened', 'labeled')\n      AND length(labels) > 0\n)\nGROUP BY label\nORDER BY usage_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -40342,6 +41000,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    splitByChar('/', repo_name)[1] AS organization_name,\n    uniq(actor_login) AS unique_authors,\n    uniqIf(actor_login, event_type = 'PullRequestEvent' AND action = 'opened') AS unique_pr_authors,\n    uniqIf(actor_login, event_type = 'IssuesEvent' AND action = 'opened') AS unique_issue_authors,\n    uniqIf(actor_login, event_type = 'IssueCommentEvent') AS unique_issue_comment_authors,\n    uniqIf(actor_login, event_type = 'PushEvent') AS unique_push_authors\nFROM github_events\nGROUP BY organization_name\nORDER BY unique_authors DESC\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    splitByChar('/', repo_name)[1] AS organization,\n    uniq(actor_login) AS unique_authors,\n    uniqIf(actor_login, event_type = 'PullRequestEvent') AS unique_pr_authors,\n    uniqIf(actor_login, event_type = 'IssuesEvent') AS unique_issue_authors,\n    uniqIf(actor_login, event_type = 'IssueCommentEvent') AS unique_issue_comment_authors,\n    uniqIf(actor_login, event_type = 'PushEvent') AS unique_push_authors\nFROM github_events\nGROUP BY organization\nORDER BY unique_authors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -41262,6 +41934,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    length(repo_name) AS repo_name_length\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY repo_name_length DESC\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0.18181818181818177,
+          "numeric": 0,
+          "fScore": 0.9
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, length(repo_name) AS name_length\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING count() >= 1\nORDER BY name_length DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -42098,6 +42784,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING COUNT(*) >= 1\nORDER BY length(repo_name) ASC\nLIMIT 10"
+      },
+      "moonshotai/kimi-k2-0905": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.75,
+          "numeric": 1,
+          "fScore": 0.40000000000000013
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING count() >= 1\nORDER BY length(repo_name) ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -42599,6 +43299,14 @@
         "avgExactDistance": 0.3987012987012987,
         "avgNumericDistance": 0.3502789567584547,
         "avgFScore": 0.528
+      },
+      "moonshotai/kimi-k2-0905": {
+        "totalMatches": 30,
+        "exactMatches": 24,
+        "numericMatches": 30,
+        "avgExactDistance": 0.4771933621933623,
+        "avgNumericDistance": 0.390513617038864,
+        "avgFScore": 0.5329999999999999
       }
     }
   }
