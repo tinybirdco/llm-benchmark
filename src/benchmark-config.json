@@ -77,7 +77,8 @@
         "qwen3-coder",
         "qwen3-30b-a3b-instruct-2507",
         "qwen3-30b-a3b-thinking-2507",
-        "qwen3-max"
+        "qwen3-max",
+        "qwen3-next-80b-a3b-instruct"
       ]
     },
     "moonshotai": {
