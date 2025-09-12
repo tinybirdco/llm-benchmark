@@ -784,6 +784,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\n\nSELECT count() AS star_count FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10"
       }
     },
     "humanResults": {
@@ -1593,6 +1607,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(*) AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\n\nSELECT repo_name, count() AS stars FROM github_events WHERE event_type = 'WatchEvent' GROUP BY repo_name ORDER BY stars DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -2443,6 +2471,20 @@
         "humanRowCount": 5,
         "llmRowCount": 5,
         "sql": "SELECT\n    pow(10, floor(log10(star_count))) AS star_power,\n    count() AS repo_count\nFROM (\n    SELECT repo_name, count() AS star_count\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n)\nGROUP BY star_power\nORDER BY star_power\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 5,
+        "llmRowCount": 5,
+        "sql": "\n\nSELECT pow(10, floor(log10(stars))) AS bucket, count() AS repo_count FROM (SELECT repo_name, count() AS stars FROM github_events WHERE event_type = 'WatchEvent' GROUP BY repo_name) GROUP BY bucket ORDER BY bucket LIMIT 10"
       }
     },
     "humanResults": {
@@ -3273,6 +3315,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT COUNT(DISTINCT repo_name) AS total_repos FROM github_events LIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\n\nSELECT COUNT(DISTINCT repo_name) AS total_repos FROM github_events LIMIT 10"
       }
     },
     "humanResults": {
@@ -4082,6 +4138,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "%\nSELECT\n    toYear(created_at) AS year,\n    repo_name,\n    COUNT(*) AS event_count\nFROM github_events\nWHERE event_type != 'WatchEvent'\n    AND toYear(created_at) >= 2015\nGROUP BY year, repo_name\nORDER BY year ASC, event_count DESC\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0003506604419472093,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 2,
+        "sql": "SELECT YEAR(created_at) AS year, topK(10)(repo_name) AS top_repos FROM github_events WHERE event_type = 'WatchEvent' AND created_at >= '2015-01-01' GROUP BY year LIMIT 10"
       }
     },
     "humanResults": {
@@ -4946,6 +5016,20 @@
         "humanRowCount": 2,
         "llmRowCount": 2,
         "sql": "SELECT \n    toYear(created_at) AS year, \n    COUNT(*) AS total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 2,
+        "llmRowCount": 2,
+        "sql": "\n\nSELECT toYear(created_at) AS year, count() AS total_stars FROM github_events WHERE event_type = 'WatchEvent' GROUP BY year ORDER BY year DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -5750,6 +5834,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT actor_login, COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\n\nSELECT actor_login, count() AS stars_count FROM github_events WHERE event_type = 'WatchEvent' GROUP BY actor_login ORDER BY stars_count DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -6600,6 +6698,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name, \n    COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent' \n  AND actor_login IN (\n      SELECT DISTINCT actor_login\n      FROM github_events\n      WHERE event_type = 'WatchEvent' \n        AND repo_name = 'tensorflow/tensorflow'\n  )\n  AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\n\nSELECT e2.repo_name, COUNT(*) AS stars FROM github_events AS e1 JOIN github_events AS e2 ON e1.actor_login = e2.actor_login WHERE e1.repo_name = 'tensorflow/tensorflow' AND e1.event_type = 'WatchEvent' AND e2.event_type = 'WatchEvent' AND e2.repo_name != 'tensorflow/tensorflow' GROUP BY e2.repo_name ORDER BY stars DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -7436,6 +7548,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    actor_login,\n    SUM(CASE WHEN repo_name LIKE 'javisantana/%' THEN 1 ELSE 0 END) AS stars_to_javisantana,\n    SUM(CASE WHEN repo_name NOT LIKE 'javisantana/%' THEN 1 ELSE 0 END) AS stars_to_others,\n    SUM(CASE WHEN repo_name LIKE 'javisantana/%' THEN 1 ELSE 0 END) / COUNT(*) AS ratio_javisantana_to_total\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY ratio_javisantana_to_total DESC\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\n\nSELECT actor_login, countIf(startsWith(repo_name, 'javisantana/')) AS javisantana_stars, count() AS total_stars, countIf(startsWith(repo_name, 'javisantana/')) / count() AS ratio FROM github_events WHERE event_type = 'WatchEvent' GROUP BY actor_login ORDER BY ratio DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -8300,6 +8426,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS unique_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND repo_name NOT LIKE '%tensorflow%'\n  AND actor_login IN (\n      SELECT DISTINCT actor_login\n      FROM github_events\n      WHERE event_type = 'PullRequestEvent'\n        AND action = 'opened'\n        AND repo_name LIKE '%tensorflow%'\n  )\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\n\nSELECT e1.repo_name, COUNT(DISTINCT e1.actor_login) AS unique_contributors FROM github_events e1 JOIN github_events e2 ON e1.actor_login = e2.actor_login WHERE e1.event_type = 'PullRequestEvent' AND e1.action = 'opened' AND e1.repo_name NOT LIKE 'tensorflow/%' AND e2.repo_name LIKE 'tensorflow/%' GROUP BY e1.repo_name ORDER BY unique_contributors DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -9150,6 +9290,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    actor_login,\n    COUNT(*) AS issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n  AND action = 'opened'\n  AND actor_login IN (\n    SELECT DISTINCT actor_login\n    FROM github_events\n    WHERE event_type = 'IssuesEvent'\n      AND action = 'opened'\n      AND repo_name = 'tensorflow/tensorflow'\n  )\nGROUP BY repo_name, actor_login\nORDER BY issue_count DESC\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.921366691261145,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\n\nSELECT repo_name, COUNT(*) AS issue_count FROM github_events WHERE event_type = 'IssuesEvent' AND action = 'opened' AND actor_login IN (SELECT actor_login FROM github_events WHERE repo_name = 'tensorflow/tensorflow' AND event_type = 'IssuesEvent' AND action = 'opened') AND repo_name != 'tensorflow/tensorflow' GROUP BY repo_name ORDER BY issue_count DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -10010,6 +10164,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "SELECT\n    repo_name,\n    COUNT(*) AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND created_at >= today() - INTERVAL 1 DAY\n    AND created_at < today()\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, count(*) AS stars \nFROM github_events \nWHERE event_type = 'WatchEvent' \nGROUP BY repo_name \nORDER BY stars DESC \nLIMIT 10"
       }
     },
     "humanResults": {
@@ -10874,6 +11042,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(CASE WHEN toYear(created_at) = 2016 THEN 1 END) AS stars_2016,\n    COUNT(CASE WHEN toYear(created_at) = 2017 THEN 1 END) AS stars_2017,\n    (COUNT(CASE WHEN toYear(created_at) = 2017 THEN 1 END) - COUNT(CASE WHEN toYear(created_at) = 2016 THEN 1 END)) AS yoy_growth\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND toYear(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING stars_2016 >= 1\nORDER BY yoy_growth DESC\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, countIf(toYear(created_at) = 2016) AS stars_2016, countIf(toYear(created_at) = 2017) AS stars_2017, (stars_2017 - stars_2016) AS growth FROM github_events WHERE event_type = 'WatchEvent' AND created_at >= '2016-01-01' AND created_at < '2018-01-01' GROUP BY repo_name HAVING stars_2016 >= 1 ORDER BY growth DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -11752,6 +11934,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    SUM(CASE WHEN toYear(created_at) = 2016 AND event_type = 'WatchEvent' THEN 1 ELSE 0 END) AS stars_2016,\n    SUM(CASE WHEN toYear(created_at) = 2017 AND event_type = 'WatchEvent' THEN 1 ELSE 0 END) AS stars_2017,\n    (stars_2017 - stars_2016) AS stagnation\nFROM github_events\nWHERE event_type = 'WatchEvent' \n  AND toYear(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING stars_2017 >= 1\nORDER BY stagnation ASC\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\n\nSELECT repo_name,\n       sumIf(1, toYear(created_at) = 2016) AS stars_2016,\n       sumIf(1, toYear(created_at) = 2017) AS stars_2017,\n       (stars_2017 - stars_2016) AS diff\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND (toYear(created_at) = 2016 OR toYear(created_at) = 2017)\nGROUP BY repo_name\nHAVING stars_2017 >= 1\nORDER BY diff ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -12616,6 +12812,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    COUNT(*) AS star_count,\n    MIN(created_at) AS first_star,\n    MAX(created_at) AS last_star,\n    (COUNT(*) / (MAX(created_at) - MIN(created_at))) AS star_growth_rate\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY star_growth_rate DESC\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT repo_name, stddev_samp(daily_count) AS std_dev FROM (SELECT repo_name, DATE_TRUNC('day', created_at) AS day, count() AS daily_count FROM github_events WHERE event_type = 'WatchEvent' AND action = 'created' GROUP BY repo_name, day) GROUP BY repo_name ORDER BY std_dev ASC LIMIT 10"
       }
     },
     "humanResults": {
@@ -13490,6 +13700,20 @@
         "humanRowCount": 7,
         "llmRowCount": 7,
         "sql": "SELECT\n    toDayOfWeek(created_at) AS day_of_week,\n    COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.013821492945413797,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 7,
+        "llmRowCount": 7,
+        "sql": "\n\nSELECT DATE_FORMAT(created_at, '%W') AS day_of_week, COUNT(*) AS star_count FROM github_events WHERE event_type = 'WatchEvent' GROUP BY day_of_week ORDER BY star_count DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -14314,6 +14538,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\n\nSELECT count(DISTINCT actor_login) AS total_users FROM github_events WHERE actor_login != '' LIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.000052934128674804696,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\n\nSELECT COUNT(DISTINCT actor_login) FROM github_events LIMIT 10"
       }
     },
     "humanResults": {
@@ -15123,6 +15361,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT COUNT(DISTINCT actor_login) AS total_users\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0014793406252330366,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\n\nSELECT count(distinct actor_login) AS total_users FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10"
       }
     },
     "humanResults": {
@@ -15904,6 +16156,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\n\nSELECT count(DISTINCT actor_login) FROM github_events WHERE event_type = 'PushEvent' LIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0018759619527295886,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT count(distinct actor_login) AS total_users FROM github_events WHERE event_type = 'PushEvent' LIMIT 10"
       }
     },
     "humanResults": {
@@ -16685,6 +16951,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\n\nSELECT count(DISTINCT actor_login) FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' LIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0017507922334856522,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\n\nSELECT count(distinct actor_login) FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' LIMIT 10"
       }
     },
     "humanResults": {
@@ -17494,6 +17774,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND actor_login IN (\n      SELECT DISTINCT actor_login\n      FROM github_events\n      WHERE event_type = 'PullRequestEvent' AND action = 'opened'\n  )\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\n\nSELECT repo_name, count() as stars FROM github_events WHERE event_type = 'WatchEvent' AND actor_login IN (SELECT actor_login FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' GROUP BY actor_login) GROUP BY repo_name ORDER BY stars DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -18330,6 +18624,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    actor_login AS author,\n    COUNT(*) AS pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name, actor_login\nHAVING pr_count >= 10\nORDER BY pr_count DESC\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\n\nSELECT repo_name, count() AS total_prs FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' AND actor_login IN (SELECT actor_login FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' GROUP BY actor_login HAVING count() >= 10) GROUP BY repo_name ORDER BY total_prs DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -19166,6 +19474,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, COUNT(*) as pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY pr_count DESC\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\n\nSELECT repo_name, count() AS pr_count FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' GROUP BY repo_name ORDER BY pr_count DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -20016,6 +20338,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    COUNT(DISTINCT actor_login) AS contributor_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY contributor_count DESC\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\n\nSELECT repo_name, countDistinct(actor_login) AS contributor_count FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' GROUP BY repo_name ORDER BY contributor_count DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -20862,6 +21198,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(*) AS issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, count() AS issue_count FROM github_events WHERE event_type = 'IssuesEvent' AND action = 'opened' GROUP BY repo_name ORDER BY issue_count DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -21698,6 +22048,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS people_with_push_access\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY repo_name\nORDER BY people_with_push_access DESC\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.8184384242268471,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\n\nSELECT repo_name, countDistinct(actor_login) AS push_access_count FROM github_events WHERE author_association IN ('OWNER', 'COLLABORATOR', 'MEMBER') GROUP BY repo_name ORDER BY push_access_count DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -22534,6 +22898,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, COUNT(DISTINCT actor_login) as push_access_count\nFROM github_events\nWHERE event_type = 'PushEvent' AND ref = 'refs/heads/main'\nGROUP BY repo_name\nORDER BY push_access_count DESC\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT repo_name, countDistinct(actor_login) AS pushers_count FROM github_events WHERE event_type = 'PushEvent' AND ref_type = 'branch' AND (ref = 'refs/heads/main' OR ref = 'refs/heads/master') GROUP BY repo_name ORDER BY pushers_count DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -23384,6 +23762,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "SELECT \n    repo_name, \n    COUNT(DISTINCT actor_login) AS push_access_count\nFROM github_events\nWHERE event_type = 'PushEvent' \n  AND ref = 'refs/heads/main' \n  AND repo_name IN (\n      SELECT repo_name\n      FROM github_events\n      WHERE event_type = 'WatchEvent'\n      GROUP BY repo_name\n      HAVING COUNT(*) > 99\n  )\nGROUP BY repo_name\nORDER BY push_access_count DESC\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.6666666666666667,
+          "numeric": 1,
+          "fScore": 0.5
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, countIf(event_type = 'WatchEvent') AS stars, count(distinct if(event_type = 'PushEvent' AND ref_type = 'branch' AND ref = 'refs/heads/main', actor_login, NULL)) AS pushers FROM github_events GROUP BY repo_name HAVING stars > 99 ORDER BY pushers DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -24248,6 +24640,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(*) AS member_invitations\nFROM github_events\nWHERE event_type = 'MemberEvent' AND action = 'added'\nGROUP BY repo_name\nORDER BY member_invitations DESC\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\n\nSELECT repo_name, count() AS invitations_count FROM github_events WHERE event_type = 'MemberEvent' GROUP BY repo_name ORDER BY invitations_count DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -25098,6 +25504,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(*) AS fork_count\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY fork_count DESC\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\n\nSELECT repo_name, count() AS fork_count FROM github_events WHERE event_type = 'ForkEvent' GROUP BY repo_name ORDER BY fork_count DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -25934,6 +26354,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    repo_name,\n    COUNTIf(event_type = 'WatchEvent') AS stars,\n    COUNTIf(event_type = 'ForkEvent') AS forks,\n    (stars / NULLIF(forks, 0)) AS stars_forks_ratio\nFROM github_events\nWHERE event_type IN ('WatchEvent', 'ForkEvent')\nGROUP BY repo_name\nORDER BY stars_forks_ratio DESC\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\n\nSELECT repo_name, countIf(event_type = 'WatchEvent') AS stars, countIf(event_type = 'ForkEvent') AS forks, countIf(event_type = 'WatchEvent') / countIf(event_type = 'ForkEvent') AS ratio FROM github_events GROUP BY repo_name HAVING forks > 0 ORDER BY ratio DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -26798,6 +27232,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT \n    SUM(CASE WHEN event_type = 'WatchEvent' THEN 1 ELSE 0 END) AS total_stars,\n    SUM(CASE WHEN event_type = 'ForkEvent' THEN 1 ELSE 0 END) AS total_forks,\n    ROUND(SUM(CASE WHEN event_type = 'WatchEvent' THEN 1 ELSE 0 END) / NULLIF(SUM(CASE WHEN event_type = 'ForkEvent' THEN 1 ELSE 0 END), 0), 2) AS stars_to_forks_ratio\nFROM github_events\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT countIf(event_type = 'WatchEvent') AS stars, countIf(event_type = 'ForkEvent') AS forks, round(countIf(event_type = 'WatchEvent') / NULLIF(countIf(event_type = 'ForkEvent'), 0), 2) AS ratio FROM github_events LIMIT 10"
       }
     },
     "humanResults": {
@@ -27589,6 +28037,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count(*) as total_issues_opened\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\n\nSELECT count() AS total FROM github_events WHERE event_type = 'IssuesEvent' AND action = 'opened' LIMIT 10"
       }
     },
     "humanResults": {
@@ -28398,6 +28860,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, COUNT(*) AS issue_comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY issue_comment_count DESC\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\n\nSELECT repo_name, count() AS count FROM github_events WHERE event_type = 'IssueCommentEvent' GROUP BY repo_name ORDER BY count DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -29230,6 +29706,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    countIf(event_type = 'IssueCommentEvent') / countIf(event_type = 'IssuesEvent' AND action = 'opened') AS ratio\nFROM github_events\nWHERE event_type IN ('IssueCommentEvent', 'IssuesEvent')\nGROUP BY repo_name\nHAVING countIf(event_type = 'IssuesEvent' AND action = 'opened') > 0\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\n\nSELECT repo_name, countIf(event_type = 'IssueCommentEvent' AND action = 'created') AS comments_count, countIf(event_type = 'IssuesEvent' AND action = 'opened') AS issues_count, comments_count / issues_count AS ratio FROM github_events GROUP BY repo_name HAVING issues_count > 0 ORDER BY ratio DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -30094,6 +30584,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    number,\n    comments\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nORDER BY comments DESC\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\n\nSELECT repo_name, number, max(comments) as total_comments FROM github_events WHERE event_type IN ('IssuesEvent', 'IssueCommentEvent') GROUP BY repo_name, number ORDER BY total_comments DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -30940,6 +31444,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\n\nSELECT repo_name, number, count(*) AS total_comments, count(distinct actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name, number\nHAVING total_comments >= 10\nORDER BY total_comments DESC\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\n\nSELECT repo_name, number, maxIf(comments, event_type = 'IssuesEvent') as total_comments, countDistinctIf(actor_login, event_type = 'IssueCommentEvent') as comment_authors FROM github_events WHERE event_type IN ('IssuesEvent', 'IssueCommentEvent') GROUP BY repo_name, number HAVING total_comments >= 10 ORDER BY total_comments DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -31800,6 +32318,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, COUNT(*) as event_count\nFROM github_events\nWHERE body LIKE '%tensorflow%'\nGROUP BY repo_name\nORDER BY event_count DESC\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.766084966570525,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, count() as event_count FROM github_events WHERE body LIKE '%tensorflow%' OR title LIKE '%tensorflow%' GROUP BY repo_name ORDER BY event_count DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -32650,6 +33182,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, COUNT(*) as commit_comment_count\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY commit_comment_count DESC\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\n\nSELECT repo_name, count() AS comment_count FROM github_events WHERE event_type = 'CommitCommentEvent' GROUP BY repo_name ORDER BY comment_count DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -33500,6 +34046,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "SELECT\n    repo_name,\n    number,\n    concat('https://github.com/', repo_name, '/commit/', head_sha) AS commit_url,\n    comments AS total_comments,\n    arrayUniq(arrayConcat([actor_login], assignees)) AS unique_authors\nFROM github_events\nWHERE event_type = 'PushEvent'\n  AND comments >= 10\nORDER BY comments DESC\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\n\nSELECT 'https://github.com/' || repo_name || '/commit/' || commit_id AS commit_url, count() AS total_comments, countDistinct(actor_login) AS unique_authors FROM github_events WHERE event_type = 'CommitCommentEvent' GROUP BY repo_name, commit_id HAVING unique_authors >= 10 ORDER BY total_comments DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -34364,6 +34924,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "%\nSELECT \n    concat('https://github.com/', repo_name, '/pull/', toString(number)) AS pr_url,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\nGROUP BY repo_name, number\nORDER BY unique_authors DESC\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0.18181818181818177,
+          "numeric": 0,
+          "fScore": 0.9
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT 'https://github.com/' || repo_name || '/pull/' || toString(number) AS pr_url, countDistinct(actor_login) AS unique_authors FROM github_events WHERE event_type = 'PullRequestReviewCommentEvent' AND action = 'created' GROUP BY repo_name, number ORDER BY unique_authors DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -35214,6 +35788,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT actor_login, COUNT(*) AS push_count FROM github_events WHERE event_type = 'PushEvent' GROUP BY actor_login ORDER BY push_count DESC LIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\n\nSELECT actor_login, count() AS push_count FROM github_events WHERE event_type = 'PushEvent' GROUP BY actor_login ORDER BY push_count DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -36064,6 +36652,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT splitByChar('/', repo_name)[1] AS organization, count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY organization\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\n\nSELECT SUBSTRING_INDEX(repo_name, '/', 1) AS owner, COUNT(*) AS star_count FROM github_events WHERE event_type = 'WatchEvent' GROUP BY owner ORDER BY star_count DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -36900,6 +37502,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT splitByChar('/', repo_name)[1] AS organization, COUNT(DISTINCT repo_name) AS repo_count FROM github_events GROUP BY organization ORDER BY repo_count DESC LIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\n\nSELECT SUBSTRING_INDEX(repo_name, '/', 1) AS org, COUNT(DISTINCT repo_name) AS repo_count FROM github_events GROUP BY org ORDER BY repo_count DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -37750,6 +38366,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    COUNT(*) AS pr_count,\n    COUNT(DISTINCT actor_login) AS unique_authors,\n    SUM(additions) AS total_adds,\n    SUM(deletions) AS total_dels\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND additions < 10000\n  AND deletions < 10000\nGROUP BY repo_name\nORDER BY (total_adds + total_dels) DESC\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.8367030125422139,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\n\nSELECT repo_name, count(*) AS pr_count, countDistinct(actor_login) AS unique_authors, sum(additions) AS total_adds, sum(deletions) AS total_deletions, (sum(additions) + sum(deletions)) AS total_churn FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' AND additions < 10000 AND deletions < 10000 GROUP BY repo_name ORDER BY total_churn DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -38642,6 +39272,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    actor_login AS author,\n    COUNT(*) AS pr_comments_created,\n    COUNT(DISTINCT repo_name) AS unique_repos,\n    COUNT(DISTINCT number) AS unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent' \n  AND action = 'created'\nGROUP BY actor_login\nORDER BY pr_comments_created DESC\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\n\nSELECT actor_login AS author, count() AS comment_count, countDistinct(repo_name) AS unique_repos, countDistinct(number) AS unique_prs FROM github_events WHERE event_type = 'PullRequestReviewCommentEvent' AND action = 'created' GROUP BY actor_login ORDER BY comment_count DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -39506,6 +40150,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    label,\n    count() AS usage_count\nFROM github_events\nARRAY JOIN labels AS label\nWHERE event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')\n  AND action IN ('created', 'opened', 'labeled')\nGROUP BY label\nORDER BY usage_count DESC\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.8888888888888888,
+          "numeric": 1,
+          "fScore": 0.20000000000000007
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\n\nSELECT label, count() AS count FROM github_events ARRAY JOIN labels AS label WHERE event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent', 'PullRequestReviewCommentEvent') AND action IN ('created', 'opened', 'labeled') GROUP BY label ORDER BY count DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -40342,6 +41000,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n    splitByChar('/', repo_name)[1] AS organization_name,\n    uniq(actor_login) AS unique_authors,\n    uniqIf(actor_login, event_type = 'PullRequestEvent' AND action = 'opened') AS unique_pr_authors,\n    uniqIf(actor_login, event_type = 'IssuesEvent' AND action = 'opened') AS unique_issue_authors,\n    uniqIf(actor_login, event_type = 'IssueCommentEvent') AS unique_issue_comment_authors,\n    uniqIf(actor_login, event_type = 'PushEvent') AS unique_push_authors\nFROM github_events\nGROUP BY organization_name\nORDER BY unique_authors DESC\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\n\nSELECT SUBSTRING_INDEX(repo_name, '/', 1) AS organization, countDistinct(actor_login) AS total_unique_authors, countDistinct(if(event_type = 'PullRequestEvent' AND action = 'opened', actor_login, NULL)) AS unique_pr_authors, countDistinct(if(event_type = 'IssuesEvent' AND action = 'opened', actor_login, NULL)) AS unique_issue_authors, countDistinct(if(event_type = 'IssueCommentEvent' AND action = 'created', actor_login, NULL)) AS unique_issue_comment_authors, countDistinct(if(event_type = 'PushEvent', actor_login, NULL)) AS unique_push_authors FROM github_events GROUP BY organization ORDER BY total_unique_authors DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -41262,6 +41934,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    length(repo_name) AS repo_name_length\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY repo_name_length DESC\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0.18181818181818177,
+          "numeric": 0,
+          "fScore": 0.9
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\n\nSELECT repo_name, CHAR_LENGTH(repo_name) AS length FROM github_events WHERE event_type = 'WatchEvent' GROUP BY repo_name ORDER BY length DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -42098,6 +42784,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING COUNT(*) >= 1\nORDER BY length(repo_name) ASC\nLIMIT 10"
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.75,
+          "numeric": 1,
+          "fScore": 0.40000000000000013
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\n\nSELECT repo_name FROM github_events WHERE event_type = 'WatchEvent' GROUP BY repo_name ORDER BY CHAR_LENGTH(repo_name) ASC LIMIT 10"
       }
     },
     "humanResults": {
@@ -42599,6 +43299,14 @@
         "avgExactDistance": 0.3987012987012987,
         "avgNumericDistance": 0.3502789567584547,
         "avgFScore": 0.528
+      },
+      "qwen/qwen3-next-80b-a3b-thinking": {
+        "totalMatches": 27,
+        "exactMatches": 18,
+        "numericMatches": 27,
+        "avgExactDistance": 0.5933838383838385,
+        "avgNumericDistance": 0.44723848553856427,
+        "avgFScore": 0.4179999999999999
       }
     }
   }
