@@ -1,9 +1,10 @@
 "use client";
 
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { BenchmarkTable } from "../components/benchmark-table";
 
-export default function EmbedPage() {
+function EmbedContent() {
   const searchParams = useSearchParams();
   const hideBranding = searchParams.get('hide_branding') === 'true';
 
@@ -25,5 +26,19 @@ export default function EmbedPage() {
         <BenchmarkTable />
       </div>
     </div>
+  );
+}
+
+export default function EmbedPage() {
+  return (
+    <Suspense fallback={
+      <div className="w-full h-full bg-[#0A0A0A] font-sans relative">
+        <div className="pt-12">
+          <BenchmarkTable />
+        </div>
+      </div>
+    }>
+      <EmbedContent />
+    </Suspense>
   );
 }
