@@ -4,12 +4,13 @@ import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { useParams, useRouter } from "next/navigation";
 import { ChevronDownIcon } from "./icons";
 import Link from "next/link";
-import { GithubIcon, ClipboardListIcon } from "lucide-react";
+import { GithubIcon, ClipboardListIcon, Code } from "lucide-react";
 import { Button } from "./button";
 import { cn } from "@/lib/utils";
 import { Filters } from "./filters";
 import { ModelMetrics } from "@/lib/eval";
 import { CustomCheckbox } from "./custom-checkbox";
+import { EmbedModal } from "./embed-modal";
 
 type HeaderProps = {
   data: ModelMetrics[];
@@ -116,6 +117,15 @@ export const Header = ({
           <h1 className="text-3xl">LLM SQL Generation Benchmark Results</h1>
 
           <div className="flex gap-2 items-center">
+            <EmbedModal>
+              <Button
+                variant="secondary"
+                size="lg"
+                className="cursor-pointer"
+              >
+                Embed <Code />
+              </Button>
+            </EmbedModal>
             <Button
               onClick={() => {
                 window.open(
