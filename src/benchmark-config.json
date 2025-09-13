@@ -94,7 +94,9 @@
       "models": []
     },
     "nvidia": {
-      "models": []
+      "models": [
+        "nemotron-nano-9b-v2"
+      ]
     },
     "openrouter": {
       "models": [
