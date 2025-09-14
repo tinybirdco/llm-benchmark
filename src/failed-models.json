@@ -1,6 +1,6 @@
 {
-  "generated_at": "2025-09-14T14:06:50.664Z",
-  "total_count": 1,
+  "generated_at": "2025-09-14T14:14:32.052Z",
+  "total_count": 2,
   "models": [
     {
       "provider": "openrouter",
@@ -8,6 +8,14 @@
       "modelId": "openrouter/sonoma-sky-alpha",
       "reason": "PR rejected/closed without merging",
       "failed_at": "2025-09-14T14:06:50.664Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "openrouter",
+      "model": "sonoma-dusk-alpha",
+      "modelId": "openrouter/sonoma-dusk-alpha",
+      "reason": "PR rejected/closed without merging",
+      "failed_at": "2025-09-14T14:14:32.052Z",
       "attempt_count": 1
     }
   ]

@@ -1,6 +1,6 @@
 {
-  "generated_at": "2025-09-14T14:06:50.666Z",
-  "total_count": 279,
+  "generated_at": "2025-09-14T14:14:32.052Z",
+  "total_count": 280,
   "models": [
     {
       "provider": "meituan",
@@ -1398,6 +1398,13 @@
       "modelId": "openrouter/sonoma-sky-alpha",
       "reason": "Failed: PR rejected/closed without merging",
       "failed_at": "2025-09-14T14:06:50.666Z"
+    },
+    {
+      "provider": "openrouter",
+      "model": "sonoma-dusk-alpha",
+      "modelId": "openrouter/sonoma-dusk-alpha",
+      "reason": "Failed: PR rejected/closed without merging",
+      "failed_at": "2025-09-14T14:14:32.052Z"
     }
   ]
 }
