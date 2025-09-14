@@ -80,6 +80,8 @@ jobs:
 
       - name: Run benchmarks for new models
         if: steps.find-new-models.outputs.new_count > 0 && github.event.inputs.dry_run != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           NEW_MODELS="${{ steps.find-new-models.outputs.new_models }}"
           MAX_MODELS="${{ github.event.inputs.max_models || '0' }}"
