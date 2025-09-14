@@ -368,11 +368,19 @@ async function runBenchmarkForModel(modelString: string) {
     process.exit(1);
   }
   
-  // Check if the provider exists in the config
+  // Check if the provider exists in the config, create it if it doesn't
   if (!config.providers[providerName]) {
-    console.error(`Provider '${providerName}' not found in benchmark-config.json`);
-    console.error(`Available providers: ${Object.keys(config.providers).join(', ')}`);
-    process.exit(1);
+    console.log(`Provider '${providerName}' not found in benchmark-config.json, creating new entry`);
+    config.providers[providerName] = { models: [] };
+    
+    // Write the updated config back to disk
+    try {
+      writeFileSync(configPath, JSON.stringify(config, null, 2));
+      console.log(`Added provider '${providerName}' to benchmark-config.json`);
+    } catch (error) {
+      console.error("Error writing updated benchmark-config.json:", error);
+      process.exit(1);
+    }
   }
   
   // Check if the model already exists for the provider
