@@ -1,0 +1,109 @@
+name: Monitor PR closures for rejected models
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  handle-rejected-model:
+    if: github.event.pull_request.merged == false && contains(github.event.pull_request.title, 'Add benchmark results for')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: src/package-lock.json
+
+      - name: Install dependencies
+        working-directory: src
+        run: npm ci
+
+      - name: Extract model from PR title
+        id: extract-model
+        run: |
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          # Extract model from title like "Add benchmark results for openrouter/sonoma-dusk-alpha"
+          MODEL=$(echo "$PR_TITLE" | sed 's/Add benchmark results for //')
+          echo "model=$MODEL" >> $GITHUB_OUTPUT
+          echo "Extracted model: $MODEL"
+
+      - name: Add rejected model to untested list
+        working-directory: src
+        run: |
+          MODEL="${{ steps.extract-model.outputs.model }}"
+          PROVIDER=$(echo "$MODEL" | cut -d'/' -f1)
+          MODEL_NAME=$(echo "$MODEL" | cut -d'/' -f2)
+          
+          echo "Adding rejected model to untested list: $MODEL"
+          
+          # Add to untested models to prevent re-processing
+          npm run manage-failed-models add "$PROVIDER" "$MODEL_NAME" "$MODEL" "PR rejected/closed without merging"
+          
+          echo "Model $MODEL has been added to the untested list"
+
+      - name: Comment on PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const model = '${{ steps.extract-model.outputs.model }}';
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `## Model Rejected
+              
+              The model **${model}** has been added to the untested models list to prevent automatic re-processing.
+              
+              **What this means:**
+              - This model will not be automatically benchmarked again
+              - It's now in the "untested" category (not failed, just not wanted)
+              - You can manually remove it from the untested list if you change your mind
+              
+              **To manage this model:**
+              \`\`\`bash
+              # Remove from untested list (if you want to try again later)
+              npm run manage-failed-models remove ${model.split('/')[0]} ${model.split('/')[1]}
+              
+              # List all untested models
+              npm run manage-failed-models list
+              \`\`\`
+              
+              @alrocar`
+            });
+
+      - name: Create summary issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const model = '${{ steps.extract-model.outputs.model }}';
+            const prNumber = context.issue.number;
+            
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🚫 Model rejected: ${model}`,
+              body: `## Model Rejection Summary
+              
+              **Model:** \`${model}\`
+              **PR:** #${prNumber}
+              **Action:** Added to untested models list
+              
+              The benchmark results for this model were rejected (PR closed without merging).
+              The model has been added to the untested models list to prevent automatic re-processing.
+              
+              **Next Steps:**
+              - The model will not be automatically benchmarked again
+              - You can manually remove it from the untested list if needed
+              - Check the untested models list to see all rejected models
+              
+              @alrocar`,
+              labels: ['model-rejected', 'auto-generated']
+            });

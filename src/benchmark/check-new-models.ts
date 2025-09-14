@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from "fs";
+import { readFileSync, writeFileSync, existsSync } from "fs";
 import { fetchOpenRouterModels, extractProviderFromModelId } from "./fetch-openrouter-models";
 
 interface BenchmarkConfig {
@@ -43,6 +43,20 @@ async function loadUntestedModels(): Promise<UntestedModel[]> {
   }
 }
 
+function loadFailedModels(): UntestedModel[] {
+  try {
+    const failedPath = "failed-models.json";
+    if (!existsSync(failedPath)) {
+      return [];
+    }
+    const data = JSON.parse(readFileSync(failedPath, "utf-8"));
+    return data.models || [];
+  } catch (error) {
+    console.error("Error reading failed-models.json:", error);
+    return [];
+  }
+}
+
 function findNewModels(
   openrouterModels: any[], 
   config: BenchmarkConfig, 
@@ -53,6 +67,7 @@ function findNewModels(
   // Create sets for faster lookup
   const testedModels = new Set<string>();
   const untestedModels = new Set<string>();
+  const failedModels = new Set<string>();
   
   // Add tested models to set
   for (const [provider, data] of Object.entries(config.providers)) {
@@ -66,14 +81,20 @@ function findNewModels(
     untestedModels.add(`${model.provider}/${model.model}`);
   }
   
+  // Add failed models to set
+  const failedModelsList = loadFailedModels();
+  for (const model of failedModelsList) {
+    failedModels.add(`${model.provider}/${model.model}`);
+  }
+  
   // Check each OpenRouter model
   for (const model of openrouterModels) {
     const provider = extractProviderFromModelId(model.id);
     const modelName = model.id.includes("/") ? model.id.split("/")[1] : model.id;
     const modelKey = `${provider}/${modelName}`;
     
-    // If not tested and not in untested list, it's new
-    if (!testedModels.has(modelKey) && !untestedModels.has(modelKey)) {
+    // If not tested, not in untested list, and not failed, it's new
+    if (!testedModels.has(modelKey) && !untestedModels.has(modelKey) && !failedModels.has(modelKey)) {
       newModels.push({
         provider,
         model: modelName,
