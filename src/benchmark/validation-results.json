@@ -826,6 +826,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\n\nSELECT COUNT(*) FROM github_events WHERE event_type = 'WatchEvent'\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(*) AS total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -1677,6 +1691,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\n\nSELECT repo_name, COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -2569,6 +2597,20 @@
         "humanRowCount": 5,
         "llmRowCount": 5,
         "sql": "\n\nSELECT \n  power_of_10,\n  COUNT(*) AS repo_count\nFROM (\n  SELECT \n    CASE\n      WHEN star_count >= 1 AND star_count < 10 THEN 0\n      WHEN star_count >= 10 AND star_count < 100 THEN 1\n      WHEN star_count >= 100 AND star_count < 1000 THEN 2\n      WHEN star_count >= 1000 AND star_count < 10000 THEN 3\n      WHEN star_count >= 10000 AND star_count < 100000 THEN 4\n      WHEN star_count >= 100000 AND star_count < 1000000 THEN 5\n      WHEN star_count >= 1000000 AND star_count < 10000000 THEN 6\n      ELSE 7\n    END AS power_of_10\n  FROM (\n    SELECT repo_name, COUNT(*) AS star_count\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n  )\n)\nGROUP BY power_of_10\nORDER BY power_of_10\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 5,
+        "llmRowCount": 5,
+        "sql": "SELECT \n    power_of_10,\n    count() as repository_count\nFROM (\n    SELECT \n        toUInt32(floor(log10(star_count + 1))) as power_of_10\n    FROM (\n        SELECT \n            repo_name,\n            sumIf(1, event_type = 'WatchEvent') as star_count\n        FROM github_events\n        GROUP BY repo_name\n        HAVING star_count > 0\n    )\n)\nGROUP BY power_of_10\nORDER BY power_of_10\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -3441,6 +3483,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\n\nSELECT COUNT(DISTINCT repo_name) FROM github_events LIMIT 10\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT countDistinct(repo_name) AS total_repositories FROM github_events LIMIT 10"
       }
     },
     "humanResults": {
@@ -4292,6 +4348,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\n\nSELECT \n  repo_name,\n  toYear(created_at) AS year,\n  COUNT(*) AS watch_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND created_at >= '2015-01-01'\nGROUP BY repo_name, year\nORDER BY year, watch_count DESC\nLIMIT 10\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 60,
+        "sql": "SELECT \n    toYear(created_at) AS year,\n    repo_name,\n    count() AS event_count\nFROM github_events \nWHERE created_at >= toDateTime('2015-01-01')\nGROUP BY year, repo_name\nORDER BY year, event_count DESC\nLIMIT 10 BY year"
       }
     },
     "humanResults": {
@@ -5198,6 +5268,20 @@
         "humanRowCount": 2,
         "llmRowCount": 2,
         "sql": "\n\nSELECT YEAR(created_at) AS year, COUNT(*) AS total_stars FROM github_events WHERE event_type = 'WatchEvent' GROUP BY year ORDER BY year LIMIT 10\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 2,
+        "llmRowCount": 2,
+        "sql": "SELECT\n  toYear(created_at) AS year,\n  count() AS total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -6044,6 +6128,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\n\nSELECT actor_login, COUNT(*) AS star_count FROM github_events WHERE event_type = 'WatchEvent' GROUP BY actor_login ORDER BY star_count DESC LIMIT 10\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT actor_login, count() as stars_given\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY stars_given DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -6936,6 +7034,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\n\n\nSELECT e2.repo_name, COUNT(*) AS star_count\nFROM github_events e1\nJOIN github_events e2 ON e1.actor_login = e2.actor_login\nWHERE e1.event_type = 'WatchEvent'\n  AND e1.repo_name = 'tensorflow/tensorflow'\n  AND e2.event_type = 'WatchEvent'\n  AND e2.repo_name != 'tensorflow/tensorflow'\nGROUP BY e2.repo_name\nORDER BY star_count DESC\nLIMIT 10\n\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND actor_login IN (\n    SELECT DISTINCT actor_login\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n      AND repo_name = 'tensorflow/tensorflow'\n  )\n  AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -7814,6 +7926,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\n\nSELECT \n  actor_login,\n  SUM(CASE WHEN repo_name LIKE 'javisantana/%' THEN 1 ELSE 0 END) AS javisantana_stars,\n  COUNT(*) AS total_stars,\n  COUNT(*) - SUM(CASE WHEN repo_name LIKE 'javisantana/%' THEN 1 ELSE 0 END) AS other_stars,\n  (SUM(CASE WHEN repo_name LIKE 'javisantana/%' THEN 1 ELSE 0 END) / COUNT(*)) AS ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nHAVING total_stars > 0\nORDER BY ratio DESC\nLIMIT 10\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    actor_login AS user_name,\n    javi_stars,\n    total_stars - javi_stars AS other_stars,\n    javi_stars / total_stars AS ratio\nFROM (\n    SELECT\n        actor_login,\n        sumIf(1, event_type = 'WatchEvent' AND repo_name LIKE 'javisantana/%') AS javi_stars,\n        sum(1) AS total_stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY actor_login\n    HAVING total_stars > 0\n)\nORDER BY ratio DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -8720,6 +8846,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\n\nSELECT repo_name, COUNT(DISTINCT actor_login) AS unique_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND repo_name NOT LIKE 'tensorflow%'\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nWITH \ntensorflow_contributors AS (\n    SELECT DISTINCT actor_login\n    FROM github_events\n    WHERE event_type = 'PushEvent' \n    AND repo_name LIKE 'tensorflow/tensorflow'\n),\npr_authors AS (\n    SELECT DISTINCT \n        ge.repo_name,\n        ge.actor_login AS contributor_login,\n        1 AS is_pr\n    FROM github_events ge\n    JOIN tensorflow_contributors tc ON ge.actor_login = tc.actor_login\n    WHERE ge.event_type = 'PullRequestEvent'\n    AND ge.action = 'opened'\n    AND ge.repo_name NOT LIKE 'tensorflow/tensorflow'\n),\nunique_contributors_per_repo AS (\n    SELECT \n        repo_name,\n        countDistinct(contributor_login) AS unique_contributors\n    FROM pr_authors\n    GROUP BY repo_name\n)\nSELECT \n    repo_name,\n    unique_contributors\nFROM unique_contributors_per_repo\nORDER BY unique_contributors DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -9612,6 +9752,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\n\n\nSELECT e2.repo_name, COUNT(*) AS issue_count\nFROM github_events e1\nJOIN github_events e2\n  ON e1.actor_login = e2.actor_login\n  AND e2.event_type = 'IssuesEvent'\n  AND e2.action = 'opened'\n  AND e2.repo_name != 'tensorflow/tensorflow'\nWHERE e1.event_type = 'IssuesEvent'\n  AND e1.action = 'opened'\n  AND e1.repo_name = 'tensorflow/tensorflow'\nGROUP BY e2.repo_name\nORDER BY issue_count DESC\nLIMIT 10\n\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    repo_name,\n    actor_login as author_login,\n    count() as issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n  AND action = 'opened'\n  AND repo_name != 'tensorflow/tensorflow'\n  AND actor_login IN (\n    SELECT actor_login\n    FROM github_events\n    WHERE event_type = 'IssuesEvent'\n      AND action = 'opened'\n      AND repo_name = 'tensorflow/tensorflow'\n    GROUP BY actor_login\n  )\nGROUP BY repo_name, actor_login\nORDER BY issue_count DESC, author_login ASC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -10510,6 +10664,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "\n\nSELECT repo_name, MAX(daily_stars) AS max_stars\nFROM (\n    SELECT repo_name, DATE(created_at) AS day, COUNT(*) AS daily_stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent' AND action = 'created'\n    GROUP BY repo_name, day\n)\nGROUP BY repo_name\nORDER BY max_stars DESC\nLIMIT 10\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT \n    repo_name,\n    uniqExact(actor_login) as stars_count\nFROM github_events \nWHERE event_type = 'WatchEvent' \n    AND toDate(created_at) = '2023-10-01'\nGROUP BY repo_name \nORDER BY stars_count DESC \nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -11416,6 +11584,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\n\nSELECT repo_name,\n       SUM(CASE WHEN YEAR(created_at) = 2016 THEN 1 ELSE 0 END) AS stars_2016,\n       SUM(CASE WHEN YEAR(created_at) = 2017 THEN 1 ELSE 0 END) AS stars_2017,\n       (stars_2017 - stars_2016) / stars_2016 * 100 AS growth_percentage\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND YEAR(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING stars_2016 >= 1\nORDER BY growth_percentage DESC\nLIMIT 10\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    repo_name,\n    (stars_2017 - stars_2016) AS growth,\n    stars_2016,\n    stars_2017,\n    (stars_2017 - stars_2016) / stars_2016 * 100 AS growth_percentage\nFROM (\n    SELECT\n        repo_name,\n        sumIf(1, toYear(created_at) = 2016 AND event_type = 'WatchEvent') AS stars_2016,\n        sumIf(1, toYear(created_at) = 2017 AND event_type = 'WatchEvent') AS stars_2017\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n      AND toYear(created_at) IN (2016, 2017)\n    GROUP BY repo_name\n    HAVING stars_2016 >= 1 AND stars_2016 > 0\n) AS repo_stars\nORDER BY growth DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -12336,6 +12518,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "\n\nSELECT repo_name, (count_2016 - count_2017) AS stagnation FROM (SELECT repo_name, SUM(CASE WHEN created_at >= '2016-01-01' AND created_at < '2017-01-01' THEN 1 ELSE 0 END) AS count_2016, SUM(CASE WHEN created_at >= '2017-01-01' AND created_at < '2018-01-01' THEN 1 ELSE 0 END) AS count_2017 FROM github_events WHERE event_type = 'PushEvent' AND repo_name IN (SELECT repo_name FROM github_events WHERE event_type = 'WatchEvent' AND created_at >= '2017-01-01' AND created_at < '2018-01-01' GROUP BY repo_name) GROUP BY repo_name) ORDER BY stagnation DESC LIMIT 10\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    stars_2016,\n    stars_2017,\n    (stars_2017 - stars_2016) AS delta_stars,\n    (stars_2017 * 1.0 / stars_2016) AS growth_ratio,\n    - (stars_2017 * 1.0 / stars_2016) AS sort_metric\nFROM (\n    SELECT \n        repo_name,\n        sumIf(1, created_at >= '2016-01-01' AND created_at < '2017-01-01') AS stars_2016,\n        sumIf(1, created_at >= '2017-01-01' AND created_at < '2018-01-01') AS stars_2017\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n        AND created_at >= '2016-01-01' \n        AND created_at < '2018-01-01'\n    GROUP BY repo_name\n    HAVING stars_2016 > 0 AND stars_2017 > 0\n) \nORDER BY sort_metric ASC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -13242,6 +13438,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "\n\n\nSELECT \n  repo_name,\n  AVG(daily_diff) AS avg_growth,\n  SQRT(VAR_POP(daily_diff)) AS stddev_growth\nFROM (\n  SELECT \n    current.repo_name,\n    current.date,\n    current.daily_stars - previous.daily_stars AS daily_diff\n  FROM (\n    SELECT repo_name, DATE(created_at) AS date, COUNT(*) AS daily_stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent' AND action = 'created'\n    GROUP BY repo_name, date\n  ) AS current\n  LEFT JOIN (\n    SELECT repo_name, DATE(created_at) - INTERVAL 1 DAY AS date, COUNT(*) AS daily_stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent' AND action = 'created'\n    GROUP BY repo_name, date\n  ) AS previous\n  ON current.repo_name = previous.repo_name AND current.date = previous.date + INTERVAL 1 DAY\n)\nGROUP BY repo_name\nORDER BY stddev_growth ASC, avg_growth DESC\nLIMIT 10\n\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT\n    repo_name,\n    slope AS growth_rate,\n    intercept,\n    r_squared,\n    num_events\nFROM (\n    SELECT\n        repo_name,\n        any(creator_user_login) AS owner,\n        any(num_events) AS num_events,\n        simpleLinearRegression(CAST(time_period AS Float64), count_star)(slope, intercept),\n        covarSamp(CAST(time_period AS Float64), count_star) / (stddevSamp(CAST(time_period AS Float64)) * stddevSamp(count_star)) ^ 2 AS r_squared\n    FROM (\n        SELECT\n            repo_name,\n            creator_user_login,\n            toYYYYMM(created_at) AS time_period,\n            count() OVER (PARTITION BY repo_name, creator_user_login, toYYYYMM(created_at)) AS count_star,\n            count() OVER (PARTITION BY repo_name, creator_user_login) AS num_events\n        FROM github_events\n        WHERE event_type = 'WatchEvent'\n        AND created_at >= now() - INTERVAL 1 YEAR\n    )\n    GROUP BY repo_name, creator_user_login\n    HAVING num_events >= 10\n)\nORDER BY growth_rate DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -14158,6 +14368,20 @@
         "humanRowCount": 7,
         "llmRowCount": 7,
         "sql": "\n\nSELECT \n  DAYOFWEEK(created_at) AS day_of_week,\n  COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY star_count DESC\nLIMIT 10\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 7,
+        "llmRowCount": 7,
+        "sql": "SELECT\n  toDayOfWeek(created_at) AS day_of_week,\n  COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY star_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -15024,6 +15248,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\n\nSELECT COUNT(DISTINCT actor_login) AS total_users FROM github_events WHERE actor_login != '' LIMIT 10\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.000052934128674804696,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT countDistinct(actor_login) AS total_users FROM github_events LIMIT 10"
       }
     },
     "humanResults": {
@@ -15875,6 +16113,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\n\nSELECT COUNT(DISTINCT actor_login) FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0014793406252330366,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT count(distinct actor_login) FROM github_events WHERE event_type = 'WatchEvent'"
       }
     },
     "humanResults": {
@@ -16698,6 +16950,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\n\nSELECT COUNT(DISTINCT actor_login) AS total_users FROM github_events WHERE event_type = 'PushEvent' LIMIT 10\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0018759619527295886,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(DISTINCT actor_login) AS total_users\nFROM github_events\nWHERE event_type = 'PushEvent'\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -17521,6 +17787,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\n\nSELECT COUNT(DISTINCT actor_login) AS total_users FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'created' LIMIT 10\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0017507922334856522,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT COUNT(DISTINCT actor_login) AS total_users\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -18372,6 +18652,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\n\nSELECT repo_name, COUNT(*) AS star_count\nFROM github_events w\nJOIN github_events p ON w.actor_login = p.actor_login\nWHERE w.event_type = 'WatchEvent'\nAND p.event_type = 'PullRequestEvent'\nAND p.action = 'opened'\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nWITH active_users AS (\n    SELECT DISTINCT actor_login\n    FROM github_events\n    WHERE event_type = 'PullRequestEvent'\n      AND action = 'opened'\n),\nstar_counts AS (\n    SELECT \n        repo_name,\n        count() as star_count\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n      AND actor_login IN (SELECT * FROM active_users)\n    GROUP BY repo_name\n)\nSELECT \n    repo_name,\n    star_count\nFROM star_counts\nORDER BY star_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -19246,6 +19540,20 @@
           "fScore": 1
         },
         "sql": null
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS num_authors,\n    SUM(pr_count) AS total_prs\nFROM (\n    SELECT\n        repo_name,\n        actor_login,\n        COUNT(*) AS pr_count\n    FROM github_events\n    WHERE event_type = 'PullRequestEvent'\n      AND action = 'opened'\n    GROUP BY repo_name, actor_login\n    HAVING pr_count >= 10\n)\nGROUP BY repo_name\nORDER BY total_prs DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -20124,6 +20432,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\n\nSELECT repo_name, COUNT(*) AS pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY pr_count DESC\nLIMIT 10\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    count() as pull_request_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY pull_request_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -21016,6 +21338,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\n\nSELECT repo_name, COUNT(DISTINCT actor_login) AS contributor_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\nGROUP BY repo_name\nORDER BY contributor_count DESC\nLIMIT 10\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  COUNT(DISTINCT actor_login) AS contributor_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\nGROUP BY repo_name\nORDER BY contributor_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -21904,6 +22240,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\n\nSELECT repo_name, COUNT(DISTINCT number) AS issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    count() as issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -22782,6 +23132,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "\n\nSELECT repo_name, COUNT(DISTINCT actor_login) AS push_access_count\nFROM github_events\nWHERE event_type = 'PushEvent' AND action = 'pushed'\nGROUP BY repo_name\nORDER BY push_access_count DESC\nLIMIT 10\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    repo_name,\n    uniqExact(actor_login) AS num_pushers\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY repo_name\nORDER BY num_pushers DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -23660,6 +24024,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "\n\nSELECT repo_name, COUNT(DISTINCT actor_login) AS num_pushers\nFROM github_events\nWHERE event_type = 'PushEvent'\n  AND ref_type = 'branch'\n  AND ref = 'main'\nGROUP BY repo_name\nORDER BY num_pushers DESC\nLIMIT 10\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    repo_name,\n    uniqExact(actor_login) AS num_pushers\nFROM github_events\nWHERE event_type = 'PushEvent'\n  AND ref = 'refs/heads/main'\nGROUP BY repo_name\nORDER BY num_pushers DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -24552,6 +24930,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\n\n\nSELECT \n  repo_name,\n  COUNT(DISTINCT CASE WHEN event_type = 'PushEvent' THEN actor_login END) AS pushers_count,\n  COUNT(DISTINCT CASE WHEN event_type = 'WatchEvent' THEN actor_login END) AS stars_count\nFROM github_events\nWHERE event_type IN ('PushEvent', 'WatchEvent')\nGROUP BY repo_name\nHAVING stars_count > 99\nORDER BY pushers_count DESC\nLIMIT 10\n\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT \n    repo_name,\n    countDistinct(actor_login) as push_count\nFROM github_events\nWHERE \n    event_type = 'PushEvent' \n    AND ref = 'refs/heads/main'\n    AND created_at >= now() - INTERVAL 1 YEAR\nGROUP BY repo_name\nHAVING push_count > 0\nORDER BY push_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -25458,6 +25850,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\n\nSELECT repo_name, COUNT(*) AS member_invitations\nFROM github_events\nWHERE event_type = 'MemberEvent' AND action = 'added'\nGROUP BY repo_name\nORDER BY member_invitations DESC\nLIMIT 10\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT repo_name, invitations AS max_invitations\nFROM (\n    SELECT repo_name, count() AS invitations\n    FROM github_events\n    WHERE event_type = 'MemberEvent' AND action = 'added'\n    GROUP BY repo_name\n)\nORDER BY invitations DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -26350,6 +26756,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\n\nSELECT repo_name, COUNT(*) AS fork_count FROM github_events WHERE event_type = 'ForkEvent' GROUP BY repo_name ORDER BY fork_count DESC LIMIT 10\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    count() as fork_count\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY fork_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -27228,6 +27648,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "\n\nSELECT \n  repo_name,\n  SUM(CASE WHEN event_type = 'WatchEvent' AND action = 'created' THEN 1 ELSE 0 END) AS stars,\n  SUM(CASE WHEN event_type = 'ForkEvent' AND action = 'created' THEN 1 ELSE 0 END) AS forks,\n  (SUM(CASE WHEN event_type = 'WatchEvent' AND action = 'created' THEN 1 ELSE 0 END) / \n   SUM(CASE WHEN event_type = 'ForkEvent' AND action = 'created' THEN 1 ELSE 0 END)) AS ratio\nFROM github_events\nWHERE event_type IN ('WatchEvent', 'ForkEvent') \n  AND action = 'created'\nGROUP BY repo_name\nHAVING forks > 0\nORDER BY ratio DESC\nLIMIT 10\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.8014028248868054,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    round(stars / greatest(forks, 1), 4) AS ratio\nFROM (\n    SELECT \n        repo_name,\n        sumIf(1, event_type = 'WatchEvent') AS stars,\n        sumIf(1, event_type = 'ForkEvent') AS forks\n    FROM github_events\n    GROUP BY repo_name\n    HAVING stars > 0\n)\nORDER BY ratio DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -28134,6 +28568,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\n\nSELECT \n  COUNT(CASE WHEN event_type = 'WatchEvent' THEN 1 END) AS stars,\n  COUNT(CASE WHEN event_type = 'ForkEvent' THEN 1 END) AS forks,\n  ROUND(COUNT(CASE WHEN event_type = 'WatchEvent' THEN 1 END) / COUNT(CASE WHEN event_type = 'ForkEvent' THEN 1 END), 2) AS ratio\nFROM github_events\nLIMIT 10\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT\n    countIf(event_type = 'WatchEvent') AS total_stars,\n    countIf(event_type = 'ForkEvent') AS total_forks,\n    round(countIf(event_type = 'WatchEvent') / countIf(event_type = 'ForkEvent'), 2) AS stars_to_forks_ratio\nFROM github_events\nLIMIT 10 BY total_stars\n"
       }
     },
     "humanResults": {
@@ -28967,6 +29415,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\n\nSELECT COUNT(*) FROM github_events WHERE event_type = 'IssuesEvent' AND action = 'opened' LIMIT 10\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT count() AS total_issues_opened\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'"
       }
     },
     "humanResults": {
@@ -29818,6 +30280,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\n\nSELECT repo_name, COUNT(event_type) AS comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY comment_count DESC\nLIMIT 10\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, count() as comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY comment_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -30692,6 +31168,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "\n\nSELECT \n  repo_name,\n  SUM(CASE WHEN event_type = 'IssuesEvent' AND action = 'created' THEN 1 ELSE 0 END) AS issue_count,\n  SUM(CASE WHEN event_type = 'IssueCommentEvent' AND action = 'created' THEN 1 ELSE 0 END) AS comment_count,\n  (SUM(CASE WHEN event_type = 'IssueCommentEvent' AND action = 'created' THEN 1 ELSE 0 END) / NULLIF(SUM(CASE WHEN event_type = 'IssuesEvent' AND action = 'created' THEN 1 ELSE 0 END), 0)) AS ratio\nFROM github_events\nWHERE \n  (event_type = 'IssuesEvent' AND action = 'created') \n  OR (event_type = 'IssueCommentEvent' AND action = 'created')\nGROUP BY repo_name\nHAVING issue_count > 0\nORDER BY ratio DESC\nLIMIT 10\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    repo_name,\n    issues_count,\n    comments_count,\n    round(comments_count / issues_count, 4) AS ratio\nFROM\n(\n    SELECT\n        repo_name,\n        countIf(event_type = 'IssuesEvent' AND action = 'opened') AS issues_count,\n        countIf(event_type = 'IssueCommentEvent') AS comments_count\n    FROM github_events\n    GROUP BY repo_name\n    HAVING issues_count > 0\n)\nORDER BY ratio DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -31598,6 +32088,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\n\nSELECT repo_name, number, COUNT(*) AS comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name, number\nORDER BY comment_count DESC\nLIMIT 10\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, number AS issue_number, sum(comments) AS total_comments\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nGROUP BY repo_name, number\nORDER BY total_comments DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -32486,6 +32990,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\n\n\nSELECT repo_name, number, COUNT(*) AS comments, COUNT(DISTINCT assignee) AS author_count FROM github_events WHERE event_type = 'IssueCommentEvent' AND number > 10 GROUP BY repo_name, number HAVING COUNT(*) >= 10 ORDER BY comments DESC LIMIT 10\n\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n  repo_name,\n  number as issue_number,\n  sum(comments) as total_comments,\n  uniqExact(actor_login) as unique_comment_authors\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\n  AND number > 10\nGROUP BY repo_name, number\nHAVING total_comments >= 10\nORDER BY total_comments DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -33388,6 +33906,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\n\n\nSELECT repo_name, COUNT(*) AS event_count FROM github_events WHERE REGEXP_EXTRACT(body, '(?i)tensorflow', 0) IS NOT NULL GROUP BY repo_name ORDER BY event_count DESC LIMIT 10\n\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.9230778668143195,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    count() AS event_count\nFROM github_events\nWHERE lower(body) LIKE '%tensorflow%'\n   OR lower(title) LIKE '%tensorflow%'\nGROUP BY repo_name\nORDER BY event_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -34280,6 +34812,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\n\nSELECT repo_name, COUNT(*) AS commit_comment_count FROM github_events WHERE event_type = 'CommitCommentEvent' GROUP BY repo_name ORDER BY commit_comment_count DESC LIMIT 10\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    COUNT() as commit_comments_count\nFROM github_events \nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name \nORDER BY commit_comments_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -35172,6 +35718,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\n\nSELECT \n  CONCAT('https://github.com/', repo_name, '/commit/', commit_id) AS full_commit_url,\n  COUNT(*) AS total_commit_events,\n  COUNT(DISTINCT actor_login) AS distinct_commenters,\n  SUM(comments) AS total_comments,\n  COUNT(DISTINCT actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'PushEvent'\n  AND comment_id IS NOT NULL\nGROUP BY commit_id, repo_name\nHAVING COUNT(DISTINCT actor_login) >= 10\nORDER BY total_commit_events DESC\nLIMIT 10\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT \n    commit_id,\n    'https://github.com/' || splitByChar('/', repo_name)[1] || '/' || splitByChar('/', repo_name)[2] || '/commit/' || commit_id AS commit_url,\n    count() AS total_comments,\n    unique_authors\nFROM (\n    SELECT \n        commit_id,\n        repo_name,\n        uniqExact(actor_login) AS unique_authors\n    FROM github_events\n    WHERE event_type = 'CommitCommentEvent' \n        AND commit_id != ''\n    GROUP BY commit_id, repo_name\n    HAVING unique_authors >= 10\n)\nORDER BY unique_authors DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -36078,6 +36638,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\n\n\nSELECT \n  CONCAT('https://github.com/', repo_name, '/pull/', number) AS pr_url,\n  COUNT(DISTINCT actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\n  AND action = 'created'\nGROUP BY repo_name, number\nORDER BY unique_authors DESC\nLIMIT 10\n\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT \n    CONCAT('https://github.com/', splitByChar('/', repo_name)[1], '/', splitByChar('/', repo_name)[2], '/pull/', toString(number)) AS pr_url,\n    uniqExact(author_login) AS unique_authors\nFROM github_events \nWHERE event_type = 'PullRequestReviewCommentEvent' \n  AND author_login != ''\nGROUP BY repo_name, number\nORDER BY unique_authors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -36970,6 +37544,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\n\nSELECT actor_login, COUNT(*) AS push_count\nFROM github_events\nWHERE event_type = 'PushEvent' AND actor_login != ''\nGROUP BY actor_login\nORDER BY push_count DESC\nLIMIT 10\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT actor_login, count() as push_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY push_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -37862,6 +38450,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "\n\n\nSELECT \n  SUBSTRING_INDEX(repo_name, '/', 1) AS organization,\n  COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent' AND action = 'created'\nGROUP BY organization\nORDER BY star_count DESC\nLIMIT 10\n\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.6336230671198414,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as star_count\nFROM github_events \nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name \nORDER BY star_count DESC \nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -38740,6 +39342,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\n\n\nSELECT \n  SUBSTRING_INDEX(repo_name, '/', 1) AS organization_name,\n  count(*) AS repo_count\nFROM github_events\nGROUP BY organization_name\nORDER BY repo_count DESC\nLIMIT 10\n\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n  splitByChar('/', repo_name)[1] AS organization,\n  count(distinct repo_name) AS repo_count\nFROM github_events\nWHERE length(splitByChar('/', repo_name)) >= 2\nGROUP BY organization\nORDER BY repo_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -39632,6 +40248,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\n\nSELECT \n  repo_name,\n  count(*) as pr_count,\n  count(distinct actor_login) as unique_authors,\n  sum(additions) as total_adds,\n  sum(deletions) as total_dels\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND additions < 10000\n  AND deletions < 10000\nGROUP BY repo_name\nORDER BY (total_adds + total_dels) DESC\nLIMIT 10\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    repo_name AS repo,\n    count() AS pr_count,\n    uniqExact(actor_login) AS unique_authors,\n    sum(additions) AS total_adds,\n    sum(deletions) AS total_dels\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\n    AND additions < 10000\n    AND deletions < 10000\nGROUP BY repo_name\nORDER BY (total_adds + total_dels) DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -40566,6 +41196,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\n\n\nSELECT \n  actor_login,\n  COUNT(*) AS total_comments,\n  COUNT(DISTINCT repo_name) AS unique_repos,\n  COUNT(DISTINCT CONCAT(repo_name, number)) AS unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent' AND action = 'created'\nGROUP BY actor_login\nORDER BY total_comments DESC\nLIMIT 10\n\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    actor_login AS author,\n    count() AS num_comments,\n    uniqExact(repo_name) AS num_repos,\n    uniqExact(repo_name, number) AS num_prs\nFROM github_events \nWHERE event_type = 'PullRequestReviewCommentEvent' \n    AND action = 'created'\nGROUP BY actor_login \nORDER BY num_comments DESC \nLIMIT 10"
       }
     },
     "humanResults": {
@@ -41472,6 +42116,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "\n\n\nSELECT \n  label,\n  COUNT(*) AS count\nFROM (\n  SELECT \n    arrayJoin(labels) AS label\n  FROM github_events\n  WHERE event_type IN (6,7,10) \n    AND action IN (1,5,10)\n)\nGROUP BY label\nORDER BY count DESC\nLIMIT 10\n\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.8653503568342029,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT labels, count() as usage_count\nFROM github_events\nWHERE (event_type = 'IssuesEvent' AND action IN ('opened', 'labeled'))\n   OR (event_type = 'PullRequestEvent' AND action IN ('opened', 'labeled'))\n   OR (event_type = 'IssueCommentEvent' AND action IN ('created', 'opened'))\n   AND arrayJoin(labels) != ''\nGROUP BY labels\nORDER BY usage_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -42350,6 +43008,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\n\n\nSELECT \n  substring(repo_name, 1, position('/' in repo_name) - 1) AS org_name,\n  count(distinct actor_login) AS unique_authors,\n  count(distinct if(event_type = 'PullRequestEvent', actor_login, null)) AS pr_authors,\n  count(distinct if(event_type = 'IssuesEvent', actor_login, null)) AS issue_authors,\n  count(distinct if(event_type = 'IssueCommentEvent', actor_login, null)) AS issue_comment_authors,\n  count(distinct if(event_type = 'PushEvent', actor_login, null)) AS push_authors\nFROM github_events\nGROUP BY org_name\nORDER BY unique_authors DESC\nLIMIT 10\n\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    splitByChar('/', repo_name)[1] AS organization,\n    uniqExact(actor_login) AS unique_authors,\n    uniqExactIf(actor_login, event_type = 'PullRequestEvent' AND action = 'opened') AS unique_pr_authors,\n    uniqExactIf(actor_login, event_type = 'IssuesEvent' AND action = 'opened') AS unique_issue_authors,\n    uniqExactIf(actor_login, event_type = 'IssueCommentEvent') AS unique_issue_comment_authors,\n    uniqExactIf(actor_login, event_type = 'PushEvent') AS unique_push_authors\nFROM github_events\nWHERE repo_name != ''\nGROUP BY organization\nORDER BY unique_authors DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -43312,6 +43984,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\n\nSELECT repo_name, CHAR_LENGTH(repo_name) AS length FROM github_events WHERE event_type = 'WatchEvent' GROUP BY repo_name ORDER BY length DESC LIMIT 10\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    length(repo_name) AS name_length\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING count() >= 1\nORDER BY name_length DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -44190,6 +44876,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\n\nSELECT repo_name FROM github_events WHERE event_type = 'WatchEvent' GROUP BY repo_name HAVING COUNT(*) >= 1 ORDER BY LENGTH(repo_name) ASC LIMIT 10\n"
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.75,
+          "numeric": 1,
+          "fScore": 0.40000000000000013
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING count() >= 1\nORDER BY length(repo_name) ASC, repo_name ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -44715,6 +45415,14 @@
         "avgExactDistance": 0.5743088782562468,
         "avgNumericDistance": 0.4966854524726537,
         "avgFScore": 0.43399999999999994
+      },
+      "openrouter/sonoma-dusk-alpha": {
+        "totalMatches": 27,
+        "exactMatches": 23,
+        "numericMatches": 27,
+        "avgExactDistance": 0.535,
+        "avgNumericDistance": 0.44457226289190577,
+        "avgFScore": 0.46799999999999997
       }
     }
   }
