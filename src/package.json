@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "benchmark": "tsx benchmark/index.ts",
+    "fetch-models": "tsx benchmark/fetch-openrouter-models.ts",
+    "check-new-models": "tsx benchmark/check-new-models.ts",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
