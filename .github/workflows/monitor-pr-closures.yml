@@ -13,6 +13,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          ref: main
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -66,8 +67,8 @@ jobs:
           
           This prevents the model from being automatically benchmarked again."
             
-            git push
-            echo "Changes committed and pushed to repository"
+            git push origin main
+            echo "Changes committed and pushed to main branch"
           fi
 
       - name: Comment on PR

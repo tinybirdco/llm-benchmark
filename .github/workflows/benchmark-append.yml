@@ -73,8 +73,8 @@ jobs:
           
           This prevents the model from being automatically benchmarked again."
             
-            git push
-            echo "Failure changes committed and pushed to repository"
+            git push origin main
+            echo "Failure changes committed and pushed to main branch"
           fi
 
       - name: Create normalized branch name
