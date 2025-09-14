@@ -103,6 +103,11 @@
         "horizon-alpha",
         "horizon-beta"
       ]
+    },
+    "bytedance": {
+      "models": [
+        "seed-oss-36b-instruct"
+      ]
     }
   }
 }
