@@ -1,0 +1,174 @@
+name: Auto-discover new OpenRouter models
+
+on:
+  schedule:
+    # Run every 6 hours to check for new models
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run mode - don't actually run benchmarks"
+        required: false
+        default: false
+        type: boolean
+      max_models:
+        description: "Maximum number of new models to benchmark (0 = no limit)"
+        required: false
+        default: "0"
+        type: string
+      force_run:
+        description: "Force run even if no new models found (for testing)"
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  discover-new-models:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: src/package-lock.json
+
+      - name: Install dependencies
+        working-directory: src
+        run: npm ci
+
+      - name: Check for new models
+        id: find-new-models
+        working-directory: src
+        run: |
+          # Run the check-new-models script
+          npm run check-new-models || {
+            # Script exits with code 1 when new models are found
+            if [ $? -eq 1 ]; then
+              # Read the new models JSON file
+              if [ -f "new-models.json" ]; then
+                NEW_MODELS=$(node -e "
+                  const fs = require('fs');
+                  const data = JSON.parse(fs.readFileSync('new-models.json', 'utf8'));
+                  console.log(data.models.map(m => m.provider + '/' + m.model).join(' '));
+                ")
+                
+                NEW_COUNT=$(node -e "
+                  const fs = require('fs');
+                  const data = JSON.parse(fs.readFileSync('new-models.json', 'utf8'));
+                  console.log(data.total_count);
+                ")
+                
+                echo "new_models=$NEW_MODELS" >> $GITHUB_OUTPUT
+                echo "new_count=$NEW_COUNT" >> $GITHUB_OUTPUT
+                echo "Found $NEW_COUNT new models: $NEW_MODELS"
+              else
+                echo "new_models=" >> $GITHUB_OUTPUT
+                echo "new_count=0" >> $GITHUB_OUTPUT
+              fi
+            else
+              echo "Error running check-new-models script"
+              echo "new_models=" >> $GITHUB_OUTPUT
+              echo "new_count=0" >> $GITHUB_OUTPUT
+            fi
+          }
+
+      - name: Run benchmarks for new models
+        if: steps.find-new-models.outputs.new_count > 0 && github.event.inputs.dry_run != 'true'
+        run: |
+          NEW_MODELS="${{ steps.find-new-models.outputs.new_models }}"
+          MAX_MODELS="${{ github.event.inputs.max_models || '0' }}"
+          
+          echo "Running benchmarks for new models: $NEW_MODELS"
+          echo "Max models limit: $MAX_MODELS"
+          
+          # Convert to array and apply limit if specified
+          MODELS_ARRAY=($NEW_MODELS)
+          if [ "$MAX_MODELS" != "0" ] && [ "$MAX_MODELS" -gt 0 ]; then
+            MODELS_ARRAY=("${MODELS_ARRAY[@]:0:$MAX_MODELS}")
+            echo "Limited to first $MAX_MODELS models: ${MODELS_ARRAY[*]}"
+          fi
+          
+          for model in "${MODELS_ARRAY[@]}"; do
+            echo "=== Triggering benchmark for $model ==="
+            
+            # Trigger the benchmark-append workflow for this model
+            gh workflow run benchmark-append.yml \
+              --ref main \
+              -f model="$model" \
+              || echo "Failed to trigger workflow for $model"
+            
+            # Add a small delay between triggers
+            sleep 5
+          done
+
+      - name: Create summary issue
+        if: steps.find-new-models.outputs.new_count > 0 || github.event.inputs.force_run == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const newModels = '${{ steps.find-new-models.outputs.new_models }}'.split(' ').filter(m => m);
+            const dryRun = '${{ github.event.inputs.dry_run }}' === 'true';
+            const maxModels = '${{ github.event.inputs.max_models || '0' }}';
+            const forceRun = '${{ github.event.inputs.force_run }}' === 'true';
+            const isManual = context.eventName === 'workflow_dispatch';
+            
+            let title, body;
+            
+            if (newModels.length > 0) {
+              title = `🤖 Auto-discovery: ${newModels.length} new OpenRouter models found`;
+              body = `## New Models Discovered
+              
+              Found **${newModels.length}** new models from OpenRouter that are not in our tested or untested lists:
+              
+              ${newModels.map(model => `- \`${model}\``).join('\n')}
+              
+              ${dryRun ? 
+                '**DRY RUN MODE** - No benchmarks were triggered.' : 
+                `**Benchmarks triggered** - The benchmark-append workflow has been triggered for each model. PRs will be created as benchmarks complete.${maxModels !== '0' ? ` (Limited to ${maxModels} models)` : ''}`
+              }
+              
+              ---
+              *This issue was automatically created by the auto-discover-models workflow.*`;
+            } else if (forceRun) {
+              title = `🤖 Auto-discovery: Manual run completed (no new models found)`;
+              body = `## Manual Auto-Discovery Run
+              
+              **No new models found** - All OpenRouter models are either tested or in the untested list.
+              
+              **Run Details:**
+              - Mode: ${dryRun ? 'Dry run' : 'Live run'}
+              - Max models: ${maxModels === '0' ? 'No limit' : maxModels}
+              - Force run: ${forceRun ? 'Yes' : 'No'}
+              
+              **Current Status:**
+              - Tested models: Check benchmark-config.json
+              - Untested models: Check untested-models.json
+              - Total OpenRouter models: 331
+              
+              ---
+              *This issue was created by a manual workflow run.*`;
+            }
+            
+            if (title && body) {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: title,
+                body: body,
+                labels: ['auto-discovery', isManual ? 'manual-run' : 'new-models']
+              });
+            }
+
+      - name: No new models found
+        if: steps.find-new-models.outputs.new_count == 0
+        run: |
+          echo "No new models found. All OpenRouter models are either tested or in the untested list."
+          echo "Current status:"
+          echo "- Tested models: $(node -e "const fs = require('fs'); const config = JSON.parse(fs.readFileSync('benchmark-config.json', 'utf8')); let count = 0; for (const data of Object.values(config.providers)) { count += data.models.length; } console.log(count);")"
+          echo "- Untested models: $(node -e "const fs = require('fs'); const data = JSON.parse(fs.readFileSync('untested-models.json', 'utf8')); console.log(data.total_count);")"
