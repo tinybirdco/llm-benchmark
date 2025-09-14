@@ -78,7 +78,7 @@ jobs:
             fi
           }
 
-      - name: Run benchmarks for new models
+      - name: Check for existing PRs and run benchmarks
         if: steps.find-new-models.outputs.new_count > 0 && github.event.inputs.dry_run != 'true'
         env:
           GH_TOKEN: ${{ github.token }}
@@ -86,7 +86,7 @@ jobs:
           NEW_MODELS="${{ steps.find-new-models.outputs.new_models }}"
           MAX_MODELS="${{ github.event.inputs.max_models || '0' }}"
           
-          echo "Running benchmarks for new models: $NEW_MODELS"
+          echo "Checking for existing PRs and running benchmarks for new models: $NEW_MODELS"
           echo "Max models limit: $MAX_MODELS"
           
           # Convert to array and apply limit if specified
@@ -96,8 +96,22 @@ jobs:
             echo "Limited to first $MAX_MODELS models: ${MODELS_ARRAY[*]}"
           fi
           
+          SKIPPED_COUNT=0
+          TRIGGERED_COUNT=0
+          
           for model in "${MODELS_ARRAY[@]}"; do
-            echo "=== Triggering benchmark for $model ==="
+            echo "=== Checking $model ==="
+            
+            # Check if there's already an open PR for this model
+            EXISTING_PR=$(gh pr list --state open --search "Add benchmark results for $model" --json number --jq '.[0].number' || echo "")
+            
+            if [ -n "$EXISTING_PR" ] && [ "$EXISTING_PR" != "null" ]; then
+              echo "⚠️  Open PR #$EXISTING_PR already exists for $model - skipping"
+              SKIPPED_COUNT=$((SKIPPED_COUNT + 1))
+              continue
+            fi
+            
+            echo "✅ No existing PR found for $model - triggering benchmark"
             
             # Trigger the benchmark-append workflow for this model
             gh workflow run benchmark-append.yml \
@@ -105,9 +119,16 @@ jobs:
               -f model="$model" \
               || echo "Failed to trigger workflow for $model"
             
+            TRIGGERED_COUNT=$((TRIGGERED_COUNT + 1))
+            
             # Add a small delay between triggers
             sleep 5
           done
+          
+          echo "📊 Summary:"
+          echo "  - Models checked: ${#MODELS_ARRAY[@]}"
+          echo "  - Benchmarks triggered: $TRIGGERED_COUNT"
+          echo "  - Skipped (existing PRs): $SKIPPED_COUNT"
 
       - name: Log discovery results
         if: steps.find-new-models.outputs.new_count > 0 || github.event.inputs.force_run == 'true'
