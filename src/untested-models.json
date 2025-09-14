@@ -1,6 +1,6 @@
 {
-  "generated_at": "2025-09-14T13:11:40.339Z",
-  "total_count": 280,
+  "generated_at": "2025-09-14T14:06:50.666Z",
+  "total_count": 279,
   "models": [
     {
       "provider": "meituan",
@@ -1391,6 +1391,13 @@
       "provider": "openai",
       "model": "gpt-4-0314",
       "modelId": "openai/gpt-4-0314"
+    },
+    {
+      "provider": "openrouter",
+      "model": "sonoma-sky-alpha",
+      "modelId": "openrouter/sonoma-sky-alpha",
+      "reason": "Failed: PR rejected/closed without merging",
+      "failed_at": "2025-09-14T14:06:50.666Z"
     }
   ]
 }
