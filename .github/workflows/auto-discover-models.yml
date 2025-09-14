@@ -109,63 +109,32 @@ jobs:
             sleep 5
           done
 
-      - name: Create summary issue
+      - name: Log discovery results
         if: steps.find-new-models.outputs.new_count > 0 || github.event.inputs.force_run == 'true'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const newModels = '${{ steps.find-new-models.outputs.new_models }}'.split(' ').filter(m => m);
-            const dryRun = '${{ github.event.inputs.dry_run }}' === 'true';
-            const maxModels = '${{ github.event.inputs.max_models || '0' }}';
-            const forceRun = '${{ github.event.inputs.force_run }}' === 'true';
-            const isManual = context.eventName === 'workflow_dispatch';
-            
-            let title, body;
-            
-            if (newModels.length > 0) {
-              title = `🤖 Auto-discovery: ${newModels.length} new OpenRouter models found`;
-              body = `## New Models Discovered
-              
-              Found **${newModels.length}** new models from OpenRouter that are not in our tested or untested lists:
-              
-              ${newModels.map(model => `- \`${model}\``).join('\n')}
-              
-              ${dryRun ? 
-                '**DRY RUN MODE** - No benchmarks were triggered.' : 
-                `**Benchmarks triggered** - The benchmark-append workflow has been triggered for each model. PRs will be created as benchmarks complete.${maxModels !== '0' ? ` (Limited to ${maxModels} models)` : ''}`
-              }
-              
-              ---
-              *This issue was automatically created by the auto-discover-models workflow.*`;
-            } else if (forceRun) {
-              title = `🤖 Auto-discovery: Manual run completed (no new models found)`;
-              body = `## Manual Auto-Discovery Run
-              
-              **No new models found** - All OpenRouter models are either tested or in the untested list.
-              
-              **Run Details:**
-              - Mode: ${dryRun ? 'Dry run' : 'Live run'}
-              - Max models: ${maxModels === '0' ? 'No limit' : maxModels}
-              - Force run: ${forceRun ? 'Yes' : 'No'}
-              
-              **Current Status:**
-              - Tested models: Check benchmark-config.json
-              - Untested models: Check untested-models.json
-              - Total OpenRouter models: 331
-              
-              ---
-              *This issue was created by a manual workflow run.*`;
-            }
-            
-            if (title && body) {
-              await github.rest.issues.create({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                title: title,
-                body: body,
-                labels: ['auto-discovery', isManual ? 'manual-run' : 'new-models']
-              });
-            }
+        run: |
+          NEW_COUNT="${{ steps.find-new-models.outputs.new_count }}"
+          NEW_MODELS="${{ steps.find-new-models.outputs.new_models }}"
+          DRY_RUN="${{ github.event.inputs.dry_run }}"
+          MAX_MODELS="${{ github.event.inputs.max_models || '0' }}"
+          FORCE_RUN="${{ github.event.inputs.force_run }}"
+          
+          if [ "$NEW_COUNT" -gt 0 ]; then
+            echo "🤖 Auto-discovery: Found $NEW_COUNT new OpenRouter models"
+            echo "Models: $NEW_MODELS"
+            if [ "$DRY_RUN" = "true" ]; then
+              echo "DRY RUN MODE - No benchmarks were triggered"
+            else
+              echo "Benchmarks triggered for each model"
+              if [ "$MAX_MODELS" != "0" ]; then
+                echo "Limited to $MAX_MODELS models"
+              fi
+            fi
+          elif [ "$FORCE_RUN" = "true" ]; then
+            echo "🤖 Auto-discovery: Manual run completed (no new models found)"
+            echo "All OpenRouter models are either tested or in the untested list"
+            echo "Mode: $([ "$DRY_RUN" = "true" ] && echo "Dry run" || echo "Live run")"
+            echo "Max models: $([ "$MAX_MODELS" = "0" ] && echo "No limit" || echo "$MAX_MODELS")"
+          fi
 
       - name: No new models found
         if: steps.find-new-models.outputs.new_count == 0

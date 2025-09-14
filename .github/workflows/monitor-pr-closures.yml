@@ -48,6 +48,28 @@ jobs:
           
           echo "Model $MODEL has been added to the untested list"
 
+      - name: Commit changes to repository
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+          # Check if there are changes to commit
+          if git diff --quiet; then
+            echo "No changes to commit"
+          else
+            git add src/untested-models.json src/failed-models.json
+            git commit -m "Add rejected model ${{ steps.extract-model.outputs.model }} to untested list
+
+          - Model: ${{ steps.extract-model.outputs.model }}
+          - Reason: PR rejected/closed without merging
+          - PR: #${{ github.event.pull_request.number }}
+          
+          This prevents the model from being automatically benchmarked again."
+            
+            git push
+            echo "Changes committed and pushed to repository"
+          fi
+
       - name: Comment on PR
         uses: actions/github-script@v7
         with:
@@ -77,33 +99,4 @@ jobs:
               \`\`\`
               
               @alrocar`
-            });
-
-      - name: Create summary issue
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const model = '${{ steps.extract-model.outputs.model }}';
-            const prNumber = context.issue.number;
-            
-            await github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: `🚫 Model rejected: ${model}`,
-              body: `## Model Rejection Summary
-              
-              **Model:** \`${model}\`
-              **PR:** #${prNumber}
-              **Action:** Added to untested models list
-              
-              The benchmark results for this model were rejected (PR closed without merging).
-              The model has been added to the untested models list to prevent automatic re-processing.
-              
-              **Next Steps:**
-              - The model will not be automatically benchmarked again
-              - You can manually remove it from the untested list if needed
-              - Check the untested models list to see all rejected models
-              
-              @alrocar`,
-              labels: ['model-rejected', 'auto-generated']
             });

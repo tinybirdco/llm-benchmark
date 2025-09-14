@@ -52,23 +52,30 @@ jobs:
           # Add to failed models
           npm run manage-failed-models add "$PROVIDER" "$MODEL_NAME" "$MODEL" "Benchmark workflow failed"
           
-          # Create a failure issue
-          gh issue create \
-            --title "❌ Benchmark failed for $MODEL" \
-            --body "The benchmark workflow failed for model **$MODEL**.
+          echo "Model $MODEL has been added to the failed list"
+
+      - name: Commit failure changes
+        if: failure() && steps.run-benchmark.outcome == 'failure'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
           
-          **Details:**
-          - Model: \`$MODEL\`
-          - Provider: \`$PROVIDER\`
-          - Workflow: \`benchmark-append.yml\`
-          - Run ID: \`${{ github.run_id }}\`
+          # Check if there are changes to commit
+          if git diff --quiet; then
+            echo "No changes to commit"
+          else
+            git add src/untested-models.json src/failed-models.json
+            git commit -m "Add failed model ${{ github.event.inputs.model }} to tracking lists
+
+          - Model: ${{ github.event.inputs.model }}
+          - Reason: Benchmark workflow failed
+          - Run ID: ${{ github.run_id }}
           
-          The model has been added to the failed models list and will not be retried automatically.
-          
-          @alrocar" \
-            --label "benchmark-failure,auto-generated" || echo "Failed to create issue"
-        env:
-          GH_TOKEN: ${{ github.token }}
+          This prevents the model from being automatically benchmarked again."
+            
+            git push
+            echo "Failure changes committed and pushed to repository"
+          fi
 
       - name: Create normalized branch name
         id: branch-name
