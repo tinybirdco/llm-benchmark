@@ -103,6 +103,11 @@
         "horizon-alpha",
         "horizon-beta"
       ]
+    },
+    "arcee-ai": {
+      "models": [
+        "afm-4.5b"
+      ]
     }
   }
 }
