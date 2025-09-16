@@ -103,6 +103,11 @@
         "horizon-alpha",
         "horizon-beta"
       ]
+    },
+    "opengvlab": {
+      "models": [
+        "internvl3-78b"
+      ]
     }
   }
 }
