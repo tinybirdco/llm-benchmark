@@ -1,6 +1,6 @@
 {
-  "generated_at": "2025-09-14T14:14:32.052Z",
-  "total_count": 2,
+  "generated_at": "2025-09-16T06:17:43.176Z",
+  "total_count": 3,
   "models": [
     {
       "provider": "openrouter",
@@ -16,6 +16,14 @@
       "modelId": "openrouter/sonoma-dusk-alpha",
       "reason": "PR rejected/closed without merging",
       "failed_at": "2025-09-14T14:14:32.052Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "opengvlab",
+      "model": "internvl3-78b",
+      "modelId": "opengvlab/internvl3-78b",
+      "reason": "PR rejected/closed without merging",
+      "failed_at": "2025-09-16T06:17:43.176Z",
       "attempt_count": 1
     }
   ]
