@@ -1,6 +1,6 @@
 {
-  "generated_at": "2025-09-16T06:17:43.176Z",
-  "total_count": 3,
+  "generated_at": "2025-09-16T19:01:45.208Z",
+  "total_count": 4,
   "models": [
     {
       "provider": "openrouter",
@@ -24,6 +24,14 @@
       "modelId": "opengvlab/internvl3-78b",
       "reason": "PR rejected/closed without merging",
       "failed_at": "2025-09-16T06:17:43.176Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "arcee-ai",
+      "model": "afm-4.5b",
+      "modelId": "arcee-ai/afm-4.5b",
+      "reason": "PR rejected/closed without merging",
+      "failed_at": "2025-09-16T19:01:45.208Z",
       "attempt_count": 1
     }
   ]
