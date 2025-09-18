@@ -105,6 +105,11 @@
         "horizon-alpha",
         "horizon-beta"
       ]
+    },
+    "alibaba": {
+      "models": [
+        "tongyi-deepresearch-30b-a3b"
+      ]
     }
   }
 }
