@@ -1,6 +1,6 @@
 {
-  "generated_at": "2025-09-16T19:01:45.210Z",
-  "total_count": 282,
+  "generated_at": "2025-09-21T18:15:44.871Z",
+  "total_count": 283,
   "models": [
     {
       "provider": "meituan",
@@ -1419,6 +1419,13 @@
       "modelId": "arcee-ai/afm-4.5b",
       "reason": "Failed: PR rejected/closed without merging",
       "failed_at": "2025-09-16T19:01:45.210Z"
+    },
+    {
+      "provider": "x-ai",
+      "model": "grok-4-fast:free",
+      "modelId": "x-ai/grok-4-fast:free",
+      "reason": "Failed: PR rejected/closed without merging",
+      "failed_at": "2025-09-21T18:15:44.871Z"
     }
   ]
 }
