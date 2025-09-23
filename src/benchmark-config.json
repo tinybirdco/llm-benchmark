@@ -110,6 +110,11 @@
       "models": [
         "tongyi-deepresearch-30b-a3b"
       ]
+    },
+    "nousresearch": {
+      "models": [
+        "deephermes-3-llama-3-8b-preview"
+      ]
     }
   }
 }
