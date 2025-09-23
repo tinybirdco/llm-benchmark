@@ -1,6 +1,6 @@
 {
-  "generated_at": "2025-09-21T18:15:44.871Z",
-  "total_count": 283,
+  "generated_at": "2025-09-23T20:07:49.045Z",
+  "total_count": 284,
   "models": [
     {
       "provider": "meituan",
@@ -1426,6 +1426,13 @@
       "modelId": "x-ai/grok-4-fast:free",
       "reason": "Failed: PR rejected/closed without merging",
       "failed_at": "2025-09-21T18:15:44.871Z"
+    },
+    {
+      "provider": "nousresearch",
+      "model": "deephermes-3-llama-3-8b-preview",
+      "modelId": "nousresearch/deephermes-3-llama-3-8b-preview",
+      "reason": "Failed: PR rejected/closed without merging",
+      "failed_at": "2025-09-23T20:07:49.045Z"
     }
   ]
 }
