@@ -82,7 +82,8 @@
         "qwen3-next-80b-a3b-instruct",
         "qwen3-next-80b-a3b-thinking",
         "qwen3-coder-plus",
-        "qwen3-coder-flash"
+        "qwen3-coder-flash",
+        "qwen3-vl-235b-a22b-instruct"
       ]
     },
     "moonshotai": {
