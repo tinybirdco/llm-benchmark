@@ -178,17 +178,18 @@ export function calculateRanks(metrics: ModelMetrics[]): ModelMetrics[] {
 /**
  * Calculates a comprehensive exactness score for a model based on validation results.
  * 
- * The score combines:
- * 1. Match rate (what percentage of queries produced valid results)
- * 2. Quality of matches (how accurate the results are)
- * 3. Penalty for failures (reduces score for queries that failed)
+ * This function calculates the average of individual exactness scores across all questions,
+ * which provides a more accurate representation than using average distance metrics.
  * 
- * All calculations are done on a 0-1 scale internally for consistency,
- * then converted to 0-100 scale for final output.
+ * The score properly accounts for:
+ * 1. Individual question scores (including perfect 100 scores)
+ * 2. Failed queries (scored as 0)
+ * 3. Exact match bonus for perfect accuracy
  */
 function blendedExactnessScore(provider: string, model: string) {
   const modelKey = `${provider}/${model}`;
 
+  // Validate that model stats exist
   if (
     !validationSummaries.modelStats[
       modelKey as keyof typeof validationSummaries.modelStats
@@ -198,35 +199,61 @@ function blendedExactnessScore(provider: string, model: string) {
     return 0;
   }
 
-  const { totalMatches, exactMatches, avgExactDistance, avgNumericDistance, avgFScore } =
-    validationSummaries.modelStats[
-      modelKey as keyof typeof validationSummaries.modelStats
-    ];
+  const modelStats = validationSummaries.modelStats[
+    modelKey as keyof typeof validationSummaries.modelStats
+  ];
 
-  // Calculate match rates (0-1 scale)
-  const totalMatchRate = totalMatches / validationSummaries.totalQuestions;
+  // Validate required fields exist and are numbers
+  if (
+    typeof modelStats.totalMatches !== 'number' ||
+    typeof modelStats.exactMatches !== 'number' ||
+    typeof validationSummaries.totalQuestions !== 'number' ||
+    validationSummaries.totalQuestions === 0
+  ) {
+    console.log(`Invalid validation data for ${modelKey}`);
+    return 0;
+  }
+
+  const { totalMatches, exactMatches } = modelStats;
+
+  // Calculate individual exactness scores for all questions
+  const individualScores: number[] = [];
+  
+  // Get all question keys from validation results
+  const questionKeys = Object.keys(validationResults).filter(key => key !== '_summary');
+  
+  // Validate we have questions to process
+  if (questionKeys.length === 0) {
+    console.log(`No questions found in validation results for ${modelKey}`);
+    return 0;
+  }
+  
+  for (const question of questionKeys) {
+    const individualScore = getExactnessScore(provider, model, question);
+    individualScores.push(individualScore);
+  }
+  
+  // Calculate average of individual scores (safe division)
+  const avgIndividualScore = individualScores.length > 0 
+    ? individualScores.reduce((sum, score) => sum + score, 0) / individualScores.length
+    : 0;
+  
+  // Apply exact match bonus (safe division)
   const exactMatchRate = exactMatches / validationSummaries.totalQuestions;
-  const failedMatchRate = 1 - totalMatchRate;
-
-  // Calculate quality score for successful matches (0-1 scale)
-  // This already accounts for exact matches through the distance metrics
-  const qualityScore = blendScore(avgExactDistance, avgNumericDistance, avgFScore) / 100;
   
-  // Calculate comprehensive exactness score
-  // Base score: successful matches weighted by their quality
-  const baseScore = totalMatchRate * qualityScore;
+  // Calculate bonus that ensures final score never exceeds 100
+  const maxPossibleBonus = Math.max(0, 100 - avgIndividualScore);
+  const exactMatchBonus = exactMatchRate * Math.min(5, maxPossibleBonus);
   
-  // Apply penalty for failed matches (reduces score proportionally)
-  // Using a moderate penalty to avoid overly harsh scoring
-  const failurePenalty = failedMatchRate * 0.3;
+  const finalScore = avgIndividualScore + exactMatchBonus;
   
-  // Apply bonus for exact matches (additional reward for perfect accuracy)
-  const exactMatchBonus = exactMatchRate * 0.1; // 10% bonus for exact matches
+  // Validate final score is a valid number
+  if (!isFinite(finalScore)) {
+    console.log(`Invalid final score calculated for ${modelKey}: ${finalScore}`);
+    return 0;
+  }
   
-  const comprehensiveScore = Math.max(0, baseScore - failurePenalty + exactMatchBonus);
-  
-  // Convert back to 0-100 scale for consistency with other scores
-  return Math.round(comprehensiveScore * 100);
+  return Math.round(finalScore);
 }
 
 /**
