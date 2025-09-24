@@ -1,6 +1,6 @@
 {
-  "generated_at": "2025-09-23T20:07:49.045Z",
-  "total_count": 284,
+  "generated_at": "2025-09-24T07:35:28.552Z",
+  "total_count": 285,
   "models": [
     {
       "provider": "meituan",
@@ -1433,6 +1433,13 @@
       "modelId": "nousresearch/deephermes-3-llama-3-8b-preview",
       "reason": "Failed: PR rejected/closed without merging",
       "failed_at": "2025-09-23T20:07:49.045Z"
+    },
+    {
+      "provider": "deepseek",
+      "model": "deepseek-v3.1-terminus",
+      "modelId": "deepseek/deepseek-v3.1-terminus",
+      "reason": "Failed: PR rejected/closed without merging",
+      "failed_at": "2025-09-24T07:35:28.552Z"
     }
   ]
 }

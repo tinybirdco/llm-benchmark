@@ -1,6 +1,6 @@
 {
-  "generated_at": "2025-09-23T20:07:49.045Z",
-  "total_count": 6,
+  "generated_at": "2025-09-24T07:35:28.551Z",
+  "total_count": 7,
   "models": [
     {
       "provider": "openrouter",
@@ -48,6 +48,14 @@
       "modelId": "nousresearch/deephermes-3-llama-3-8b-preview",
       "reason": "PR rejected/closed without merging",
       "failed_at": "2025-09-23T20:07:49.045Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "deepseek",
+      "model": "deepseek-v3.1-terminus",
+      "modelId": "deepseek/deepseek-v3.1-terminus",
+      "reason": "PR rejected/closed without merging",
+      "failed_at": "2025-09-24T07:35:28.551Z",
       "attempt_count": 1
     }
   ]
