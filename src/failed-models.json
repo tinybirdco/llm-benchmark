@@ -1,6 +1,6 @@
 {
-  "generated_at": "2025-09-24T07:35:28.551Z",
-  "total_count": 7,
+  "generated_at": "2025-09-24T07:36:46.689Z",
+  "total_count": 8,
   "models": [
     {
       "provider": "openrouter",
@@ -56,6 +56,14 @@
       "modelId": "deepseek/deepseek-v3.1-terminus",
       "reason": "PR rejected/closed without merging",
       "failed_at": "2025-09-24T07:35:28.551Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "qwen",
+      "model": "qwen3-vl-235b-a22b-instruct",
+      "modelId": "qwen/qwen3-vl-235b-a22b-instruct",
+      "reason": "PR rejected/closed without merging",
+      "failed_at": "2025-09-24T07:36:46.689Z",
       "attempt_count": 1
     }
   ]

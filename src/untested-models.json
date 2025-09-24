@@ -1,6 +1,6 @@
 {
-  "generated_at": "2025-09-24T07:35:28.552Z",
-  "total_count": 285,
+  "generated_at": "2025-09-24T07:36:46.690Z",
+  "total_count": 286,
   "models": [
     {
       "provider": "meituan",
@@ -1440,6 +1440,13 @@
       "modelId": "deepseek/deepseek-v3.1-terminus",
       "reason": "Failed: PR rejected/closed without merging",
       "failed_at": "2025-09-24T07:35:28.552Z"
+    },
+    {
+      "provider": "qwen",
+      "model": "qwen3-vl-235b-a22b-instruct",
+      "modelId": "qwen/qwen3-vl-235b-a22b-instruct",
+      "reason": "Failed: PR rejected/closed without merging",
+      "failed_at": "2025-09-24T07:36:46.690Z"
     }
   ]
 }
