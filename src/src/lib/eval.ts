@@ -175,6 +175,17 @@ export function calculateRanks(metrics: ModelMetrics[]): ModelMetrics[] {
   });
 }
 
+/**
+ * Calculates a comprehensive exactness score for a model based on validation results.
+ * 
+ * The score combines:
+ * 1. Match rate (what percentage of queries produced valid results)
+ * 2. Quality of matches (how accurate the results are)
+ * 3. Penalty for failures (reduces score for queries that failed)
+ * 
+ * All calculations are done on a 0-1 scale internally for consistency,
+ * then converted to 0-100 scale for final output.
+ */
 function blendedExactnessScore(provider: string, model: string) {
   const modelKey = `${provider}/${model}`;
 
@@ -192,29 +203,40 @@ function blendedExactnessScore(provider: string, model: string) {
       modelKey as keyof typeof validationSummaries.modelStats
     ];
 
-  // Calculate match rates
+  // Calculate match rates (0-1 scale)
   const totalMatchRate = totalMatches / validationSummaries.totalQuestions;
   const exactMatchRate = exactMatches / validationSummaries.totalQuestions;
   const failedMatchRate = 1 - totalMatchRate;
 
-  // Calculate quality score for successful matches
-  const qualityScore = blendScore(avgExactDistance, avgNumericDistance, avgFScore);
+  // Calculate quality score for successful matches (0-1 scale)
+  // This already accounts for exact matches through the distance metrics
+  const qualityScore = blendScore(avgExactDistance, avgNumericDistance, avgFScore) / 100;
   
-  // Calculate comprehensive exactness score with penalties for failures
-  // Base score from successful matches
+  // Calculate comprehensive exactness score
+  // Base score: successful matches weighted by their quality
   const baseScore = totalMatchRate * qualityScore;
   
-  // Penalty for failed matches (each failed match reduces score)
-  const failurePenalty = failedMatchRate * 1; // score here if needed
+  // Apply penalty for failed matches (reduces score proportionally)
+  // Using a moderate penalty to avoid overly harsh scoring
+  const failurePenalty = failedMatchRate * 0.3;
   
-  // Bonus for exact matches
-  const exactMatchBonus = exactMatchRate * 1; // score here if needed
+  // Apply bonus for exact matches (additional reward for perfect accuracy)
+  const exactMatchBonus = exactMatchRate * 0.1; // 10% bonus for exact matches
   
   const comprehensiveScore = Math.max(0, baseScore - failurePenalty + exactMatchBonus);
   
-  return comprehensiveScore;
+  // Convert back to 0-100 scale for consistency with other scores
+  return Math.round(comprehensiveScore * 100);
 }
 
+/**
+ * Blends different distance metrics into a single quality score.
+ * 
+ * @param exact - Exact distance metric (0 = perfect match, 1 = complete mismatch)
+ * @param numeric - Numeric distance metric (0 = perfect match, 1 = complete mismatch)  
+ * @param fscore - F-score metric (0 = worst, 1 = best)
+ * @returns Quality score on 0-100 scale (100 = perfect)
+ */
 function blendScore(exact: number, numeric: number, fscore: number) {
   return 100 * (0.65 * (1 - exact) + 0.25 * (1 - numeric) + 0.1 * fscore);
 }
