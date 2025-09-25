@@ -1,6 +1,6 @@
 {
-  "generated_at": "2025-09-25T18:23:09.321Z",
-  "total_count": 288,
+  "generated_at": "2025-09-25T18:31:37.902Z",
+  "total_count": 289,
   "models": [
     {
       "provider": "meituan",
@@ -1461,6 +1461,13 @@
       "modelId": "google/gemini-2.5-flash-lite-preview-09-2025",
       "reason": "Failed: PR rejected/closed without merging",
       "failed_at": "2025-09-25T18:23:09.321Z"
+    },
+    {
+      "provider": "google",
+      "model": "gemini-2.5-flash-preview-09-2025",
+      "modelId": "google/gemini-2.5-flash-preview-09-2025",
+      "reason": "Failed: PR rejected/closed without merging",
+      "failed_at": "2025-09-25T18:31:37.902Z"
     }
   ]
 }
