@@ -1,6 +1,6 @@
 {
-  "generated_at": "2025-09-24T07:47:36.080Z",
-  "total_count": 287,
+  "generated_at": "2025-09-25T18:23:09.321Z",
+  "total_count": 288,
   "models": [
     {
       "provider": "meituan",
@@ -1454,6 +1454,13 @@
       "modelId": "qwen/qwen3-vl-235b-a22b-thinking",
       "reason": "Failed: PR rejected/closed without merging",
       "failed_at": "2025-09-24T07:47:36.080Z"
+    },
+    {
+      "provider": "google",
+      "model": "gemini-2.5-flash-lite-preview-09-2025",
+      "modelId": "google/gemini-2.5-flash-lite-preview-09-2025",
+      "reason": "Failed: PR rejected/closed without merging",
+      "failed_at": "2025-09-25T18:23:09.321Z"
     }
   ]
 }

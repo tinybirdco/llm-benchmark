@@ -1,6 +1,6 @@
 {
-  "generated_at": "2025-09-24T07:47:36.079Z",
-  "total_count": 9,
+  "generated_at": "2025-09-25T18:23:09.320Z",
+  "total_count": 10,
   "models": [
     {
       "provider": "openrouter",
@@ -72,6 +72,14 @@
       "modelId": "qwen/qwen3-vl-235b-a22b-thinking",
       "reason": "PR rejected/closed without merging",
       "failed_at": "2025-09-24T07:47:36.078Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "google",
+      "model": "gemini-2.5-flash-lite-preview-09-2025",
+      "modelId": "google/gemini-2.5-flash-lite-preview-09-2025",
+      "reason": "PR rejected/closed without merging",
+      "failed_at": "2025-09-25T18:23:09.320Z",
       "attempt_count": 1
     }
   ]
