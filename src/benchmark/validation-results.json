@@ -896,6 +896,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT COUNT(*) FROM github_events WHERE event_type = 'WatchEvent'"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT count() FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10"
       }
     },
     "humanResults": {
@@ -1813,6 +1827,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() AS stars FROM github_events WHERE event_type = 'WatchEvent' GROUP BY repo_name ORDER BY stars DESC LIMIT 10"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE\n    event_type = 'WatchEvent'\nGROUP BY\n    repo_name\nORDER BY\n    stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -2771,6 +2799,20 @@
         "humanRowCount": 5,
         "llmRowCount": 5,
         "sql": "SELECT\n  power_of_10,\n  count(*) AS num_repos\nFROM (\n  SELECT\n    count(*) AS stars,\n    multiIf(\n      stars < 10, 1,\n      stars < 100, 10,\n      stars < 1000, 100,\n      stars < 10000, 1000,\n      stars < 100000, 10000,\n      stars < 1000000, 100000,\n      1000000\n    ) AS power_of_10\n  FROM github_events\n  WHERE event_type = 'WatchEvent'\n  GROUP BY repo_name\n)\nGROUP BY power_of_10\nORDER BY power_of_10 ASC\nLIMIT 10"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 5,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    pow(10, floor(log10(count()))) AS star_count_approx,\n    count() AS repo_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY\n    repo_name\nORDER BY\n    star_count_approx ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -3713,6 +3755,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count(distinct repo_name) FROM github_events"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT count(DISTINCT repo_name) FROM github_events LIMIT 10"
       }
     },
     "humanResults": {
@@ -4630,6 +4686,20 @@
         "humanRowCount": 10,
         "llmRowCount": 20,
         "sql": "SELECT\n  toYear(created_at) AS year,\n  repo_name,\n  count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND created_at >= toDateTime('2015-01-01')\nGROUP BY year, repo_name\nORDER BY year ASC, stars DESC\nLIMIT 10 BY year\nLIMIT 100"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.8511407397204364,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    toYear(created_at) AS year,\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE\n    event_type = 'WatchEvent'\n    AND toYear(created_at) >= 2015\nGROUP BY\n    year,\n    repo_name\nORDER BY\n    year DESC,\n    stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -5602,6 +5672,20 @@
         "humanRowCount": 2,
         "llmRowCount": 2,
         "sql": "\nSELECT\n  YEAR(created_at) AS year,\n  COUNT(*) AS total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year ASC\nLIMIT 10\n"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 2,
+        "llmRowCount": 2,
+        "sql": "SELECT\n    toYear(created_at) AS year,\n    count() AS total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -6518,6 +6602,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT actor_login, count(*) as stars_given FROM github_events WHERE event_type = 'WatchEvent' GROUP BY actor_login ORDER BY stars_given DESC LIMIT 10"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    actor_login,\n    count() AS stars_given\nFROM github_events\nWHERE\n    event_type = 'WatchEvent'\nGROUP BY\n    actor_login\nORDER BY\n    stars_given DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -7480,6 +7578,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT g2.repo_name, COUNT(DISTINCT g2.actor_login) AS stars FROM github_events AS g1 INNER JOIN github_events AS g2 ON g1.actor_login = g2.actor_login WHERE g1.event_type = 'WatchEvent' AND g1.repo_name = 'tensorflow/tensorflow' AND g2.event_type = 'WatchEvent' AND g2.repo_name != 'tensorflow/tensorflow' GROUP BY g2.repo_name ORDER BY stars DESC LIMIT 10"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "%\nSELECT\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE\n    event_type = 'WatchEvent'\n    AND actor_login IN (\n        SELECT\n            actor_login\n        FROM github_events\n        WHERE\n            event_type = 'WatchEvent'\n            AND repo_name = 'tensorflow/tensorflow'\n    )\n    AND repo_name != 'tensorflow/tensorflow'\nGROUP BY\n    repo_name\nORDER BY\n    stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -8428,6 +8540,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "\nSELECT\n    actor_login AS user_name,\n    stars_to_javi,\n    total_stars - stars_to_javi AS stars_to_others,\n    stars_to_javi / total_stars AS ratio\nFROM (\n    SELECT\n        actor_login,\n        sumIf(1, startsWith(repo_name, 'javisantana/')) AS stars_to_javi,\n        count() AS total_stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY actor_login\n    HAVING total_stars > 0 AND stars_to_javi > 0\n)\nORDER BY ratio DESC\nLIMIT 10\n"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT\n    actor_login,\n    sumIf(1, repo_name LIKE 'javisantana/%') AS javisantana_stars,\n    sumIf(1, NOT (repo_name LIKE 'javisantana/%')) AS other_stars,\n    (javisantana_stars * 1.0) / (javisantana_stars + other_stars) AS ratio\nFROM github_events\nWHERE\n    event_type = 'WatchEvent'\nGROUP BY\n    actor_login\nHAVING\n    javisantana_stars > 0\nORDER BY\n    ratio DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -9404,6 +9530,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, countDistinct(actor_login) AS num_unique_contributors FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' AND repo_name NOT LIKE 'tensorflow/%' AND actor_login IN (SELECT actor_login FROM github_events WHERE repo_name LIKE 'tensorflow/%' AND ((event_type = 'PullRequestEvent' AND action = 'opened') OR event_type = 'PushEvent') GROUP BY actor_login) GROUP BY repo_name ORDER BY num_unique_contributors DESC LIMIT 10"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.9473684210526316,
+          "numeric": 0.5984488296289485,
+          "fScore": 0.09999999999999998
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "%\nSELECT\n    repo_name,\n    count(DISTINCT actor_login) AS unique_contributors\nFROM github_events\nWHERE\n    event_type = 'PullRequestEvent'\n    AND action = 'opened'\n    AND repo_name NOT LIKE '%tensorflow/%'\n    AND actor_login IN (\n        SELECT\n            actor_login\n        FROM github_events\n        WHERE\n            event_type = 'PullRequestEvent'\n            AND action = 'opened'\n            AND repo_name LIKE '%tensorflow/%'\n        GROUP BY\n            actor_login\n    )\nGROUP BY\n    repo_name\nORDER BY\n    unique_contributors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -10362,6 +10502,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT e.repo_name, COUNT(*) AS issue_count\nFROM github_events e\nINNER JOIN (\n  SELECT DISTINCT actor_login\n  FROM github_events\n  WHERE event_type = 'IssuesEvent'\n  AND action = 'opened'\n  AND repo_name = 'tensorflow/tensorflow'\n) u ON e.actor_login = u.actor_login\nWHERE e.event_type = 'IssuesEvent'\nAND e.action = 'opened'\nAND e.repo_name != 'tensorflow/tensorflow'\nGROUP BY e.repo_name\nORDER BY issue_count DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "%\nSELECT\n    repo_name,\n    count() AS issue_count\nFROM github_events\nWHERE\n    event_type = 'IssuesEvent'\n    AND action = 'opened'\n    AND actor_login IN (\n        SELECT\n            actor_login\n        FROM github_events\n        WHERE\n            event_type = 'IssuesEvent'\n            AND action = 'opened'\n            AND repo_name = 'tensorflow/tensorflow'\n    )\nGROUP BY\n    repo_name\nORDER BY\n    issue_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -11326,6 +11480,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, max(stars_today) AS max_daily_stars FROM (SELECT repo_name, toDate(created_at) AS day, count() AS stars_today FROM github_events WHERE event_type = 'WatchEvent' GROUP BY repo_name, day) GROUP BY repo_name ORDER BY max_daily_stars DESC LIMIT 10"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "%\nSELECT\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE\n    event_type = 'WatchEvent'\n    AND created_at >= subtractDays({{{{DateTime(start_date, '2024-01-01 00:00:00')}}}}, 1)\n    AND created_at < {{{{DateTime(start_date, '2024-01-01 00:00:00')}}}}\nGROUP BY\n    repo_name\nORDER BY\n    stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -12298,6 +12466,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "SELECT\n    repo_name,\n    (sum(if(YEAR(created_at) = 2017, 1, 0)) * 1.0 / sum(if(YEAR(created_at) = 2016, 1, 0))) AS growth\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING sum(if(YEAR(created_at) < 2016, 1, 0)) = 1\n   AND sum(if(YEAR(created_at) = 2016, 1, 0)) > 0\nORDER BY growth DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    (countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2017) - countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2016)) AS growth,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2016) AS stars_2016\nFROM github_events\nWHERE\n    event_type = 'WatchEvent'\n    AND toYear(created_at) IN (2016, 2017)\nGROUP BY\n    repo_name\nHAVING\n    stars_2016 >= 1\nORDER BY\n    growth DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -13288,6 +13470,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name FROM github_events WHERE event_type = 'WatchEvent' AND action = 'started' AND toYear(created_at) IN (2016, 2017) GROUP BY repo_name HAVING countIf(toYear(created_at) = 2016) > 0 AND countIf(toYear(created_at) = 2017) >= 1 ORDER BY (countIf(toYear(created_at) = 2017) - countIf(toYear(created_at) = 2016)) / countIf(toYear(created_at) = 2016) ASC LIMIT 10"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "%\nSELECT\n    repo_name,\n    (countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2016) - countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2017)) AS star_diff\nFROM github_events\nWHERE\n    event_type = 'WatchEvent'\n    AND toYear(created_at) IN (2016, 2017)\nGROUP BY\n    repo_name\nHAVING\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2017) >= 1\nORDER BY\n    star_diff DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -14264,6 +14460,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "\nSELECT\n    repo_name,\n    count(*) AS total_stars,\n    toFloat64(if(count() > 1, toFloat64(max(created_at) - min(created_at)) / toFloat64(count() - 1), 0)) AS mean_interarrival_seconds,\n    if(count() < 3 OR toFloat64(if(count() > 1, toFloat64(max(created_at) - min(created_at)) / toFloat64(count() - 1), 0)) == 0,\n        toFloat64(999),\n        arrayReduce('stddevSamp', arrayMap(i -> arraySort(groupArray(created_at))[i + 1] - arraySort(groupArray(created_at))[i], range(1, count()))) / toFloat64(if(count() > 1, toFloat64(max(created_at) - min(created_at)) / toFloat64(count() - 1), 0))\n    ) AS cv\nFROM github_events\nWHERE event_type = 'WatchEvent' AND action = 'started'\nGROUP BY repo_name\nHAVING total_stars > 100\nORDER BY cv ASC\nLIMIT 10\n"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE\n    event_type = 'WatchEvent'\nGROUP BY\n    repo_name\nORDER BY\n    stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -15246,6 +15456,20 @@
         "humanRowCount": 7,
         "llmRowCount": 7,
         "sql": "SELECT dayOfWeek(created_at) AS day_of_week, count() AS star_count FROM github_events WHERE event_type = 'WatchEvent' GROUP BY day_of_week ORDER BY star_count DESC LIMIT 10"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 7,
+        "llmRowCount": 7,
+        "sql": "SELECT\n    DAYOFWEEK(created_at) AS day_of_week,\n    count() AS star_count\nFROM github_events\nWHERE\n    event_type = 'WatchEvent'\nGROUP BY\n    day_of_week\nORDER BY\n    star_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -16182,6 +16406,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT COUNT(DISTINCT actor_login) AS total_users FROM github_events"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.000052934128674804696,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT count(DISTINCT actor_login) FROM github_events LIMIT 10"
       }
     },
     "humanResults": {
@@ -17103,6 +17341,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT COUNT(DISTINCT actor_login) FROM github_events WHERE event_type = 'WatchEvent'"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0014793406252330366,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT\n    count(DISTINCT actor_login)\nFROM github_events\nWHERE\n    event_type = 'WatchEvent'\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -17996,6 +18248,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT countDistinct(actor_login) FROM github_events WHERE event_type = 'PushEvent'"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0018759619527295886,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT\n    count(DISTINCT actor_login)\nFROM github_events\nWHERE event_type = 'PushEvent'\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -18889,6 +19155,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT COUNT(DISTINCT actor_login) FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened'"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0017507922334856522,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT\n    count(DISTINCT actor_login)\nFROM github_events\nWHERE\n    event_type = 'PullRequestEvent'\n    AND action = 'opened'\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -19806,6 +20086,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count(*) as stars\nFROM github_events\nWHERE event_type = 'WatchEvent' AND action = 'started'\nAND actor_login IN (\n  SELECT DISTINCT actor_login\n  FROM github_events\n  WHERE event_type = 'PullRequestEvent' AND action = 'opened'\n)\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "%\nSELECT\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE\n    event_type = 'WatchEvent'\n    AND actor_login IN (\n        SELECT\n            actor_login\n        FROM github_events\n        WHERE\n            event_type = 'PullRequestEvent'\n            AND action = 'opened'\n        GROUP BY\n            actor_login\n        HAVING\n            count(DISTINCT repo_name) >= 1\n    )\nGROUP BY\n    repo_name\nORDER BY\n    stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -20746,6 +21040,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count(*) AS pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nHAVING pr_count >= 10\nORDER BY pr_count DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.19280648633400396,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    count(DISTINCT actor_login) AS distinct_authors\nFROM github_events\nWHERE\n    event_type = 'PullRequestEvent'\n    AND action = 'opened'\nGROUP BY\n    repo_name\nHAVING\n    distinct_authors >= 10\nORDER BY\n    distinct_authors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -21694,6 +22002,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count(*) as pr_count FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' GROUP BY repo_name ORDER BY pr_count DESC LIMIT 10"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.9929439966674258,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    count() AS pr_count\nFROM github_events\nWHERE\n    event_type = 'PullRequestEvent'\nGROUP BY\n    repo_name\nORDER BY\n    pr_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -22656,6 +22978,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT\n    repo_name,\n    countDistinct(actor_login) AS num_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY num_contributors DESC\nLIMIT 10\n"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0.9473684210526316,
+          "numeric": 0.007013121364457529,
+          "fScore": 0.09999999999999998
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    count(DISTINCT actor_login) AS contributors\nFROM github_events\nWHERE\n    event_type = 'PullRequestEvent'\nGROUP BY\n    repo_name\nORDER BY\n    contributors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -23614,6 +23950,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() as issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    count() AS issue_count\nFROM github_events\nWHERE\n    event_type = 'IssuesEvent'\n    AND action = 'opened'\nGROUP BY\n    repo_name\nORDER BY\n    issue_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -24562,6 +24912,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  countDistinct(actor_login) AS num_pushers\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY repo_name\nORDER BY num_pushers DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    count(DISTINCT actor_login) AS push_access_count\nFROM github_events\nWHERE\n    event_type = 'PushEvent'\nGROUP BY\n    repo_name\nORDER BY\n    push_access_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -25510,6 +25874,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  countDistinct(actor_login) AS num_pushers\nFROM github_events\nWHERE event_type = 'PushEvent'\n  AND ref = 'refs/heads/main'\nGROUP BY repo_name\nORDER BY num_pushers DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "%\nSELECT\n    repo_name,\n    count(DISTINCT actor_login) AS push_access_users\nFROM github_events\nWHERE\n    event_type = 'PushEvent'\n    AND ref_type = 'branch'\n    AND ref = 'refs/heads/main'\nGROUP BY\n    repo_name\nORDER BY\n    push_access_users DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -26472,6 +26850,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  uniqExactIf(actor_login, event_type = 'WatchEvent' AND action = 'started') AS stars,\n  uniqExactIf(actor_login, event_type = 'PushEvent' AND ref_type = 'branch' AND ref = 'refs/heads/main') AS pushers\nFROM github_events\nGROUP BY repo_name\nHAVING stars > 99\nORDER BY pushers DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT\n    repo_name,\n    count(DISTINCT actor_login) AS push_access_users\nFROM github_events\nWHERE\n    event_type = 'PushEvent'\n    AND ref = 'refs/heads/main'\n    AND repo_name IN (\n        SELECT\n            repo_name\n        FROM github_events\n        WHERE\n            event_type = 'WatchEvent'\n        GROUP BY\n            repo_name\n        HAVING\n            count() > 99\n    )\nGROUP BY\n    repo_name\nORDER BY\n    push_access_users DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -27448,6 +27840,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  count() AS invitations\nFROM github_events\nWHERE event_type = 'MemberEvent' AND action = 'added'\nGROUP BY repo_name\nORDER BY invitations DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    count() AS invitations\nFROM github_events\nWHERE\n    event_type = 'MemberEvent'\nGROUP BY\n    repo_name\nORDER BY\n    invitations DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -28410,6 +28816,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() AS fork_count FROM github_events WHERE event_type = 'ForkEvent' GROUP BY repo_name ORDER BY fork_count DESC LIMIT 10"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    count() AS forks\nFROM github_events\nWHERE\n    event_type = 'ForkEvent'\nGROUP BY\n    repo_name\nORDER BY\n    forks DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -29358,6 +29778,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "SELECT\n  repo_name,\n  countIf(event_type = 'WatchEvent' AND action = 'started') AS stars,\n  countIf(event_type = 'ForkEvent') AS forks,\n  if(forks > 0, stars / forks, 0) AS ratio\nFROM github_events\nGROUP BY repo_name\nHAVING stars > 0 AND forks > 0\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    countIf(event_type = 'WatchEvent') AS stars,\n    countIf(event_type = 'ForkEvent') AS forks,\n    toFloat64(stars) / forks AS ratio\nFROM github_events\nWHERE\n    event_type IN ('WatchEvent', 'ForkEvent')\nGROUP BY\n    repo_name\nHAVING\n    forks > 0\nORDER BY\n    ratio DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -30334,6 +30768,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT\n  sum(event_type = 'WatchEvent') AS total_stars,\n  sum(event_type = 'ForkEvent') AS total_forks,\n  CAST(total_stars / total_forks AS Decimal(18, 2)) AS ratio\nFROM github_events\nLIMIT 10"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "%\nSELECT\n    sum(CASE WHEN event_type = 'WatchEvent' THEN 1 ELSE 0 END) AS total_stars,\n    sum(CASE WHEN event_type = 'ForkEvent' THEN 1 ELSE 0 END) AS total_forks,\n    round(CAST(sum(CASE WHEN event_type = 'WatchEvent' THEN 1 ELSE 0 END) AS Float64) / CAST(sum(CASE WHEN event_type = 'ForkEvent' THEN 1 ELSE 0 END) AS Float64), 2) AS stars_forks_ratio\nFROM github_events\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -31237,6 +31685,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT COUNT(*) FROM github_events WHERE event_type = 'IssuesEvent' AND action = 'opened' LIMIT 10"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT count() FROM github_events WHERE event_type = 'IssuesEvent' AND action = 'opened' LIMIT 10"
       }
     },
     "humanResults": {
@@ -32158,6 +32620,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() AS issue_comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY issue_comment_count DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    count() AS issue_comment_events_count\nFROM github_events\nWHERE\n    event_type = 'IssueCommentEvent'\nGROUP BY\n    repo_name\nORDER BY\n    issue_comment_events_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -33102,6 +33578,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  sumIf(1, event_type = 'IssuesEvent' AND action = 'opened') AS issues,\n  sumIf(1, event_type = 'IssueCommentEvent') AS comments,\n  sumIf(1, event_type = 'IssueCommentEvent') / sumIf(1, event_type = 'IssuesEvent' AND action = 'opened') AS ratio\nFROM github_events\nGROUP BY repo_name\nHAVING issues > 0\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    countIf(event_type = 'IssueCommentEvent') AS issue_comments,\n    countIf(event_type = 'IssuesEvent' AND action = 'opened') AS opened_issues,\n    issue_comments / opened_issues AS ratio\nFROM github_events\nWHERE\n    event_type IN ('IssueCommentEvent', 'IssuesEvent')\nGROUP BY\n    repo_name\nHAVING\n    opened_issues > 0\nORDER BY\n    ratio DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -34078,6 +34568,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  number,\n  COUNT(*) AS comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name, number\nORDER BY comment_count DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    number,\n    comments\nFROM github_events\nWHERE\n    event_type = 'IssuesEvent'\n    AND action = 'opened'\nORDER BY\n    comments DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -35036,6 +35540,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  number,\n  count(*) AS comment_count,\n  uniqExact(actor_login) AS author_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\n  AND action = 'created'\n  AND number > 10\nGROUP BY repo_name, number\nHAVING comment_count >= 10\nORDER BY comment_count DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    number,\n    count() AS comments_count,\n    uniq(actor_login) AS authors_count\nFROM github_events\nWHERE\n    event_type = 'IssueCommentEvent'\nGROUP BY\n    repo_name,\n    number\nHAVING\n    comments_count >= 10 AND authors_count >= 10\nORDER BY\n    comments_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -36008,6 +36526,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, COUNT(*) as event_count\nFROM github_events\nWHERE (LOWER(body) LIKE '%tensorflow%' OR LOWER(title) LIKE '%tensorflow%')\nGROUP BY repo_name\nORDER BY event_count DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.766084966570525,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    count() AS event_count\nFROM github_events\nWHERE\n    body LIKE '%tensorflow%' OR title LIKE '%tensorflow%'\nGROUP BY\n    repo_name\nORDER BY\n    event_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -36970,6 +37502,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() AS commit_comments FROM github_events WHERE event_type = 'CommitCommentEvent' GROUP BY repo_name ORDER BY commit_comments DESC LIMIT 10"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    count() AS comment_count\nFROM github_events\nWHERE\n    event_type = 'CommitCommentEvent'\nGROUP BY\n    repo_name\nORDER BY\n    comment_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -37932,6 +38478,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  concat('https://github.com/', repo_name, '/commit/', commit_id) AS full_commit_url,\n  count(*) AS total_comments,\n  uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY commit_id, repo_name\nHAVING uniq(actor_login) >= 10\nORDER BY total_comments DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "%\nSELECT\n    concat('https://github.com/', repo_name, '/commit/', commit_id) AS commit_url,\n    count() AS total_comments,\n    count(DISTINCT actor_login) AS unique_authors\nFROM github_events\nWHERE\n    event_type = 'CommitCommentEvent'\n    AND commit_id IS NOT NULL\nGROUP BY\n    commit_url\nHAVING\n    unique_authors >= 10\nORDER BY\n    total_comments DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -38908,6 +39468,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  'https://github.com/' || repo_name || '/pull/' || toString(number) AS pr_url,\n  countDistinct(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\nGROUP BY repo_name, number\nORDER BY unique_authors DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0.18181818181818177,
+          "numeric": 0,
+          "fScore": 0.9
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    concat('https://github.com/', repo_name, '/pull/', toString(number)) AS pr_url,\n    count(DISTINCT actor_login) AS unique_authors\nFROM github_events\nWHERE\n    event_type = 'PullRequestReviewCommentEvent'\nGROUP BY\n    pr_url\nORDER BY\n    unique_authors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -39870,6 +40444,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT actor_login, count() as push_count FROM github_events WHERE event_type = 'PushEvent' GROUP BY actor_login ORDER BY push_count DESC LIMIT 10"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    actor_login,\n    count() AS push_count\nFROM github_events\nWHERE\n    event_type = 'PushEvent'\nGROUP BY\n    actor_login\nORDER BY\n    push_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -40832,6 +41420,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT substringIndex(repo_name, '/', 1) AS owner, count() AS stars FROM github_events WHERE event_type = 'WatchEvent' GROUP BY owner ORDER BY stars DESC LIMIT 10"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.6336230671198414,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE\n    event_type = 'WatchEvent'\nGROUP BY\n    repo_name\nORDER BY\n    stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -41780,6 +42382,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT substringIndex(repo_name, '/', 1) AS organization, count(distinct repo_name) AS num_repos FROM github_events WHERE repo_name != '' GROUP BY organization ORDER BY num_repos DESC LIMIT 10"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    splitByChar('/', repo_name)[1] AS organization_name,\n    count(DISTINCT repo_name) AS num_repos\nFROM github_events\nGROUP BY organization_name\nORDER BY num_repos DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -42742,6 +43358,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT\n  repo_name,\n  count(*) AS pr_count,\n  uniqExact(actor_login) AS unique_authors,\n  sum(additions) AS total_adds,\n  sum(deletions) AS total_dels\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND additions < 10000\n  AND deletions < 10000\nGROUP BY repo_name\nORDER BY (sum(additions) + sum(deletions)) DESC\nLIMIT 10\n"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    count() AS pr_count,\n    count(DISTINCT actor_login) AS unique_authors,\n    sum(additions) AS total_additions,\n    sum(deletions) AS total_deletions\nFROM github_events\nWHERE\n    event_type = 'PullRequestEvent'\n    AND action = 'opened'\n    AND additions < 10000\n    AND deletions < 10000\nGROUP BY\n    repo_name\nORDER BY\n    total_additions + total_deletions DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -43746,6 +44376,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  actor_login AS author,\n  count(*) AS num_comments,\n  count(distinct repo_name) AS unique_repos,\n  count(distinct tuple(repo_name, number)) AS unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\n  AND action = 'created'\nGROUP BY actor_login\nORDER BY num_comments DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    actor_login,\n    count() AS code_review_comments,\n    count(DISTINCT repo_name) AS unique_repos,\n    count(DISTINCT number) AS unique_prs\nFROM github_events\nWHERE\n    event_type = 'PullRequestReviewCommentEvent'\nGROUP BY\n    actor_login\nORDER BY\n    code_review_comments DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -44718,6 +45362,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT\n  l AS label,\n  uniqExact(concat(repo_name, toString(number))) AS usage_count\nFROM github_events\nARRAY JOIN labels AS l\nWHERE event_type IN ('IssuesEvent', 'PullRequestEvent')\n  AND action IN ('opened', 'labeled')\n  AND l != ''\nGROUP BY label\nORDER BY usage_count DESC\nLIMIT 10\n"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    label,\n    count() AS total_count\nFROM github_events\nARRAY JOIN labels AS label\nWHERE\n    event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')\n    AND action IN ('created', 'opened', 'labeled')\nGROUP BY\n    label\nORDER BY\n    total_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -45666,6 +46324,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  SUBSTRING_INDEX(repo_name, '/', 1) AS org,\n  uniqExact(actor_login) AS unique_authors,\n  uniqExactIf(actor_login, event_type = 'PullRequestEvent' AND action = 'opened') AS unique_pr_authors,\n  uniqExactIf(actor_login, event_type = 'IssuesEvent' AND action = 'opened') AS unique_issue_authors,\n  uniqExactIf(actor_login, event_type = 'IssueCommentEvent') AS unique_issue_comment_authors,\n  uniqExactIf(actor_login, event_type = 'PushEvent') AS unique_push_authors\nFROM github_events\nWHERE repo_name != ''\nGROUP BY org\nORDER BY unique_authors DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    substring(repo_name, 1, position(repo_name, '/') - 1) AS organization_name,\n    count(DISTINCT actor_login) AS unique_authors,\n    count(DISTINCT if(event_type = 'PullRequestEvent', actor_login, NULL)) AS unique_pr_authors,\n    count(DISTINCT if(event_type = 'IssuesEvent', actor_login, NULL)) AS unique_issue_authors,\n    count(DISTINCT if(event_type = 'IssueCommentEvent', actor_login, NULL)) AS unique_issue_comment_authors,\n    count(DISTINCT if(event_type = 'PushEvent', actor_login, NULL)) AS unique_push_authors\nFROM github_events\nWHERE\n    repo_name IS NOT NULL\n    AND repo_name != ''\n    AND position(repo_name, '/') > 0\nGROUP BY\n    organization_name\nORDER BY\n    unique_authors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -46698,6 +47370,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n  repo_name,\n  CHAR_LENGTH(repo_name) AS name_length\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY name_length DESC\nLIMIT 10"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0.18181818181818177,
+          "numeric": 0,
+          "fScore": 0.9
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    repo_name,\n    CHAR_LENGTH(repo_name) AS repo_name_length\nFROM github_events\nWHERE\n    event_type = 'WatchEvent'\nGROUP BY\n    repo_name,\n    repo_name_length\nORDER BY\n    repo_name_length DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -47646,6 +48332,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY char_length(repo_name) ASC, repo_name ASC\nLIMIT 10\n"
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.75,
+          "numeric": 1,
+          "fScore": 0.40000000000000013
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name\nFROM github_events\nWHERE \n    event_type = 'WatchEvent'\nGROUP BY \n    repo_name\nHAVING \n    count() >= 1\nORDER BY \n    length(repo_name) ASC, \n    repo_name ASC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -48211,6 +48911,14 @@
         "avgExactDistance": 0.5343233082706768,
         "avgNumericDistance": 0.3958916650536148,
         "avgFScore": 0.47733333333333333
+      },
+      "google/gemini-2.5-flash-preview-09-2025": {
+        "totalMatches": 26,
+        "exactMatches": 19,
+        "numericMatches": 26,
+        "avgExactDistance": 0.5801674641148327,
+        "avgNumericDistance": 0.44094440472691526,
+        "avgFScore": 0.4279999999999999
       }
     }
   }
