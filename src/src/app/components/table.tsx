@@ -140,7 +140,7 @@ const SortableColumnHeader = <T extends Record<string, any>>({
         isDragging ? "opacity-50" : ""
       )}
     >
-      <TooltipProvider key={column.name}>
+      <TooltipProvider key={column.accessorKey}>
         <Tooltip>
           <TooltipTrigger
             disabled={!column.description}
@@ -230,12 +230,17 @@ export const Table = <T extends Record<string, any>>({
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
-    if (active.id !== over?.id) {
+    if (over && active.id !== over.id) {
       setOrderedColumns((items) => {
         const oldIndex = items.findIndex((item) => item.accessorKey === active.id);
-        const newIndex = items.findIndex((item) => item.accessorKey === over?.id);
+        const newIndex = items.findIndex((item) => item.accessorKey === over.id);
 
-        return arrayMove(items, oldIndex, newIndex);
+        // Only proceed if both indices are valid
+        if (oldIndex !== -1 && newIndex !== -1) {
+          return arrayMove(items, oldIndex, newIndex);
+        }
+        
+        return items; // Return unchanged if indices are invalid
       });
     }
   };
@@ -328,7 +333,7 @@ export const Table = <T extends Record<string, any>>({
             >
               {orderedColumns.map((column) => (
                 <div
-                  key={column.name}
+                  key={column.accessorKey}
                   style={{
                     width: columnWidths[column.accessorKey] ? `${columnWidths[column.accessorKey]}px` : undefined
                   }}
