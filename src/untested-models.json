@@ -1,6 +1,6 @@
 {
-  "generated_at": "2025-09-25T18:31:37.902Z",
-  "total_count": 289,
+  "generated_at": "2025-09-26T19:06:13.157Z",
+  "total_count": 290,
   "models": [
     {
       "provider": "meituan",
@@ -1468,6 +1468,13 @@
       "modelId": "google/gemini-2.5-flash-preview-09-2025",
       "reason": "Failed: PR rejected/closed without merging",
       "failed_at": "2025-09-25T18:31:37.902Z"
+    },
+    {
+      "provider": "relace",
+      "model": "relace-apply-3",
+      "modelId": "relace/relace-apply-3",
+      "reason": "Failed: PR rejected/closed without merging",
+      "failed_at": "2025-09-26T19:06:13.157Z"
     }
   ]
 }
