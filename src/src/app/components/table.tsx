@@ -150,33 +150,41 @@ const SortableColumnHeader = <T extends Record<string, any>>({
               onClick={() => onSort(column)}
               className={cn(
                 "p-2.5 lg:p-4 align-middle text-sm text-nowrap whitespace-nowrap group !outline-none",
-                column.type === "right" ? "text-right" : "text-left",
+                // String columns (rank, provider, model) should be left-aligned
+                (column.accessorKey === "rank" || column.accessorKey === "provider" || column.accessorKey === "model") 
+                  ? "text-left" 
+                  : column.type === "right" ? "text-right" : "text-left",
                 sortConfig?.key === column.accessorKey ? "font-bold" : "",
                 column.sortable ? "cursor-pointer" : ""
               )}
             >
               <div className="flex items-center gap-2">
-                <div
+                <div 
                   {...attributes}
                   {...listeners}
-                  className="cursor-grab active:cursor-grabbing hover:text-accent"
+                  className="flex-1 cursor-grab active:cursor-grabbing"
                 >
-                  <GripVertical className="w-4 h-4" />
+                  <span
+                    className={cn(
+                      column.accessorKey === "rank"
+                        ? "w-0 overflow-hidden lg:overflow-auto lg:w-auto group-hover:text-accent"
+                        : "",
+                      !!column.description
+                        ? "decoration-dotted underline underline-offset-2 decoration-text/50"
+                        : "",
+                      "group-hover:text-accent"
+                    )}
+                  >
+                    {column.name}
+                  </span>
                 </div>
-                <span
-                  className={cn(
-                    column.accessorKey === "rank"
-                      ? "w-0 overflow-hidden lg:overflow-auto lg:w-auto group-hover:text-accent"
-                      : "",
-                    !!column.description
-                      ? "decoration-dotted underline underline-offset-2 decoration-text/50"
-                      : "",
-                    "group-hover:text-accent"
-                  )}
+                <div 
+                  className="bg-transparent pl-2 -ml-1.5 -mr-0.5 flex-shrink-0"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onSort(column);
+                  }}
                 >
-                  {column.name}
-                </span>
-                <div className="bg-transparent pl-2 -ml-1.5 -mr-0.5">
                   {getSortIcon(column)}
                 </div>
               </div>
@@ -339,7 +347,10 @@ export const Table = <T extends Record<string, any>>({
                   }}
                   className={cn(
                     "p-2.5 lg:p-4 align-middle table-cell text-sm text-nowrap whitespace-nowrap border-t border-t-background-secondary",
-                    column.type === "right" ? "text-right" : "text-left pr-6",
+                    // String columns (rank, provider, model) should be left-aligned
+                    (column.accessorKey === "rank" || column.accessorKey === "provider" || column.accessorKey === "model")
+                      ? "text-left"
+                      : column.type === "right" ? "text-right" : "text-left pr-6",
                     column.className
                   )}
                 >
