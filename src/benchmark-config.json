@@ -112,6 +112,11 @@
       "models": [
         "tongyi-deepresearch-30b-a3b"
       ]
+    },
+    "relace": {
+      "models": [
+        "relace-apply-3"
+      ]
     }
   }
 }
