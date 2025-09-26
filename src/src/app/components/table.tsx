@@ -49,10 +49,14 @@ const SortableColumnHeader = <T extends Record<string, any>>({
   column,
   sortConfig,
   onSort,
+  columnWidth,
+  onResize,
 }: {
   column: ColumnDefinition<T>;
   sortConfig: SortConfig | null;
   onSort: (column: ColumnDefinition<T>) => void;
+  columnWidth?: number;
+  onResize?: (columnKey: string, width: number) => void;
 }) => {
   const {
     attributes,
@@ -63,10 +67,54 @@ const SortableColumnHeader = <T extends Record<string, any>>({
     isDragging,
   } = useSortable({ id: column.accessorKey });
 
+  const [isResizing, setIsResizing] = React.useState(false);
+  const [startX, setStartX] = React.useState(0);
+  const [startWidth, setStartWidth] = React.useState(0);
+
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
+    width: columnWidth ? `${columnWidth}px` : undefined,
   };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsResizing(true);
+    setStartX(e.clientX);
+    setStartWidth(columnWidth || 150);
+  };
+
+  const handleMouseMove = React.useCallback((e: MouseEvent) => {
+    if (!isResizing || !onResize) return;
+    
+    const newWidth = Math.max(50, startWidth + (e.clientX - startX));
+    onResize(column.accessorKey, newWidth);
+  }, [isResizing, startX, startWidth, column.accessorKey, onResize]);
+
+  const handleMouseUp = React.useCallback(() => {
+    setIsResizing(false);
+  }, []);
+
+  React.useEffect(() => {
+    if (isResizing) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = 'col-resize';
+      document.body.style.userSelect = 'none';
+    } else {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    };
+  }, [isResizing, handleMouseMove, handleMouseUp]);
 
   const getSortIcon = (column: ColumnDefinition<T>) => {
     if (!column.sortable) return null;
@@ -86,20 +134,9 @@ const SortableColumnHeader = <T extends Record<string, any>>({
       ref={setNodeRef}
       style={style}
       className={cn(
-        "align-middle items-center text-sm table-cell text-nowrap whitespace-nowrap group",
+        "align-middle items-center text-sm table-cell text-nowrap whitespace-nowrap group relative",
         column.sortable ? "cursor-pointer hover:bg-[#353535]" : "",
         column.type === "right" ? "text-right" : "text-left",
-        column.accessorKey === "rank" ? "w-[60px]" : "",
-        column.accessorKey === "provider" ? "w-[120px]" : "",
-        column.accessorKey === "model" ? "w-[300px]" : "",
-        column.accessorKey === "efficiencyScore" ? "w-[120px]" : "",
-        column.accessorKey === "successRate" ? "w-[150px]" : "",
-        column.accessorKey === "firstAttemptRate" ? "w-[150px]" : "",
-        column.accessorKey === "avgTotalDuration" ? "w-[150px]" : "",
-        column.accessorKey === "avgAttempts" ? "w-[120px]" : "",
-        column.accessorKey === "avgExecutionTime" ? "w-[150px]" : "",
-        column.accessorKey === "avgRowsRead" ? "w-[150px]" : "",
-        column.accessorKey === "avgBytesRead" ? "w-[150px]" : "",
         isDragging ? "opacity-50" : ""
       )}
     >
@@ -151,6 +188,15 @@ const SortableColumnHeader = <T extends Record<string, any>>({
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
+      
+      {/* Resize handle */}
+      <div
+        className={cn(
+          "absolute right-0 top-0 bottom-0 w-1 cursor-col-resize hover:bg-accent/50 transition-colors",
+          isResizing ? "bg-accent" : "bg-transparent"
+        )}
+        onMouseDown={handleMouseDown}
+      />
     </div>
   );
 };
@@ -168,6 +214,7 @@ export const Table = <T extends Record<string, any>>({
     defaultSort || null
   );
   const [orderedColumns, setOrderedColumns] = React.useState<ColumnDefinition<T>[]>(columns);
+  const [columnWidths, setColumnWidths] = React.useState<Record<string, number>>({});
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -191,6 +238,13 @@ export const Table = <T extends Record<string, any>>({
         return arrayMove(items, oldIndex, newIndex);
       });
     }
+  };
+
+  const handleColumnResize = (columnKey: string, width: number) => {
+    setColumnWidths(prev => ({
+      ...prev,
+      [columnKey]: width
+    }));
   };
 
   const handleSort = (column: ColumnDefinition<T>) => {
@@ -260,6 +314,8 @@ export const Table = <T extends Record<string, any>>({
                 column={column}
                 sortConfig={sortConfig}
                 onSort={handleSort}
+                columnWidth={columnWidths[column.accessorKey]}
+                onResize={handleColumnResize}
               />
             ))}
           </SortableContext>
@@ -273,6 +329,9 @@ export const Table = <T extends Record<string, any>>({
               {orderedColumns.map((column) => (
                 <div
                   key={column.name}
+                  style={{
+                    width: columnWidths[column.accessorKey] ? `${columnWidths[column.accessorKey]}px` : undefined
+                  }}
                   className={cn(
                     "p-2.5 lg:p-4 align-middle table-cell text-sm text-nowrap whitespace-nowrap border-t border-t-background-secondary",
                     column.type === "right" ? "text-right" : "text-left pr-6",
