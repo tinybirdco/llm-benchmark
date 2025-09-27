@@ -112,6 +112,11 @@
       "models": [
         "tongyi-deepresearch-30b-a3b"
       ]
+    },
+    "thedrummer": {
+      "models": [
+        "cydonia-24b-v4.1"
+      ]
     }
   }
 }
