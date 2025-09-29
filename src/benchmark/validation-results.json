@@ -910,6 +910,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT COUNT() AS stars_count FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT count() as total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -1841,6 +1855,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "%\nSELECT \n    repo_name,\n    COUNT(*) AS star_count\nFROM \n    github_events\nWHERE \n    event_type = 'WatchEvent'\nGROUP BY \n    repo_name\nORDER BY \n    star_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    count() as stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -2813,6 +2841,20 @@
         "humanRowCount": 5,
         "llmRowCount": 5,
         "sql": "%\nSELECT\n    power_of_10 AS star_count,\n    COUNT(DISTINCT repo_name) AS repo_count\nFROM (\n    SELECT\n        repo_name,\n        FLOOR(POW(10, FLOOR(LOG10(star_count)))) AS power_of_10\n    FROM (\n        SELECT\n            repo_name,\n            COUNT(*) AS star_count\n        FROM github_events\n        WHERE event_type = 'WatchEvent'\n        GROUP BY repo_name\n    )\n)\nGROUP BY power_of_10\nORDER BY power_of_10 ASC\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0.8888888888888888,
+          "numeric": 0.031759168854124296,
+          "fScore": 0.20000000000000007
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 5,
+        "llmRowCount": 5,
+        "sql": "\nSELECT\n    pow(10, floor(log10(stars + 1))) as star_bucket,\n    count(DISTINCT repo_name) as repo_count\nFROM (\n    SELECT \n        repo_name,\n        count() as stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n)\nWHERE stars > 0\nGROUP BY star_bucket\nORDER BY star_bucket ASC\n"
       }
     },
     "humanResults": {
@@ -3769,6 +3811,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT COUNT(DISTINCT repo_name) AS total_repositories FROM github_events LIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT count(DISTINCT repo_name) as total_repositories\nFROM github_events\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -4700,6 +4756,20 @@
         "humanRowCount": 10,
         "llmRowCount": 100,
         "sql": "%\nSELECT \n    toYear(created_at) AS year,\n    repo_name,\n    COUNT(*) AS star_count,\n    RANK() OVER (PARTITION BY toYear(created_at) ORDER BY COUNT(*) DESC) AS rank_in_year\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND toYear(created_at) >= 2015\nGROUP BY year, repo_name\nORDER BY year, rank_in_year\nLIMIT 100"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    toYear(created_at) as year,\n    repo_name,\n    count() as events_count\nFROM github_events\nWHERE toYear(created_at) >= 2015\nGROUP BY year, repo_name\nORDER BY year ASC, events_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -5686,6 +5756,20 @@
         "humanRowCount": 2,
         "llmRowCount": 2,
         "sql": "SELECT \n    toYear(created_at) AS year,\n    count() AS total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 2,
+        "llmRowCount": 2,
+        "sql": "\nSELECT \n    toYear(created_at) as year,\n    count() as total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -6616,6 +6700,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "%\nSELECT actor_login, COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    actor_login,\n    COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY star_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -7592,6 +7690,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "%\nSELECT repo_name, COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nAND actor_login IN (\n    SELECT DISTINCT actor_login\n    FROM github_events\n    WHERE repo_name = 'tensorflow/tensorflow'\n    AND event_type = 'WatchEvent'\n)\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND actor_login IN (\n    SELECT DISTINCT actor_login\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n      AND repo_name = 'tensorflow/tensorflow'\n  )\n  AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -8554,6 +8666,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "%\nSELECT\n    actor_login AS user_name,\n    SUM(CASE WHEN repo_name LIKE '%javisantana%' THEN 1 ELSE 0 END) AS stars_to_javisantana,\n    SUM(CASE WHEN repo_name NOT LIKE '%javisantana%' THEN 1 ELSE 0 END) AS stars_to_other_repos,\n    SUM(CASE WHEN repo_name LIKE '%javisantana%' THEN 1 ELSE 0 END) * 100.0 / COUNT(*) AS ratio_javisantana_to_total_stars\nFROM\n    github_events\nWHERE\n    event_type = 'WatchEvent'\nGROUP BY\n    actor_login\nORDER BY\n    ratio_javisantana_to_total_stars DESC\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT \n    actor_login,\n    countIf(repo_name LIKE 'javisantana/%') as javisantana_stars,\n    countIf(repo_name NOT LIKE 'javisantana/%') as other_stars,\n    countIf(repo_name LIKE 'javisantana/%') as total_stars,\n    javisantana_stars / total_stars as javisantana_ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nHAVING javisantana_stars > 0\nORDER BY javisantana_ratio DESC, javisantana_stars DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -9544,6 +9670,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "%\nSELECT\n    repo_name,\n    count(DISTINCT actor_login) AS unique_tf_contributors\nFROM\n    github_events\nWHERE\n    event_type = 'PullRequestEvent'\n    AND action = 'opened'\n    AND actor_login LIKE '%tensorflow%'\n    AND repo_name NOT LIKE '%tensorflow%'\nGROUP BY\n    repo_name\nORDER BY\n    unique_tf_contributors DESC\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.6420945035773395,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_tf_contributors,\n    count() as total_prs\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login \n        FROM github_events \n        WHERE event_type = 'PullRequestEvent' \n            AND repo_name LIKE '%tensorflow%'\n            AND action = 'opened'\n    )\n    AND repo_name NOT LIKE '%tensorflow%'\nGROUP BY repo_name\nORDER BY unique_tf_contributors DESC, total_prs DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -10516,6 +10656,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "%\nSELECT \n    repo_name,\n    actor_login AS author_login,\n    COUNT(*) AS issue_count\nFROM \n    github_events\nWHERE \n    event_type = 'IssuesEvent' AND \n    action = 'opened' AND \n    actor_login IN (\n        SELECT DISTINCT actor_login\n        FROM github_events\n        WHERE event_type = 'IssuesEvent' AND \n        action = 'opened' AND \n        repo_name = 'tensorflow/tensorflow'\n    )\nGROUP BY \n    repo_name, actor_login\nORDER BY \n    issue_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    actor_login,\n    COUNT(*) as issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n    AND action = 'opened'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login \n        FROM github_events \n        WHERE event_type = 'IssuesEvent' \n            AND action = 'opened'\n            AND repo_name = 'tensorflow/tensorflow'\n    )\n    AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name, actor_login\nORDER BY issue_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -11494,6 +11648,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "%\nSELECT repo_name, uniq(repo_name) as stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.21533501349070255,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    toDate(created_at) as date,\n    uniq(actor_login) as stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name, date\nORDER BY stars DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -12480,6 +12648,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "%\nSELECT\n    repo_name,\n    COUNT(DISTINCT CASE WHEN toYear(created_at) = 2016 AND event_type = 'WatchEvent' THEN actor_login END) AS stars_2016,\n    COUNT(DISTINCT CASE WHEN toYear(created_at) = 2017 AND event_type = 'WatchEvent' THEN actor_login END) AS stars_2017,\n    (COUNT(DISTINCT CASE WHEN toYear(created_at) = 2017 AND event_type = 'WatchEvent' THEN actor_login END) - COUNT(DISTINCT CASE WHEN toYear(created_at) = 2016 AND event_type = 'WatchEvent' THEN actor_login END)) / COUNT(DISTINCT CASE WHEN toYear(created_at) = 2016 AND event_type = 'WatchEvent' THEN actor_login END) * 100 AS growth_pct\nFROM\n    github_events\nWHERE\n    event_type = 'WatchEvent'\n    AND toYear(created_at) IN (2016, 2017)\nGROUP BY\n    repo_name\nHAVING\n    COUNT(DISTINCT CASE WHEN toYear(created_at) = 2016 AND event_type = 'WatchEvent' THEN actor_login END) > 0\nORDER BY\n    growth_pct DESC\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2016) AS stars_2016,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2017) AS stars_2017,\n    stars_2017 - stars_2016 AS growth,\n    if(stars_2016 > 0, ((stars_2017 - stars_2016) / stars_2016) * 100, 0) AS growth_percentage\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND toYear(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING stars_2016 >= 1 AND stars_2017 > stars_2016\nORDER BY growth DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -13484,6 +13666,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "%\nSELECT\n    repo_name,\n    COUNT(DISTINCT CASE WHEN toYear(created_at) = 2016 THEN number END) AS prs_2016,\n    COUNT(DISTINCT CASE WHEN toYear(created_at) = 2017 THEN number END) AS prs_2017,\n    (COUNT(DISTINCT CASE WHEN toYear(created_at) = 2016 THEN number END) - COUNT(DISTINCT CASE WHEN toYear(created_at) = 2017 THEN number END)) AS prs_difference,\n    (COUNT(DISTINCT CASE WHEN toYear(created_at) = 2016 THEN number END) - COUNT(DISTINCT CASE WHEN toYear(created_at) = 2017 THEN number END)) / NULLIF(COUNT(DISTINCT CASE WHEN toYear(created_at) = 2016 THEN number END), 0) * 100 AS stagnation_percentage\nFROM\n    github_events\nWHERE\n    event_type = 'PullRequestEvent'\n    AND action = 'opened'\n    AND repo_name IN (\n        SELECT DISTINCT repo_name\n        FROM github_events\n        WHERE event_type = 'WatchEvent'\n        AND toYear(created_at) = 2017\n    )\nGROUP BY\n    repo_name\nORDER BY\n    stagnation_percentage DESC\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2016) AS stars_2016,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2017) AS stars_2017,\n    stars_2016 - stars_2017 AS stagnation\nFROM github_events\nWHERE toYear(created_at) IN (2016, 2017)\n    AND event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING stars_2017 >= 1 AND stars_2016 > stars_2017\nORDER BY stagnation DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -14474,6 +14670,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "%\nSELECT\n    repo_name,\n    COUNT() AS total_stars,\n    COUNT() / (toDayOfYear(MAX(created_at)) - toDayOfYear(MIN(created_at))) AS star_growth_rate\nFROM\n    github_events\nWHERE\n    event_type = 'WatchEvent'\nGROUP BY\n    repo_name\nORDER BY\n    star_growth_rate DESC\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as total_stars,\n    toStartOfMonth(created_at) as month,\n    COUNT(*) / COUNT(DISTINCT toStartOfMonth(created_at)) as avg_stars_per_month,\n    stddevPop(COUNT(*)) OVER (PARTITION BY repo_name) as star_growth_stddev\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND created_at >= now() - INTERVAL 1 YEAR\nGROUP BY repo_name, month\nHAVING COUNT(DISTINCT month) >= 6\nORDER BY star_growth_stddev ASC, total_stars DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -15470,6 +15680,20 @@
         "humanRowCount": 7,
         "llmRowCount": 7,
         "sql": "%\nSELECT \n    toDayOfWeek(created_at) AS day_of_week,\n    count() AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY star_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 7,
+        "llmRowCount": 7,
+        "sql": "\nSELECT \n    toDayOfWeek(created_at) as day_of_week,\n    CASE toDayOfWeek(created_at)\n        WHEN 1 THEN 'Monday'\n        WHEN 2 THEN 'Tuesday'\n        WHEN 3 THEN 'Wednesday'\n        WHEN 4 THEN 'Thursday'\n        WHEN 5 THEN 'Friday'\n        WHEN 6 THEN 'Saturday'\n        WHEN 7 THEN 'Sunday'\n    END as day_name,\n    count() as total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY total_stars DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -16420,6 +16644,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT COUNT(DISTINCT actor_login) AS total_users FROM github_events LIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.000052934128674804696,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT count(DISTINCT actor_login) as total_users\nFROM github_events\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -17355,6 +17593,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT COUNT(DISTINCT actor_login) FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0014793406252330366,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT count(DISTINCT actor_login) as total_users\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -18262,6 +18514,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT COUNT(DISTINCT actor_login) FROM github_events WHERE event_type = 'PushEvent' LIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0018759619527295886,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT count(DISTINCT actor_login) as total_users\nFROM github_events\nWHERE event_type = 'PushEvent'\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -19169,6 +19435,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT COUNT(DISTINCT actor_login) FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' LIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0017507922334856522,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT count(DISTINCT actor_login) as total_users\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\nAND action = 'opened'\n"
       }
     },
     "humanResults": {
@@ -20100,6 +20380,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "%\nSELECT \n    repo_name,\n    COUNT(DISTINCT actor_login) AS stars_count\nFROM \n    github_events\nWHERE \n    event_type = 'WatchEvent'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login\n        FROM github_events\n        WHERE event_type = 'PullRequestEvent'\n        AND action = 'opened'\n    )\nGROUP BY \n    repo_name\nORDER BY \n    stars_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login\n        FROM github_events\n        WHERE event_type = 'PullRequestEvent'\n            AND action = 'opened'\n    )\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -21054,6 +21348,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "%\nSELECT repo_name, COUNT(DISTINCT actor_login) as author_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nHAVING COUNT(DISTINCT actor_login) >= 10\nORDER BY author_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    count() as pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\nGROUP BY repo_name, actor_login\nHAVING count() >= 10\nORDER BY pr_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -22016,6 +22324,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, COUNT(*) as pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY pr_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\nGROUP BY repo_name\nORDER BY pr_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -22992,6 +23314,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, COUNT(DISTINCT actor_login) AS contributor_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY contributor_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -23964,6 +24300,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, COUNT(*) as issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n    AND action = 'opened'\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -24926,6 +25276,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "%\nSELECT repo_name, COUNT(DISTINCT actor_login) as push_access_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY repo_name\nORDER BY push_access_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_contributors\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -25888,6 +26252,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "%\nSELECT \n    repo_name,\n    COUNT(DISTINCT actor_login) AS unique_pushers\nFROM \n    github_events\nWHERE \n    event_type = 'PushEvent' AND \n    ref_type = 'branch' AND \n    ref = 'main'\nGROUP BY \n    repo_name\nORDER BY \n    unique_pushers DESC\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_pushers\nFROM github_events\nWHERE event_type = 'PushEvent'\n    AND base_ref = 'refs/heads/main'\nGROUP BY repo_name\nORDER BY unique_pushers DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -26864,6 +27242,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "%\nSELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS unique_pushers,\n    COUNT(DISTINCT CASE WHEN event_type = 'WatchEvent' THEN actor_login END) AS stars\nFROM\n    github_events\nWHERE\n    event_type IN ('PushEvent', 'WatchEvent')\n    AND (event_type = 'PushEvent' AND ref = 'main')\nGROUP BY\n    repo_name\nHAVING\n    stars > 99\nORDER BY\n    unique_pushers DESC\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_pushers,\n    countIf(event_type = 'WatchEvent') as stars\nFROM github_events\nWHERE event_type IN ('PushEvent', 'WatchEvent')\nGROUP BY repo_name\nHAVING stars > 99\nORDER BY unique_pushers DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -27854,6 +28246,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() as member_invitations\nFROM github_events\nWHERE event_type = 'MemberEvent'\nGROUP BY repo_name\nORDER BY member_invitations DESC\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as member_invitations\nFROM github_events\nWHERE event_type = 'MemberEvent'\n    AND action = 'added'\nGROUP BY repo_name\nORDER BY member_invitations DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -28830,6 +29236,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, COUNT(*) as fork_count\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY fork_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    count() as fork_count\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY fork_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -29788,6 +30208,20 @@
           "fScore": 1
         },
         "sql": "%\nSELECT \n    repo_name,\n    COUNT() AS stars,\n    COUNT() AS forks,\n    COUNT() / NULLIF(COUNT(), 0) AS stars_to_forks_ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nUNION ALL\nSELECT \n    repo_name,\n    0 AS stars,\n    COUNT() AS forks,\n    0 AS stars_to_forks_ratio\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY stars_to_forks_ratio DESC\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    countIf(event_type = 'WatchEvent') as stars,\n    countIf(event_type = 'ForkEvent') as forks,\n    stars / nullIf(forks, 0) as star_fork_ratio\nFROM github_events\nWHERE event_type IN ('WatchEvent', 'ForkEvent')\nGROUP BY repo_name\nHAVING forks > 0\nORDER BY star_fork_ratio DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -30778,6 +31212,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "%\nSELECT \n    COUNT(event_type) AS stars,\n    COUNT(event_type) AS forks,\n    ROUND(COUNT(event_type) / NULLIF(COUNT(event_type), 0), 2) AS stars_to_forks_ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY event_type\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT\n    countIf(event_type = 'WatchEvent') AS total_stars,\n    countIf(event_type = 'ForkEvent') AS total_forks,\n    round(countIf(event_type = 'WatchEvent') / countIf(event_type = 'ForkEvent'), 2) AS stars_to_forks_ratio\nFROM github_events\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -31695,6 +32143,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count() FROM github_events WHERE event_type = 'IssuesEvent' AND action = 'opened' LIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT count() as total_issues\nFROM github_events\nWHERE event_type = 'IssuesEvent'\nAND action = 'opened'\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -32630,6 +33092,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, COUNT(*) as issue_comment_events_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY issue_comment_events_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    count() as issue_comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY issue_comment_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -33588,6 +34064,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "%\nSELECT \n    repo_name,\n    count() AS total_issues,\n    countIf(event_type = 'IssueCommentEvent') AS issue_comments,\n    countIf(event_type = 'IssueCommentEvent') / count() AS issue_comments_ratio\nFROM github_events\nWHERE event_type IN ('IssuesEvent', 'IssueCommentEvent')\n    AND action = 'opened'\nGROUP BY repo_name\nORDER BY issue_comments_ratio DESC\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    countIf(event_type = 'IssueCommentEvent') as issue_comments,\n    countIf(event_type = 'IssuesEvent' AND action = 'opened') as issues_opened,\n    if(issues_opened > 0, issue_comments / issues_opened, 0) as comment_to_issue_ratio\nFROM github_events\nWHERE event_type IN ('IssueCommentEvent', 'IssuesEvent')\nGROUP BY repo_name\nHAVING issues_opened > 0\nORDER BY comment_to_issue_ratio DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -34578,6 +35068,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, number, comments\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nORDER BY comments DESC\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    number,\n    max(comments) as total_comments\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n    AND action = 'opened'\nGROUP BY repo_name, number\nORDER BY total_comments DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -35550,6 +36054,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "%\nSELECT \n    repo_name,\n    number AS issue_number,\n    title,\n    count() AS comment_count,\n    uniq(actor_login) AS comment_authors_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n    AND action = 'opened'\n    AND number > 10\nGROUP BY repo_name, number, title\nHAVING count() >= 10\nORDER BY comment_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0,
+          "numeric": 1,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    number as issue_number,\n    countDistinct(actor_login) as comment_authors,\n    count() as total_comments\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\n    AND number > 10\nGROUP BY repo_name, number\nHAVING comment_authors >= 10\nORDER BY total_comments DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -36536,6 +37054,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() as event_count\nFROM github_events\nWHERE body LIKE '%tensorflow%'\nGROUP BY repo_name\nORDER BY event_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    count() as event_count\nFROM github_events\nWHERE lower(body) LIKE '%tensorflow%' \n   OR lower(title) LIKE '%tensorflow%'\n   OR lower(repo_name) LIKE '%tensorflow%'\nGROUP BY repo_name\nORDER BY event_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -37512,6 +38044,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, COUNT(*) as comment_count\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY comment_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    count() as commit_comments\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY commit_comments DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -38488,6 +39034,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "%\nSELECT \n    repo_name,\n    commit_id,\n    concat('https://github.com/', repo_name, '/commit/', commit_id) AS commit_url,\n    count() AS total_comments,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name, commit_id\nHAVING uniq(actor_login) >= 10\nORDER BY total_comments DESC\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    concat('https://github.com/', repo_name, '/commit/', commit_id) AS commit_url,\n    count() AS total_comments,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\n    AND commit_id != ''\nGROUP BY repo_name, commit_id\nHAVING unique_authors >= 10\nORDER BY total_comments DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -39478,6 +40038,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "%\nSELECT \n  'https://github.com/' || repo_name || '/pull/' || number AS pr_url,\n  countDistinct(actor_login) AS unique_authors_count\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\nGROUP BY repo_name, number\nORDER BY unique_authors_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0.18181818181818177,
+          "numeric": 0,
+          "fScore": 0.9
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    concat('https://github.com/', repo_name, '/pull/', toString(number)) AS pr_url,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\n    AND number > 0\nGROUP BY repo_name, number\nORDER BY unique_authors DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -40454,6 +41028,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT actor_login, COUNT(*) as push_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY push_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    actor_login,\n    COUNT(*) as push_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY push_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -41430,6 +42018,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "%\nSELECT\n    repo_name AS organization_name,\n    COUNT(*) AS star_count\nFROM\n    github_events\nWHERE\n    event_type = 'WatchEvent'\nGROUP BY\n    repo_name\nORDER BY\n    star_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    splitByChar('/', repo_name)[1] AS organization,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY organization\nORDER BY stars DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -42392,6 +42994,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT \n  repo_name AS organization_name,\n  countDistinct(repo_name) AS repository_count\nFROM \n  github_events\nWHERE \n  repo_name LIKE '%/%'\nGROUP BY \n  organization_name\nORDER BY \n  repository_count DESC\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    splitByChar('/', repo_name)[1] AS organization,\n    uniqExact(repo_name) AS repository_count\nFROM github_events\nGROUP BY organization\nORDER BY repository_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -43368,6 +43984,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "%\nSELECT\n    repo_name AS repo,\n    count() AS pr_count,\n    uniq(actor_login) AS unique_authors,\n    sum(additions) AS total_adds,\n    sum(deletions) AS total_dels\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\n    AND additions < 10000\n    AND deletions < 10000\nGROUP BY repo_name\nORDER BY (sum(additions) + sum(deletions)) DESC\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.8367030125422139,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    count() as pr_count,\n    uniq(actor_login) as unique_authors,\n    sum(additions) as total_adds,\n    sum(deletions) as total_dels,\n    sum(additions + deletions) as total_churn\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\n    AND additions < 10000\n    AND deletions < 10000\nGROUP BY repo_name\nORDER BY total_churn DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -44386,6 +45016,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "%\nSELECT\n    actor_login AS author,\n    COUNT(DISTINCT comment_id) AS total_comments,\n    COUNT(DISTINCT repo_name) AS unique_repositories,\n    COUNT(DISTINCT number) AS unique_prs\nFROM\n    github_events\nWHERE\n    event_type = 'PullRequestReviewCommentEvent'\nGROUP BY\n    actor_login\nORDER BY\n    total_comments DESC\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    actor_login as author,\n    count() as total_pr_comments,\n    uniq(repo_name) as unique_repositories,\n    uniq(number) as unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\n    AND action = 'created'\nGROUP BY actor_login\nORDER BY total_pr_comments DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -45372,6 +46016,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "%\nSELECT\n    label,\n    COUNT() AS total_usage\nFROM (\n    SELECT\n        label\n    FROM github_events\n    WHERE event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')\n    AND action IN ('created', 'opened', 'labeled')\n    AND labels IS NOT NULL\n    ARRAY JOIN labels AS label\n    LIMIT 1000000\n)\nGROUP BY label\nORDER BY total_usage DESC\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    arrayJoin(labels) AS label,\n    count() AS usage_count\nFROM github_events\nWHERE event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')\n    AND action IN ('created', 'opened', 'labeled')\n    AND length(labels) > 0\nGROUP BY label\nORDER BY usage_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -46334,6 +46992,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "%\nSELECT\n    splitByString('.', repo_name, 1) AS organization_name,\n    uniq(actor_login) AS unique_authors,\n    uniqIf(actor_login, event_type = 'PullRequestEvent' AND action = 'opened') AS unique_pr_authors,\n    uniqIf(actor_login, event_type = 'IssuesEvent' AND action = 'opened') AS unique_issue_authors,\n    uniqIf(actor_login, event_type = 'IssueCommentEvent') AS unique_issue_comment_authors,\n    uniqIf(actor_login, event_type = 'PushEvent') AS unique_push_authors\nFROM github_events\nWHERE repo_name LIKE '%.%'\nGROUP BY organization_name\nORDER BY unique_authors DESC\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    splitByChar('/', repo_name)[1] as organization,\n    uniq(actor_login) as unique_authors,\n    uniqIf(actor_login, event_type = 'PullRequestEvent' AND action = 'opened') as unique_pr_authors,\n    uniqIf(actor_login, event_type = 'IssuesEvent' AND action = 'opened') as unique_issue_authors,\n    uniqIf(actor_login, event_type = 'IssueCommentEvent') as unique_issue_comment_authors,\n    uniqIf(actor_login, event_type = 'PushEvent') as unique_push_authors\nFROM github_events\nWHERE repo_name != ''\nGROUP BY organization\nORDER BY unique_authors DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -47380,6 +48052,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "%\nSELECT\n    repo_name,\n    LENGTH(repo_name) AS repo_name_length\nFROM\n    github_events\nWHERE\n    event_type = 'WatchEvent'\nGROUP BY\n    repo_name\nORDER BY\n    repo_name_length DESC\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0.18181818181818177,
+          "numeric": 0,
+          "fScore": 0.9
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    length(repo_name) as name_length\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY name_length DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -48342,6 +49028,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "%\nSELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING count() >= 1\nORDER BY length(repo_name) ASC\nLIMIT 10"
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.6666666666666667,
+          "numeric": 1,
+          "fScore": 0.5
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING count() >= 1\nORDER BY length(repo_name) ASC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -48915,6 +49615,14 @@
         "avgExactDistance": 0.56122009569378,
         "avgNumericDistance": 0.4121155649803087,
         "avgFScore": 0.44599999999999995
+      },
+      "anthropic/claude-4.5-sonnet": {
+        "totalMatches": 30,
+        "exactMatches": 21,
+        "numericMatches": 29,
+        "avgExactDistance": 0.5383838383838385,
+        "avgNumericDistance": 0.39462101454809,
+        "avgFScore": 0.4699999999999999
       }
     }
   }
