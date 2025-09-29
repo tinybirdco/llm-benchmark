@@ -1,6 +1,6 @@
 {
-  "generated_at": "2025-09-29T17:18:18.925Z",
-  "total_count": 291,
+  "generated_at": "2025-09-29T18:20:00.200Z",
+  "total_count": 292,
   "models": [
     {
       "provider": "meituan",
@@ -1482,6 +1482,13 @@
       "modelId": "deepseek/deepseek-v3.2-exp",
       "reason": "Failed: PR rejected/closed without merging",
       "failed_at": "2025-09-29T17:18:18.925Z"
+    },
+    {
+      "provider": "anthropic",
+      "model": "claude-sonnet-4.5",
+      "modelId": "anthropic/claude-sonnet-4.5",
+      "reason": "Failed: PR rejected/closed without merging",
+      "failed_at": "2025-09-29T18:20:00.200Z"
     }
   ]
 }
