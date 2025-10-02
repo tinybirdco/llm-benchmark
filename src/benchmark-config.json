@@ -118,6 +118,11 @@
       "models": [
         "cydonia-24b-v4.1"
       ]
+    },
+    "tngtech": {
+      "models": [
+        "deepseek-r1t2-chimera"
+      ]
     }
   }
 }
