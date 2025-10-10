@@ -924,6 +924,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count() as total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT count(*) AS total_stars FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -1869,6 +1883,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.059684030943509124,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    repo_name,\n    count(DISTINCT actor_login) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND repo_name != ''\n    AND repo_name IS NOT NULL\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -2855,6 +2883,20 @@
         "humanRowCount": 5,
         "llmRowCount": 5,
         "sql": "\nSELECT\n    pow(10, floor(log10(stars + 1))) as star_bucket,\n    count(DISTINCT repo_name) as repo_count\nFROM (\n    SELECT \n        repo_name,\n        count() as stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n)\nWHERE stars > 0\nGROUP BY star_bucket\nORDER BY star_bucket ASC\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 5,
+        "llmRowCount": 0,
+        "sql": "\nHere's the corrected SQL query that fixes the syntax error and properly bins star counts:\n\n\nSELECT \n    CASE \n        WHEN count_events BETWEEN 1 AND 9 THEN 1\n        WHEN count_events BETWEEN 10 AND 99 THEN 10\n        WHEN count_events BETWEEN 100 AND 999 THEN 100\n        WHEN count_events BETWEEN 1000 AND 9999 THEN 1000\n        WHEN count_events BETWEEN 10000 AND 99999 THEN 10000\n        WHEN count_events BETWEEN 100000 AND 999999 THEN 100000\n        ELSE 1000000\n    END AS star_power,\n    COUNT(repo_name) AS repository_count\nFROM (\n    SELECT repo_name, COUNT(*) AS count_events\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n) AS repo_events\nGROUP BY star_power\nORDER BY star_power\nLIMIT 10\n\n\nKey fixes made:\n1. Renamed `bucket` to `star_power` for clarity\n2. Fixed the CASE expression syntax by:\n   - Using proper BETWEEN ranges\n   - Ensuring references to the inner query's `count_events`\n3. Removed invalid nested subquery layer\n4. Maintained proper grouping by the calculated star bins\n5. Kept all other logic from the original approach\n\nThe query:\n1. Counts WatchEvents per repository (each = 1 star)\n2. Bins repositories into star-count categories (1-9, 10-99, etc.)\n3. Counts repositories in each bin\n4. Returns results ordered from smallest star bin to largest\n5. Applies pagination with LIMIT 10\n\nThis should execute correctly in ClickHouse/Tinybird without syntax errors.\n\n"
       }
     },
     "humanResults": {
@@ -3825,6 +3867,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count(DISTINCT repo_name) as total_repositories\nFROM github_events\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT COUNT(DISTINCT repo_name) AS total_repositories\nFROM github_events\nWHERE repo_name IS NOT NULL AND repo_name != ''\nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -4770,6 +4826,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    toYear(created_at) as year,\n    repo_name,\n    count() as events_count\nFROM github_events\nWHERE toYear(created_at) >= 2015\nGROUP BY year, repo_name\nORDER BY year ASC, events_count DESC\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nHere's the corrected query without nested subqueries, using a single-level aggregation and proper pagination:\n\n\nSELECT\n    toYear(created_at) AS year,\n    repo_name,\n    sum(count) AS star_count\nFROM (\n    SELECT\n        repo_name,\n        created_at,\n        count() as count\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name, created_at\n) AS events\nGROUP BY year, repo_name\nORDER BY year, star_count DESC\nWHERE year >= 2015\nLIMIT 10\n\n\nThis query:\n1. Filters for WatchEvent events\n2. Counts events per repository per day\n3. Aggregates daily counts into yearly totals\n4. Orders results by year and star count\n5. Shows only 2015+ data\n6. Applies pagination with LIMIT 10\n\nThe solution:\n- Avoids complex nesting\n- Uses valid ClickHouse syntax\n- Handles pagination correctly\n- Maintains the required data structure\n- Returns 10 rows showing year-over-year top repositories\n\n"
       }
     },
     "humanResults": {
@@ -5770,6 +5840,20 @@
         "humanRowCount": 2,
         "llmRowCount": 2,
         "sql": "\nSELECT \n    toYear(created_at) as year,\n    count() as total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 2,
+        "llmRowCount": 0,
+        "sql": "\nSELECT\n    toYear(created_at) AS year,\n    count() AS total_stars\nFROM\n    github_events\nWHERE\n    event_type = '15'  -- WatchEvent value\nGROUP BY\n    year\nORDER BY\n    year\nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -6714,6 +6798,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    actor_login,\n    COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY star_count DESC\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    actor_login AS person,\n    count() AS star_count\nFROM\n    github_events\nWHERE\n    event_type = 'WatchEvent'\nGROUP BY\n    actor_login\nORDER BY\n    star_count DESC\nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -7704,6 +7802,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND actor_login IN (\n    SELECT DISTINCT actor_login\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n      AND repo_name = 'tensorflow/tensorflow'\n  )\n  AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    repo_name,\n    COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND actor_login IN (\n      SELECT DISTINCT actor_login\n      FROM github_events\n      WHERE event_type = 'WatchEvent' \n        AND repo_name = 'tensorflow/tensorflow'\n  )\n  AND repo_name != 'tensorflow/tensorflow'   -- Exclude original repo if required\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -8680,6 +8792,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "\nSELECT \n    actor_login,\n    countIf(repo_name LIKE 'javisantana/%') as javisantana_stars,\n    countIf(repo_name NOT LIKE 'javisantana/%') as other_stars,\n    countIf(repo_name LIKE 'javisantana/%') as total_stars,\n    javisantana_stars / total_stars as javisantana_ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nHAVING javisantana_stars > 0\nORDER BY javisantana_ratio DESC, javisantana_stars DESC\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT\n    actor_login AS user_login,\n    COUNT(CASE WHEN repo_name LIKE 'javisantana/%' THEN 1 END) AS stars_for_javisantana,\n    COUNT(*) - COUNT(CASE WHEN repo_name LIKE 'javisantana/%' THEN 1 END) AS stars_for_other,\n    (COUNT(CASE WHEN repo_name LIKE 'javisantana/%' THEN 1 END) / COUNT(*)) AS ratio\nFROM github_events\nWHERE \n    event_type = 'StarEvent'\n    AND repo_name LIKE 'javisantana/%'\nGROUP BY actor_login\nORDER BY ratio DESC\nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -9684,6 +9810,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_tf_contributors,\n    count() as total_prs\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login \n        FROM github_events \n        WHERE event_type = 'PullRequestEvent' \n            AND repo_name LIKE '%tensorflow%'\n            AND action = 'opened'\n    )\n    AND repo_name NOT LIKE '%tensorflow%'\nGROUP BY repo_name\nORDER BY unique_tf_contributors DESC, total_prs DESC\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS unique_contributors\nFROM github_events\nWHERE\n    event_type = 'PullRequestEvent'\n    AND author_association IN ('OWNER', 'COLLABORATOR', 'MEMBER')\n    AND repo_name NOT ILIKE '%tensorflow%'\n    AND actor_login IS NOT NULL\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -10670,6 +10810,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    actor_login,\n    COUNT(*) as issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n    AND action = 'opened'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login \n        FROM github_events \n        WHERE event_type = 'IssuesEvent' \n            AND action = 'opened'\n            AND repo_name = 'tensorflow/tensorflow'\n    )\n    AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name, actor_login\nORDER BY issue_count DESC\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n  repo_name,\n  COUNT(*) as issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n  AND action = 'opened'\n  AND actor_login IN (\n    SELECT DISTINCT actor_login\n    FROM github_events\n    WHERE repo_name = 'tensorflow/tensorflow'\n      AND event_type = 'IssuesEvent'\n      AND action = 'opened'\n  )\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -11662,6 +11816,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    toDate(created_at) as date,\n    uniq(actor_login) as stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name, date\nORDER BY stars DESC\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT repo_name\nFROM (\n    SELECT repo_name, MAX(count) AS max_count\n    FROM (\n        SELECT repo_name, COUNT(*) AS count\n        FROM github_events\n        WHERE event_type = '15'  -- WatchEvent for stars\n        GROUP BY repo_name, toInt64(created_at)\n    )\n    GROUP BY repo_name\n)\nORDER BY max_count DESC\nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -12662,6 +12830,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2016) AS stars_2016,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2017) AS stars_2017,\n    stars_2017 - stars_2016 AS growth,\n    if(stars_2016 > 0, ((stars_2017 - stars_2016) / stars_2016) * 100, 0) AS growth_percentage\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND toYear(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING stars_2016 >= 1 AND stars_2017 > stars_2016\nORDER BY growth DESC\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n  repo_name,\n  COUNT(CASE WHEN toYear(created_at) = 2016 THEN 1 END) AS stars_2016,\n  COUNT(CASE WHEN toYear(created_at) = 2017 THEN 1 END) AS stars_2017,\n  (COUNT(CASE WHEN toYear(created_at) = 2017 THEN 1 END) - COUNT(CASE WHEN toYear(created_at) = 2016 THEN 1 END)) AS growth\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND toYear(created_at) BETWEEN 2016 AND 2017\nGROUP BY repo_name\nHAVING COUNT(CASE WHEN toYear(created_at) = 2016 THEN 1 END) >= 1\nORDER BY growth DESC\nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -13680,6 +13862,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2016) AS stars_2016,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2017) AS stars_2017,\n    stars_2016 - stars_2017 AS stagnation\nFROM github_events\nWHERE toYear(created_at) IN (2016, 2017)\n    AND event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING stars_2017 >= 1 AND stars_2016 > stars_2017\nORDER BY stagnation DESC\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nI understand the issue - we need to optimize the subquery structure and ensure proper aliasing. Here's the corrected query:\n\n\nSELECT\n    repo_name,\n    year(created_at) AS year,\n    sum(if(year(created_at) = 2017, 1, 0)) AS has_2017,\n    sum(if(year(created_at) = 2016, 1, 0)) AS has_2016,\n    (sum(if(year(created_at) = 2017, 1, 0)) - sum(if(year(created_at) = 2016, 1, 0))) AS stagnation\nFROM github_events\nWHERE\n    event_type = 'WatchEvent'\n    AND year(created_at) IN (2016, 2017)\n    AND repo_name IN (\n        SELECT repo_name\n        FROM github_events\n        WHERE event_type = 'WatchEvent'\n        GROUP BY repo_name\n        HAVING sumIf(1, year(created_at) = 2017) > 0\n    )\nGROUP BY repo_name, year\nHAVING has_2017 > 0 AND has_2016 > 0\nORDER BY stagnation ASC\nLIMIT 10\n\n\nKey improvements:\n1. Used `sumIf` with direct value (1) instead of conditional expression for better performance\n2. Ensured proper aliasing throughout the query\n3. Maintained the original logic for stagnation calculation\n4. Kept all required filters and sorting\n5. Optimized the subquery for better performance\n\nThis query should now:\n- Correctly identify repositories with WatchEvents in both 2016 and 2017\n- Calculate stagnation as (2017 events - 2016 events)\n- Return the top 10 repositories with worst stagnation\n- Properly handle datetime functions and aggregations\n\n"
       }
     },
     "humanResults": {
@@ -14684,6 +14880,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as total_stars,\n    toStartOfMonth(created_at) as month,\n    COUNT(*) / COUNT(DISTINCT toStartOfMonth(created_at)) as avg_stars_per_month,\n    stddevPop(COUNT(*)) OVER (PARTITION BY repo_name) as star_growth_stddev\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND created_at >= now() - INTERVAL 1 YEAR\nGROUP BY repo_name, month\nHAVING COUNT(DISTINCT month) >= 6\nORDER BY star_growth_stddev ASC, total_stars DESC\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT \n    repo_name,\n    COUNT(*) AS event_count,\n    BLAKE3(CAST(COUNT(*) AS NVARCHAR(255))) AS event_count_hash\nFROM github_events\nWHERE event_type = '15' -- WatchEvent\n    AND created_at >= (NOW() - INTERVAL '30 days')\nGROUP BY repo_name\nORDER BY event_count DESC\nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -15694,6 +15904,20 @@
         "humanRowCount": 7,
         "llmRowCount": 7,
         "sql": "\nSELECT \n    toDayOfWeek(created_at) as day_of_week,\n    CASE toDayOfWeek(created_at)\n        WHEN 1 THEN 'Monday'\n        WHEN 2 THEN 'Tuesday'\n        WHEN 3 THEN 'Wednesday'\n        WHEN 4 THEN 'Thursday'\n        WHEN 5 THEN 'Friday'\n        WHEN 6 THEN 'Saturday'\n        WHEN 7 THEN 'Sunday'\n    END as day_name,\n    count() as total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY total_stars DESC\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 7,
+        "llmRowCount": 7,
+        "sql": "\nSELECT \n    dayOfWeek(created_at) AS day, \n    count() AS event_count \nFROM github_events \nWHERE event_type = 'WatchEvent' \nGROUP BY day \nORDER BY event_count DESC \nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -16658,6 +16882,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count(DISTINCT actor_login) as total_users\nFROM github_events\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.000052934128674804696,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT COUNT(DISTINCT actor_login) AS total_users \nFROM github_events \nWHERE actor_login IS NOT NULL \nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -17607,6 +17845,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count(DISTINCT actor_login) as total_users\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0014793406252330366,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT COUNT(DISTINCT actor_login) AS total_users\nFROM github_events\nWHERE event_type = 'WatchEvent'\n\n"
       }
     },
     "humanResults": {
@@ -18528,6 +18780,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count(DISTINCT actor_login) as total_users\nFROM github_events\nWHERE event_type = 'PushEvent'\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0018759619527295886,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT COUNT(DISTINCT actor_login) AS total_users\nFROM github_events\nWHERE event_type = 'PushEvent'\nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -19449,6 +19715,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count(DISTINCT actor_login) as total_users\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\nAND action = 'opened'\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT COUNT(DISTINCT actor_login) AS total_users\nFROM github_events\nWHERE \n    (event_type = 'CreateEvent' OR action = 'created') \n    AND actor_login IS NOT NULL\nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -20394,6 +20674,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login\n        FROM github_events\n        WHERE event_type = 'PullRequestEvent'\n            AND action = 'opened'\n    )\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.062278712339204734,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    COUNT() AS star_count\nFROM github_events AS w\nJOIN (\n    SELECT DISTINCT actor_login\n    FROM github_events\n    WHERE event_type = 'PullRequestEvent'\n) AS eligible ON w.actor_login = eligible.actor_login\nWHERE \n    w.event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -21362,6 +21656,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\nGROUP BY repo_name, actor_login\nHAVING count() >= 10\nORDER BY pr_count DESC\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nHere's the corrected SQL query that fixes the type mismatch and syntax issues while efficiently counting repositories with authors who have made at least 10 PRs:\n\n\nSELECT \n    repo_name, \n    COUNT(DISTINCT actor_login) AS qualified_author_count\nFROM github_events\nWHERE \n    event_type = 10 \n    AND action = 'opened'\n    AND actor_login IN (\n        SELECT actor_login\n        FROM github_events\n        WHERE event_type = 10 \n          AND action = 'opened'\n        GROUP BY actor_login\n        HAVING COUNT(*) >= 10\n    )\nGROUP BY repo_name\nORDER BY qualified_author_count DESC\nLIMIT 10\n\n\nKey fixes made:\n1. Changed event_type from string literal to numeric value (10 matches the Enum value)\n2. Removed redundant nested IN clause\n3. Simplified conditions while maintaining proper filtering\n4. Ensured all aggregate functions and counts use consistent typing\n\nThe query:\n- Filters for PullRequestEvents (event_type = 10)\n- Only considers 'opened' actions\n- Identifies authors with >=10 opened PRs\n- Counts distinct qualified authors per repository\n- Returns top 10 repos by qualified author count\n- Maintains pagination with LIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -22338,6 +22646,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\nGROUP BY repo_name\nORDER BY pr_count DESC\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT repo_name, COUNT(*) AS pr_count\nFROM github_events\nWHERE event_type = '10' AND action = 'opened'\nGROUP BY repo_name\nORDER BY pr_count DESC\nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -23328,6 +23650,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS contributor_count\nFROM github_events\nWHERE\n    action = 'opened'\n    AND actor_login != ''\n    AND event_type IN (['PullRequestEvent'])  -- Ensure we only count pull request events\nGROUP BY repo_name\nORDER BY contributor_count DESC\nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -24314,6 +24650,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n    AND action = 'opened'\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT repo_name, COUNT() AS issue_count\nFROM github_events\nWHERE event_type = '7' AND action = 'opened'\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -25290,6 +25640,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_contributors\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT repo_name, count(DISTINCT actor_login) AS distinct_user_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY repo_name\nORDER BY distinct_user_count DESC\nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -26266,6 +26630,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_pushers\nFROM github_events\nWHERE event_type = 'PushEvent'\n    AND base_ref = 'refs/heads/main'\nGROUP BY repo_name\nORDER BY unique_pushers DESC\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.8888888888888888,
+          "numeric": 0.891215973839134,
+          "fScore": 0.20000000000000007
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS num_push_access_users\nFROM github_events\nWHERE\n    event_type = 'PushEvent'\n    AND actor_login != ''\nGROUP BY\n    repo_name\nORDER BY\n    num_push_access_users DESC\nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -27256,6 +27634,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_pushers,\n    countIf(event_type = 'WatchEvent') as stars\nFROM github_events\nWHERE event_type IN ('PushEvent', 'WatchEvent')\nGROUP BY repo_name\nHAVING stars > 99\nORDER BY unique_pushers DESC\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    repo_name,\n    count(DISTINCT actor_login) AS num_contributors\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY repo_name\nORDER BY num_contributors DESC\nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -28260,6 +28652,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as member_invitations\nFROM github_events\nWHERE event_type = 'MemberEvent'\n    AND action = 'added'\nGROUP BY repo_name\nORDER BY member_invitations DESC\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    repo_name,\n    COUNT() AS invitation_count\nFROM github_events\nWHERE\n    event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY invitation_count DESC\nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -29250,6 +29656,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as fork_count\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY fork_count DESC\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    repo_name AS repository_name,\n    count() AS fork_count\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY fork_count DESC\nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -30222,6 +30642,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    countIf(event_type = 'WatchEvent') as stars,\n    countIf(event_type = 'ForkEvent') as forks,\n    stars / nullIf(forks, 0) as star_fork_ratio\nFROM github_events\nWHERE event_type IN ('WatchEvent', 'ForkEvent')\nGROUP BY repo_name\nHAVING forks > 0\nORDER BY star_fork_ratio DESC\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n  repo_name,\n  SUM(event_type = 'WatchEvent') AS stars,\n  SUM(event_type = 'ForkEvent') AS forks\nFROM github_events\nWHERE event_type IN ('WatchEvent', 'ForkEvent')\nGROUP BY repo_name\nHAVING forks > 0\nORDER BY (stars / forks) DESC\nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -31226,6 +31660,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT\n    countIf(event_type = 'WatchEvent') AS total_stars,\n    countIf(event_type = 'ForkEvent') AS total_forks,\n    round(countIf(event_type = 'WatchEvent') / countIf(event_type = 'ForkEvent'), 2) AS stars_to_forks_ratio\nFROM github_events\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT\n    countIf(event_type = 'WatchEvent') AS stars,\n    countIf(event_type = 'ForkEvent') AS forks,\n    round(\n        cast(countIf(event_type = 'WatchEvent') AS Float32) / \n        nullif(countIf(event_type = 'ForkEvent'), 0),\n    2\n) AS ratio\nFROM github_events\n\n"
       }
     },
     "humanResults": {
@@ -32157,6 +32605,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count() as total_issues\nFROM github_events\nWHERE event_type = 'IssuesEvent'\nAND action = 'opened'\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT count() AS total_issues_opened\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -33106,6 +33568,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as issue_comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY issue_comment_count DESC\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT repo_name, COUNT(comment_id) AS event_count\nFROM github_events\nWHERE event_type = '7'  -- IssueCommentEvent = 7\nAND action = 'commented'\nGROUP BY repo_name\nORDER BY event_count DESC\nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -34078,6 +34554,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    countIf(event_type = 'IssueCommentEvent') as issue_comments,\n    countIf(event_type = 'IssuesEvent' AND action = 'opened') as issues_opened,\n    if(issues_opened > 0, issue_comments / issues_opened, 0) as comment_to_issue_ratio\nFROM github_events\nWHERE event_type IN ('IssueCommentEvent', 'IssuesEvent')\nGROUP BY repo_name\nHAVING issues_opened > 0\nORDER BY comment_to_issue_ratio DESC\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nBased on the error analysis, I'll provide a corrected SQL query that:\n1. Properly handles division types\n2. Fixes syntax errors\n3. Maintains pagination\n\nHere's the fixed query:\n\n\nSELECT\n  repo_name,\n  cast(issue_comment_count AS Float64) / \n  CASE \n    WHEN issue_count = 0 THEN 0.0\n    ELSE cast(issue_count AS Float64) \n  END AS ratio\nFROM (\n  SELECT\n    repo_name,\n    sum(CASE WHEN event_type = 'IssueCommentEvent' THEN 1 ELSE 0 END) AS issue_comment_count,\n    sum(CASE WHEN event_type = 'IssueEvent' AND action = 'opened' THEN 1 ELSE 0 END) AS issue_count\n  FROM github_events\n  WHERE \n    event_type IN ('IssueEvent', 'IssueCommentEvent')\n  GROUP BY repo_name\n) AS counts\nORDER BY ratio DESC, repo_name ASC\nLIMIT 10\n\n\nKey fixes:\n1. Removed conflicting cast syntax that caused type calculation errors\n2. Simplified the CASE expression to maintain proper data type handling\n3. Preserved division by zero protection\n4. Maintained sorting and pagination as requested\n\nThe query now:\n- Calculates issue comments as Float64\n- Calculates issues as Float64\n- Safely handles division by zero (returns 0 when issue_count=0)\n- Returns top 10 repositories sorted by ratio (highest first)\n- Uses standard SQL without CTEs or complex expressions\n\n"
       }
     },
     "humanResults": {
@@ -35082,6 +35572,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    number,\n    max(comments) as total_comments\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n    AND action = 'opened'\nGROUP BY repo_name, number\nORDER BY total_comments DESC\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.18181818181818177,
+          "numeric": 0.5601299529614375,
+          "fScore": 0.9
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name, \n    number, \n    count() AS comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent' \n  AND action = 'created' \n  AND number IS NOT NULL\nGROUP BY repo_name, number\nORDER BY comment_count DESC \nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -36068,6 +36572,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    number as issue_number,\n    countDistinct(actor_login) as comment_authors,\n    count() as total_comments\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\n    AND number > 10\nGROUP BY repo_name, number\nHAVING comment_authors >= 10\nORDER BY total_comments DESC\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\n\nSELECT\n  repo_name,\n  number AS issue_number,\n  COUNT() AS comment_count,\n  COUNT(DISTINCT actor_login) AS author_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name, number\nHAVING COUNT() >= 10\nORDER BY comment_count DESC\nLIMIT 10\n\n\n"
       }
     },
     "humanResults": {
@@ -37068,6 +37586,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as event_count\nFROM github_events\nWHERE lower(body) LIKE '%tensorflow%' \n   OR lower(title) LIKE '%tensorflow%'\n   OR lower(repo_name) LIKE '%tensorflow%'\nGROUP BY repo_name\nORDER BY event_count DESC\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.7664672508704736,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    repo_name,\n    COUNT(*) AS event_count\nFROM github_events\nWHERE\n    (body LIKE '%tensorflow%' OR title LIKE '%tensorflow%' OR ref LIKE '%tensorflow%')\n    AND repo_name IS NOT NULL\nGROUP BY repo_name\nORDER BY event_count DESC\nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -38058,6 +38590,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as commit_comments\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY commit_comments DESC\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    repo_name,\n    count() AS comment_count\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY comment_count DESC\nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -39048,6 +39594,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    concat('https://github.com/', repo_name, '/commit/', commit_id) AS commit_url,\n    count() AS total_comments,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\n    AND commit_id != ''\nGROUP BY repo_name, commit_id\nHAVING unique_authors >= 10\nORDER BY total_comments DESC\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nBased on the error messages and schema analysis, here's the corrected query:\n\n\nSELECT\n  head_sha,\n  repo_name,\n  CONCAT('https://github.com/', repo_name, '/commit/', head_sha) AS full_commit_url,\n  COUNT(*) AS total_comments,\n  COUNT(DISTINCT actor_login) AS distinct_commenters\nFROM github_events\nWHERE \n  event_type = 1  -- CommitCommentEvent type\n  AND body != ''\nGROUP BY head_sha, repo_name\nHAVING COUNT(DISTINCT actor_login) >= 10\nORDER BY total_comments DESC\nLIMIT 10\n\n\nKey changes made:\n1. Changed `event_type` to 1 which corresponds to 'CommitCommentEvent' in the enum values\n2. Removed `commit_id` references since the table schema shows `head_sha` is the correct commit identifier\n3. Kept proper URL construction using `head_sha` which exists in the table schema\n4. Maintained the distinct commenters filter and sorting\n\nThis should resolve the type mismatch error by using the correct commit identifier (`head_sha`) from the table schema and properly grouping by commit-specific fields.\n\n"
       }
     },
     "humanResults": {
@@ -40052,6 +40612,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    concat('https://github.com/', repo_name, '/pull/', toString(number)) AS pr_url,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\n    AND number > 0\nGROUP BY repo_name, number\nORDER BY unique_authors DESC\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT\n    CONCAT('https://github.com/', repo_name, '/pull/', number) AS pr_url,\n    toString(COUNT(DISTINCT actor_login)) AS unique_authors_count\nFROM github_events\nWHERE\n    event_type = 11  -- PullRequestReviewCommentEvent\n    AND repo_name NOT IN ('', 'null')\n    AND actor_login NOT IN ('', 'null')\nGROUP BY repo_name, number\nORDER BY unique_authors_count DESC\nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -41042,6 +41616,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    actor_login,\n    COUNT(*) as push_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY push_count DESC\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    actor_login AS author,\n    COUNT() AS push_count\nFROM\n    github_events\nWHERE\n    event_type = 'PushEvent'\nGROUP BY\n    actor_login\nORDER BY\n    push_count DESC\nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -42032,6 +42620,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    splitByChar('/', repo_name)[1] AS organization,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY organization\nORDER BY stars DESC\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT actor_login, COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY star_count DESC\nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -43008,6 +43610,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    splitByChar('/', repo_name)[1] AS organization,\n    uniqExact(repo_name) AS repository_count\nFROM github_events\nGROUP BY organization\nORDER BY repository_count DESC\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT \n    splitByChar('/', repo_name)[1] AS organization,\n    COUNT(*) AS repository_count\nFROM github_events\nWHERE repo_name != '' AND indexOf(splitByChar('/', repo_name), '/') = 1\nGROUP BY organization\nORDER BY repository_count DESC\nLIMIT 10\n\n\n"
       }
     },
     "humanResults": {
@@ -43998,6 +44614,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as pr_count,\n    uniq(actor_login) as unique_authors,\n    sum(additions) as total_adds,\n    sum(deletions) as total_dels,\n    sum(additions + deletions) as total_churn\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\n    AND additions < 10000\n    AND deletions < 10000\nGROUP BY repo_name\nORDER BY total_churn DESC\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nHere's the corrected SQL query based on the errors and constraints:\n\n\nSELECT\n    repo_name AS repo,\n    COUNT(*) AS pr_count,\n    COUNT(DISTINCT actor_login) AS unique_authors,\n    SUM(commits) AS total_adds,\n    SUM(deletions) AS total_dels\nFROM github_events\nWHERE \n    event_type = 'PullRequestEvent'\n    AND action = 'opened'\n    AND commits < 10000\n    AND deletions < 10000\nGROUP BY repo_name\nORDER BY pr_count DESC\nLIMIT 10\n\n\nKey fixes made:\n1. Removed invalid cast and redundant event_type check\n2. Moved filter conditions to WHERE clause instead of SELECT\n3. Used aggregation functions (SUM) instead of static values\n4. Removed problematic comments that caused syntax issues\n5. Ensured proper churn limits are applied per event\n6. Maintained correct grouping by repository name\n\nThe query now properly:\n- Filters only PullRequestEvent with 'opened' action\n- Includes only PRs under 10k adds/deletions\n- Groups by repository name\n- Calculates required aggregates (PR count, unique authors, adds, dels)\n- Returns top 10 results with proper ordering\n\nNote: This assumes the database contains the actual PR churn data in commits/deletions fields rather than per-event counts. If this isn't the case, you might need to adjust which fields to sum based on your actual schema details.\n\n"
       }
     },
     "humanResults": {
@@ -45030,6 +45660,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    actor_login as author,\n    count() as total_pr_comments,\n    uniq(repo_name) as unique_repositories,\n    uniq(number) as unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\n    AND action = 'created'\nGROUP BY actor_login\nORDER BY total_pr_comments DESC\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT \n    actor_login AS author,\n    count() AS num_comments,\n    count(DISTINCT repo_name) AS num_repos,\n    count(DISTINCT number) AS num_prs\nFROM github_events\nWHERE event_type = 'PullRequestCommentEvent'\n    AND action = 'created'\n    AND actor_login IS NOT NULL\nGROUP BY actor_login\nORDER BY num_comments DESC\nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -46030,6 +46674,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    arrayJoin(labels) AS label,\n    count() AS usage_count\nFROM github_events\nWHERE event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')\n    AND action IN ('created', 'opened', 'labeled')\n    AND length(labels) > 0\nGROUP BY label\nORDER BY usage_count DESC\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nI understand the issue - we need to properly handle the array flattening and avoid the syntax error. Here's the corrected query using proper array handling without `arrayJoin`:\n\n\nSELECT\n    arrayJoin(labels)[1] AS label,\n    count() AS count\nFROM github_events\nWHERE event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent', 'PullRequestReviewCommentEvent')\nGROUP BY arrayJoin(labels)[1]\nORDER BY count() DESC\nLIMIT 10\n\n\nKey fixes made:\n1. Using `arrayJoin(labels)[1]` instead of `ARRAY JOIN` (valid ClickHouse syntax)\n2. Moving the array join result directly in both SELECT and GROUP BY clauses\n3. Ensuring proper array indexing to extract the label text\n4. Maintaining the core logic for counting label occurrences\n\nThis query will:\n1. Flatten the labels array using `arrayJoin`\n2. Extract the label text using array index [1]\n3. Count occurrences of each label\n4. Return the top 10 most frequent labels\n5. Maintain proper ClickHouse syntax requirements\n\nThe query should now execute correctly without syntax errors and provide the requested top labels.\n\n"
       }
     },
     "humanResults": {
@@ -47006,6 +47664,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    splitByChar('/', repo_name)[1] as organization,\n    uniq(actor_login) as unique_authors,\n    uniqIf(actor_login, event_type = 'PullRequestEvent' AND action = 'opened') as unique_pr_authors,\n    uniqIf(actor_login, event_type = 'IssuesEvent' AND action = 'opened') as unique_issue_authors,\n    uniqIf(actor_login, event_type = 'IssueCommentEvent') as unique_issue_comment_authors,\n    uniqIf(actor_login, event_type = 'PushEvent') as unique_push_authors\nFROM github_events\nWHERE repo_name != ''\nGROUP BY organization\nORDER BY unique_authors DESC\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n  repo_name,\n  COUNT(DISTINCT actor_login) AS total_unique_authors,\n  COUNT(DISTINCT CASE WHEN event_type = 'PullRequestEvent' THEN actor_login END) AS unique_pull_request_authors,\n  COUNT(DISTINCT CASE WHEN event_type = 'IssueEvent' THEN actor_login END) AS unique_issue_authors,\n  COUNT(DISTINCT CASE WHEN event_type = 'IssueCommentEvent' THEN actor_login END) AS unique_issue_comment_authors,\n  COUNT(DISTINCT CASE WHEN event_type = 'PushEvent' THEN actor_login END) AS unique_push_authors\nFROM github_events\nGROUP BY repo_name\nORDER BY total_unique_authors DESC\nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -48066,6 +48738,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    length(repo_name) as name_length\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY name_length DESC\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0.18181818181818177,
+          "numeric": 0,
+          "fScore": 0.9
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name, \n    length(repo_name) AS repo_name_length \nFROM github_events \nWHERE event_type = 'WatchEvent' \n  AND repo_name IS NOT NULL\nGROUP BY repo_name \nORDER BY repo_name_length DESC \nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -49042,6 +49728,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING count() >= 1\nORDER BY length(repo_name) ASC\nLIMIT 10\n"
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.5714285714285714,
+          "numeric": 1,
+          "fScore": 0.6
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND repo_name IS NOT NULL\nGROUP BY repo_name\nORDER BY length(repo_name) ASC\nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -49623,6 +50323,14 @@
         "avgExactDistance": 0.5383838383838385,
         "avgNumericDistance": 0.39462101454809,
         "avgFScore": 0.4699999999999999
+      },
+      "baidu/ernie-4.5-21b-a3b-thinking": {
+        "totalMatches": 18,
+        "exactMatches": 12,
+        "numericMatches": 18,
+        "avgExactDistance": 0.7164790764790765,
+        "avgNumericDistance": 0.626863683153208,
+        "avgFScore": 0.292
       }
     }
   }
