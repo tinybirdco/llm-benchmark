@@ -924,6 +924,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count() as total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": " The error is caused by the presence of a period (.) after `event_type`. In ClickHouse, LowCardinality columns like `event_type` require the use of the `IN` operator when filtering. Here's the corrected SQL query:\n\n\nSELECT COUNT(*)\nFROM github_events\nWHERE event_type IN ('WatchEvent') AND repo_name = '{{{{String(repo_name, 'your_repo_name')}}}}'\n\n\nReplace `'your_repo_name'` with the name of the repository you want to count the stars for. This query will return the total number of stars for the specified repository."
       }
     },
     "humanResults": {
@@ -1869,6 +1883,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " Here is a corrected SQL query that retrieves the top 10 repositories by the number of stars (WatchEvent) in the `github_events` table, sorted by the number of stars in descending order, and limited to 10 results:\n\n\nSELECT repo_name, COUNT(*) as stars_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars_count DESC\nLIMIT 10\n\n\nThis query uses the `github_events` datasource, filters for the `WatchEvent` type, groups by the `repo_name` column, counts the number of rows for each group (representing the number of stars), sorts the results in descending order by the number of stars, and limits the results to 10."
       }
     },
     "humanResults": {
@@ -2855,6 +2883,20 @@
         "humanRowCount": 5,
         "llmRowCount": 5,
         "sql": "\nSELECT\n    pow(10, floor(log10(stars + 1))) as star_bucket,\n    count(DISTINCT repo_name) as repo_count\nFROM (\n    SELECT \n        repo_name,\n        count() as stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n)\nWHERE stars > 0\nGROUP BY star_bucket\nORDER BY star_bucket ASC\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 5,
+        "llmRowCount": 0,
+        "sql": " Here is a corrected SQL query that counts the number of GitHub repositories with approximately a power of 10 stars, ordered from smallest to largest star count:\n\n\nSELECT repo_name, COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY CAST(FLOOR(COUNT(*) / 10.0) * 10 AS UInt32)\nORDER BY star_count ASC\nLIMIT 10\n\n\nThis query groups the GitHub events by the number of stars (approximately) in increments of 10, and then counts the number of repositories for each group. The results are ordered in ascending order of star count and limited to 10."
       }
     },
     "humanResults": {
@@ -3825,6 +3867,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count(DISTINCT repo_name) as total_repositories\nFROM github_events\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": " Here is the corrected SQL query to count the total number of unique repositories on GitHub:\n\n\nSELECT COUNT(DISTINCT repo_name)\nFROM github_events\nWHERE event_type = 'WatchEvent'\n\n\nThis query will return the total number of unique repositories on GitHub where the event type is 'WatchEvent', which means someone gave a star to the repo."
       }
     },
     "humanResults": {
@@ -4770,6 +4826,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    toYear(created_at) as year,\n    repo_name,\n    count() as events_count\nFROM github_events\nWHERE toYear(created_at) >= 2015\nGROUP BY year, repo_name\nORDER BY year ASC, events_count DESC\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " To fix the SQL query, we need to remove the \"%\" character at the beginning of each node creation and the union query, as it is not valid in ClickHouse SQL. Here's the corrected SQL query:\n\n\nSELECT repo_name, COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n\nCREATE NODE 2015_top_repositories AS\nSELECT repo_name, COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent' AND toYear(created_at) = 2015\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n\nCREATE NODE 2016_top_repositories AS\nSELECT repo_name, COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent' AND toYear(created_at) = 2016\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n\nCREATE NODE 2017_top_repositories AS\nSELECT repo_name, COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent' AND toYear(created_at) = 2017\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n\nCREATE NODE 2018_top_repositories AS\nSELECT repo_name, COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent' AND toYear(created_at) = 2018\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n\nCREATE NODE 2019_top_repositories AS\nSELECT repo_name, COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent' AND toYear(created_at) = 2019\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n\nCREATE NODE 2020_top_repositories AS\nSELECT repo_name, COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent' AND toYear(created_at) = 2020\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n\nCREATE NODE 2021_top_repositories AS\nSELECT repo_name, COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent' AND toYear(created_at) = 2021\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n\nSELECT * FROM 2015_top_repositories\nUNION ALL\nSELECT * FROM 2016_top_repositories\nUNION ALL\nSELECT * FROM 2017_top_repositories\nUNION ALL\nSELECT * FROM 2018_top_repositories\nUNION ALL\nSELECT * FROM 2019_top_repositories\nUNION ALL\nSELECT * FROM 2020_top_repositories\nUNION ALL\nSELECT * FROM 2021_top_repositories\n\n\nThis corrected query should now work correctly in Tinybird/ClickHouse."
       }
     },
     "humanResults": {
@@ -5770,6 +5840,20 @@
         "humanRowCount": 2,
         "llmRowCount": 2,
         "sql": "\nSELECT \n    toYear(created_at) as year,\n    count() as total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 2,
+        "llmRowCount": 0,
+        "sql": " To fix the SQL query, we need to remove the extra newline characters and the comment that is causing the syntax error, and also add the table name to the FROM clause. Here's the corrected SQL query:\n\n\n%\nSELECT\n  YEAR(github_events.created_at) as year,\n  COUNT(DISTINCT github_events.actor_login) as stars_count\nFROM github_events\nWHERE github_events.event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year\nLIMIT 10\n%\n\n\nThis query will return the year and the total number of unique actors (stars) for each year, sorted by year in ascending order, and limited to 10 rows. The `COUNT(DISTINCT github_events.actor_login)` function ensures that we count each unique star only once, even if the same user stars a repository multiple times. The `YEAR(github_events.created_at)` function extracts the year from the `github_events.created_at` timestamp column."
       }
     },
     "humanResults": {
@@ -6714,6 +6798,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    actor_login,\n    COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY star_count DESC\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " The error is due to the use of the word \"To\" at the beginning of the query. In ClickHouse, the SQL query should not start with any keyword. Here is the corrected SQL query:\n\n\nSELECT actor_login, COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY star_count DESC\nLIMIT 10\n\n\nThis query selects the `actor_login` column and counts the number of times each actor has given a star (`COUNT(*)`). It filters the events to only include `WatchEvent` events. The results are grouped by the `actor_login` column and sorted in descending order by the star count. Finally, it limits the results to the top 10 rows."
       }
     },
     "humanResults": {
@@ -7704,6 +7802,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND actor_login IN (\n    SELECT DISTINCT actor_login\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n      AND repo_name = 'tensorflow/tensorflow'\n  )\n  AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " Here is the corrected SQL query to get the top 10 repositories sorted by the number of stars from people who starred the `tensorflow/tensorflow` repository:\n\n\nSELECT\n  repo_name,\n  COUNT(*) as star_count\nFROM github_events\nWHERE\n  event_type = 'WatchEvent' AND\n  repo_name != 'tensorflow/tensorflow' AND\n  actor_login IN (\n    SELECT\n      actor_login\n    FROM github_events\n    WHERE\n      event_type = 'WatchEvent' AND\n      repo_name = 'tensorflow/tensorflow'\n  )\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n\n\nThis query first selects the `repo_name` and counts the number of stars (`star_count`) for each repository, excluding the `tensorflow/tensorflow` repository. It then filters the repositories to only include those that have been starred by people who have also starred the `tensorflow/tensorflow` repository. Finally, it sorts the results in descending order by the number of stars and limits the output to the top 10 repositories."
       }
     },
     "humanResults": {
@@ -8680,6 +8792,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "\nSELECT \n    actor_login,\n    countIf(repo_name LIKE 'javisantana/%') as javisantana_stars,\n    countIf(repo_name NOT LIKE 'javisantana/%') as other_stars,\n    countIf(repo_name LIKE 'javisantana/%') as total_stars,\n    javisantana_stars / total_stars as javisantana_ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nHAVING javisantana_stars > 0\nORDER BY javisantana_ratio DESC, javisantana_stars DESC\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " Here is the corrected SQL query that should answer your original question:\n\n\nSELECT\n  actor_login AS user_name,\n  SUM(CASE WHEN repo_name = 'javisantana' THEN 1 ELSE 0 END) AS stars_to_javisantana,\n  SUM(CASE WHEN repo_name != 'javisantana' THEN 1 ELSE 0 END) AS stars_to_other_repos,\n  SUM(CASE WHEN repo_name = 'javisantana' THEN 1 ELSE 0 END) / SUM(CASE WHEN repo_name != 'javisantana' THEN 1 ELSE 0 END) AS ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY ratio DESC\nLIMIT 10\n\n\nThis query calculates the number of stars each user gave to repositories owned by 'javisantana' and the number of stars they gave to other repositories. It then calculates the ratio of stars given to 'javisantana' repositories to the total number of stars given to other repositories. The results are ordered by the ratio in descending order and limited to the top 10 users."
       }
     },
     "humanResults": {
@@ -9684,6 +9810,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_tf_contributors,\n    count() as total_prs\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login \n        FROM github_events \n        WHERE event_type = 'PullRequestEvent' \n            AND repo_name LIKE '%tensorflow%'\n            AND action = 'opened'\n    )\n    AND repo_name NOT LIKE '%tensorflow%'\nGROUP BY repo_name\nORDER BY unique_tf_contributors DESC, total_prs DESC\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " Here is the corrected SQL query for Tinybird/ClickHouse that should answer your original question:\n\n\nSELECT\n  repo_name,\n  COUNT(DISTINCT author_login) as unique_contributors,\n  COUNT(*) as total_pull_requests\nFROM github_events\nWHERE\n  event_type = 'PullRequestEvent' AND\n  action = 'opened' AND\n  author_association IN ('CONTRIBUTOR', 'OWNER') AND\n  repo_name NOT IN (\n    SELECT repo_name\n    FROM github_events\n    WHERE\n      event_type = 'CreateEvent' AND\n      action = 'created' AND\n      author_association IN ('CONTRIBUTOR', 'OWNER') AND\n      repo_name IS NOT NULL AND\n      LOWER(repo_name) = 'tensorflow' AND\n      repository_name = 'tensorflow'\n  )\nGROUP BY repo_name\nORDER BY unique_contributors DESC, total_pull_requests DESC\nLIMIT 10\n\n\nThis query filters the `github_events` table for pull request events, where the author is a contributor or owner of the repository, and the repository is not a TensorFlow repository. It then groups the results by repository name, counts the number of unique contributors and total pull requests, and orders the results by the number of unique contributors in descending order, followed by the total number of pull requests in descending order. Finally, it limits the results to the top 10."
       }
     },
     "humanResults": {
@@ -10670,6 +10810,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    actor_login,\n    COUNT(*) as issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n    AND action = 'opened'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login \n        FROM github_events \n        WHERE event_type = 'IssuesEvent' \n            AND action = 'opened'\n            AND repo_name = 'tensorflow/tensorflow'\n    )\n    AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name, actor_login\nORDER BY issue_count DESC\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " Here is a corrected SQL query that should answer your question. Note that this query assumes that you have a node or materialized view named `github_events` that contains the data from the `github_events` table.\n\n\nSELECT\n  repo_name,\n  author_login,\n  COUNT(*) as issue_count\nFROM\n  github_events\nWHERE\n  repo_name IN ('tensorflow/tensorflow')\n  AND action = 'opened'\n  AND state = 'open'\n  AND author_association IN ('CONTRIBUTOR', 'OWNER', 'COLLABORATOR', 'MEMBER')\n  AND assignee IS NULL\n  AND labels IS NOT ARRAY\n  AND NOT EXISTS (\n    SELECT * FROM github_events\n    WHERE event_type = 'IssueCommentEvent'\n      AND repo_name = github_events.repo_name\n      AND author_login = github_events.author_login\n      AND action = 'created'\n      AND github_events.created_at < github_events.created_at\n  )\nGROUP BY\n  repo_name,\n  author_login\nORDER BY\n  issue_count DESC,\n  author_login ASC\nLIMIT 10\n\n\nThis query selects the repositories and authors that have opened issues in the `tensorflow/tensorflow` repository, excluding those who have also commented on issues, and ranks them by the number of issues opened. It also ensures that the authors have not commented on any issue before the one they opened."
       }
     },
     "humanResults": {
@@ -11662,6 +11816,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    toDate(created_at) as date,\n    uniq(actor_login) as stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name, date\nORDER BY stars DESC\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " %\nSELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\nAND created_at >= DATE_TRUNC('day', NOW() - INTERVAL 1 DAY)\nAND repo_name NOT IN (\n  SELECT repo_name\n  FROM (\n    SELECT repo_name, COUNT(*) as count\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    AND created_at >= DATE_TRUNC('day', NOW() - INTERVAL 1 DAY)\n    GROUP BY repo_name\n    ORDER BY count DESC\n    LIMIT 9\n  ) as temp\n)\nGROUP BY repo_name\nORDER BY COUNT(*) DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -12662,6 +12830,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2016) AS stars_2016,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2017) AS stars_2017,\n    stars_2017 - stars_2016 AS growth,\n    if(stars_2016 > 0, ((stars_2017 - stars_2016) / stars_2016) * 100, 0) AS growth_percentage\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND toYear(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING stars_2016 >= 1 AND stars_2017 > stars_2016\nORDER BY growth DESC\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " Here is a corrected SQL query that should answer the question about the top 10 repositories with the highest growth YoY (Year over Year) in terms of stars from 2016 to 2017, starting from 1 star. This query uses the `github_events` datasource and assumes the presence of a node named `stars_events` containing the events related to stars.\n\n\nSELECT repo_name,\n       COUNT(*) stars_count_2017,\n       (SELECT COUNT(*) FROM stars_events\n        WHERE event_type = 'WatchEvent'\n          AND repo_name = t.repo_name\n          AND created_at >= toDateTime('2016-01-01 00:00:00')\n          AND created_at < toDateTime('2017-01-01 00:00:00')\n          AND body IS NULL) stars_count_2016,\n       stars_count_2017 - stars_count_2016 growth_stars\nFROM stars_events\nWHERE event_type = 'WatchEvent'\n  AND created_at >= toDateTime('2017-01-01 00:00:00')\n  AND created_at < toDateTime('2018-01-01 00:00:00')\n  AND body IS NULL\nGROUP BY repo_name\nORDER BY growth_stars DESC\nLIMIT 10\n\n\nIn this query, we first count the number of stars for each repository in 2017 and store the result in the `stars_count_2017` column. Then, we use a subquery to count the number of stars for the same repository in 2016 and store the result in the `stars_count_2016` column. Finally, we calculate the growth YoY by subtracting the number of stars in 2016 from the number of stars in 2017 and order the results in descending order. The `LIMIT 10` clause is used to limit the results to the top 10 repositories with the highest growth YoY."
       }
     },
     "humanResults": {
@@ -13680,6 +13862,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2016) AS stars_2016,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2017) AS stars_2017,\n    stars_2016 - stars_2017 AS stagnation\nFROM github_events\nWHERE toYear(created_at) IN (2016, 2017)\n    AND event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING stars_2017 >= 1 AND stars_2016 > stars_2017\nORDER BY stagnation DESC\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " Here is the corrected SQL query that should work in Tinybird/ClickHouse:\n\n\nSELECT repo_name, COUNT(*) as stars_2017, COUNT(*) FILTER (where created_at >= '2017-01-01' AND created_at < '2018-01-01') as stars_2016\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING stars_2017 > 0 AND (stars_2017 - stars_2016) < (stars_2016 * 0.1)\nORDER BY stars_2017 - stars_2016 DESC\nLIMIT 10\n\n\nThis query will return the top 10 repositories with the worst stagnation in the number of stars from 2017 compared to 2016. It only considers repositories that had at least one star in 2017. The results are ordered in descending order by the difference between the number of stars in 2017 and 2016."
       }
     },
     "humanResults": {
@@ -14684,6 +14880,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as total_stars,\n    toStartOfMonth(created_at) as month,\n    COUNT(*) / COUNT(DISTINCT toStartOfMonth(created_at)) as avg_stars_per_month,\n    stddevPop(COUNT(*)) OVER (PARTITION BY repo_name) as star_growth_stddev\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND created_at >= now() - INTERVAL 1 YEAR\nGROUP BY repo_name, month\nHAVING COUNT(DISTINCT month) >= 6\nORDER BY star_growth_stddev ASC, total_stars DESC\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " To fix the SQL query, we need to remove the subquery and use a derived table instead. Here's the corrected SQL query:\n\n\nSELECT\n  repo_name,\n  avgMerge(daily_growth_rate) daily_growth_rate_ma\nFROM (\n  SELECT\n    repo_name,\n    date_trunc('day', created_at) as date,\n    countDistinct(actor_login) as daily_stars,\n    (countDistinct(actor_login) - LAG(countDistinct(actor_login), 1) OVER (ORDER BY date)) / LAG(countDistinct(actor_login), 1) OVER (ORDER BY date) as daily_growth_rate\n  FROM github_events\n  WHERE event_type = 'WatchEvent'\n  GROUP BY repo_name, date\n) derived_table\nWHERE date >= now() - interval 7 day\nGROUP BY repo_name\nORDER BY daily_growth_rate_ma DESC\nLIMIT 10\n\n\nThis query calculates the daily star count, daily growth rate, and moving average of the daily growth rate for the last 7 days. It then groups the results by repository name, orders them by the moving average growth rate in descending order, and limits the results to the top 10 repositories.\n\nThis corrected query should work correctly in Tinybird/ClickHouse."
       }
     },
     "humanResults": {
@@ -15694,6 +15904,20 @@
         "humanRowCount": 7,
         "llmRowCount": 7,
         "sql": "\nSELECT \n    toDayOfWeek(created_at) as day_of_week,\n    CASE toDayOfWeek(created_at)\n        WHEN 1 THEN 'Monday'\n        WHEN 2 THEN 'Tuesday'\n        WHEN 3 THEN 'Wednesday'\n        WHEN 4 THEN 'Thursday'\n        WHEN 5 THEN 'Friday'\n        WHEN 6 THEN 'Saturday'\n        WHEN 7 THEN 'Sunday'\n    END as day_name,\n    count() as total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY total_stars DESC\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 7,
+        "llmRowCount": 0,
+        "sql": " The error you encountered is due to the missing space after the `LIMIT` keyword. Here's the corrected SQL query:\n\n\nSELECT\n  dayOfWeek(created_at) as day_of_week,\n  countDistinct(repo_name) as number_of_repos\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY dayOfWeek(created_at)\nORDER BY dayOfWeek(created_at)\nLIMIT 10\n\n\nThis query calculates the day of the week for each event, groups them by day of the week, counts the number of unique repositories that received a star on each day of the week, and sorts the results by day of the week. The `LIMIT 10` clause is used to paginate the results and return only the first 10 rows. You can adjust the `LIMIT` clause to get more or fewer results as needed."
       }
     },
     "humanResults": {
@@ -16658,6 +16882,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count(DISTINCT actor_login) as total_users\nFROM github_events\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": " To fix the SQL query, remove the comment and the error message, and use the correct table name:\n\n\nSELECT COUNT(DISTINCT actor_login) as total_users\nFROM github_events\n\n\nThis query will return the total number of unique users in the `github_events` table."
       }
     },
     "humanResults": {
@@ -17607,6 +17845,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count(DISTINCT actor_login) as total_users\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": " Here is a corrected SQL query that counts the number of unique users who have given at least one star (WatchEvent) to a specific repository:\n\n\nSELECT COUNT(DISTINCT actor_login) as total_users\nFROM github_events\nWHERE event_type = 'WatchEvent' AND repo_name = 'REPO_NAME'\nGROUP BY repo_name\nLIMIT 10\n\n\nReplace `REPO_NAME` with the name of the repository you are interested in. This query will return the total number of unique users who have given at least one star to the specified repository."
       }
     },
     "humanResults": {
@@ -18528,6 +18780,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count(DISTINCT actor_login) as total_users\nFROM github_events\nWHERE event_type = 'PushEvent'\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 10,
+        "sql": " %\nSELECT COUNT(DISTINCT actor_login)\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nHAVING COUNT(*) > 0\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -19449,6 +19715,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count(DISTINCT actor_login) as total_users\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\nAND action = 'opened'\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": " Here is the corrected SQL query to count the total number of unique users who have created at least one pull request (action = 'created' and event_type = 'PullRequestEvent'):\n\n\nSELECT COUNT(DISTINCT actor_login)\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'created'\n\n\nThis query uses the `COUNT` aggregate function to count the number of unique users (`actor_login`), filters the events for pull requests (`event_type = 'PullRequestEvent'`) and pull request creation events (`action = 'created'`). The `DISTINCT` keyword is used to ensure that each unique user is only counted once. The query starts with a `%` character to indicate that it is a Tinybird/ClickHouse SQL query with parameters. The query does not contain any errors and should execute correctly."
       }
     },
     "humanResults": {
@@ -20394,6 +20674,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login\n        FROM github_events\n        WHERE event_type = 'PullRequestEvent'\n            AND action = 'opened'\n    )\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " To fix the SQL query, you should remove the comment at the beginning of the query. Here's the corrected query:\n\n\nSELECT repo_name, COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nAND actor_login IN (\n  SELECT DISTINCT actor_login\n  FROM github_events\n  WHERE event_type IN ('PullRequestEvent', 'PullRequestReviewEvent')\n    AND action = 'opened'\n)\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n\n\nThis query should now work correctly in Tinybird/ClickHouse. It counts the top 10 starred repositories by the number of pull requests made by the users who have made at least one pull request in at least one repository."
       }
     },
     "humanResults": {
@@ -21362,6 +21656,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\nGROUP BY repo_name, actor_login\nHAVING count() >= 10\nORDER BY pr_count DESC\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " Here is a corrected SQL query that should answer your question. It uses the Tornado templating language to dynamically filter the number of PRs made by an author.\n\n\nSELECT repo_name, COUNT(*) as pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nHAVING pr_count >= {{UInt32(10)}}\nORDER BY pr_count DESC\nLIMIT 10\n\n\nThis query selects the repository name and counts the number of PRs opened for each repository. It then filters the results to only include repositories where the number of PRs is greater than or equal to 10. Finally, it orders the results in descending order and limits the output to the top 10 repositories. The error in the previous queries was caused by the presence of comments at the beginning of the queries, which are not allowed in ClickHouse/Tinybird SQL."
       }
     },
     "humanResults": {
@@ -22338,6 +22646,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\nGROUP BY repo_name\nORDER BY pr_count DESC\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " Here is a corrected SQL query that retrieves the top 10 repositories with the maximum amount of pull requests using ClickHouse SQL and Tinybird templating syntax:\n\n\nSELECT repo_name, count(*) as pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY pr_count DESC\nLIMIT 10\n\n\nThis query selects the repository name and counts the number of pull requests for each repository where the event type is 'PullRequestEvent' and the action is 'opened'. It then groups the results by repository name and orders them in descending order by the number of pull requests. Finally, it limits the results to the top 10 repositories."
       }
     },
     "humanResults": {
@@ -23328,6 +23650,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " Here is the corrected SQL query to retrieve the top 10 repositories with the maximum amount of pull request contributors:\n\n\nSELECT repo_name, countDistinct(actor_login) as num_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY num_contributors DESC\nLIMIT 10\n\n\nThis query uses the `countDistinct` function to count the number of unique contributors for each repository. The `event_type` and `action` filters are used to only consider pull request events and opened pull requests. The `repo_name` is used to group the data by repository. The `ORDER BY` clause sorts the results in descending order by the number of contributors, and the `LIMIT` clause limits the results to the top 10."
       }
     },
     "humanResults": {
@@ -24314,6 +24650,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n    AND action = 'opened'\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " Here is a corrected SQL query that retrieves the top 10 repositories with the maximum amount of issues:\n\n\nSELECT repo_name, COUNT(*) as issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10\n\n\nThis query uses the `github_events` datasource, filters for events of type 'IssuesEvent' and action 'opened', groups the results by repository name, counts the number of issues for each repository, orders the results in descending order by the number of issues, and limits the results to the top 10 repositories. The query does not include any comments or instructions, as per your request."
       }
     },
     "humanResults": {
@@ -25290,6 +25640,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_contributors\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " Here is the corrected SQL query that retrieves the top 10 repositories with the most people who have push access, using the `github_events` datasource:\n\n\nSELECT repo_name, COUNT(DISTINCT author_association) as num_pushers\nFROM github_events\nWHERE event_type = 'PushEvent' AND author_association IN ('OWNER', 'CONTRIBUTOR', 'COLLABORATOR', 'MEMBER')\nGROUP BY repo_name\nORDER BY num_pushers DESC\nLIMIT 10\n\n\nThis query selects the repository name and counts the distinct number of people who have push access (`OWNER`, `CONTRIBUTOR`, `COLLABORATOR`, or `MEMBER`) for each repository. It then groups the results by repository name and orders them in descending order by the number of pushers. Finally, it limits the results to the top 10 repositories."
       }
     },
     "humanResults": {
@@ -26266,6 +26630,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_pushers\nFROM github_events\nWHERE event_type = 'PushEvent'\n    AND base_ref = 'refs/heads/main'\nGROUP BY repo_name\nORDER BY unique_pushers DESC\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " Here is the corrected SQL query to answer your original question:\n\n\nSELECT repo_name, COUNT(DISTINCT author_login) as num_contributors\nFROM github_events\nWHERE event_type = 'PushEvent' AND action = 'opened' AND ref_type = 'branch' AND ref = 'main' AND author_association IN ('OWNER', 'CONTRIBUTOR', 'COLLABORATOR', 'MEMBER')\nGROUP BY repo_name\nORDER BY num_contributors DESC\nLIMIT 10\n\n\nThis query uses the `github_events` datasource, filters for push events on the main branch, and counts the distinct number of contributors (owners, contributors, collaborators, and members) for each repository. The results are ordered in descending order by the number of contributors and limited to the top 10 repositories."
       }
     },
     "humanResults": {
@@ -27256,6 +27634,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_pushers,\n    countIf(event_type = 'WatchEvent') as stars\nFROM github_events\nWHERE event_type IN ('PushEvent', 'WatchEvent')\nGROUP BY repo_name\nHAVING stars > 99\nORDER BY unique_pushers DESC\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " To fix the SQL query, you should remove the comment at the beginning of the query. Here is the corrected SQL query:\n\n\nSELECT repo_name, COUNT(DISTINCT author_association) as num_people_with_push_access\nFROM github_events\nWHERE event_type = 'PushEvent'\nAND ref_type = 'branch'\nAND ref = 'main'\nAND action = 'merged'\nAND author_association IN ('OWNER', 'CONTRIBUTOR', 'COLLABORATOR', 'MEMBER')\nAND watchEvent = 0\nGROUP BY repo_name\nHAVING COUNT(DISTINCT author_association) > 99\nORDER BY num_people_with_push_access DESC\nLIMIT 10\n\n\nThis corrected query should now work without any errors in Tinybird/ClickHouse."
       }
     },
     "humanResults": {
@@ -28260,6 +28652,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as member_invitations\nFROM github_events\nWHERE event_type = 'MemberEvent'\n    AND action = 'added'\nGROUP BY repo_name\nORDER BY member_invitations DESC\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " Here is a corrected SQL query that retrieves the top 10 repositories by the maximum number of member invitations. This query uses the `github_events` datasource and the `action` column to filter for events related to invitations.\n\n\nSELECT repo_name, COUNT(*) as invitations\nFROM github_events\nWHERE action IN ('created', 'added')\nGROUP BY repo_name\nORDER BY invitations DESC\nLIMIT 10\n\n\nThis query groups the events by repository name and counts the number of invitations for each repository. It then orders the results in descending order and limits the output to the top 10 repositories with the highest number of invitations. The corrected query does not include any comments or explanations, as they were causing the syntax error in the previous queries."
       }
     },
     "humanResults": {
@@ -29250,6 +29656,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as fork_count\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY fork_count DESC\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " Based on the provided information, here's a corrected SQL query that retrieves the top 10 most forked repositories from the `github_events` table. This query uses the `WatchEvent` to identify when a repository is forked, and sorts the results by the number of forks in descending order.\n\n\n%\nSELECT repo_name, COUNT(*) as num_forks\nFROM github_events\nWHERE event_type = 'WatchEvent' AND action = 'created'\nGROUP BY repo_name\nORDER BY num_forks DESC\nLIMIT 10\n%\n\n\nThis query uses the `WatchEvent` with the `action` of `created` to identify when a new star (fork) is given to a repository. It groups the results by the `repo_name` column and counts the number of forks for each repository. Finally, it sorts the results in descending order by the number of forks and limits the output to the top 10 repositories.\n\nThe error in the previous queries was due to the missing `%` character at the beginning of the query, which is required for Tinybird/ClickHouse to interpret the query as a template. Additionally, there was an extra newline after the query text in the error message, which caused the error.\n\n\nThis corrected query should work correctly in Tinybird/ClickHouse."
       }
     },
     "humanResults": {
@@ -30222,6 +30642,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    countIf(event_type = 'WatchEvent') as stars,\n    countIf(event_type = 'ForkEvent') as forks,\n    stars / nullIf(forks, 0) as star_fork_ratio\nFROM github_events\nWHERE event_type IN ('WatchEvent', 'ForkEvent')\nGROUP BY repo_name\nHAVING forks > 0\nORDER BY star_fork_ratio DESC\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " Here is the corrected SQL query to retrieve the top 10 repositories by the ratio of stars to forks:\n\n\nSELECT repo_name, COUNT(*) as stars, COUNT(DISTINCT actor_login) as forks\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars / forks DESC\nLIMIT 10\n\n\nThis query uses the `github_events` datasource, the `COUNT` aggregate function to count the number of stars and forks for each repository, and the `GROUP BY` clause to group the results by repository name. The `ORDER BY` clause sorts the results in descending order by the ratio of stars to forks, and the `LIMIT 10` clause limits the results to the top 10 repositories. The query does not start with any comments or special characters to ensure it is valid for Tinybird/ClickHouse."
       }
     },
     "humanResults": {
@@ -31226,6 +31660,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT\n    countIf(event_type = 'WatchEvent') AS total_stars,\n    countIf(event_type = 'ForkEvent') AS total_forks,\n    round(countIf(event_type = 'WatchEvent') / countIf(event_type = 'ForkEvent'), 2) AS stars_to_forks_ratio\nFROM github_events\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": " Here is a corrected SQL query that counts the total number of stars, forks, and calculates the ratio between stars and forks. The query uses the `github_events` datasource and filters the events for `WatchEvent` and `ForkEvent`. The ratio is calculated by dividing the total number of stars by the total number of forks and rounding the result to 2 decimal places.\n\n\nSELECT\n  round(sum(case when event_type = 'WatchEvent' then 1 else 0 end) / sum(case when event_type = 'ForkEvent' then 1 else 0 end), 2) as ratio,\n  sum(case when event_type = 'WatchEvent' then 1 else 0 end) as total_stars,\n  sum(case when event_type = 'ForkEvent' then 1 else 0 end) as total_forks\nFROM github_events\nWHERE event_type IN ('WatchEvent', 'ForkEvent')\nGROUP BY toYear(created_at)\nLIMIT 10\n\n\nI removed the comment at the beginning of the query to make it valid for Tinybird/ClickHouse."
       }
     },
     "humanResults": {
@@ -32157,6 +32605,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count() as total_issues\nFROM github_events\nWHERE event_type = 'IssuesEvent'\nAND action = 'opened'\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": " The error is due to the presence of comments and text after the SELECT statement. Here is the corrected SQL query:\n\n\nSELECT COUNT(*)\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\n\n\nThis query will return the total number of issues opened on GitHub. It uses the `github_events` datasource, filters the events by `event_type` and `action`, and counts the number of rows that match the conditions."
       }
     },
     "humanResults": {
@@ -33106,6 +33568,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as issue_comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY issue_comment_count DESC\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " Here is the corrected SQL query to retrieve the top 10 repositories by the number of issue comment events:\n\n\nSELECT repo_name, COUNT(*) comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY comment_count DESC\nLIMIT 10\n\n\nThis query uses the `github_events` datasource, filters for `IssueCommentEvent` events with an action of `opened`, groups the results by repository name, counts the number of events for each repository, orders the results in descending order by the number of comments, and limits the results to the top 10 repositories. The query does not include any comments or explanations, as they were causing the syntax error in the previous responses."
       }
     },
     "humanResults": {
@@ -34078,6 +34554,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    countIf(event_type = 'IssueCommentEvent') as issue_comments,\n    countIf(event_type = 'IssuesEvent' AND action = 'opened') as issues_opened,\n    if(issues_opened > 0, issue_comments / issues_opened, 0) as comment_to_issue_ratio\nFROM github_events\nWHERE event_type IN ('IssueCommentEvent', 'IssuesEvent')\nGROUP BY repo_name\nHAVING issues_opened > 0\nORDER BY comment_to_issue_ratio DESC\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " Here is the corrected SQL query to retrieve the top 10 repositories by the ratio of issue comments to issues using the `github_events` datasource and assuming that the `action` is 'opened' for issues:\n\n\nSELECT repo_name, count(*) as total_events,\n       sum(case when action = 'opened' and event_type = 'IssueCommentEvent' then 1 else 0 end) as issue_comments,\n       sum(case when action = 'opened' and event_type = 'IssuesEvent' then 1 else 0 end) as issues\nFROM github_events\nWHERE action IN ('opened', 'created')\nGROUP BY repo_name\nORDER BY (issue_comments / issues) DESC\nLIMIT 10\n\n\nThis query calculates the total number of events, issue comments, and issues for each repository. Then it calculates the ratio of issue comments to issues and orders the results in descending order. Finally, it limits the results to the top 10 repositories."
       }
     },
     "humanResults": {
@@ -35082,6 +35572,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    number,\n    max(comments) as total_comments\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n    AND action = 'opened'\nGROUP BY repo_name, number\nORDER BY total_comments DESC\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " Here is a corrected SQL query that should answer your question. It uses the `github_events` datasource and the `COUNT` aggregate function to count the number of comments for each issue.\n\n\nSELECT repo_name, number AS issue_number\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name, number\nORDER BY COUNT(*) DESC\nLIMIT 10\n\n\nThis query selects the repository name and issue number from the `github_events` table, filters for events of type 'IssueCommentEvent', groups the results by repository and issue number, counts the number of occurrences for each group, orders the results in descending order by the count, and limits the results to the top 10."
       }
     },
     "humanResults": {
@@ -36068,6 +36572,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    number as issue_number,\n    countDistinct(actor_login) as comment_authors,\n    count() as total_comments\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\n    AND number > 10\nGROUP BY repo_name, number\nHAVING comment_authors >= 10\nORDER BY total_comments DESC\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.5714285714285714,
+          "numeric": 0.8087249000814191,
+          "fScore": 0.6
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": " %\nSELECT\n  repo_name,\n  number,\n  COUNT(*) AS comment_count,\n  COUNT(DISTINCT actor_login) AS author_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\n  AND action = 'created'\nGROUP BY repo_name, number\nHAVING comment_count >= 10\nORDER BY comment_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -37068,6 +37586,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as event_count\nFROM github_events\nWHERE lower(body) LIKE '%tensorflow%' \n   OR lower(title) LIKE '%tensorflow%'\n   OR lower(repo_name) LIKE '%tensorflow%'\nGROUP BY repo_name\nORDER BY event_count DESC\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " Here is a corrected SQL query that should return the top 10 repositories with the most events mentioning \"tensorflow\" in their name or description. This query uses the Tornado templating language to dynamically filter the events by the provided parameter `repo_name_filter`.\n\n\nSELECT repo_name, COUNT(*) event_count\nFROM github_events\nWHERE event_type IN ('CommitCommentEvent', 'CreateEvent', 'DeleteEvent', 'ForkEvent', 'GollumEvent', 'IssueCommentEvent', 'IssuesEvent', 'MemberEvent', 'PublicEvent', 'PullRequestEvent', 'PullRequestReviewCommentEvent', 'PushEvent', 'ReleaseEvent', 'SponsorshipEvent', 'WatchEvent', 'GistEvent', 'FollowEvent', 'DownloadEvent', 'PullRequestReviewEvent', 'ForkApplyEvent', 'Event', 'TeamAddEvent')\nAND actor_login IN (SELECT login FROM github_users WHERE type = 'User')\nAND (body LIKE '%tensorflow%' OR repo_name LIKE '%tensorflow%')\nGROUP BY repo_name\nORDER BY event_count DESC\nLIMIT 10\n\n\nThis query removes the comment at the beginning of the query, which was causing the syntax error. It also uses the Tornado templating language to dynamically filter the events by the provided parameter `repo_name_filter`. The query filters the events by the `event_type` and checks if the `body` or `repo_name` contains the word \"tensorflow\". It then groups the results by `repo_name` and orders them by the number of events in descending order. Finally, it limits the results to the top 10 repositories. This query should be valid for Tinybird/ClickHouse."
       }
     },
     "humanResults": {
@@ -38058,6 +38590,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as commit_comments\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY commit_comments DESC\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " Here is the corrected SQL query to retrieve the top 10 repositories by the number of commit comments using the `github_events` datasource and filtering for `CommitCommentEvent` events:\n\n\nSELECT repo_name, COUNT(*) comment_count\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY comment_count DESC\nLIMIT 10\n\n\nThis query groups the events by repository name, counts the number of commit comments for each repository, orders the results in descending order, and limits the output to the top 10 repositories with the most commit comments."
       }
     },
     "humanResults": {
@@ -39048,6 +39594,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    concat('https://github.com/', repo_name, '/commit/', commit_id) AS commit_url,\n    count() AS total_comments,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\n    AND commit_id != ''\nGROUP BY repo_name, commit_id\nHAVING unique_authors >= 10\nORDER BY total_comments DESC\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " Here is the corrected SQL query that should work for Tinybird/ClickHouse:\n\n\nSELECT\n  github_events.repo_name AS repository,\n  github_events.commit_id AS commit_id,\n  COUNT(DISTINCT github_events.actor_login) AS unique_authors,\n  COUNT(github_events.id) AS total_comments\nFROM github_events\nWHERE github_events.event_type = 'CommitCommentEvent'\n  AND github_events.action = 'created'\n  AND COUNT(DISTINCT github_events.actor_login) >= 10\nGROUP BY github_events.repo_name, github_events.commit_id\nORDER BY total_comments DESC\nLIMIT 10\n\n\nThis query selects the repository, commit_id, unique_authors (distinct commenters), and total_comments (total number of comments) from the github_events table where the event_type is 'CommitCommentEvent' and the action is 'created'. It also filters for commits with at least 10 distinct commenters. The results are grouped by repository and commit_id and ordered by total_comments in descending order. The LIMIT 10 clause is added to return only the top 10 results."
       }
     },
     "humanResults": {
@@ -40052,6 +40612,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    concat('https://github.com/', repo_name, '/pull/', toString(number)) AS pr_url,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\n    AND number > 0\nGROUP BY repo_name, number\nORDER BY unique_authors DESC\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " Here's the corrected SQL query:\n\n\nSELECT url, COUNT(DISTINCT author_login) as unique_authors\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'review_requested'\nGROUP BY pull_request_url\nORDER BY unique_authors DESC\nLIMIT 10\n\n\nThis query selects the `url` and the count of unique `author_login` for pull requests where the event type is `PullRequestEvent` and the action is `review_requested`. It groups the results by the pull request URL and orders them in descending order by the number of unique authors. Finally, it limits the results to the top 10. This query does not require dynamic parameters, so there's no need for the `%` character at the beginning."
       }
     },
     "humanResults": {
@@ -41042,6 +41616,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    actor_login,\n    COUNT(*) as push_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY push_count DESC\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " The error is due to the fact that the query starts with a comment, which is not allowed in ClickHouse. Here is the corrected SQL query:\n\n\nSELECT actor_login, COUNT(*) as push_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY push_count DESC\nLIMIT 10\n\n\nThis query will return the top 10 authors with the most pushes, based on the `actor_login` column in the `github_events` table."
       }
     },
     "humanResults": {
@@ -42032,6 +42620,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    splitByChar('/', repo_name)[1] AS organization,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY organization\nORDER BY stars DESC\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " Here is the corrected SQL query to answer your original question:\n\n\nSELECT\n  CASE\n    WHEN repo_name LIKE '%/%' THEN SUBSTRING_INDEX(repo_name, '/', 1)\n    ELSE repo_name\n  END AS organization,\n  COUNT(*) as stars_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY organization\nORDER BY stars_count DESC\nLIMIT 10\n\n\nThis query will return the top 10 organizations by the number of stars, ordered in descending order. If the repository name contains a slash (`/`), it will consider the part before the slash as the organization name."
       }
     },
     "humanResults": {
@@ -43008,6 +43610,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    splitByChar('/', repo_name)[1] AS organization,\n    uniqExact(repo_name) AS repository_count\nFROM github_events\nGROUP BY organization\nORDER BY repository_count DESC\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " Here is a corrected SQL query that should answer your question. It uses the `GROUP BY` clause to group the data by the organization name (which can be extracted from the `repo_name` column), and the `COUNT()` function to count the number of repositories for each organization. The query also includes a `LIMIT 10` clause to limit the results to the top 10 organizations.\n\n\nSELECT\n  EXTRACT(DOMAIN FROM regexp_extract(repo_name, r'^(.*)\\./')) AS organization,\n  COUNT() AS number_of_repositories\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY organization\nORDER BY number_of_repositories DESC\nLIMIT 10\n\n\nThis query uses the `EXTRACT` function to extract the domain part of the `repo_name`, the `REGEXP_EXTRACT` function to match the domain part, and the `COUNT()` function to count the number of rows for each organization. The `ORDER BY` clause sorts the results in descending order by the number of repositories, and the `LIMIT 10` clause limits the results to the top 10 organizations."
       }
     },
     "humanResults": {
@@ -43998,6 +44614,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as pr_count,\n    uniq(actor_login) as unique_authors,\n    sum(additions) as total_adds,\n    sum(deletions) as total_dels,\n    sum(additions + deletions) as total_churn\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\n    AND additions < 10000\n    AND deletions < 10000\nGROUP BY repo_name\nORDER BY total_churn DESC\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " Here is the corrected SQL query that should work for Tinybird/ClickHouse:\n\n\n%\nSELECT\n  repo_name AS repository,\n  COUNT(*) AS pr_count,\n  COUNT(DISTINCT creator_user_login) AS unique_authors,\n  SUM(additions) AS total_adds,\n  SUM(deletions) AS total_dels\nFROM\n  github_events\nWHERE\n  event_type = 'PullRequestEvent' AND\n  action = 'opened' AND\n  (additions < 10000 AND deletions < 10000)\nGROUP BY\n  repo_name\nORDER BY\n  total_adds + total_dels DESC\nLIMIT 10\n\n\nIn this query, I removed the comment at the beginning of the query since it is not valid in ClickHouse. Also, I made sure to use the correct column name `creator_user_login` instead of `author_login`."
       }
     },
     "humanResults": {
@@ -45030,6 +45660,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    actor_login as author,\n    count() as total_pr_comments,\n    uniq(repo_name) as unique_repositories,\n    uniq(number) as unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\n    AND action = 'created'\nGROUP BY actor_login\nORDER BY total_pr_comments DESC\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " Here is the corrected SQL query for Tinybird/ClickHouse:\n\n\nSELECT\n  author_login AS author,\n  COUNT(*) AS total_comments,\n  COUNT(DISTINCT PR_number) AS unique_PRs,\n  COUNT(DISTINCT repo_name) AS unique_repositories\nFROM\n  github_events\nWHERE\n  event_type = 'PullRequestReviewEvent' AND\n  action = 'created'\nGROUP BY\n  author_login\nORDER BY\n  total_comments DESC\nLIMIT 10\n\n\nThis query selects the author, total number of comments, unique number of pull requests, and unique number of repositories for each author who has created a pull request review event. It filters the events to only include those where the action is 'created'. The results are grouped by author and ordered in descending order by the total number of comments. Finally, the query limits the results to the top 10 authors with the most comments."
       }
     },
     "humanResults": {
@@ -46030,6 +46674,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    arrayJoin(labels) AS label,\n    count() AS usage_count\nFROM github_events\nWHERE event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')\n    AND action IN ('created', 'opened', 'labeled')\n    AND length(labels) > 0\nGROUP BY label\nORDER BY usage_count DESC\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " Here is the corrected SQL query that should return the top 10 most popular labels for issues and pull requests, including the number of times they have been used in issues, pull requests, and issue comments created, opened, or labeled.\n\n\nSELECT\n  label,\n  COUNT(*) as label_count,\n  SUM(CASE WHEN event_type = 'IssueEvent' THEN 1 ELSE 0 END) as issue_count,\n  SUM(CASE WHEN event_type = 'PullRequestEvent' THEN 1 ELSE 0 END) as pr_count,\n  SUM(CASE WHEN event_type IN ('IssueCommentEvent', 'CreateEvent', 'EditEvent') THEN 1 ELSE 0 END) as comment_count\nFROM github_events\nWHERE action IN ('labeled', 'created', 'opened')\nGROUP BY label\nORDER BY label_count DESC\nLIMIT 10\n\n\nThis query uses the `CASE` statement to count the number of times each label appears in different event types (issues, pull requests, and issue comments). It then groups the results by label and orders them in descending order of label count. Finally, it limits the results to the top 10. The query is now valid for Tinybird/ClickHouse."
       }
     },
     "humanResults": {
@@ -47006,6 +47664,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    splitByChar('/', repo_name)[1] as organization,\n    uniq(actor_login) as unique_authors,\n    uniqIf(actor_login, event_type = 'PullRequestEvent' AND action = 'opened') as unique_pr_authors,\n    uniqIf(actor_login, event_type = 'IssuesEvent' AND action = 'opened') as unique_issue_authors,\n    uniqIf(actor_login, event_type = 'IssueCommentEvent') as unique_issue_comment_authors,\n    uniqIf(actor_login, event_type = 'PushEvent') as unique_push_authors\nFROM github_events\nWHERE repo_name != ''\nGROUP BY organization\nORDER BY unique_authors DESC\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " Here is the corrected SQL query for Tinybird/ClickHouse:\n\n\nSELECT\n  repo_name AS organization_name,\n  countDistinct(author_login) AS unique_authors,\n  countDistinct(author_login, action = 'opened', event_type = 'PullRequestEvent') AS unique_pull_request_authors,\n  countDistinct(author_login, action = 'labeled', event_type = 'IssuesEvent') AS unique_issue_authors,\n  countDistinct(author_login, action = 'created', event_type = 'IssueCommentEvent') AS unique_issue_comment_authors,\n  countDistinct(author_login, event_type = 'PushEvent') AS unique_push_authors\nFROM github_events\nWHERE event_type IN ('PushEvent', 'IssueCommentEvent', 'IssuesEvent', 'PullRequestEvent')\nGROUP BY organization_name\nLIMIT 10\n\n\nThis query selects the organization name, counts the number of unique authors, pull request authors, issue authors, issue comment authors, and push authors from the `github_events` table. It filters the events to only include 'PushEvent', 'IssueCommentEvent', 'IssuesEvent', and 'PullRequestEvent' types. It groups the results by organization name and limits the output to the top 10 organizations."
       }
     },
     "humanResults": {
@@ -48066,6 +48738,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    length(repo_name) as name_length\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY name_length DESC\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " Here is the corrected SQL query to get the top 10 longest repository names with at least 1 star:\n\n\nSELECT repo_name AS repository_name, CHAR_LENGTH(repo_name) AS repository_name_length\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING COUNT(*) > 0\nORDER BY CHAR_LENGTH(repo_name) DESC\nLIMIT 10\n\n\nThis query uses the `github_events` datasource, filters for `WatchEvent` events, groups by repository name, counts the number of occurrences, orders the results by repository name length in descending order, and limits the results to the top 10. The `CHAR_LENGTH` function is used to get the length of the repository name. The query does not include any comments or instructions, as per the requirements."
       }
     },
     "humanResults": {
@@ -49042,6 +49728,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING count() >= 1\nORDER BY length(repo_name) ASC\nLIMIT 10\n"
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " To fix the SQL query, you can use the `COUNT()` function with a subquery to count the number of rows for each repository name and then filter the results with the `HAVING` clause. Here's the corrected SQL query:\n\n\n%\nSELECT repo_name\nFROM (\n  SELECT repo_name, COUNT(*) as repo_count\n  FROM github_events\n  WHERE event_type = 'WatchEvent'\n  GROUP BY repo_name\n) subquery\nWHERE repo_count > 1\nORDER BY LENGTH(repo_name) ASC\nLIMIT 10\n\n\nThis query first creates a subquery that groups the events by repository name and counts the number of rows for each group. Then it filters the results to only include repository names that have a count greater than 1, orders the results by the length of the repository name in ascending order, and limits the results to the top 10.\n\nNote that in Tinybird/ClickHouse, you don't need to use the `AS` keyword to alias the column in the subquery. Also, the `HAVING` clause is used to filter the results based on an aggregate function, so it should be placed after the `GROUP BY` clause.\n\nThis query should work correctly in Tinybird/ClickHouse."
       }
     },
     "humanResults": {
@@ -49623,6 +50323,14 @@
         "avgExactDistance": 0.5383838383838385,
         "avgNumericDistance": 0.39462101454809,
         "avgFScore": 0.4699999999999999
+      },
+      "mistralai/mistral-7b-instruct-v0.2": {
+        "totalMatches": 0,
+        "exactMatches": 0,
+        "numericMatches": 0,
+        "avgExactDistance": 0.9914285714285714,
+        "avgNumericDistance": 0.9961744980016285,
+        "avgFScore": 0.012
       }
     }
   }
