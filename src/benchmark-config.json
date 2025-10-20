@@ -118,6 +118,11 @@
       "models": [
         "cydonia-24b-v4.1"
       ]
+    },
+    "ibm-granite": {
+      "models": [
+        "granite-4.0-h-micro"
+      ]
     }
   }
 }
