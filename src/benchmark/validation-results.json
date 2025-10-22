@@ -924,6 +924,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count() as total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT count(*) as star_count FROM github_events WHERE event_type = 'WatchEvent' LIMIT 1"
       }
     },
     "humanResults": {
@@ -1869,6 +1883,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT repo_name, count(*) as stars FROM github_events WHERE event_type = 'WatchEvent' GROUP BY repo_name ORDER BY stars DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -2855,6 +2883,20 @@
         "humanRowCount": 5,
         "llmRowCount": 5,
         "sql": "\nSELECT\n    pow(10, floor(log10(stars + 1))) as star_bucket,\n    count(DISTINCT repo_name) as repo_count\nFROM (\n    SELECT \n        repo_name,\n        count() as stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n)\nWHERE stars > 0\nGROUP BY star_bucket\nORDER BY star_bucket ASC\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 5,
+        "llmRowCount": 5,
+        "sql": "\nSELECT \n    CASE \n        WHEN star_count >= 1 AND star_count < 10 THEN '1'\n        WHEN star_count >= 10 AND star_count < 100 THEN '10'\n        WHEN star_count >= 100 AND star_count < 1000 THEN '100'\n        WHEN star_count >= 1000 AND star_count < 10000 THEN '1000'\n        WHEN star_count >= 10000 AND star_count < 100000 THEN '10000'\n        WHEN star_count >= 100000 AND star_count < 1000000 THEN '100000'\n        WHEN star_count >= 1000000 THEN '1000000+'\n    END as star_range,\n    count(*) as repository_count\nFROM (\n    SELECT repo_name, count(*) as star_count\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n)\nGROUP BY star_range\nORDER BY star_range\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -3825,6 +3867,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count(DISTINCT repo_name) as total_repositories\nFROM github_events\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT count(DISTINCT repo_name) as total_repositories FROM github_events LIMIT 10"
       }
     },
     "humanResults": {
@@ -4770,6 +4826,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    toYear(created_at) as year,\n    repo_name,\n    count() as events_count\nFROM github_events\nWHERE toYear(created_at) >= 2015\nGROUP BY year, repo_name\nORDER BY year ASC, events_count DESC\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.6459894297148038,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 100,
+        "sql": "\nSELECT \n    YEAR(created_at) as year,\n    repo_name,\n    COUNT(*) as event_count\nFROM github_events \nWHERE YEAR(created_at) >= 2015\n    AND repo_name != ''\nGROUP BY \n    year, \n    repo_name\nORDER BY \n    year DESC, \n    event_count DESC\nLIMIT 100"
       }
     },
     "humanResults": {
@@ -5770,6 +5840,20 @@
         "humanRowCount": 2,
         "llmRowCount": 2,
         "sql": "\nSELECT \n    toYear(created_at) as year,\n    count() as total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 2,
+        "llmRowCount": 2,
+        "sql": "\nSELECT \n    toYear(created_at) as year,\n    count(*) as total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -6714,6 +6798,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    actor_login,\n    COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY star_count DESC\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT actor_login, count(*) as stars_given FROM github_events WHERE event_type = 'WatchEvent' GROUP BY actor_login ORDER BY stars_given DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -7704,6 +7802,16 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND actor_login IN (\n    SELECT DISTINCT actor_login\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n      AND repo_name = 'tensorflow/tensorflow'\n  )\n  AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": false,
+        "reason": "Missing data in results",
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "sql": null
       }
     },
     "humanResults": {
@@ -8680,6 +8788,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "\nSELECT \n    actor_login,\n    countIf(repo_name LIKE 'javisantana/%') as javisantana_stars,\n    countIf(repo_name NOT LIKE 'javisantana/%') as other_stars,\n    countIf(repo_name LIKE 'javisantana/%') as total_stars,\n    javisantana_stars / total_stars as javisantana_ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nHAVING javisantana_stars > 0\nORDER BY javisantana_ratio DESC, javisantana_stars DESC\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    actor_login,\n    countIf(repo_name LIKE 'javisantana/%') as javisantana_stars,\n    countIf(repo_name NOT LIKE 'javisantana/%') as other_stars,\n    count(*) as total_stars,\n    countIf(repo_name LIKE 'javisantana/%') / count(*) as javisantana_ratio\nFROM github_events\nWHERE event_type = 'WatchEvent' \n    AND actor_login != ''\n    AND actor_login IS NOT NULL\nGROUP BY actor_login\nHAVING total_stars >= 5\nORDER BY javisantana_ratio DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -9684,6 +9806,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_tf_contributors,\n    count() as total_prs\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login \n        FROM github_events \n        WHERE event_type = 'PullRequestEvent' \n            AND repo_name LIKE '%tensorflow%'\n            AND action = 'opened'\n    )\n    AND repo_name NOT LIKE '%tensorflow%'\nGROUP BY repo_name\nORDER BY unique_tf_contributors DESC, total_prs DESC\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    countDistinct(actor_login) as unique_tensorflow_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent' \n    AND action = 'opened'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login\n        FROM github_events\n        WHERE event_type = 'PullRequestEvent' \n            AND action = 'opened'\n            AND repo_name LIKE '%tensorflow%'\n    )\n    AND repo_name NOT LIKE '%tensorflow%'\nGROUP BY repo_name\nORDER BY unique_tensorflow_contributors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -10670,6 +10806,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    actor_login,\n    COUNT(*) as issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n    AND action = 'opened'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login \n        FROM github_events \n        WHERE event_type = 'IssuesEvent' \n            AND action = 'opened'\n            AND repo_name = 'tensorflow/tensorflow'\n    )\n    AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name, actor_login\nORDER BY issue_count DESC\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    actor_login,\n    count() as issue_count\nFROM github_events \nWHERE event_type = 'IssuesEvent' \n    AND action = 'opened'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login \n        FROM github_events \n        WHERE event_type = 'IssuesEvent' \n            AND action = 'opened' \n            AND repo_name = 'tensorflow/tensorflow'\n    )\nGROUP BY repo_name, actor_login\nORDER BY issue_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -11662,6 +11812,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    toDate(created_at) as date,\n    uniq(actor_login) as stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name, date\nORDER BY stars DESC\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    count(*) as star_count\nFROM github_events \nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -12662,6 +12826,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2016) AS stars_2016,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2017) AS stars_2017,\n    stars_2017 - stars_2016 AS growth,\n    if(stars_2016 > 0, ((stars_2017 - stars_2016) / stars_2016) * 100, 0) AS growth_percentage\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND toYear(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING stars_2016 >= 1 AND stars_2017 > stars_2016\nORDER BY growth DESC\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    stars_2016,\n    stars_2017,\n    stars_2017 - stars_2016 as growth,\n    (stars_2017 - stars_2016) / stars_2016 as growth_rate\nFROM (\n    SELECT \n        repo_name,\n        sumIf(event_type = 'WatchEvent', toYear(created_at) = 2016) as stars_2016,\n        sumIf(event_type = 'WatchEvent', toYear(created_at) = 2017) as stars_2017\n    FROM github_events\n    WHERE event_type = 'WatchEvent' AND toYear(created_at) IN (2016, 2017)\n    GROUP BY repo_name\n    HAVING stars_2016 = 1\n)\nORDER BY growth_rate DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -13680,6 +13858,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2016) AS stars_2016,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2017) AS stars_2017,\n    stars_2016 - stars_2017 AS stagnation\nFROM github_events\nWHERE toYear(created_at) IN (2016, 2017)\n    AND event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING stars_2017 >= 1 AND stars_2016 > stars_2017\nORDER BY stagnation DESC\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2016) stars_2016,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2017) stars_2017,\n    (countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2017) - countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2016)) / countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2016) * 100 growth_rate\nFROM github_events\nWHERE event_type = 'WatchEvent' AND (toYear(created_at) = 2016 OR toYear(created_at) = 2017)\nGROUP BY repo_name\nHAVING countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2017) >= 1\nORDER BY growth_rate ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -14684,6 +14876,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as total_stars,\n    toStartOfMonth(created_at) as month,\n    COUNT(*) / COUNT(DISTINCT toStartOfMonth(created_at)) as avg_stars_per_month,\n    stddevPop(COUNT(*)) OVER (PARTITION BY repo_name) as star_growth_stddev\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND created_at >= now() - INTERVAL 1 YEAR\nGROUP BY repo_name, month\nHAVING COUNT(DISTINCT month) >= 6\nORDER BY star_growth_stddev ASC, total_stars DESC\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    repo_name,\n    count(*) as total_stars,\n    avg(stars_per_month) as avg_monthly_stars,\n    stddevPop(stars_per_month) as stddev_monthly_stars,\n    stddevPop(stars_per_month) / avg(stars_per_month) as coefficient_of_variation\nFROM (\n    SELECT\n        repo_name,\n        DATE_TRUNC('month', created_at) as month,\n        count(*) as stars_per_month\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name, month\n    HAVING count(*) > 0\n)\nGROUP BY repo_name\nHAVING count(*) >= 3\nORDER BY coefficient_of_variation ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -15694,6 +15900,20 @@
         "humanRowCount": 7,
         "llmRowCount": 7,
         "sql": "\nSELECT \n    toDayOfWeek(created_at) as day_of_week,\n    CASE toDayOfWeek(created_at)\n        WHEN 1 THEN 'Monday'\n        WHEN 2 THEN 'Tuesday'\n        WHEN 3 THEN 'Wednesday'\n        WHEN 4 THEN 'Thursday'\n        WHEN 5 THEN 'Friday'\n        WHEN 6 THEN 'Saturday'\n        WHEN 7 THEN 'Sunday'\n    END as day_name,\n    count() as total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY total_stars DESC\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 7,
+        "llmRowCount": 7,
+        "sql": "SELECT \n    dayOfWeek(created_at) AS day_of_week,\n    count(*) AS star_count\nFROM github_events \nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week \nORDER BY star_count DESC \nLIMIT 10"
       }
     },
     "humanResults": {
@@ -16658,6 +16878,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count(DISTINCT actor_login) as total_users\nFROM github_events\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.000052934128674804696,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT COUNT(DISTINCT actor_login) as total_users FROM github_events LIMIT 10"
       }
     },
     "humanResults": {
@@ -17607,6 +17841,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count(DISTINCT actor_login) as total_users\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0014793406252330366,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT count(DISTINCT actor_login) as total_users FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10"
       }
     },
     "humanResults": {
@@ -18528,6 +18776,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count(DISTINCT actor_login) as total_users\nFROM github_events\nWHERE event_type = 'PushEvent'\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0018759619527295886,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT count(DISTINCT actor_login) as total_users FROM github_events WHERE event_type = 'PushEvent' LIMIT 10"
       }
     },
     "humanResults": {
@@ -19449,6 +19711,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count(DISTINCT actor_login) as total_users\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\nAND action = 'opened'\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0017507922334856522,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT count(DISTINCT actor_login) as total_users\nFROM github_events \nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -20394,6 +20670,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login\n        FROM github_events\n        WHERE event_type = 'PullRequestEvent'\n            AND action = 'opened'\n    )\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    count() as star_count\nFROM github_events \nWHERE event_type = 'WatchEvent' \n    AND actor_login IN (\n        SELECT DISTINCT actor_login \n        FROM github_events \n        WHERE event_type = 'PullRequestEvent' \n            AND action = 'opened'\n    )\nGROUP BY repo_name \nORDER BY star_count DESC \nLIMIT 10"
       }
     },
     "humanResults": {
@@ -21362,6 +21652,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\nGROUP BY repo_name, actor_login\nHAVING count() >= 10\nORDER BY pr_count DESC\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    countDistinct(actor_login) as authors_with_10_plus_prs\nFROM (\n    SELECT \n        repo_name,\n        actor_login,\n        count(*) as pr_count\n    FROM github_events\n    WHERE event_type = 'PullRequestEvent' \n        AND action = 'opened'\n    GROUP BY repo_name, actor_login\n    HAVING count(*) >= 10\n)\nGROUP BY repo_name\nORDER BY authors_with_10_plus_prs DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -22338,6 +22642,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\nGROUP BY repo_name\nORDER BY pr_count DESC\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    count(*) as pull_request_count\nFROM github_events \nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY pull_request_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -23328,6 +23646,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0.9473684210526316,
+          "numeric": 0.007013121364457529,
+          "fScore": 0.09999999999999998
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT repo_name, count(DISTINCT actor_login) as contributor_count FROM github_events WHERE event_type = 'PullRequestEvent' GROUP BY repo_name ORDER BY contributor_count DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -24314,6 +24646,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n    AND action = 'opened'\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, count(*) as issue_count FROM github_events WHERE event_type = 'IssuesEvent' AND action = 'opened' GROUP BY repo_name ORDER BY issue_count DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -25290,6 +25636,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_contributors\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    countDistinct(actor_login) as unique_pushers\nFROM github_events \nWHERE event_type = 'PushEvent'\nGROUP BY repo_name\nORDER BY unique_pushers DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -26266,6 +26626,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_pushers\nFROM github_events\nWHERE event_type = 'PushEvent'\n    AND base_ref = 'refs/heads/main'\nGROUP BY repo_name\nORDER BY unique_pushers DESC\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, countDistinct(actor_login) as push_access_count\nFROM github_events\nWHERE event_type = 'PushEvent' AND ref = 'refs/heads/main'\nGROUP BY repo_name\nORDER BY push_access_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -27256,6 +27630,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_pushers,\n    countIf(event_type = 'WatchEvent') as stars\nFROM github_events\nWHERE event_type IN ('PushEvent', 'WatchEvent')\nGROUP BY repo_name\nHAVING stars > 99\nORDER BY unique_pushers DESC\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.9473684210526316,
+          "numeric": 0.37056804198436133,
+          "fScore": 0.09999999999999998
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    uniqExactIf(actor_login, event_type = 'PushEvent' AND (ref = 'main' OR ref = 'master')) as push_access_count,\n    uniqExactIf(actor_login, event_type = 'WatchEvent') as star_count\nFROM github_events\nGROUP BY repo_name\nHAVING uniqExactIf(actor_login, event_type = 'WatchEvent') > 99\nORDER BY push_access_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -28260,6 +28648,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as member_invitations\nFROM github_events\nWHERE event_type = 'MemberEvent'\n    AND action = 'added'\nGROUP BY repo_name\nORDER BY member_invitations DESC\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT repo_name, count(*) as member_invitations\nFROM github_events\nWHERE event_type = 'MemberEvent'\nGROUP BY repo_name\nORDER BY member_invitations DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -29250,6 +29652,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as fork_count\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY fork_count DESC\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT repo_name, count(*) as fork_count FROM github_events WHERE event_type = 'ForkEvent' GROUP BY repo_name ORDER BY fork_count DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -30222,6 +30638,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    countIf(event_type = 'WatchEvent') as stars,\n    countIf(event_type = 'ForkEvent') as forks,\n    stars / nullIf(forks, 0) as star_fork_ratio\nFROM github_events\nWHERE event_type IN ('WatchEvent', 'ForkEvent')\nGROUP BY repo_name\nHAVING forks > 0\nORDER BY star_fork_ratio DESC\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    countIf(event_type = 'WatchEvent') as stars,\n    countIf(event_type = 'ForkEvent') as forks,\n    countIf(event_type = 'WatchEvent') / countIf(event_type = 'ForkEvent') as stars_to_forks_ratio\nFROM github_events\nWHERE event_type IN ('WatchEvent', 'ForkEvent')\nGROUP BY repo_name\nHAVING forks > 0\nORDER BY stars_to_forks_ratio DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -31226,6 +31656,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT\n    countIf(event_type = 'WatchEvent') AS total_stars,\n    countIf(event_type = 'ForkEvent') AS total_forks,\n    round(countIf(event_type = 'WatchEvent') / countIf(event_type = 'ForkEvent'), 2) AS stars_to_forks_ratio\nFROM github_events\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT\n    sumIf(1, event_type = 'WatchEvent') as total_stars,\n    sumIf(1, event_type = 'ForkEvent') as total_forks,\n    round(sumIf(1, event_type = 'WatchEvent') / greatest(sumIf(1, event_type = 'ForkEvent'), 1), 2) as stars_to_forks_ratio\nFROM github_events\nLIMIT 1"
       }
     },
     "humanResults": {
@@ -32157,6 +32601,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count() as total_issues\nFROM github_events\nWHERE event_type = 'IssuesEvent'\nAND action = 'opened'\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT count() as total_issues_opened\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -33106,6 +33564,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as issue_comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY issue_comment_count DESC\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, count(*) as issue_comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY issue_comment_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -34078,6 +34550,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    countIf(event_type = 'IssueCommentEvent') as issue_comments,\n    countIf(event_type = 'IssuesEvent' AND action = 'opened') as issues_opened,\n    if(issues_opened > 0, issue_comments / issues_opened, 0) as comment_to_issue_ratio\nFROM github_events\nWHERE event_type IN ('IssueCommentEvent', 'IssuesEvent')\nGROUP BY repo_name\nHAVING issues_opened > 0\nORDER BY comment_to_issue_ratio DESC\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    COUNT(CASE WHEN event_type = 'IssueCommentEvent' THEN 1 END) as issue_comments,\n    COUNT(CASE WHEN event_type = 'IssuesEvent' THEN 1 END) as issues,\n    issue_comments / issues as comment_to_issue_ratio\nFROM github_events\nWHERE event_type IN ('IssueCommentEvent', 'IssuesEvent')\nGROUP BY repo_name\nHAVING issues > 0\nORDER BY comment_to_issue_ratio DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -35082,6 +35568,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    number,\n    max(comments) as total_comments\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n    AND action = 'opened'\nGROUP BY repo_name, number\nORDER BY total_comments DESC\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, number, comments\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nORDER BY comments DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -36068,6 +36568,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    number as issue_number,\n    countDistinct(actor_login) as comment_authors,\n    count() as total_comments\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\n    AND number > 10\nGROUP BY repo_name, number\nHAVING comment_authors >= 10\nORDER BY total_comments DESC\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.5714285714285714,
+          "numeric": 0.7633203615228886,
+          "fScore": 0.6
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name,\n    number,\n    count(*) as comment_count,\n    count(DISTINCT actor_login) as author_count\nFROM github_events \nWHERE event_type = 'IssueCommentEvent' \n    AND number > 10\nGROUP BY repo_name, number\nHAVING comment_count >= 10\nORDER BY comment_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -37068,6 +37582,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as event_count\nFROM github_events\nWHERE lower(body) LIKE '%tensorflow%' \n   OR lower(title) LIKE '%tensorflow%'\n   OR lower(repo_name) LIKE '%tensorflow%'\nGROUP BY repo_name\nORDER BY event_count DESC\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.8826927695000056,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    count() as event_count\nFROM github_events\nWHERE \n    (lower(body) LIKE '%tensorflow%' OR \n     lower(title) LIKE '%tensorflow%' OR \n     lower(path) LIKE '%tensorflow%')\n    AND repo_name != ''\nGROUP BY repo_name\nORDER BY event_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -38058,6 +38586,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as commit_comments\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY commit_comments DESC\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT repo_name, count(*) as commit_comment_count FROM github_events WHERE event_type = 'CommitCommentEvent' GROUP BY repo_name ORDER BY commit_comment_count DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -39048,6 +39590,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    concat('https://github.com/', repo_name, '/commit/', commit_id) AS commit_url,\n    count() AS total_comments,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\n    AND commit_id != ''\nGROUP BY repo_name, commit_id\nHAVING unique_authors >= 10\nORDER BY total_comments DESC\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT \n    concat('https://github.com/', repo_name, '/commit/', commit_id) as commit_url,\n    count(*) as commit_events_count,\n    countDistinct(actor_login) as unique_authors,\n    countDistinct(comment_id) as total_comments\nFROM github_events \nWHERE event_type = 'PushEvent' \n    AND commit_id != '' \n    AND comment_id > 0\nGROUP BY repo_name, commit_id\nHAVING countDistinct(actor_login) >= 10\nORDER BY commit_events_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -40052,6 +40608,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    concat('https://github.com/', repo_name, '/pull/', toString(number)) AS pr_url,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\n    AND number > 0\nGROUP BY repo_name, number\nORDER BY unique_authors DESC\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0.18181818181818177,
+          "numeric": 0,
+          "fScore": 0.9
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    concat('https://github.com/', repo_name, '/pull/', number) as pr_url,\n    uniqExact(actor_login) as unique_authors\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\nGROUP BY repo_name, number\nORDER BY unique_authors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -41042,6 +41612,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    actor_login,\n    COUNT(*) as push_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY push_count DESC\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    actor_login as author,\n    count(*) as push_count\nFROM github_events \nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY push_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -42032,6 +42616,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    splitByChar('/', repo_name)[1] AS organization,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY organization\nORDER BY stars DESC\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    splitByChar('/', repo_name)[1] AS organization_name,\n    count() AS star_count\nFROM github_events \nWHERE event_type = 'WatchEvent'\nGROUP BY organization_name\nORDER BY star_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -43008,6 +43606,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    splitByChar('/', repo_name)[1] AS organization,\n    uniqExact(repo_name) AS repository_count\nFROM github_events\nGROUP BY organization\nORDER BY repository_count DESC\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    SUBSTRING_INDEX(repo_name, '/', 1) as organization,\n    countDistinct(repo_name) as repo_count\nFROM github_events\nWHERE repo_name != ''\nGROUP BY organization\nORDER BY repo_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -43998,6 +44610,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as pr_count,\n    uniq(actor_login) as unique_authors,\n    sum(additions) as total_adds,\n    sum(deletions) as total_dels,\n    sum(additions + deletions) as total_churn\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\n    AND additions < 10000\n    AND deletions < 10000\nGROUP BY repo_name\nORDER BY total_churn DESC\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    count(*) as pr_count,\n    countDistinct(actor_login) as unique_authors,\n    sum(additions) as total_adds,\n    sum(deletions) as total_dels\nFROM github_events \nWHERE event_type = 'PullRequestEvent' \n    AND action = 'opened'\n    AND additions < 10000 \n    AND deletions < 10000\nGROUP BY repo_name\nORDER BY (sum(additions) + sum(deletions)) DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -45030,6 +45656,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    actor_login as author,\n    count() as total_pr_comments,\n    uniq(repo_name) as unique_repositories,\n    uniq(number) as unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\n    AND action = 'created'\nGROUP BY actor_login\nORDER BY total_pr_comments DESC\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    actor_login as author,\n    count(*) as pull_request_comments,\n    countDistinct(repo_name) as unique_repositories,\n    countDistinct(number) as unique_prs\nFROM github_events \nWHERE event_type = 'PullRequestReviewCommentEvent' AND action = 'created'\nGROUP BY actor_login\nORDER BY pull_request_comments DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -46030,6 +46670,16 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    arrayJoin(labels) AS label,\n    count() AS usage_count\nFROM github_events\nWHERE event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')\n    AND action IN ('created', 'opened', 'labeled')\n    AND length(labels) > 0\nGROUP BY label\nORDER BY usage_count DESC\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": false,
+        "reason": "Missing data in results",
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "sql": null
       }
     },
     "humanResults": {
@@ -47006,6 +47656,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    splitByChar('/', repo_name)[1] as organization,\n    uniq(actor_login) as unique_authors,\n    uniqIf(actor_login, event_type = 'PullRequestEvent' AND action = 'opened') as unique_pr_authors,\n    uniqIf(actor_login, event_type = 'IssuesEvent' AND action = 'opened') as unique_issue_authors,\n    uniqIf(actor_login, event_type = 'IssueCommentEvent') as unique_issue_comment_authors,\n    uniqIf(actor_login, event_type = 'PushEvent') as unique_push_authors\nFROM github_events\nWHERE repo_name != ''\nGROUP BY organization\nORDER BY unique_authors DESC\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    splitByChar('/', repo_name)[1] AS organization_name,\n    countDistinct(actor_login) AS unique_authors,\n    countDistinctIf(actor_login, event_type = 'PullRequestEvent' AND action = 'opened') AS unique_pr_authors,\n    countDistinctIf(actor_login, event_type = 'IssuesEvent' AND action = 'opened') AS unique_issue_authors,\n    countDistinctIf(actor_login, event_type = 'IssueCommentEvent') AS unique_issue_comment_authors,\n    countDistinctIf(actor_login, event_type = 'PushEvent') AS unique_push_authors\nFROM github_events\nWHERE repo_name != ''\nGROUP BY organization_name\nORDER BY unique_authors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -48066,6 +48730,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    length(repo_name) as name_length\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY name_length DESC\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0.18181818181818177,
+          "numeric": 0,
+          "fScore": 0.9
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    LENGTH(repo_name) AS repo_name_length\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING COUNT(*) >= 1\nORDER BY repo_name_length DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -49042,6 +49720,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING count() >= 1\nORDER BY length(repo_name) ASC\nLIMIT 10\n"
+      },
+      "z-ai/glm-4.6:exacto": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.5714285714285714,
+          "numeric": 1,
+          "fScore": 0.6
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name FROM github_events WHERE event_type = 'WatchEvent' GROUP BY repo_name HAVING count(*) >= 1 ORDER BY length(repo_name) ASC LIMIT 10"
       }
     },
     "humanResults": {
@@ -49623,6 +50315,14 @@
         "avgExactDistance": 0.5383838383838385,
         "avgNumericDistance": 0.39462101454809,
         "avgFScore": 0.4699999999999999
+      },
+      "z-ai/glm-4.6:exacto": {
+        "totalMatches": 27,
+        "exactMatches": 19,
+        "numericMatches": 27,
+        "avgExactDistance": 0.5280246069719755,
+        "avgNumericDistance": 0.3934948550605328,
+        "avgFScore": 0.484
       }
     }
   }

@@ -96,7 +96,9 @@
       "models": []
     },
     "z-ai": {
-      "models": []
+      "models": [
+        "glm-4.6:exacto"
+      ]
     },
     "nvidia": {
       "models": [
