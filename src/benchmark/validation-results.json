@@ -924,6 +924,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count() as total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "The SQL query assumes a table named `stars` exists, but it doesn't. To count stars, you need a dataset of stargazer data (e.g., from GitHub events). First, identify the correct table containing stargazer data (e.g., `github_stars` or similar). Then use:  \n\nSELECT COUNT(*) FROM stargazers_table_name\n  \nReplace `stargazers_table_name` with the actual table name you have. For Tinybird/ClickHouse, you can list tables with `SELECT * FROM metadata.tables` to find the correct one.  \n\nIf unsure about the schema, clarify the environment or provide a table name.\n"
       }
     },
     "humanResults": {
@@ -1869,6 +1883,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT e.repo_name, COUNT(DISTINCT e.actor_login) AS star_count \nFROM github_events AS e \nWHERE e.event_type = 9 \nGROUP BY e.repo_name \nORDER BY star_count DESC \nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -2855,6 +2883,16 @@
         "humanRowCount": 5,
         "llmRowCount": 5,
         "sql": "\nSELECT\n    pow(10, floor(log10(stars + 1))) as star_bucket,\n    count(DISTINCT repo_name) as repo_count\nFROM (\n    SELECT \n        repo_name,\n        count() as stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n)\nWHERE stars > 0\nGROUP BY star_bucket\nORDER BY star_bucket ASC\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": false,
+        "reason": "Missing data in results",
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "sql": null
       }
     },
     "humanResults": {
@@ -3825,6 +3863,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count(DISTINCT repo_name) as total_repositories\nFROM github_events\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(DISTINCT repo_name) AS total_repos FROM github_events\n"
       }
     },
     "humanResults": {
@@ -4770,6 +4822,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    toYear(created_at) as year,\n    repo_name,\n    count() as events_count\nFROM github_events\nWHERE toYear(created_at) >= 2015\nGROUP BY year, repo_name\nORDER BY year ASC, events_count DESC\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nWITH yearly_ranked_repos AS (\n    SELECT \n        repo_id,\n        year,\n        stars,\n        tot_contributors,\n        avg_stars_per_year,\n        avg_contributors_per_year,\n        DENSE_RANK() OVER (PARTITION BY year ORDER BY stars DESC) AS yearly_rank\n    FROM repository_statistics \n    WHERE year >= 2015\n)\nSELECT \n    yr1.year,\n    yr1.repo_id,\n    yr1.stars,\n    yr1.yearly_rank,\n    yr1.avg_contributors_per_year AS current_contributors,\n    yr1.avg_stars_per_year AS current_stars,\n    yr2.yearly_rank AS previous_rank,\n    yr2.stars AS previous_year_stars\nFROM yearly_ranked_repos yr1\nLEFT JOIN yearly_ranked_repos yr2 \n    ON yr1.repo_id = yr2.repo_id \n    AND yr1.year = yr2.year + 1 \nWHERE yr1.year >= 2015 \nORDER BY yr1.year DESC \nSEEK BY year \nSETTINGS max_rows_to_skip = 10000000 \nLIMIT 100000\n\n-- Replace `repository_statistics` with your actual table name\n-- Ensure columns `repo_id`, `year`, `stars` exist in your data\n-- Adjust `avg_contributors_per_year`/`avg_stars_per_year` if your schema uses different metrics\n-- Add LIMIT 10 for top-10 results or remove DENSE_RANK if ranking isn't needed\n\n-- 1. Temporal comparison: yr1.repo_id = yr2.repo_id AND yr1.year = yr2.year + 1\n-- 2. Ranking uses DENSE_RANK() OVER (PARTITION BY year) for year-over-year analysis\n-- 3. Requires pre-aggregated annual repository data with metrics\n-- 4. LIMIT 10 at the end for top results\n\n"
       }
     },
     "humanResults": {
@@ -5770,6 +5836,20 @@
         "humanRowCount": 2,
         "llmRowCount": 2,
         "sql": "\nSELECT \n    toYear(created_at) as year,\n    count() as total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 2,
+        "llmRowCount": 0,
+        "sql": "SELECT toYear(created_at) AS year, count() AS total_stars FROM github_events WHERE event_type = toUInt8(3) GROUP BY year ORDER BY year LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -6714,6 +6794,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    actor_login,\n    COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY star_count DESC\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT actor_login, COUNT(*) AS stars FROM github_events WHERE event_type = 'WatchEvent' GROUP BY actor_login ORDER BY stars DESC LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -7704,6 +7798,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND actor_login IN (\n    SELECT DISTINCT actor_login\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n      AND repo_name = 'tensorflow/tensorflow'\n  )\n  AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT repo_name, COUNT(*) AS star_count FROM github_events WHERE user_login IN (SELECT user_login FROM github_events WHERE repo_name = 'tensorflow/tensorflow' AND event_type = 'WatchEvent') AND repo_name != 'tensorflow/tensorflow' AND event_type = 'WatchEvent' GROUP BY repo_name ORDER BY star_count DESC LIMIT 10\n\n\n**Adjustment Explanation:**  \nThe ClickHouse schema reports no columns named `user_id` or `user_login` in the exploration context. The `user` column exists (confirmed via Tinybird's schema). Replace `user_login` with `user` in the subquery to access the user who performed the \"star\" action. This leverages the fact that a `WatchEvent` corresponds to starring a repository.\n\n**Verified Working Query:**\n\nSELECT repo_name, COUNT(*) AS star_count FROM github_events \nWHERE user IN (\n  SELECT user FROM github_events \n  WHERE repo_name = 'tensorflow/tensorflow' AND event_type = 'WatchEvent'\n) \nAND repo_name != 'tensorflow/tensorflow' \nAND event_type = 'WatchEvent' \nGROUP BY repo_name \nORDER BY star_count DESC \nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -8680,6 +8788,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "\nSELECT \n    actor_login,\n    countIf(repo_name LIKE 'javisantana/%') as javisantana_stars,\n    countIf(repo_name NOT LIKE 'javisantana/%') as other_stars,\n    countIf(repo_name LIKE 'javisantana/%') as total_stars,\n    javisantana_stars / total_stars as javisantana_ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nHAVING javisantana_stars > 0\nORDER BY javisantana_ratio DESC, javisantana_stars DESC\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "WITH user_stars AS (\n  SELECT\n    actor_login AS user,\n    SUM(CASE WHEN repo_name LIKE 'javisantana/%' THEN 1 ELSE 0 END) AS stars_to_javisantana,\n    COUNT(*) AS total_stars\n  FROM github_events\n  WHERE event_type = 15  -- Correct event type for stars (WatchEvent)\n  GROUP BY actor_login\n  HAVING stars_to_javisantana > 0 AND total_stars > 1\n)\nSELECT\n  user,\n  stars_to_javisantana,\n  total_stars,\n  ROUND(stars_to_javisantana / total_stars * 100.0, 2) AS ratio\nFROM user_stars\nORDER BY ratio DESC, stars_to_javisantana DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -9684,6 +9806,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_tf_contributors,\n    count() as total_prs\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login \n        FROM github_events \n        WHERE event_type = 'PullRequestEvent' \n            AND repo_name LIKE '%tensorflow%'\n            AND action = 'opened'\n    )\n    AND repo_name NOT LIKE '%tensorflow%'\nGROUP BY repo_name\nORDER BY unique_tf_contributors DESC, total_prs DESC\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT repo_name, countDistinct(actor_login) AS unique_contributors FROM github_events WHERE event_type = 10 AND getElement(splitByString(repo_name, '/'), 1) != 'tensorflow' GROUP BY repo_name ORDER BY unique_contributors DESC LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -10670,6 +10806,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    actor_login,\n    COUNT(*) as issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n    AND action = 'opened'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login \n        FROM github_events \n        WHERE event_type = 'IssuesEvent' \n            AND action = 'opened'\n            AND repo_name = 'tensorflow/tensorflow'\n    )\n    AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name, actor_login\nORDER BY issue_count DESC\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT repo_name, COUNT(*) AS total_issues\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n  AND action = 'opened'\n  AND actor_login IN (\n    SELECT DISTINCT actor_login\n    FROM github_events\n    WHERE event_type = 'IssuesEvent'\n      AND action = 'opened'\n      AND repo_name = 'tensorflow'\n  )\n  AND repo_name <> 'tensorflow'\nGROUP BY repo_name\nORDER BY total_issues DESC\nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -11662,6 +11812,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    toDate(created_at) as date,\n    uniq(actor_login) as stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name, date\nORDER BY stars DESC\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT repo_name, max(daily_stars) AS max_stars FROM ( SELECT repo_name, count() AS daily_stars FROM github_events WHERE event_type = 15 AND repo_name IS NOT NULL AND repo_name != '' GROUP BY repo_name, toDate(event_time) ) GROUP BY repo_name ORDER BY max_stars DESC LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -12662,6 +12826,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2016) AS stars_2016,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2017) AS stars_2017,\n    stars_2017 - stars_2016 AS growth,\n    if(stars_2016 > 0, ((stars_2017 - stars_2016) / stars_2016) * 100, 0) AS growth_percentage\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND toYear(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING stars_2016 >= 1 AND stars_2017 > stars_2016\nORDER BY growth DESC\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT repo_name, COUNT(*) AS new_stars_2017\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND time >= '2017-01-01'\n  AND time <= '2017-12-31'\n  AND repo_name IN (\n    SELECT repo_name\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n      AND time >= '2016-01-01'\n      AND time <= '2016-12-31'\n  )\nGROUP BY repo_name\nORDER BY new_stars_2017 DESC\nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -13680,6 +13858,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2016) AS stars_2016,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2017) AS stars_2017,\n    stars_2016 - stars_2017 AS stagnation\nFROM github_events\nWHERE toYear(created_at) IN (2016, 2017)\n    AND event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING stars_2017 >= 1 AND stars_2016 > stars_2017\nORDER BY stagnation DESC\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name,\n  SUM(CASE WHEN toYear(created_at) = 2017 THEN 1 ELSE 0 END) AS total_events_2017,\n  SUM(CASE WHEN event_type = 'WatchEvent' AND toYear(created_at) = 2017 THEN 1 ELSE 0 END) AS watch_events_2017,\n  SUM(CASE WHEN toYear(created_at) = 2016 THEN 1 ELSE 0 END) AS total_events_2016,\n  SUM(CASE WHEN event_type = 'WatchEvent' AND toYear(created_at) = 2016 THEN 1 ELSE 0 END) AS watch_events_2016,\n  ((LOG10(watch_events_2017) - LOG10(watch_events_2016)) / LOG10(10)) AS avg_wi_variation\nFROM github_events \nWHERE toYear(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING watch_events_2017 >= 1 AND watch_events_2016 > 0\nORDER BY avg_wi_variation DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -14684,6 +14876,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as total_stars,\n    toStartOfMonth(created_at) as month,\n    COUNT(*) / COUNT(DISTINCT toStartOfMonth(created_at)) as avg_stars_per_month,\n    stddevPop(COUNT(*)) OVER (PARTITION BY repo_name) as star_growth_stddev\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND created_at >= now() - INTERVAL 1 YEAR\nGROUP BY repo_name, month\nHAVING COUNT(DISTINCT month) >= 6\nORDER BY star_growth_stddev ASC, total_stars DESC\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT repo_name, AVG(growth_rate) AS avg_growth_rate, COUNT(DISTINCT week) AS total_weeks, SQRT(SUM((growth_rate - AVG(growth_rate)) * (growth_rate - AVG(growth_rate)) OVER () / (COUNT(DISTINCT week) OVER () - 1))) AS std_dev_growth FROM valid_growth WHERE growth_rate IS NOT NULL GROUP BY repo_name ORDER BY std_dev_growth ASC, avg_growth_rate DESC LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -15694,6 +15900,20 @@
         "humanRowCount": 7,
         "llmRowCount": 7,
         "sql": "\nSELECT \n    toDayOfWeek(created_at) as day_of_week,\n    CASE toDayOfWeek(created_at)\n        WHEN 1 THEN 'Monday'\n        WHEN 2 THEN 'Tuesday'\n        WHEN 3 THEN 'Wednesday'\n        WHEN 4 THEN 'Thursday'\n        WHEN 5 THEN 'Friday'\n        WHEN 6 THEN 'Saturday'\n        WHEN 7 THEN 'Sunday'\n    END as day_name,\n    count() as total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY total_stars DESC\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 7,
+        "llmRowCount": 0,
+        "sql": "SELECT DAYOFWEEK(starred_at) AS best_day, COUNT(*) AS total_stars FROM github_events WHERE event_type = 15 GROUP BY best_day ORDER BY total_stars DESC LIMIT 1\n"
       }
     },
     "humanResults": {
@@ -16658,6 +16878,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count(DISTINCT actor_login) as total_users\nFROM github_events\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "SELECT '{\"result\":\"The github_events table does not contain user registration/account count data. This information would require access to GitHub\\'s user database or a dedicated user count table.\"}' FROM github_events LIMIT 1 FORMAT JSON\n"
       }
     },
     "humanResults": {
@@ -17607,6 +17841,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count(DISTINCT actor_login) as total_users\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0014793406252330366,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(DISTINCT actor_login) AS total_users FROM github_events WHERE event_type = 'WatchEvent'\n"
       }
     },
     "humanResults": {
@@ -18528,6 +18776,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count(DISTINCT actor_login) as total_users\nFROM github_events\nWHERE event_type = 'PushEvent'\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "SELECT COUNT(DISTINCT `object user_login`) FROM github_events WHERE event_type = 12\n"
       }
     },
     "humanResults": {
@@ -19449,6 +19711,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count(DISTINCT actor_login) as total_users\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\nAND action = 'opened'\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.07454296098340882,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT COUNT(DISTINCT actor_login) AS total_users FROM github_events WHERE event_type = 'PullRequestEvent'\n"
       }
     },
     "humanResults": {
@@ -20394,6 +20670,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login\n        FROM github_events\n        WHERE event_type = 'PullRequestEvent'\n            AND action = 'opened'\n    )\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT repo_name, SUM(1) AS star_count FROM github_events WHERE event_type = 15 AND actor_login IN (SELECT actor_login FROM github_events WHERE event_type = 10 GROUP BY actor_login) GROUP BY repo_name ORDER BY star_count DESC LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -21362,6 +21652,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\nGROUP BY repo_name, actor_login\nHAVING count() >= 10\nORDER BY pr_count DESC\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, SUM(pr_count) AS total_prs, COUNT(DISTINCT actor_login) AS num_authors FROM ( SELECT actor_login, repo_name, COUNT(*) AS pr_count FROM github_events WHERE event_type = 'PullRequestEvent' GROUP BY actor_login, repo_name HAVING pr_count >= 10 ) GROUP BY repo_name ORDER BY total_prs DESC LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -22338,6 +22642,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\nGROUP BY repo_name\nORDER BY pr_count DESC\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT repo_name AS repository, COUNT(*) AS pull_requests_count \nFROM github_events \nWHERE event_type = 10 \nGROUP BY repository \nORDER BY pull_requests_count DESC \nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -23328,6 +23646,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT repo_name, COUNT(DISTINCT creation_login) AS num_contributors FROM github_events WHERE event_type = 10 GROUP BY repo_name ORDER BY num_contributors DESC LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -24314,6 +24646,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n    AND action = 'opened'\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT repo, COUNT(*) AS issue_count FROM github_events WHERE event_type = 'IssuesEvent' GROUP BY repo ORDER BY issue_count DESC LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -25290,6 +25636,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_contributors\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT repository_id, COUNT(DISTINCT actor_login) AS push_users_count FROM github_events WHERE event_type = 12 GROUP BY repository_id ORDER BY push_users_count DESC LIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -26266,6 +26626,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_pushers\nFROM github_events\nWHERE event_type = 'PushEvent'\n    AND base_ref = 'refs/heads/main'\nGROUP BY repo_name\nORDER BY unique_pushers DESC\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT (JSONExtract(payload, 'repository.owner.login') || '/' || JSONExtract(payload, 'repository.name')) AS repo_name, COUNT(DISTINCT actor.login) AS push_access_users FROM events WHERE event_type = 'PushEvent' AND JSONExtract(payload, 'push.branch') = JSONExtract(payload, 'repository.default_branch') GROUP BY repo_name ORDER BY push_access_users DESC LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -27256,6 +27630,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_pushers,\n    countIf(event_type = 'WatchEvent') as stars\nFROM github_events\nWHERE event_type IN ('PushEvent', 'WatchEvent')\nGROUP BY repo_name\nHAVING stars > 99\nORDER BY unique_pushers DESC\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "WITH star_counts AS (\n    SELECT repo_id, COUNT(*) AS stars\n    FROM github_events\n    WHERE event_type = 15\n    GROUP BY repo_id\n    HAVING stars > 99\n)\nSELECT \n    r.full_name, \n    COUNT(DISTINCT p.login) AS num_push_users,\n    sc.stars\nFROM star_counts sc\nJOIN github_repository r ON sc.repo_id = r.id\nLEFT JOIN (\n    SELECT repo_id, JSONExtract(collaborators, '$[*].login') login\n    FROM github_repository\n    WHERE JSONExtract(permissions, '$[*]') -> {'collab_push'} = 1\n) AS p ON r.id = p.repo_id\nGROUP BY r.full_name, sc.stars\nORDER BY num_push_users DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -28260,6 +28648,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as member_invitations\nFROM github_events\nWHERE event_type = 'MemberEvent'\n    AND action = 'added'\nGROUP BY repo_name\nORDER BY member_invitations DESC\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, COUNT(*) AS num_invitations\nFROM github_events\nWHERE event_type = 'MemberEvent'\nGROUP BY repo_name\nORDER BY num_invitations DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -29250,6 +29652,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as fork_count\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY fork_count DESC\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT name AS repo_name, COUNT(*) AS fork_count FROM github_events WHERE event_type = 4 GROUP BY name ORDER BY fork_count DESC LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -30222,6 +30638,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    countIf(event_type = 'WatchEvent') as stars,\n    countIf(event_type = 'ForkEvent') as forks,\n    stars / nullIf(forks, 0) as star_fork_ratio\nFROM github_events\nWHERE event_type IN ('WatchEvent', 'ForkEvent')\nGROUP BY repo_name\nHAVING forks > 0\nORDER BY star_fork_ratio DESC\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT \n  repo.full_name AS repo_name,\n  COUNT(DISTINCT users.user_login) AS stars,\n  SUM(CASE WHEN e.event_type = 'ForkEvent' THEN 1 ELSE 0 END) AS forks,\n  ROUND(SAFE_DIVIDE(COUNT(DISTINCT users.user_login), SUM(CASE WHEN e.event_type = 'ForkEvent' THEN 1 ELSE 0 END)), 2) AS star_fork_ratio\nFROM `bigquery-public-data.github_archive_2023.events` AS e\nJOIN e.repo AS repo\nJOIN e.user AS users\nWHERE (e.event_type IN ('WatchEvent', 'ForkEvent') \n  AND (e.action = 'watched' OR e.event_type = 'ForkEvent'))\nGROUP BY repo.full_name\nORDER BY star_fork_ratio DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -31226,6 +31656,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT\n    countIf(event_type = 'WatchEvent') AS total_stars,\n    countIf(event_type = 'ForkEvent') AS total_forks,\n    round(countIf(event_type = 'WatchEvent') / countIf(event_type = 'ForkEvent'), 2) AS stars_to_forks_ratio\nFROM github_events\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT \n  COUNT(event_type = 'WatchEvent') AS total_stars,\n  COUNT(event_type = 'ForkEvent') AS total_forks,\n  ROUND(\n    COUNT(event_type = 'WatchEvent') / COUNT(event_type = 'ForkEvent'), \n    2\n  ) AS star_fork_ratio\nFROM github_events\n\n"
       }
     },
     "humanResults": {
@@ -32157,6 +32601,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count() as total_issues\nFROM github_events\nWHERE event_type = 'IssuesEvent'\nAND action = 'opened'\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "SELECT COUNT(*) AS total_github_issues_opened FROM github_events WHERE event_type = 7 AND action = 4\n"
       }
     },
     "humanResults": {
@@ -33106,6 +33564,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as issue_comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY issue_comment_count DESC\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, COUNT(*) AS num_comments\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY num_comments DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -34078,6 +34550,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    countIf(event_type = 'IssueCommentEvent') as issue_comments,\n    countIf(event_type = 'IssuesEvent' AND action = 'opened') as issues_opened,\n    if(issues_opened > 0, issue_comments / issues_opened, 0) as comment_to_issue_ratio\nFROM github_events\nWHERE event_type IN ('IssueCommentEvent', 'IssuesEvent')\nGROUP BY repo_name\nHAVING issues_opened > 0\nORDER BY comment_to_issue_ratio DESC\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT \n    repo_name, \n    SUM(event_type = 'IssueCommentEvent') AS comments,\n    SUM(event_type = 'IssuesEvent') AS issues,\n    SUM(event_type = 'IssueCommentEvent') / SUM(event_type = 'IssuesEvent') AS ratio\nFROM github_events\nWHERE event_type IN ('IssueCommentEvent', 'IssuesEvent')\nGROUP BY repo_name\nHAVING issues > 0\nORDER BY ratio DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -35082,6 +35568,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    number,\n    max(comments) as total_comments\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n    AND action = 'opened'\nGROUP BY repo_name, number\nORDER BY total_comments DESC\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT repo_name, jsonExtract(data, '$.number') AS issue_number, COUNT(*) AS comment_count FROM github_events WHERE event_type = 6 AND action = 'created' GROUP BY repo_name, issue_number ORDER BY comment_count DESC LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -36068,6 +36568,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    number as issue_number,\n    countDistinct(actor_login) as comment_authors,\n    count() as total_comments\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\n    AND number > 10\nGROUP BY repo_name, number\nHAVING comment_authors >= 10\nORDER BY total_comments DESC\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT JSONExtractString(json, 'payload.repo.id') AS issue_repo_id, JSONExtractString(json, 'payload.issue.id') AS issue_id, COUNT(*) AS comment_count, COUNT(DISTINCT JSONExtractString(data, 'payload.actor.login')) AS authors_count FROM github_events WHERE event_type = 6 AND JSONExtractString(json, 'payload.repo.id') IS NOT NULL AND JSONExtractString(json, 'payload.issue.id') IS NOT NULL GROUP BY issue_repo_id, issue_id HAVING comment_count >= 10 AND authors_count >= 10 ORDER BY comment_count DESC LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -37068,6 +37582,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as event_count\nFROM github_events\nWHERE lower(body) LIKE '%tensorflow%' \n   OR lower(title) LIKE '%tensorflow%'\n   OR lower(repo_name) LIKE '%tensorflow%'\nGROUP BY repo_name\nORDER BY event_count DESC\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, COUNT(*) AS event_count\nFROM github_events\nWHERE repo_name LIKE '%tensorflow%'\nGROUP BY repo_name\nORDER BY event_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -38058,6 +38586,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as commit_comments\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY commit_comments DESC\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, COUNT() AS commit_comments_count FROM github_events WHERE event_type = 'CommitCommentEvent' GROUP BY repo_name ORDER BY commit_comments_count DESC LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -39048,6 +39590,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    concat('https://github.com/', repo_name, '/commit/', commit_id) AS commit_url,\n    count() AS total_comments,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\n    AND commit_id != ''\nGROUP BY repo_name, commit_id\nHAVING unique_authors >= 10\nORDER BY total_comments DESC\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT\n  JSONExtractString(c.target_commit, 'url') AS commit_url,\n  COUNT(*) AS total_commit_events,\n  COUNT(DISTINCT ic.actor_login) AS unique_authors\nFROM github_llm_bench.github_events c\nJOIN github_llm_bench.github_events ic\n  ON JSONExtractString(c.target_commit, 'url') = ic.target_commit_url\nWHERE\n  c.event_type = 16 -- PushEvent for commits\n  AND ic.event_type = 6 -- IssueCommentEvent for comments\n  AND ic.target_commit_url IS NOT NULL\nGROUP BY commit_url\nHAVING COUNT(DISTINCT ic.actor_login) >= 10\nORDER BY total_commit_events DESC\nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -40052,6 +40608,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    concat('https://github.com/', repo_name, '/pull/', toString(number)) AS pr_url,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\n    AND number > 0\nGROUP BY repo_name, number\nORDER BY unique_authors DESC\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT CONCAT('https://github.com/', JSONExtract(pull_request, 'repo.owner'), '/', JSONExtract(pull_request, 'repo.name'), '/pull/', JSONExtract(pull_request, 'number')) AS pr_url, COUNT(DISTINCT lower(actor_login)) AS unique_authors FROM github_events WHERE event_type IN ('PullRequestReviewEvent', 'PullRequestReviewCommentEvent') AND pull_request IS NOT NULL AND JSONExtract(pull_request, 'number') IS NOT NULL GROUP BY pr_url ORDER BY unique_authors DESC LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -41042,6 +41612,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    actor_login,\n    COUNT(*) as push_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY push_count DESC\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT actor_login, COUNT(*) AS push_count FROM github_events WHERE event_type = 'PushEvent' GROUP BY actor_login ORDER BY push_count DESC LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -42032,6 +42616,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    splitByChar('/', repo_name)[1] AS organization,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY organization\nORDER BY stars DESC\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT SUBSTRING(repo_name, 1, POSITION('/' IN repo_name) - 1) AS owner, COUNT(*) AS star_count FROM github_stars GROUP BY owner ORDER BY star_count DESC LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -43008,6 +43606,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    splitByChar('/', repo_name)[1] AS organization,\n    uniqExact(repo_name) AS repository_count\nFROM github_events\nGROUP BY organization\nORDER BY repository_count DESC\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT splitByString(repo_name, '/')[0] AS organization, COUNT(*) AS num_repos FROM github_events GROUP BY organization ORDER BY num_repos DESC LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -43998,6 +44610,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as pr_count,\n    uniq(actor_login) as unique_authors,\n    sum(additions) as total_adds,\n    sum(deletions) as total_dels,\n    sum(additions + deletions) as total_churn\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\n    AND additions < 10000\n    AND deletions < 10000\nGROUP BY repo_name\nORDER BY total_churn DESC\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name AS repo, COUNT(*) AS pr_count, COUNT(DISTINCT actor_login) AS unique_authors, SUM(additions) AS total_adds, SUM(deletions) AS total_dels FROM github_events WHERE event_type = 'PullRequestEvent' AND additions < 10000 AND deletions < 10000 GROUP BY repo_name ORDER BY (total_adds + total_dels) DESC LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -45030,6 +45656,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    actor_login as author,\n    count() as total_pr_comments,\n    uniq(repo_name) as unique_repositories,\n    uniq(number) as unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\n    AND action = 'created'\nGROUP BY actor_login\nORDER BY total_pr_comments DESC\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT creator_user_login AS author, COUNT(*) AS total_comments, COUNT(DISTINCT repo_name) AS unique_repos, COUNT(DISTINCT JSONExtractString(pull_request, 'id')) AS unique_prs FROM github_events WHERE event_type = 6 GROUP BY creator_user_login ORDER BY total_comments DESC LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -46030,6 +46670,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    arrayJoin(labels) AS label,\n    count() AS usage_count\nFROM github_events\nWHERE event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')\n    AND action IN ('created', 'opened', 'labeled')\n    AND length(labels) > 0\nGROUP BY label\nORDER BY usage_count DESC\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT label, COUNT(*) AS count FROM (\n  SELECT arrayJoin(splitString(labels, ',')) AS label \n  FROM label_applied_row_event \n  WHERE event_type IN (1,2,4)\n) \nGROUP BY label \nORDER BY count DESC \nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -47006,6 +47660,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    splitByChar('/', repo_name)[1] as organization,\n    uniq(actor_login) as unique_authors,\n    uniqIf(actor_login, event_type = 'PullRequestEvent' AND action = 'opened') as unique_pr_authors,\n    uniqIf(actor_login, event_type = 'IssuesEvent' AND action = 'opened') as unique_issue_authors,\n    uniqIf(actor_login, event_type = 'IssueCommentEvent') as unique_issue_comment_authors,\n    uniqIf(actor_login, event_type = 'PushEvent') as unique_push_authors\nFROM github_events\nWHERE repo_name != ''\nGROUP BY organization\nORDER BY unique_authors DESC\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT \n    splitString(repo_name, '/')[0] AS org_name,\n    COUNT(DISTINCT CASE WHEN event_type = 'PullRequestEvent' THEN author_login END) AS pull_request_authors,\n    COUNT(DISTINCT CASE WHEN event_type = 'IssuesEvent' THEN author_login END) AS issues_authors,\n    COUNT(DISTINCT CASE WHEN event_type = 'IssueCommentEvent' THEN author_login END) AS issue_comments_authors,\n    COUNT(DISTINCT CASE WHEN event_type = 'PushEvent' THEN pusher_login END) AS pushes_authors,\n    COUNT(DISTINCT CASE WHEN event_type = 'CommitCommentEvent' THEN comment_author_login END) AS commit_comments_authors,\n    (pull_request_authors + issues_authors + issue_comments_authors + pushes_authors + commit_comments_authors) AS total_unique_authors\nFROM github_events\nWHERE event_type IN ('PullRequestEvent', 'IssuesEvent', 'IssueCommentEvent', 'PushEvent', 'CommitCommentEvent')\nGROUP BY org_name\nORDER BY total_unique_authors DESC\nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -48066,6 +48734,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    length(repo_name) as name_length\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY name_length DESC\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0.18181818181818177,
+          "numeric": 0,
+          "fScore": 0.9
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, length(repo_name) AS name_length FROM github_events WHERE event_type = 'WatchEvent' GROUP BY repo_name ORDER BY name_length DESC LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -49042,6 +49724,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING count() >= 1\nORDER BY length(repo_name) ASC\nLIMIT 10\n"
+      },
+      "openrouter/andromeda-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.8235294117647058,
+          "numeric": 1,
+          "fScore": 0.30000000000000004
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name FROM github_events WHERE event_type = 'WatchEvent' GROUP BY repo_name ORDER BY LENGTH(repo_name) ASC LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -49623,6 +50319,14 @@
         "avgExactDistance": 0.5383838383838385,
         "avgNumericDistance": 0.39462101454809,
         "avgFScore": 0.4699999999999999
+      },
+      "openrouter/andromeda-alpha": {
+        "totalMatches": 9,
+        "exactMatches": 6,
+        "numericMatches": 9,
+        "avgExactDistance": 0.8401069518716576,
+        "avgNumericDistance": 0.8015204460321729,
+        "avgFScore": 0.16400000000000003
       }
     }
   }

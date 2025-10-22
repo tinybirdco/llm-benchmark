@@ -106,7 +106,8 @@
     "openrouter": {
       "models": [
         "horizon-alpha",
-        "horizon-beta"
+        "horizon-beta",
+        "andromeda-alpha"
       ]
     },
     "alibaba": {
