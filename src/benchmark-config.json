@@ -89,7 +89,8 @@
     },
     "moonshotai": {
       "models": [
-        "kimi-k2"
+        "kimi-k2",
+        "kimi-k2-0905:exacto"
       ]
     },
     "cognitivecomputations": {
