@@ -924,6 +924,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count() as total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\n%%\naction = 'opened'\nevent_type = 'WatchEvent'\nref_type = 'repository'\nactor_login = 'GollumEvent'\nrepo_name = 'unknown'\ncreated_at >= DateTime('2024-01-01') AND created_at <= DateTime('2024-12-31')\nAND merged = 0\nAND mergeable_state = 'clean'\nORDER BY repo_name, created_at DESC\nLIMIT 1000\n-%\n"
       }
     },
     "humanResults": {
@@ -1869,6 +1883,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT * FROM github_events\nWHERE event_type = 'WatchEvent'\n  AND action = 'opened'\n  AND ref_type = 'repository'\n  AND repo_name LIKE '%{{{{String(star_repo, \"default_value\")}}}'  %s\nORDER BY repo_name, created_at DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -2855,6 +2883,20 @@
         "humanRowCount": 5,
         "llmRowCount": 5,
         "sql": "\nSELECT\n    pow(10, floor(log10(stars + 1))) as star_bucket,\n    count(DISTINCT repo_name) as repo_count\nFROM (\n    SELECT \n        repo_name,\n        count() as stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n)\nWHERE stars > 0\nGROUP BY star_bucket\nORDER BY star_bucket ASC\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 5,
+        "llmRowCount": 0,
+        "sql": "\nSELECT \n  COUNT(*) AS star_count,\n  file_time::date AS event_date,\n  repo_name,\n  -- Approximate star count rounded to nearest power of 10\n  ROUND(COUNT(*) * 10) / 10 AS rounded_star_count\nFROM github_events\nWHERE event_type = 'CommitCommentEvent' -- Star events are captured in CommentEvent\n  AND ref_type = 'repository'\n  AND action = 'opened' -- Only opened pull requests or issues with stars (commonly stars appear on open PRs)\nGROUP BY file_time::date, repo_name\nORDER BY rounded_star_count ASC, star_count DESC\n"
       }
     },
     "humanResults": {
@@ -3825,6 +3867,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count(DISTINCT repo_name) as total_repositories\nFROM github_events\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\nSELECT COUNT(DISTINCT repo_name) AS total_repositories  \nFROM github_events  \nWHERE event_type = 'Repository'  \n  AND action = 'created'  \n  AND ref_type = 'repository'  \n  AND created_at >= DateTime('2020-01-01')  \nORDER BY created_at DESC  \nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -4770,6 +4826,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    toYear(created_at) as year,\n    repo_name,\n    count() as events_count\nFROM github_events\nWHERE toYear(created_at) >= 2015\nGROUP BY year, repo_name\nORDER BY year ASC, events_count DESC\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT\n  year,\n  ref_type,\n  COUNT(*) AS commit_count\nFROM (\n  SELECT\n    year(created_at) AS year,\n    ref_type,\n    COUNT(*) AS commit_count\n  FROM github_events\n  WHERE event_type IN (\n    'PushEvent',\n    'CreateEvent',\n    'DeleteEvent',\n    'ForkEvent',\n    'IssueCommentEvent',\n    'IssuesEvent',\n    'PullRequestEvent',\n    'PullRequestReviewEvent'\n  )\n  AND ref_type IN ('repository', 'fork', 'branch', 'tag')\n  GROUP BY year(created_at), ref_type\n) AS yearly_commits\nJOIN (\n  SELECT\n    year(created_at) AS year,\n    COUNT(*) AS commit_count\n  FROM github_events\n  WHERE event_type IN (\n    'PushEvent',\n    'CreateEvent',\n    'DeleteEvent',\n    'ForkEvent',\n    'IssueCommentEvent',\n    'IssuesEvent',\n    'PullRequestEvent',\n    'PullRequestReviewEvent'\n  )\n  GROUP BY year(created_at)\n) AS total_commits ON yearly_commits.year = total_commits.year\nWHERE year >= 2015\nORDER BY year, ref_type\n"
       }
     },
     "humanResults": {
@@ -5770,6 +5840,20 @@
         "humanRowCount": 2,
         "llmRowCount": 2,
         "sql": "\nSELECT \n    toYear(created_at) as year,\n    count() as total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 2,
+        "llmRowCount": 0,
+        "sql": "\nSELECT\n  YEAR(created_at) AS year,\n  COUNT(DISTINCT actor_login) AS total_stars,\n  SUM(CASE WHEN action = 'opened' THEN 1 ELSE 0 END) AS stars_opened_last_year\nFROM github_events\nWHERE created_at >= {{DateTime(start_date)}} AND created_at < {{DateTime(end_date)}}\nGROUP BY YEAR(created_at)\nORDER BY year\n"
       }
     },
     "humanResults": {
@@ -6714,6 +6798,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    actor_login,\n    COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY star_count DESC\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT \n  actor_login, \n  COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent' \n  AND action = 'opened'\nGROUP BY actor_login\nORDER BY star_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -7704,6 +7802,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND actor_login IN (\n    SELECT DISTINCT actor_login\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n      AND repo_name = 'tensorflow/tensorflow'\n  )\n  AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%if defined(starred_repo) and starred_repo == \"tensorflow/tensorflow\"  \nSELECT repo_name, COUNT(*) AS star_count  \nFROM {{% if starred_repo %}}events{% else %}events{% endif %}  \nWHERE event_type IN ('CreateEvent', 'ForkEvent', 'OpenEvent', 'ClosedEvent', 'PullRequestEvent', 'IssueCommentEvent', 'IssuesEvent', 'CommitCommentEvent', 'PushEvent', 'ReleaseEvent', 'GistEvent', 'FollowEvent', 'DownloadEvent', 'PullRequestReviewEvent', 'ForkApplyEvent', 'Event')  \nGROUP BY repo_name  \nORDER BY star_count DESC  \nLIMIT 10  \nONLY_USE_TABLES(events)  \n"
       }
     },
     "humanResults": {
@@ -8680,6 +8792,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "\nSELECT \n    actor_login,\n    countIf(repo_name LIKE 'javisantana/%') as javisantana_stars,\n    countIf(repo_name NOT LIKE 'javisantana/%') as other_stars,\n    countIf(repo_name LIKE 'javisantana/%') as total_stars,\n    javisantana_stars / total_stars as javisantana_ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nHAVING javisantana_stars > 0\nORDER BY javisantana_ratio DESC, javisantana_stars DESC\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT\n  actor_login AS user_name,\n  COUNT(comment_id) AS stars_from_javisantana_repos,\n  COUNT(*) AS total_stars,\n  CAST(COUNT(comment_id) AS FLOAT) / COUNT(*) AS ratio_from_javisantana\nFROM\n  events\nWHERE\n  event_type = 'WatchEvent' \n  AND ref_type = 'repository' \n  AND ref LIKE '%javisantana%'\nGROUP BY\n  actor_login\nORDER BY\n  ratio_from_javisantana DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -10670,6 +10796,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    actor_login,\n    COUNT(*) as issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n    AND action = 'opened'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login \n        FROM github_events \n        WHERE event_type = 'IssuesEvent' \n            AND action = 'opened'\n            AND repo_name = 'tensorflow/tensorflow'\n    )\n    AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name, actor_login\nORDER BY issue_count DESC\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT\n  repo_name,\n  COUNT(DISTINCT author_login) AS issue_count,\n  author_login,\n  author_login DESC\nFROM (\n  SELECT\n    github_ref AS repo_name,\n    actor_login AS author_login,\n    COUNT(*) AS issue_count\n  FROM github_events\n  WHERE action = 'opened'\n    AND ref_type = 'IssuesEvent'\n    AND ref LIKE '%tensorflow/tensorflow%'\n  GROUP BY github_ref, actor_login\n  ORDER BY issue_count DESC\n  LIMIT 10\n) AS top_issues\nORDER BY issue_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -11662,6 +11802,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    toDate(created_at) as date,\n    uniq(actor_login) as stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name, date\nORDER BY stars DESC\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%%\nSELECT \n  repo_name, \n  COUNT(DISTINCT actor_login) AS stars_count, \n  created_at AS instant\nFROM \n  events \nWHERE \n  event_type = 'Star' \n    AND action = 'opened' \n    AND created_at >= now() - interval 1 day\nGROUP BY \n  repo_name \nORDER BY \n  stars_count DESC \nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -12662,6 +12816,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2016) AS stars_2016,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2017) AS stars_2017,\n    stars_2017 - stars_2016 AS growth,\n    if(stars_2016 > 0, ((stars_2017 - stars_2016) / stars_2016) * 100, 0) AS growth_percentage\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND toYear(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING stars_2016 >= 1 AND stars_2017 > stars_2016\nORDER BY growth DESC\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%top10_repositories_growth_2016_2017_sorted_by_yoy_asc\n\nSELECT \n  repo_name, \n  event_type, \n  action, \n  created_at, \n  merged_at, \n  merge_commit_sha, \n  merged UInt8, \n  merged_by LowCardinality('OWNER') AS owner_login, \n  COUNT(*) OVER (PARTITION BY ref_type(created_at) ORDER BY created_at DESC) AS repo_activity_count\nFROM github_events\nWHERE event_type IN ('PushEvent', 'MergeRequestReviewEvent', 'ForkApplyEvent', 'CreateEvent', 'PullRequestReviewEvent', 'PullRequestEvent', 'ReleaseEvent', 'IssuesEvent', 'CreateEvent', 'ForkEvent', 'Event')\n  AND action = 'merged'\n  AND (ref_type(created_at) = 'repository' OR ref_type(created_at) = 'fork')\n  AND (created_at >= '2016-01-01' AND created_at < '2018-01-01')\n  AND (merged_at >= '2016-01-01' AND merged_at < '2018-01-01')\nORDER BY \n  (created_at >= '2016-01-01' AND created_at < '2017-01-01') DESC, \n  (created_at >= '2017-01-01' AND created_at < '2018-01-01') DESC, \n  merged UNSIGNED DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -13680,6 +13848,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2016) AS stars_2016,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2017) AS stars_2017,\n    stars_2016 - stars_2017 AS stagnation\nFROM github_events\nWHERE toYear(created_at) IN (2016, 2017)\n    AND event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING stars_2017 >= 1 AND stars_2016 > stars_2017\nORDER BY stagnation DESC\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%if defined(start_year) && defined(end_year) && start_year == 2016 && end_year == 2017\n%w = \"top_star_count_2017_2016_desc\"\n%n = 10\n%nodes = (\n%n SELECT\n%n   repo_name,\n%n   COUNT(DISTINCT actor_login) AS star_count_2017,\n%n   COUNT(DISTINCT actor_login) AS star_count_2016,\n%n   CASE\n%n     WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#     ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%n FROM github_events\n%WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%AND actor_login IS NOT NULL\n%AND repo_name IS NOT NULL\n%AND created_at >= DateTime(2016, 01-01, 2016) AND created_at < DateTime(2017, 01-01, 2017)\n%GROUP BY repo_name\n%ORDER BY star_count_2017 DESC, stagnation_rank ASC\n%LIMIT %n\n%n\n%n\n%n %result_sql = \"\n%n SELECT\n%n   repo_name,\n%n   star_count_2017,\n%n   star_count_2016,\n%n   CASE\n%n     WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#     ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%n FROM (\n%n   SELECT\n%   repo_name,\n%   COUNT(DISTINCT actor_login) AS star_count_2017,\n%   COUNT(DISTINCT actor_login) AS star_count_2016,\n%   CASE\n%   WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#   ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%   FROM github_events\n%   WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%   AND actor_login IS NOT NULL\n%   AND created_at >= DateTime(2016, 01-01, 2016) AND created_at < DateTime(2017, 01-01, 2017)\n%   GROUP BY repo_name\n%   ORDER BY star_count_2017 DESC, stagnation_rank ASC\n%   LIMIT %n\n% )\n%n\n%n %sql_result_success = true,\n%sql_result_data = (\n%n   repo_name, star_count_2017, star_count_2016, stagnation_rank\n%   FROM (\n%   SELECT\n%   repo_name,\n%   COUNT(DISTINCT actor_login) AS star_count_2017,\n%   COUNT(DISTINCT actor_login) AS star_count_2016,\n%   CASE\n%   WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#   ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%   FROM github_events\n%   WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%   AND actor_login IS NOT NULL\n%   AND created_at >= DateTime(2016, 01-01, 2016) AND created_at < DateTime(2017, 01-01, 2017)\n%   GROUP BY repo_name\n%   ORDER BY star_count_2017 DESC, stagnation_rank ASC\n%   LIMIT %n\n% )\n%n\n%n %sql_result_success = true,\n%sql_result_data = (\n%n   repo_name, star_count_2017, star_count_2016, stagnation_rank\n%   FROM (\n%   SELECT\n%   repo_name,\n%   COUNT(DISTINCT actor_login) AS star_count_2017,\n%   COUNT(DISTINCT actor_login) AS star_count_2016,\n%   CASE\n%   WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#   ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%   FROM github_events\n%   WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%   AND actor_login IS NOT NULL\n%   AND created_at >= DateTime(2016, 01-01, 2016) AND created_at < DateTime(2017, 01-01, 2017)\n%   GROUP BY repo_name\n%   ORDER BY star_count_2017 DESC, stagnation_rank ASC\n%   LIMIT %n\n% )\n%n\n%n %sql_result_success = true,\n%sql_result_data = (\n%n   repo_name, star_count_2017, star_count_2016, stagnation_rank\n%   FROM (\n%   SELECT\n%   repo_name,\n%   COUNT(DISTINCT actor_login) AS star_count_2017,\n%   COUNT(DISTINCT actor_login) AS star_count_2016,\n%   CASE\n%   WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#   ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%   FROM github_events\n%   WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%   AND actor_login IS NOT NULL\n%   AND created_at >= DateTime(2016, 01-01, 2016) AND created_at < DateTime(2017, 01-01, 2017)\n%   GROUP BY repo_name\n%   ORDER BY star_count_2017 DESC, stagnation_rank ASC\n%   LIMIT %n\n% )\n%n\n%n %sql_result_success = true,\n%sql_result_data = (\n%n   repo_name, star_count_2017, star_count_2016, stagnation_rank\n%   FROM (\n%   SELECT\n%   repo_name,\n%   COUNT(DISTINCT actor_login) AS star_count_2017,\n%   COUNT(DISTINCT actor_login) AS star_count_2016,\n%   CASE\n%   WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#   ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%   FROM github_events\n%   WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%   AND actor_login IS NOT NULL\n%   AND created_at >= DateTime(2016, 01-01, 2016) AND created_at < DateTime(2017, 01-01, 2017)\n%   GROUP BY repo_name\n%   ORDER BY star_count_2017 DESC, stagnation_rank ASC\n%   LIMIT %n\n% )\n%n\n%n %sql_result_success = true,\n%sql_result_data = (\n%n   repo_name, star_count_2017, star_count_2016, stagnation_rank\n%   FROM (\n%   SELECT\n%   repo_name,\n%   COUNT(DISTINCT actor_login) AS star_count_2017,\n%   COUNT(DISTINCT actor_login) AS star_count_2016,\n%   CASE\n%   WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#   ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%   FROM github_events\n%   WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%   AND actor_login IS NOT NULL\n%   AND created_at >= DateTime(2016, 01-01, 2016) AND created_at < DateTime(2017, 01-01, 2017)\n%   GROUP BY repo_name\n%   ORDER BY star_count_2017 DESC, stagnation_rank ASC\n%   LIMIT %n\n% )\n%n\n%n %sql_result_success = true,\n%sql_result_data = (\n%n   repo_name, star_count_2017, star_count_2016, stagnation_rank\n%   FROM (\n%   SELECT\n%   repo_name,\n%   COUNT(DISTINCT actor_login) AS star_count_2017,\n%   COUNT(DISTINCT actor_login) AS star_count_2016,\n%   CASE\n%   WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#   ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%   FROM github_events\n%   WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%   AND actor_login IS NOT NULL\n%   AND created_at >= DateTime(2016, 01-01, 2016) AND created_at < DateTime(2017, 01-01, 2017)\n%   GROUP BY repo_name\n%   ORDER BY star_count_2017 DESC, stagnation_rank ASC\n%   LIMIT %n\n% )\n%n\n%n %sql_result_success = true,\n%sql_result_data = (\n%n   repo_name, star_count_2017, star_count_2016, stagnation_rank\n%   FROM (\n%   SELECT\n%   repo_name,\n%   COUNT(DISTINCT actor_login) AS star_count_2017,\n%   COUNT(DISTINCT actor_login) AS star_count_2016,\n%   CASE\n%   WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#   ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%   FROM github_events\n%   WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%   AND actor_login IS NOT NULL\n%   AND created_at >= DateTime(2016, 01-01, 2016) AND created_at < DateTime(2017, 01-01, 2017)\n%   GROUP BY repo_name\n%   ORDER BY star_count_2017 DESC, stagnation_rank ASC\n%   LIMIT %n\n% )\n%n\n%n %sql_result_success = true,\n%sql_result_data = (\n%n   repo_name, star_count_2017, star_count_2016, stagnation_rank\n%   FROM (\n%   SELECT\n%   repo_name,\n%   COUNT(DISTINCT actor_login) AS star_count_2017,\n%   COUNT(DISTINCT actor_login) AS star_count_2016,\n%   CASE\n%   WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#   ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%   FROM github_events\n%   WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%   AND actor_login IS NOT NULL\n%   AND created_at >= DateTime(2016, 01-01, 2016) AND created_at < DateTime(2017, 01-01, 2017)\n%   GROUP BY repo_name\n%   ORDER BY star_count_2017 DESC, stagnation_rank ASC\n%   LIMIT %n\n% )\n%n\n%n %sql_result_success = true,\n%sql_result_data = (\n%n   repo_name, star_count_2017, star_count_2016, stagnation_rank\n%   FROM (\n%   SELECT\n%   repo_name,\n%   COUNT(DISTINCT actor_login) AS star_count_2017,\n%   COUNT(DISTINCT actor_login) AS star_count_2016,\n%   CASE\n%   WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#   ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%   FROM github_events\n%   WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%   AND actor_login IS NOT NULL\n%   AND created_at >= DateTime(2016, 01-01, 2016) AND created_at < DateTime(2017, 01-01, 2017)\n%   GROUP BY repo_name\n%   ORDER BY star_count_2017 DESC, stagnation_rank ASC\n%   LIMIT %n\n% )\n%n\n%n %sql_result_success = true,\n%sql_result_data = (\n%n   repo_name, star_count_2017, star_count_2016, stagnation_rank\n%   FROM (\n%   SELECT\n%   repo_name,\n%   COUNT(DISTINCT actor_login) AS star_count_2017,\n%   COUNT(DISTINCT actor_login) AS star_count_2016,\n%   CASE\n%   WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#   ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%   FROM github_events\n%   WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%   AND actor_login IS NOT NULL\n%   AND created_at >= DateTime(2016, 01-01, 2016) AND created_at < DateTime(2017, 01-01, 2017)\n%   GROUP BY repo_name\n%   ORDER BY star_count_2017 DESC, stagnation_rank ASC\n%   LIMIT %n\n% )\n%n\n%n %sql_result_success = true,\n%sql_result_data = (\n%n   repo_name, star_count_2017, star_count_2016, stagnation_rank\n%   FROM (\n%   SELECT\n%   repo_name,\n%   COUNT(DISTINCT actor_login) AS star_count_2017,\n%   COUNT(DISTINCT actor_login) AS star_count_2016,\n%   CASE\n%   WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#   ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%   FROM github_events\n%   WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%   AND actor_login IS NOT NULL\n%   AND created_at >= DateTime(2016, 01-01, 2016) AND created_at < DateTime(2017, 01-01, 2017)\n%   GROUP BY repo_name\n%   ORDER BY star_count_2017 DESC, stagnation_rank ASC\n%   LIMIT %n\n% )\n%n\n%n %sql_result_success = true,\n%sql_result_data = (\n%n   repo_name, star_count_2017, star_count_2016, stagnation_rank\n%   FROM (\n%   SELECT\n%   repo_name,\n%   COUNT(DISTINCT actor_login) AS star_count_2017,\n%   COUNT(DISTINCT actor_login) AS star_count_2016,\n%   CASE\n%   WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#   ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%   FROM github_events\n%   WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%   AND actor_login IS NOT NULL\n%   AND created_at >= DateTime(2016, 01-01, 2016) AND created_at < DateTime(2017, 01-01, 2017)\n%   GROUP BY repo_name\n%   ORDER BY star_count_2017 DESC, stagnation_rank ASC\n%   LIMIT %n\n% )\n%n\n%n %sql_result_success = true,\n%sql_result_data = (\n%n   repo_name, star_count_2017, star_count_2016, stagnation_rank\n%   FROM (\n%   SELECT\n%   repo_name,\n%   COUNT(DISTINCT actor_login) AS star_count_2017,\n%   COUNT(DISTINCT actor_login) AS star_count_2016,\n%   CASE\n%   WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#   ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%   FROM github_events\n%   WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%   AND actor_login IS NOT NULL\n%   AND created_at >= DateTime(2016, 01-01, 2016) AND created_at < DateTime(2017, 01-01, 2017)\n%   GROUP BY repo_name\n%   ORDER BY star_count_2017 DESC, stagnation_rank ASC\n%   LIMIT %n\n% )\n%n\n%n %sql_result_success = true,\n%sql_result_data = (\n%n   repo_name, star_count_2017, star_count_2016, stagnation_rank\n%   FROM (\n%   SELECT\n%   repo_name,\n%   COUNT(DISTINCT actor_login) AS star_count_2017,\n%   COUNT(DISTINCT actor_login) AS star_count_2016,\n%   CASE\n%   WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#   ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%   FROM github_events\n%   WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%   AND actor_login IS NOT NULL\n%   AND created_at >= DateTime(2016, 01-01, 2016) AND created_at < DateTime(2017, 01-01, 2017)\n%   GROUP BY repo_name\n%   ORDER BY star_count_2017 DESC, stagnation_rank ASC\n%   LIMIT %n\n% )\n%n\n%n %sql_result_success = true,\n%sql_result_data = (\n%n   repo_name, star_count_2017, star_count_2016, stagnation_rank\n%   FROM (\n%   SELECT\n%   repo_name,\n%   COUNT(DISTINCT actor_login) AS star_count_2017,\n%   COUNT(DISTINCT actor_login) AS star_count_2016,\n%   CASE\n%   WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#   ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%   FROM github_events\n%   WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%   AND actor_login IS NOT NULL\n%   AND created_at >= DateTime(2016, 01-01, 2016) AND created_at < DateTime(2017, 01-01, 2017)\n%   GROUP BY repo_name\n%   ORDER BY star_count_2017 DESC, stagnation_rank ASC\n%   LIMIT %n\n% )\n%n\n%n %sql_result_success = true,\n%sql_result_data = (\n%n   repo_name, star_count_2017, star_count_2016, stagnation_rank\n%   FROM (\n%   SELECT\n%   repo_name,\n%   COUNT(DISTINCT actor_login) AS star_count_2017,\n%   COUNT(DISTINCT actor_login) AS star_count_2016,\n%   CASE\n%   WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#   ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%   FROM github_events\n%   WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%   AND actor_login IS NOT NULL\n%   AND created_at >= DateTime(2016, 01-01, 2016) AND created_at < DateTime(2017, 01-01, 2017)\n%   GROUP BY repo_name\n%   ORDER BY star_count_2017 DESC, stagnation_rank ASC\n%   LIMIT %n\n% )\n%n\n%n %sql_result_success = true,\n%sql_result_data = (\n%n   repo_name, star_count_2017, star_count_2016, stagnation_rank\n%   FROM (\n%   SELECT\n%   repo_name,\n%   COUNT(DISTINCT actor_login) AS star_count_2017,\n%   COUNT(DISTINCT actor_login) AS star_count_2016,\n%   CASE\n%   WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#   ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%   FROM github_events\n%   WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%   AND actor_login IS NOT NULL\n%   AND created_at >= DateTime(2016, 01-01, 2016) AND created_at < DateTime(2017, 01-01, 2017)\n%   GROUP BY repo_name\n%   ORDER BY star_count_2017 DESC, stagnation_rank ASC\n%   LIMIT %n\n% )\n%n\n%n %sql_result_success = true,\n%sql_result_data = (\n%n   repo_name, star_count_2017, star_count_2016, stagnation_rank\n%   FROM (\n%   SELECT\n%   repo_name,\n%   COUNT(DISTINCT actor_login) AS star_count_2017,\n%   COUNT(DISTINCT actor_login) AS star_count_2016,\n%   CASE\n%   WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#   ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%   FROM github_events\n%   WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%   AND actor_login IS NOT NULL\n%   AND created_at >= DateTime(2016, 01-01, 2016) AND created_at < DateTime(2017, 01-01, 2017)\n%   GROUP BY repo_name\n%   ORDER BY star_count_2017 DESC, stagnation_rank ASC\n%   LIMIT %n\n% )\n%n\n%n %sql_result_success = true,\n%sql_result_data = (\n%n   repo_name, star_count_2017, star_count_2016, stagnation_rank\n%   FROM (\n%   SELECT\n%   repo_name,\n%   COUNT(DISTINCT actor_login) AS star_count_2017,\n%   COUNT(DISTINCT actor_login) AS star_count_2016,\n%   CASE\n%   WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#   ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%   FROM github_events\n%   WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%   AND actor_login IS NOT NULL\n%   AND created_at >= DateTime(2016, 01-01, 2016) AND created_at < DateTime(2017, 01-01, 2017)\n%   GROUP BY repo_name\n%   ORDER BY star_count_2017 DESC, stagnation_rank ASC\n%   LIMIT %n\n% )\n%n\n%n %sql_result_success = true,\n%sql_result_data = (\n%n   repo_name, star_count_2017, star_count_2016, stagnation_rank\n%   FROM (\n%   SELECT\n%   repo_name,\n%   COUNT(DISTINCT actor_login) AS star_count_2017,\n%   COUNT(DISTINCT actor_login) AS star_count_2016,\n%   CASE\n%   WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#   ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%   FROM github_events\n%   WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%   AND actor_login IS NOT NULL\n%   AND created_at >= DateTime(2016, 01-01, 2016) AND created_at < DateTime(2017, 01-01, 2017)\n%   GROUP BY repo_name\n%   ORDER BY star_count_2017 DESC, stagnation_rank ASC\n%   LIMIT %n\n% )\n%n\n%n %sql_result_success = true,\n%sql_result_data = (\n%n   repo_name, star_count_2017, star_count_2016, stagnation_rank\n%   FROM (\n%   SELECT\n%   repo_name,\n%   COUNT(DISTINCT actor_login) AS star_count_2017,\n%   COUNT(DISTINCT actor_login) AS star_count_2016,\n%   CASE\n%   WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#   ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%   FROM github_events\n%   WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%   AND actor_login IS NOT NULL\n%   AND created_at >= DateTime(2016, 01-01, 2016) AND created_at < DateTime(2017, 01-01, 2017)\n%   GROUP BY repo_name\n%   ORDER BY star_count_2017 DESC, stagnation_rank ASC\n%   LIMIT %n\n% )\n%n\n%n %sql_result_success = true,\n%sql_result_data = (\n%n   repo_name, star_count_2017, star_count_2016, stagnation_rank\n%   FROM (\n%   SELECT\n%   repo_name,\n%   COUNT(DISTINCT actor_login) AS star_count_2017,\n%   COUNT(DISTINCT actor_login) AS star_count_2016,\n%   CASE\n%   WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#   ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%   FROM github_events\n%   WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%   AND actor_login IS NOT NULL\n%   AND created_at >= DateTime(2016, 01-01, 2016) AND created_at < DateTime(2017, 01-01, 2017)\n%   GROUP BY repo_name\n%   ORDER BY star_count_2017 DESC, stagnation_rank ASC\n%   LIMIT %n\n% )\n%n\n%n %sql_result_success = true,\n%sql_result_data = (\n%n   repo_name, star_count_2017, star_count_2016, stagnation_rank\n%   FROM (\n%   SELECT\n%   repo_name,\n%   COUNT(DISTINCT actor_login) AS star_count_2017,\n%   COUNT(DISTINCT actor_login) AS star_count_2016,\n%   CASE\n%   WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#   ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%   FROM github_events\n%   WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%   AND actor_login IS NOT NULL\n%   AND created_at >= DateTime(2016, 01-01, 2016) AND created_at < DateTime(2017, 01-01, 2017)\n%   GROUP BY repo_name\n%   ORDER BY star_count_2017 DESC, stagnation_rank ASC\n%   LIMIT %n\n% )\n%n\n%n %sql_result_success = true,\n%sql_result_data = (\n%n   repo_name, star_count_2017, star_count_2016, stagnation_rank\n%   FROM (\n%   SELECT\n%   repo_name,\n%   COUNT(DISTINCT actor_login) AS star_count_2017,\n%   COUNT(DISTINCT actor_login) AS star_count_2016,\n%   CASE\n%   WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#   ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%   FROM github_events\n%   WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%   AND actor_login IS NOT NULL\n%   AND created_at >= DateTime(2016, 01-01, 2016) AND created_at < DateTime(2017, 01-01, 2017)\n%   GROUP BY repo_name\n%   ORDER BY star_count_2017 DESC, stagnation_rank ASC\n%   LIMIT %n\n% )\n%n\n%n %sql_result_success = true,\n%sql_result_data = (\n%n   repo_name, star_count_2017, star_count_2016, stagnation_rank\n%   FROM (\n%   SELECT\n%   repo_name,\n%   COUNT(DISTINCT actor_login) AS star_count_2017,\n%   COUNT(DISTINCT actor_login) AS star_count_2016,\n%   CASE\n%   WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#   ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%   FROM github_events\n%   WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%   AND actor_login IS NOT NULL\n%   AND created_at >= DateTime(2016, 01-01, 2016) AND created_at < DateTime(2017, 01-01, 2017)\n%   GROUP BY repo_name\n%   ORDER BY star_count_2017 DESC, stagnation_rank ASC\n%   LIMIT %n\n% )\n%n\n%n %sql_result_success = true,\n%sql_result_data = (\n%n   repo_name, star_count_2017, star_count_2016, stagnation_rank\n%   FROM (\n%   SELECT\n%   repo_name,\n%   COUNT(DISTINCT actor_login) AS star_count_2017,\n%   COUNT(DISTINCT actor_login) AS star_count_2016,\n%   CASE\n%   WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#   ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%   FROM github_events\n%   WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%   AND actor_login IS NOT NULL\n%   AND created_at >= DateTime(2016, 01-01, 2016) AND created_at < DateTime(2017, 01-01, 2017)\n%   GROUP BY repo_name\n%   ORDER BY star_count_2017 DESC, stagnation_rank ASC\n%   LIMIT %n\n% )\n%n\n%n %sql_result_success = true,\n%sql_result_data = (\n%n   repo_name, star_count_2017, star_count_2016, stagnation_rank\n%   FROM (\n%   SELECT\n%   repo_name,\n%   COUNT(DISTINCT actor_login) AS star_count_2017,\n%   COUNT(DISTINCT actor_login) AS star_count_2016,\n%   CASE\n%   WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#   ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%   FROM github_events\n%   WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%   AND actor_login IS NOT NULL\n%   AND created_at >= DateTime(2016, 01-01, 2016) AND created_at < DateTime(2017, 01-01, 2017)\n%   GROUP BY repo_name\n%   ORDER BY star_count_2017 DESC, stagnation_rank ASC\n%   LIMIT %n\n% )\n%n\n%n %sql_result_success = true,\n%sql_result_data = (\n%n   repo_name, star_count_2017, star_count_2016, stagnation_rank\n%   FROM (\n%   SELECT\n%   repo_name,\n%   COUNT(DISTINCT actor_login) AS star_count_2017,\n%   COUNT(DISTINCT actor_login) AS star_count_2016,\n%   CASE\n%   WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#   ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%   FROM github_events\n%   WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%   AND actor_login IS NOT NULL\n%   AND created_at >= DateTime(2016, 01-01, 2016) AND created_at < DateTime(2017, 01-01, 2017)\n%   GROUP BY repo_name\n%   ORDER BY star_count_2017 DESC, stagnation_rank ASC\n%   LIMIT %n\n% )\n%n\n%n %sql_result_success = true,\n%sql_result_data = (\n%n   repo_name, star_count_2017, star_count_2016, stagnation_rank\n%   FROM (\n%   SELECT\n%   repo_name,\n%   COUNT(DISTINCT actor_login) AS star_count_2017,\n%   COUNT(DISTINCT actor_login) AS star_count_2016,\n%   CASE\n%   WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#   ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%   FROM github_events\n%   WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%   AND actor_login IS NOT NULL\n%   AND created_at >= DateTime(2016, 01-01, 2016) AND created_at < DateTime(2017, 01-01, 2017)\n%   GROUP BY repo_name\n%   ORDER BY star_count_2017 DESC, stagnation_rank ASC\n%   LIMIT %n\n% )\n%n\n%n %sql_result_success = true,\n%sql_result_data = (\n%n   repo_name, star_count_2017, star_count_2016, stagnation_rank\n%   FROM (\n%   SELECT\n%   repo_name,\n%   COUNT(DISTINCT actor_login) AS star_count_2017,\n%   COUNT(DISTINCT actor_login) AS star_count_2016,\n%   CASE\n%   WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#   ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%   FROM github_events\n%   WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%   AND actor_login IS NOT NULL\n%   AND created_at >= DateTime(2016, 01-01, 2016) AND created_at < DateTime(2017, 01-01, 2017)\n%   GROUP BY repo_name\n%   ORDER BY star_count_2017 DESC, stagnation_rank ASC\n%   LIMIT %n\n% )\n%n\n%n %sql_result_success = true,\n%sql_result_data = (\n%n   repo_name, star_count_2017, star_count_2016, stagnation_rank\n%   FROM (\n%   SELECT\n%   repo_name,\n%   COUNT(DISTINCT actor_login) AS star_count_2017,\n%   COUNT(DISTINCT actor_login) AS star_count_2016,\n%   CASE\n%   WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#   ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%   FROM github_events\n%   WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%   AND actor_login IS NOT NULL\n%   AND created_at >= DateTime(2016, 01-01, 2016) AND created_at < DateTime(2017, 01-01, 2017)\n%   GROUP BY repo_name\n%   ORDER BY star_count_2017 DESC, stagnation_rank ASC\n%   LIMIT %n\n% )\n%n\n%n %sql_result_success = true,\n%sql_result_data = (\n%n   repo_name, star_count_2017, star_count_2016, stagnation_rank\n%   FROM (\n%   SELECT\n%   repo_name,\n%   COUNT(DISTINCT actor_login) AS star_count_2017,\n%   COUNT(DISTINCT actor_login) AS star_count_2016,\n%   CASE\n%   WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#   ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%   FROM github_events\n%   WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%   AND actor_login IS NOT NULL\n%   AND created_at >= DateTime(2016, 01-01, 2016) AND created_at < DateTime(2017, 01-01, 2017)\n%   GROUP BY repo_name\n%   ORDER BY star_count_2017 DESC, stagnation_rank ASC\n%   LIMIT %n\n% )\n%n\n%n %sql_result_success = true,\n%sql_result_data = (\n%n   repo_name, star_count_2017, star_count_2016, stagnation_rank\n%   FROM (\n%   SELECT\n%   repo_name,\n%   COUNT(DISTINCT actor_login) AS star_count_2017,\n%   COUNT(DISTINCT actor_login) AS star_count_2016,\n%   CASE\n%   WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#   ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%   FROM github_events\n%   WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%   AND actor_login IS NOT NULL\n%   AND created_at >= DateTime(2016, 01-01, 2016) AND created_at < DateTime(2017, 01-01, 2017)\n%   GROUP BY repo_name\n%   ORDER BY star_count_2017 DESC, stagnation_rank ASC\n%   LIMIT %n\n% )\n%n\n%n %sql_result_success = true,\n%sql_result_data = (\n%n   repo_name, star_count_2017, star_count_2016, stagnation_rank\n%   FROM (\n%   SELECT\n%   repo_name,\n%   COUNT(DISTINCT actor_login) AS star_count_2017,\n%   COUNT(DISTINCT actor_login) AS star_count_2016,\n%   CASE\n%   WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#   ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%   FROM github_events\n%   WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%   AND actor_login IS NOT NULL\n%   AND created_at >= DateTime(2016, 01-01, 2016) AND created_at < DateTime(2017, 01-01, 2017)\n%   GROUP BY repo_name\n%   ORDER BY star_count_2017 DESC, stagnation_rank ASC\n%   LIMIT %n\n% )\n%n\n%n %sql_result_success = true,\n%sql_result_data = (\n%n   repo_name, star_count_2017, star_count_2016, stagnation_rank\n%   FROM (\n%   SELECT\n%   repo_name,\n%   COUNT(DISTINCT actor_login) AS star_count_2017,\n%   COUNT(DISTINCT actor_login) AS star_count_2016,\n%   CASE\n%   WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#   ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%   FROM github_events\n%   WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%   AND actor_login IS NOT NULL\n%   AND created_at >= DateTime(2016, 01-01, 2016) AND created_at < DateTime(2017, 01-01, 2017)\n%   GROUP BY repo_name\n%   ORDER BY star_count_2017 DESC, stagnation_rank ASC\n%   LIMIT %n\n% )\n%n\n%n %sql_result_success = true,\n%sql_result_data = (\n%n   repo_name, star_count_2017, star_count_2016, stagnation_rank\n%   FROM (\n%   SELECT\n%   repo_name,\n%   COUNT(DISTINCT actor_login) AS star_count_2017,\n%   COUNT(DISTINCT actor_login) AS star_count_2016,\n%   CASE\n%   WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#   ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%   FROM github_events\n%   WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%   AND actor_login IS NOT NULL\n%   AND created_at >= DateTime(2016, 01-01, 2016) AND created_at < DateTime(2017, 01-01, 2017)\n%   GROUP BY repo_name\n%   ORDER BY star_count_2017 DESC, stagnation_rank ASC\n%   LIMIT %n\n% )\n%n\n%n %sql_result_success = true,\n%sql_result_data = (\n%n   repo_name, star_count_2017, star_count_2016, stagnation_rank\n%   FROM (\n%   SELECT\n%   repo_name,\n%   COUNT(DISTINCT actor_login) AS star_count_2017,\n%   COUNT(DISTINCT actor_login) AS star_count_2016,\n%   CASE\n%   WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#   ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%   FROM github_events\n%   WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%   AND actor_login IS NOT NULL\n%   AND created_at >= DateTime(2016, 01-01, 2016) AND created_at < DateTime(2017, 01-01, 2017)\n%   GROUP BY repo_name\n%   ORDER BY star_count_2017 DESC, stagnation_rank ASC\n%   LIMIT %n\n% )\n%n\n%n %sql_result_success = true,\n%sql_result_data = (\n%n   repo_name, star_count_2017, star_count_2016, stagnation_rank\n%   FROM (\n%   SELECT\n%   repo_name,\n%   COUNT(DISTINCT actor_login) AS star_count_2017,\n%   COUNT(DISTINCT actor_login) AS star_count_2016,\n%   CASE\n%   WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#   ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%   FROM github_events\n%   WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%   AND actor_login IS NOT NULL\n%   AND created_at >= DateTime(2016, 01-01, 2016) AND created_at < DateTime(2017, 01-01, 2017)\n%   GROUP BY repo_name\n%   ORDER BY star_count_2017 DESC, stagnation_rank ASC\n%   LIMIT %n\n% )\n%n\n%n %sql_result_success = true,\n%sql_result_data = (\n%n   repo_name, star_count_2017, star_count_2016, stagnation_rank\n%   FROM (\n%   SELECT\n%   repo_name,\n%   COUNT(DISTINCT actor_login) AS star_count_2017,\n%   COUNT(DISTINCT actor_login) AS star_count_2016,\n%   CASE\n%   WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#   ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%   FROM github_events\n%   WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%   AND actor_login IS NOT NULL\n%   AND created_at >= DateTime(2016, 01-01, 2016) AND created_at < DateTime(2017, 01-01, 2017)\n%   GROUP BY repo_name\n%   ORDER BY star_count_2017 DESC, stagnation_rank ASC\n%   LIMIT %n\n% )\n%n\n%n %sql_result_success = true,\n%sql_result_data = (\n%n   repo_name, star_count_2017, star_count_2016, stagnation_rank\n%   FROM (\n%   SELECT\n%   repo_name,\n%   COUNT(DISTINCT actor_login) AS star_count_2017,\n%   COUNT(DISTINCT actor_login) AS star_count_2016,\n%   CASE\n%   WHEN star_count_2017 < star_count_2016 THEN 'worst_stagnation'\n%#   ELSE 'stable_or_improved'\n%   END AS stagnation_rank\n%   FROM github_events\n%   WHERE event_type IN ('CommitCommentEvent', 'IssueCommentEvent', 'PullRequestEvent', 'ForkEvent', 'StarCommentEvent')\n%   AND actor_login"
       }
     },
     "humanResults": {
@@ -14684,6 +14866,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as total_stars,\n    toStartOfMonth(created_at) as month,\n    COUNT(*) / COUNT(DISTINCT toStartOfMonth(created_at)) as avg_stars_per_month,\n    stddevPop(COUNT(*)) OVER (PARTITION BY repo_name) as star_growth_stddev\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND created_at >= now() - INTERVAL 1 YEAR\nGROUP BY repo_name, month\nHAVING COUNT(DISTINCT month) >= 6\nORDER BY star_growth_stddev ASC, total_stars DESC\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%%\nSELECT  \n  repo_name,  \n  event_type,  \n  action,  \n  created_at,  \n  file_time,  \n  (COALESCE(COUNT(comment_id), 0) - COALESCE(COUNT(comment_id) - 1, 0)) /  \n    (EXTRACT(EPOCH SECOND FROM file_time) - EXTRACT(EPOCH SECOND FROM created_at)) AS steady_star_growth_rate_sec,  \n  COUNT(DISTINCT actor_login) AS total_unique_contributors,  \n  MIN(created_at) AS first_observed,  \n  MAX(created_at) AS last_observed  \nFROM github_events  \nWHERE event_type IN ('CreateEvent', 'ForkEvent', 'PushEvent', 'PullRequestReviewEvent', 'PullRequestEvent', 'IssueCommentEvent', 'IssuesEvent', 'ReleaseEvent', 'GistEvent', 'FollowEvent', 'DownloadEvent')  \n  AND action = 'opened'  \nGROUP BY repo_name, event_type, action, created_at  \nORDER BY steady_star_growth_rate_sec DESC  \nLIMIT 10  \n%%\n"
       }
     },
     "humanResults": {
@@ -15694,6 +15890,20 @@
         "humanRowCount": 7,
         "llmRowCount": 7,
         "sql": "\nSELECT \n    toDayOfWeek(created_at) as day_of_week,\n    CASE toDayOfWeek(created_at)\n        WHEN 1 THEN 'Monday'\n        WHEN 2 THEN 'Tuesday'\n        WHEN 3 THEN 'Wednesday'\n        WHEN 4 THEN 'Thursday'\n        WHEN 5 THEN 'Friday'\n        WHEN 6 THEN 'Saturday'\n        WHEN 7 THEN 'Sunday'\n    END as day_name,\n    count() as total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY total_stars DESC\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 7,
+        "llmRowCount": 0,
+        "sql": "\nSELECT \n  \"Nighttime, especially between midnight and 3 AM local time\" AS best_day,\n  \"This window aligns with peak visibility when the sky is darkest, and many astronomical phenomena, including transient stellar activity or satellite passes, are more observable.\" AS rationale\nFROM tinybird_events\nWHERE event_type = 'opened' AND ref_type = 3\n  AND file_time >= datetime('now', '-30 days') -- limit to recent data for relevance\n  AND file_time < datetime('now') -- exclude future events\nORDER BY file_time DESC\nLIMIT 1\n"
       }
     },
     "humanResults": {
@@ -16658,6 +16868,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count(DISTINCT actor_login) as total_users\nFROM github_events\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\nSELECT COUNT(DISTINCT actor_login) AS total_github_users\nFROM github_events\nWHERE event_type = 'MemberEvent' AND ref_type = 'repository'\nGROUP BY actor_login\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -17607,6 +17831,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count(DISTINCT actor_login) as total_users\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT COUNT(DISTINCT actor_login) AS total_stars_given\nFROM github_events\nWHERE event_type = 'WatchEvent' AND action = 'opened'\n"
       }
     },
     "humanResults": {
@@ -18528,6 +18766,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count(DISTINCT actor_login) as total_users\nFROM github_events\nWHERE event_type = 'PushEvent'\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT COUNT(DISTINCT actor_login) AS total_users_with_push\nFROM github_events\nWHERE event_type = 'PushEvent' AND action = 'opened'\n"
       }
     },
     "humanResults": {
@@ -19449,6 +19701,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count(DISTINCT actor_login) as total_users\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\nAND action = 'opened'\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT COUNT(DISTINCT actor_login) AS total_users_with_created_pr\nFROM github_events\nWHERE event_type = 'CreatedEvent' AND action = 'created'\n"
       }
     },
     "humanResults": {
@@ -20394,6 +20660,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login\n        FROM github_events\n        WHERE event_type = 'PullRequestEvent'\n            AND action = 'opened'\n    )\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%%\n%% \nSELECT \n  actor_login, \n  COUNT(DISTINCT repo_name) AS starred_count\nFROM \n  github_events\nWHERE \n  event_type = 'WatchEvent'  -- Star event captured as WatchEvent with action='opened'\n  AND action = 'opened'\n  AND ref_type = 'repository'\n  AND ref LIKE '%' || actor_login || '%'  -- Filter stars by actor\n  AND exists(\n    SELECT 1\n    FROM github_events e2\n    WHERE e2.actor_login = actor_login\n      AND e2.ref_type = 'PullRequestReviewEvent'  -- PR review events indicate PRs with comments\n      AND e2.comment_id IS NOT NULL  -- At least one comment in PR (active PR)\n    AND e2.created_at >= now() - interval 365 day  -- Recent stars within last year\n  )\nGROUP BY \n  actor_login\nORDER BY \n  starred_count DESC\n%% \n"
       }
     },
     "humanResults": {
@@ -21362,6 +21642,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\nGROUP BY repo_name, actor_login\nHAVING count() >= 10\nORDER BY pr_count DESC\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n% \n% SELECT repo_name, COUNT(DISTINCT author_association) AS pr_count  \n% FROM github_events  \n% WHERE action = 'created'  \n% GROUP BY repo_name  \n% HAVING pr_count >= 10  \n% ORDER BY pr_count DESC  \n% LIMIT 10\n\n% \n"
       }
     },
     "humanResults": {
@@ -22338,6 +22632,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\nGROUP BY repo_name\nORDER BY pr_count DESC\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%top10.repositories.by_pull_request_count DESC LIMIT 10\n\nSELECT  \n  repo_name,  \n  COUNT(action) AS pull_request_count  \nFROM  \n  events  \nWHERE  \n  event_type = 'PullRequestEvent'  \n  AND action = 'opened'  \nGROUP BY  \n  repo_name  \nORDER BY  \n  pull_request_count DESC  \nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -23328,6 +23636,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT \n  repo_name, \n  COUNT(DISTINCT author_association) AS contributor_count\nFROM \n  github_events\nWHERE \n  event_type = 'PullRequestReviewCommentEvent' \n    AND action = 'opened'\nGROUP BY \n  repo_name\nORDER BY \n  contributor_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -24314,6 +24636,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n    AND action = 'opened'\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%{%if defined('start_date')%}\nWHERE created_at >= '{{{{start_date, now() - interval 365 day}}}}' AND created_at <= '{{{{end_date, now()}}}}'\n%{%else%}\nWHERE created_at >= '1970-01-01' AND created_at <= '{{{{now()}}}}'\n%{%endif%}\n\nSELECT\n  repo_name,\n  COUNT(issue_id) AS issue_count\nFROM\n  events\nWHERE\n  event_type = 'IssueCommentEvent' AND action = 'opened' AND ref_type = 'repository'\nGROUP BY\n  repo_name\nORDER BY\n  issue_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -25290,6 +25626,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_contributors\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%{%if defined(push_access_threshold)%}\nWITH repo_push_owners AS (\n  SELECT \n    repo_name,\n    COUNT(DISTINCT actor_login) AS push_contributors,\n    COUNT(DISTINCT actor_login) AS total_push_owners\n  FROM github_events\n  WHERE event_type = 'PushEvent' AND action = 'opened'\n  GROUP BY repo_name\n  ORDER BY total_push_owners DESC\n  LIMIT 10\n)\nSELECT \n  repo_name,\n  push_contributors,\n  total_push_owners\nFROM repo_push_owners\n%{%endif\n"
       }
     },
     "humanResults": {
@@ -26266,6 +26616,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_pushers\nFROM github_events\nWHERE event_type = 'PushEvent'\n    AND base_ref = 'refs/heads/main'\nGROUP BY repo_name\nORDER BY unique_pushers DESC\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%fetch_repositories_with_top_pushers_by_main_branch\n\nSELECT  \n  repo_name,  \n  COUNT(DISTINCT actor_login) AS pushers_count  \nFROM github_events  \nWHERE event_type = 'PushEvent'  \n  AND action = 'opened'  \n  AND ref = 'main'  \nGROUP BY repo_name  \nORDER BY pushers_count DESC  \nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -27256,6 +27620,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_pushers,\n    countIf(event_type = 'WatchEvent') as stars\nFROM github_events\nWHERE event_type IN ('PushEvent', 'WatchEvent')\nGROUP BY repo_name\nHAVING stars > 99\nORDER BY unique_pushers DESC\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n% SELECT repo_name, COUNT(DISTINCT author_association) AS push_access_count, COUNT(commit_id) AS push_commits  \n  FROM github_events  \n  WHERE event_type = 'PushEvent'  \n    AND action = 'push'  \n    AND repo_name = 'main'  \n    AND file_time > DateTime(now() - interval 365 day)  \n    AND author_association IN (  \n      SELECT author_association  \n      FROM github_events  \n      WHERE event_type = 'PushEvent'  \n        AND action = 'push'  \n        AND repo_name = 'main'  \n    )  \n    AND (  \n      SELECT COUNT(*)  \n      FROM github_events e2  \n      WHERE e2.event_type = 'PushEvent'  \n        AND e2.action = 'push'  \n        AND e2.repo_name = 'main'  \n        AND e2.author_association = author_association  \n        AND e2.file_time > DateTime(now() - interval 365 day)  \n    ) > 99  \n  GROUP BY repo_name  \n  HAVING push_access_count > 99  \n  ORDER BY push_access_count DESC  \n  LIMIT 10  \n  %\n"
       }
     },
     "humanResults": {
@@ -28260,6 +28638,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as member_invitations\nFROM github_events\nWHERE event_type = 'MemberEvent'\n    AND action = 'added'\nGROUP BY repo_name\nORDER BY member_invitations DESC\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n  repo_name, \n  COUNT(DISTINCT actor_login) AS member_invitations_count\nFROM \n  github_events\nWHERE \n  event_type = 'ForkEvent' OR event_type = 'FollowEvent' OR event_type = 'MemberEvent'\n  AND ref_type = 'repository'\nGROUP BY \n  repo_name\nORDER BY \n  member_invitations_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -29250,6 +29642,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as fork_count\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY fork_count DESC\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%top_10_most_forked_repositories\n%if defined(github_events) AND event_type = 'ForkEvent' AND ref_type = 'repository'\nSELECT\n  repo_name,\n  COUNT(action) AS fork_count\nFROM {{%if defined(github_events) %}}github_events{% endif %}\nWHERE action = 'forked'\nGROUP BY repo_name\nORDER BY fork_count DESC\nLIMIT 10\n%else\n%error \"No valid fork events found with required filters\"\n%endif\n\n\n**Note:** The original query is actually syntactically valid for Tinybird/ClickHouse. The error likely stems from environment-specific parsing or template handling. The provided query correctly uses `action = 'forked'` (correct enum value), proper grouping, filtering, and aggregation. No syntax fix is needed beyond ensuring the template `{{%if defined(...) %}}` is properly closed and the `action` enum is correctly referenced. If errors persist, verify the template engine supports `%if` and `{{% ... %}}` syntax. Otherwise, the query is correct as written."
       }
     },
     "humanResults": {
@@ -30222,6 +30628,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    countIf(event_type = 'WatchEvent') as stars,\n    countIf(event_type = 'ForkEvent') as forks,\n    stars / nullIf(forks, 0) as star_fork_ratio\nFROM github_events\nWHERE event_type IN ('WatchEvent', 'ForkEvent')\nGROUP BY repo_name\nHAVING forks > 0\nORDER BY star_fork_ratio DESC\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%top10_repositories_by_stars_to_forks_ratio\n\nSELECT  \n  repo_name,  \n  SUM(CASE WHEN action = 'opened' THEN 1 ELSE 0 END) AS total_stars,  \n  SUM(CASE WHEN action = 'forked' THEN 1 ELSE 0 END) AS total_forks,  \n  CASE  \n    WHEN total_forks = 0 THEN 0  \n    ELSE CAST(SUM(CASE WHEN action = 'opened' THEN 1 ELSE 0 END) / CAST(total_forks AS Float) AS Float)  \n  END AS stars_to_forks_ratio,  \n  COUNT(*) AS total_events  \nFROM  \n  github_events  \nWHERE  \n  event_type IN ('StarEvent', 'ForkEvent')  \n  AND action IN ('opened', 'forked')  \nGROUP BY  \n  repo_name  \nORDER BY  \n  stars_to_forks_ratio DESC  \nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -31226,6 +31646,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT\n    countIf(event_type = 'WatchEvent') AS total_stars,\n    countIf(event_type = 'ForkEvent') AS total_forks,\n    round(countIf(event_type = 'WatchEvent') / countIf(event_type = 'ForkEvent'), 2) AS stars_to_forks_ratio\nFROM github_events\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\nSELECT \n  COALESCE(\n    SUM(CASE WHEN action = 'created' THEN 1 ELSE 0 END), 0\n  ) AS total_stars,\n  COALESCE(\n    SUM(CASE WHEN action = 'forked' THEN 1 ELSE 0 END), 0\n  ) AS total_forks,\n  ROUND(\n    COALESCE(\n      SUM(CASE WHEN action = 'created' THEN 1 ELSE 0 END), 0\n    ) /\n    COALESCE(\n      SUM(CASE WHEN action = 'forked' THEN 1 ELSE 0 END), 1\n    )\n  , 2\n) AS stars_to_forks_ratio\nFROM github_events\nWHERE action IN ('created', 'forked')\n  AND event_type IN (\n    'CommitCommentEvent', 'PushEvent', 'PullRequestEvent', 'ForkEvent', 'GollumEvent', \n    'IssueCommentEvent', 'IssuesEvent', 'FollowEvent', 'DownloadEvent', 'ReleaseEvent', \n    'SponsorshipEvent', 'WatchEvent', 'TeamAddEvent'\n  )\n  AND ref_type = 'repository'\nORDER BY created_at DESC\n"
       }
     },
     "humanResults": {
@@ -32157,6 +32591,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count() as total_issues\nFROM github_events\nWHERE event_type = 'IssuesEvent'\nAND action = 'opened'\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT COUNT(*) AS total_issues_opened \nFROM github_events \nWHERE event_type = 'IssuesEvent' AND action = 'opened'\n"
       }
     },
     "humanResults": {
@@ -33106,6 +33554,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as issue_comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY issue_comment_count DESC\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n\n% SELECT repo_name, COUNT(*) AS issue_comment_count  \n% FROM github_events  \n% WHERE event_type = 'IssueCommentEvent'  \n% GROUP BY repo_name  \n% ORDER BY issue_comment_count DESC  \n% LIMIT 10  \n% %  \n"
       }
     },
     "humanResults": {
@@ -34078,6 +34540,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    countIf(event_type = 'IssueCommentEvent') as issue_comments,\n    countIf(event_type = 'IssuesEvent' AND action = 'opened') as issues_opened,\n    if(issues_opened > 0, issue_comments / issues_opened, 0) as comment_to_issue_ratio\nFROM github_events\nWHERE event_type IN ('IssueCommentEvent', 'IssuesEvent')\nGROUP BY repo_name\nHAVING issues_opened > 0\nORDER BY comment_to_issue_ratio DESC\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n% SELECT  \n  repo_name,  \n  COUNT(issue_comments) AS issue_comments_count,  \n  COUNT(issues) AS issues_count,  \n  (COUNT(issue_comments) / NULLIF(COUNT(issues), 0)) AS comment_to_issue_ratio  \nFROM github_events  \nWHERE event_type IN ('IssueCommentEvent', 'IssuesEvent')  \n  AND ref_type = 'issue'  \nGROUP BY repo_name  \nORDER BY comment_to_ratio DESC  \nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -35082,6 +35558,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    number,\n    max(comments) as total_comments\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n    AND action = 'opened'\nGROUP BY repo_name, number\nORDER BY total_comments DESC\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%  \nSELECT  \n  actor_login,  \n  COUNT(*) AS comment_count  \nFROM  \n  github_events  \nWHERE  \n  event_type = 'IssueCommentEvent'  \n  AND action = 'opened'  \nGROUP BY  \n  actor_login  \nORDER BY  \n  comment_count DESC  \nLIMIT 10  \n%  \n"
       }
     },
     "humanResults": {
@@ -36068,6 +36558,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    number as issue_number,\n    countDistinct(actor_login) as comment_authors,\n    count() as total_comments\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\n    AND number > 10\nGROUP BY repo_name, number\nHAVING comment_authors >= 10\nORDER BY total_comments DESC\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT\n  toYear(created_at) AS year,\n  COUNT(DISTINCT actor_login) AS comment_count,\n  COUNT(DISTINCT actor_login) AS comment_authors,\n  CASE\n    WHEN COUNT(DISTINCT actor_login) >= 10 THEN 'Yes'\n    ELSE 'No'\n  END AS has_enough_comments\nFROM github_events\nWHERE event_type = 'CommentCommentEvent'\nGROUP BY toYear(created_at)\nORDER BY toYear(created_at) DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -37068,6 +37572,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as event_count\nFROM github_events\nWHERE lower(body) LIKE '%tensorflow%' \n   OR lower(title) LIKE '%tensorflow%'\n   OR lower(repo_name) LIKE '%tensorflow%'\nGROUP BY repo_name\nORDER BY event_count DESC\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n  repo_name, \n  COUNT(*) AS event_count\nFROM \n  github_events\nWHERE \n  event_type IN ('CreateEvent', 'CommitCommentEvent', 'PullRequestEvent', 'IssueCommentEvent', 'PushEvent', 'MergeEvent', 'ForkEvent', 'DownloadEvent', 'Review_requested_event', 'Review_request_removed', 'PullRequestReviewEvent', 'PullRequestMergeEvent', 'PullRequestUpdate', 'PullRequestCreateEvent', 'PullRequestDeleteEvent', 'PullRequestReopenedEvent', 'PullRequestClosedEvent')\nGROUP BY \n  repo_name\nORDER BY \n  event_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -38058,6 +38576,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as commit_comments\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY commit_comments DESC\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "% \nSELECT repo_name, COUNT(action) AS comment_count\nFROM github_events\nWHERE event_type = 'CommentCommentEvent'\nGROUP BY repo_name\nORDER BY comment_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -39048,6 +39580,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    concat('https://github.com/', repo_name, '/commit/', commit_id) AS commit_url,\n    count() AS total_comments,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\n    AND commit_id != ''\nGROUP BY repo_name, commit_id\nHAVING unique_authors >= 10\nORDER BY total_comments DESC\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT \n  commit_url,\n  COUNT(DISTINCT comment_id) AS total_comments,\n  COUNT(DISTINCT actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'CommitCommentEvent' \n  AND action = 'opened'\n  AND ref_type = 'commit'\nGROUP BY commit_id, commit_url\nHAVING COUNT(DISTINCT comment_id) >= 10\nORDER BY total_comments DESC\nLIMIT 10\n\nFORMAT JSON\n"
       }
     },
     "humanResults": {
@@ -40052,6 +40598,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    concat('https://github.com/', repo_name, '/pull/', toString(number)) AS pr_url,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\n    AND number > 0\nGROUP BY repo_name, number\nORDER BY unique_authors DESC\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT \n  PR.url AS `pr_url`,\n  COUNT(DISTINCT PR.actor_login) AS `unique_authors`\nFROM github_events AS PR\nWHERE PR.action = 'opened' \n  AND PR.event_type = 'PushEvent'\nGROUP BY PR.url\nORDER BY COUNT(DISTINCT PR.actor_login) DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -41042,6 +41602,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    actor_login,\n    COUNT(*) as push_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY push_count DESC\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%groupBy author_association, count(actor_login) DESC  \n%orderBy count(actor_login) DESC  \n%limit 10  \n"
       }
     },
     "humanResults": {
@@ -42032,6 +42606,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    splitByChar('/', repo_name)[1] AS organization,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY organization\nORDER BY stars DESC\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%{% if defined(star_param) %}  \n%%  \n% SELECT repo_name, COUNT(*) AS star_count  \n% FROM github_events  \n% WHERE event_type = 'WatchEvent'  \n% AND action = 'opened'  \n% GROUP BY repo_name  \n% ORDER BY star_count DESC  \n% LIMIT 10  \n%%  \n% {% if sqlResult.success %}  \n% {  \n%   \"sqlResult.data\": [  \n%     \"`repo_name`: {{{{sqlResult.repo_name, json:default_value('')}}}}, \"`star_count`: {{{{sqlResult.star_count, json:default_value(0)}}}]\"  \n% }  \n% {% endif %}  \n"
       }
     },
     "humanResults": {
@@ -43008,6 +43596,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    splitByChar('/', repo_name)[1] AS organization,\n    uniqExact(repo_name) AS repository_count\nFROM github_events\nGROUP BY organization\nORDER BY repository_count DESC\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%%\nSELECT \n  o.name AS organization_name,\n  COUNT(pr.repo_name) AS repo_count\nFROM \n  tinybird.pipe_organizations o\n  LEFT JOIN tinybird.pipe_repositories pr ON o.id = pr.repo_owner_id\nGROUP BY \n  o.name\nORDER BY \n  repo_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -43998,6 +44600,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as pr_count,\n    uniq(actor_login) as unique_authors,\n    sum(additions) as total_adds,\n    sum(deletions) as total_dels,\n    sum(additions + deletions) as total_churn\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\n    AND additions < 10000\n    AND deletions < 10000\nGROUP BY repo_name\nORDER BY total_churn DESC\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT\n  repo_name,\n  COUNT(*) AS pr_count,\n  COUNT(DISTINCT author_login) AS unique_authors,\n  SUM(additions) AS total_adds,\n  SUM(deletions) AS total_dels\nFROM (\n  SELECT\n    actor_login,\n    repo_name,\n    COUNT(*) AS pr_count,\n    COUNT(DISTINCT actor_login) AS unique_authors,\n    SUM(additions) AS total_adds,\n    SUM(deletions) AS total_dels\n  FROM github_events\n  WHERE event_type = 'PullRequestReviewCommentEvent'\n    AND action = 'opened'\n    AND ref_type = 'pull_request'\n    AND ref NOT LIKE '{{{{Repository}}}/%'  -- exclude fork events\n    AND ref NOT LIKE '{{{{ForkApplyEvent}}}/%'\n    AND ref NOT LIKE '{{{{MergeRequestReviewEvent}}}/%'\n    AND ref NOT LIKE '{{{{PullRequestReviewEvent}}}/%'\n    AND ref NOT LIKE '{{{{CreateEvent}}}/%'\n    AND ref NOT LIKE '{{{{ForkEvent}}}/%'\n    AND ref NOT LIKE '{{{{DeleteEvent}}}/%'\n    AND ref_type = 'pull_request'\n    AND event_type = 'PullRequestReviewCommentEvent'\n    AND ref NOT LIKE '{{{{GistEvent}}}/%'\n    AND ref NOT LIKE '{{{{IssueCommentEvent}}}/%'\n    AND ref NOT LIKE '{{{{IssuesEvent}}}/%'\n    AND repo_name IS NOT NULL\n) AS pr_summary\nWHERE total_adds < 10000 AND total_dels < 10000\nGROUP BY repo_name\nORDER BY total_adds DESC, total_dels DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -45030,6 +45646,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    actor_login as author,\n    count() as total_pr_comments,\n    uniq(repo_name) as unique_repositories,\n    uniq(number) as unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\n    AND action = 'created'\nGROUP BY actor_login\nORDER BY total_pr_comments DESC\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%if defined(PR_COMMENT_EVENT)%  \nSELECT  \n  actor_login AS author,  \n  COUNT(*) AS pull_pr_comments,  \n  COUNT(DISTINCT ref_type) AS unique_repos,  \n  COUNT(DISTINCT action) AS unique_prs  \nFROM events  \nWHERE event_type = 'PullRequestCommentEvent'  \n  AND actor_login IS NOT NULL  \nGROUP BY actor_login  \nORDER BY pull_pr_comments DESC  \nLIMIT 10  \n%endif  \n"
       }
     },
     "humanResults": {
@@ -46030,6 +46660,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    arrayJoin(labels) AS label,\n    count() AS usage_count\nFROM github_events\nWHERE event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')\n    AND action IN ('created', 'opened', 'labeled')\n    AND length(labels) > 0\nGROUP BY label\nORDER BY usage_count DESC\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%if defined(Impopulation) && Impopulation > 0  \nSELECT  \n  label,  \n  SUM(CASE WHEN event_type = 'IssueCommentEvent' AND action = 'opened' THEN 1 ELSE 0 END) AS issue_comments_opened,  \n  SUM(CASE WHEN event_type = 'PullRequestReviewCommentEvent' AND action = 'opened' THEN 1 ELSE 0 END) AS pr_reviews_opened,  \n  SUM(CASE WHEN event_type = 'IssueCommentEvent' AND action = 'closed' THEN 1 ELSE 0 END) AS issue_comments_closed,  \n  SUM(CASE WHEN event_type = 'PullRequestReviewCommentEvent' AND action = 'closed' THEN 1 ELSE 0 END) AS pr_reviews_closed,  \n  SUM(CASE WHEN event_type = 'IssueCommentEvent' AND action = 'approved' THEN 1 ELSE 0 END) AS issue_comments_approved,  \n  SUM(CASE WHEN event_type = 'PullRequestReviewCommentEvent' AND action = 'approved' THEN 1 ELSE 0 END) AS pr_reviews_approved,  \n  SUM(CASE WHEN event_type = 'IssueCommentEvent' AND action = 'pending' THEN 1 ELSE 0 END) AS issue_comments_pending,  \n  SUM(CASE WHEN event_type = 'PullRequestReviewCommentEvent' AND action = 'pending' THEN 1 ELSE 0 END) AS pr_reviews_pending,  \n  SUM(CASE WHEN event_type = 'IssueCommentEvent' AND action = 'rejected' THEN 1 ELSE 0 END) AS issue_comments_rejected,  \n  SUM(CASE WHEN event_type = 'PullRequestReviewCommentEvent' AND action = 'rejected' THEN 1 ELSE 0 END) AS pr_reviews_rejected,  \n  SUM(CASE WHEN event_type = 'IssueCommentEvent' AND action = 'merged' THEN 1 ELSE 0 END) AS issue_comments_merged,  \n  SUM(CASE WHEN event_type = 'PullRequestReviewCommentEvent' AND action = 'merged' THEN 1 ELSE 0 END) AS pr_reviews_merged  \nFROM tinybird.events  \nWHERE event_type IN ('IssueCommentEvent', 'PullRequestReviewCommentEvent')  \n  AND action IN ('opened', 'closed', 'approved', 'pending', 'rejected', 'merged')  \nGROUP BY label  \nORDER BY SUM(CASE WHEN event_type = 'IssueCommentEvent' AND action = 'opened' THEN 1 ELSE 0 END) DESC,  \n  SUM(CASE WHEN event_type = 'PullRequestReviewCommentEvent' AND action = 'opened' THEN 1 ELSE 0 END) DESC  \nLIMIT 10  \n%else  \nSELECT 'No valid data available for top labels.'  \n%endif\n"
       }
     },
     "humanResults": {
@@ -47006,6 +47650,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    splitByChar('/', repo_name)[1] as organization,\n    uniq(actor_login) as unique_authors,\n    uniqIf(actor_login, event_type = 'PullRequestEvent' AND action = 'opened') as unique_pr_authors,\n    uniqIf(actor_login, event_type = 'IssuesEvent' AND action = 'opened') as unique_issue_authors,\n    uniqIf(actor_login, event_type = 'IssueCommentEvent') as unique_issue_comment_authors,\n    uniqIf(actor_login, event_type = 'PushEvent') as unique_push_authors\nFROM github_events\nWHERE repo_name != ''\nGROUP BY organization\nORDER BY unique_authors DESC\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n% if defined(organization_name) %  \nSELECT  \n  organization_name,  \n  COUNT(DISTINCT actor_login) AS unique_authors,  \n  COUNT(DISTINCT actor_login) AS unique_pull_request_authors,  \n  COUNT(DISTINCT actor_login) AS unique_issue_authors,  \n  COUNT(DISTINCT actor_login) AS unique_issue_comment_authors,  \n  COUNT(DISTINCT actor_login) AS unique_push_authors  \nFROM github_events  \nWHERE event_type IN ('CommitCommentEvent', 'PullRequestEvent', 'IssueCommentEvent', 'PushEvent')  \nGROUP BY organization_name  \nORDER BY unique_authors DESC  \nLIMIT 10  \n% else %  \nSELECT  \n  repo_name,  \n  COUNT(DISTINCT actor_login) AS unique_authors,  \n  COUNT(DISTINCT actor_login) AS unique_pull_request_authors,  \n  COUNT(DISTINCT actor_login) AS unique_issue_authors,  \n  COUNT(DISTINCT actor_login) AS unique_issue_comment_authors,  \n  COUNT(DISTINCT actor_login) AS unique_push_authors  \nFROM github_events  \nWHERE event_type IN ('CommitCommentEvent', 'PullRequestEvent', 'IssueCommentEvent', 'PushEvent')  \nGROUP BY repo_name  \nORDER BY unique_authors DESC  \nLIMIT 10  \n% endif  \n"
       }
     },
     "humanResults": {
@@ -48066,6 +48724,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    length(repo_name) as name_length\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY name_length DESC\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT repo_name, LENGTH(repo_name) AS name_length  \nFROM github_events  \nWHERE ref_type = 'repository'  \n  AND ref LIKE 'repository%'  \n  AND ref LIKE 'repositories%'  \n  AND ref LIKE 'repo_%'  \n  AND action = 'opened'  \n  AND file_time >= now() - interval 365 day  \n  AND mergeable_state = 'clean'  \nORDER BY LENGTH(repo_name) DESC  \nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -49042,6 +49714,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING count() >= 1\nORDER BY length(repo_name) ASC\nLIMIT 10\n"
+      },
+      "liquid/lfm2-8b-a1b": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nmain  \ncore  \ndev  \ntest  \nalpha  \nbeta  \nstargazer  \nnova  \npioneer  \nhub  \nLIMIT 10  \n"
       }
     },
     "humanResults": {
@@ -49623,6 +50309,14 @@
         "avgExactDistance": 0.5383838383838385,
         "avgNumericDistance": 0.39462101454809,
         "avgFScore": 0.4699999999999999
+      },
+      "liquid/lfm2-8b-a1b": {
+        "totalMatches": 1,
+        "exactMatches": 1,
+        "numericMatches": 1,
+        "avgExactDistance": 0.96,
+        "avgNumericDistance": 0.96,
+        "avgFScore": 0.02
       }
     }
   }
