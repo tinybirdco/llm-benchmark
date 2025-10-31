@@ -924,6 +924,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count() as total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT count() AS stars_count FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10"
       }
     },
     "humanResults": {
@@ -1869,6 +1883,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "### Top 10 GitHub Repositories by Stars\n\nTo retrieve the top 10 most-starred repositories using valid Tinybird/ClickHouse SQL, use the following query:\n\n\nSELECT\n  repo_name,\n  count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10\n\n\nThis query counts the number of \"WatchEvent\" events (which represent stars) for each repository, groups the results by repository name, orders them by the number of stars in descending order, and limits the output to the top 10 repositories.\n\n- **repo_name**: The name of the repository.\n- **stars**: The total number of stars (WatchEvents) for that repository.\n\nThis approach ensures compatibility with Tinybird and ClickHouse, and will return a table with the top 10 repositories by star count."
       }
     },
     "humanResults": {
@@ -2855,6 +2883,20 @@
         "humanRowCount": 5,
         "llmRowCount": 5,
         "sql": "\nSELECT\n    pow(10, floor(log10(stars + 1))) as star_bucket,\n    count(DISTINCT repo_name) as repo_count\nFROM (\n    SELECT \n        repo_name,\n        count() as stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n)\nWHERE stars > 0\nGROUP BY star_bucket\nORDER BY star_bucket ASC\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 5,
+        "llmRowCount": 5,
+        "sql": "SELECT\n  pow(10, intDiv(log10(star_count), 1)) AS star_bin,\n  count() AS repo_count\nFROM (\n  SELECT\n    repo_name,\n    countIf(event_type = 'WatchEvent') AS star_count\n  FROM github_events\n  GROUP BY repo_name\n  HAVING star_count > 0\n)\nGROUP BY star_bin\nORDER BY star_bin ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -3825,6 +3867,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count(DISTINCT repo_name) as total_repositories\nFROM github_events\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT count(DISTINCT repo_name) AS total_repositories FROM github_events"
       }
     },
     "humanResults": {
@@ -4770,6 +4826,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    toYear(created_at) as year,\n    repo_name,\n    count() as events_count\nFROM github_events\nWHERE toYear(created_at) >= 2015\nGROUP BY year, repo_name\nORDER BY year ASC, events_count DESC\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    toYear(created_at) AS year,\n    repo_name,\n    count() AS stars_in_year\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND created_at >= toDateTime('2015-01-01 00:00:00')\n  AND created_at < toDateTime('2025-01-01 00:00:00')\nGROUP BY\n    year,\n    repo_name\nORDER BY\n    year ASC,\n    stars_in_year DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -5770,6 +5840,20 @@
         "humanRowCount": 2,
         "llmRowCount": 2,
         "sql": "\nSELECT \n    toYear(created_at) as year,\n    count() as total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 2,
+        "llmRowCount": 2,
+        "sql": "SELECT\n  toYear(created_at) AS year,\n  count() AS stars_this_year,\n  sum(count()) OVER (ORDER BY toYear(created_at)) AS cumulative_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -6714,6 +6798,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    actor_login,\n    COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY star_count DESC\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  actor_login AS username,\n  count() AS total_stars_given\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY total_stars_given DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -7704,6 +7802,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND actor_login IN (\n    SELECT DISTINCT actor_login\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n      AND repo_name = 'tensorflow/tensorflow'\n  )\n  AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND actor_login IN (\n    SELECT actor_login\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n      AND repo_name = 'tensorflow/tensorflow'\n  )\n  AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -8680,6 +8792,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "\nSELECT \n    actor_login,\n    countIf(repo_name LIKE 'javisantana/%') as javisantana_stars,\n    countIf(repo_name NOT LIKE 'javisantana/%') as other_stars,\n    countIf(repo_name LIKE 'javisantana/%') as total_stars,\n    javisantana_stars / total_stars as javisantana_ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nHAVING javisantana_stars > 0\nORDER BY javisantana_ratio DESC, javisantana_stars DESC\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.5723632073811654,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  actor_login AS user_name,\n  countIf(repo_name LIKE 'javisantana/%') AS stars_to_javisantana,\n  countIf(repo_name NOT LIKE 'javisantana/%') AS stars_to_others,\n  countIf(repo_name LIKE 'javisantana/%') / count() AS ratio_javisantana\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nHAVING count() > 0\nORDER BY ratio_javisantana DESC, stars_to_javisantana DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -9684,6 +9810,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_tf_contributors,\n    count() as total_prs\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login \n        FROM github_events \n        WHERE event_type = 'PullRequestEvent' \n            AND repo_name LIKE '%tensorflow%'\n            AND action = 'opened'\n    )\n    AND repo_name NOT LIKE '%tensorflow%'\nGROUP BY repo_name\nORDER BY unique_tf_contributors DESC, total_prs DESC\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "## Top 10 Non-TensorFlow Repositories Receiving Pull Requests from TensorFlow Contributors\n\nTo identify the top 10 non-TensorFlow repositories that received the most pull requests from TensorFlow contributors, ranked by the number of unique contributors, use the following valid Tinybird/ClickHouse SQL query:\n\n\nSELECT\n  repo_name,\n  count(DISTINCT actor_login) AS unique_tensorflow_contributors\nFROM github_events\nANY INNER JOIN\n(\n  SELECT DISTINCT actor_login\n  FROM github_events\n  WHERE repo_name LIKE 'tensorflow/%'\n    AND event_type = 'PullRequestEvent'\n    AND action = 'opened'\n) AS tf_contributors\nON github_events.actor_login = tf_contributors.actor_login\nWHERE\n  github_events.event_type = 'PullRequestEvent'\n  AND github_events.action = 'opened'\n  AND github_events.repo_name NOT LIKE 'tensorflow/%'\nGROUP BY repo_name\nORDER BY unique_tensorflow_contributors DESC\nLIMIT 10\n\n\nThis query works as follows:\n\n- **Identifies TensorFlow Contributors:** The subquery selects all unique `actor_login` values who have opened pull requests in any repository under the `tensorflow/` organization.\n- **Joins on Contributors:** The main query joins the `github_events` table with this list of TensorFlow contributors, matching on `actor_login`.\n- **Filters for Non-TensorFlow Repositories:** It only considers pull requests (`event_type = 'PullRequestEvent'` and `action = 'opened'`) in repositories not under the `tensorflow/` organization.\n- **Counts Unique Contributors:** For each non-TensorFlow repository, it counts the number of unique TensorFlow contributors who have opened pull requests.\n- **Ranks and Limits:** Results are ordered by the number of unique contributors, returning only the top 10 repositories.\n\n### Usage Notes\n\n- This query is fully compatible with Tinybird and ClickHouse SQL syntax.\n- It avoids CTEs and subqueries in the `SELECT` clause, using a join pattern for compatibility and performance.\n- The result will be a table listing the top 10 non-TensorFlow repositories, along with the count of unique TensorFlow contributors who have opened pull requests in each.\n\n\n\n"
       }
     },
     "humanResults": {
@@ -10670,6 +10810,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    actor_login,\n    COUNT(*) as issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n    AND action = 'opened'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login \n        FROM github_events \n        WHERE event_type = 'IssuesEvent' \n            AND action = 'opened'\n            AND repo_name = 'tensorflow/tensorflow'\n    )\n    AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name, actor_login\nORDER BY issue_count DESC\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  actor_login AS author,\n  count() AS issues_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n  AND action = 'opened'\n  AND actor_login IN (\n    SELECT DISTINCT actor_login\n    FROM github_events\n    WHERE event_type = 'IssuesEvent'\n      AND action = 'opened'\n      AND repo_name = 'tensorflow/tensorflow'\n  )\n  AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name, author\nORDER BY issues_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -11662,6 +11816,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    toDate(created_at) as date,\n    uniq(actor_login) as stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name, date\nORDER BY stars DESC\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "## Top 10 Unique GitHub Repositories by Most Stars in a Single Day\n\nTo answer your request for the top 10 unique repositories with the most stars over any full day (at any instant), here is the correct SQL query for Tinybird/ClickHouse. This query counts the number of `WatchEvent` (star) events per repository per day, finds the maximum daily stars for each repository, and then returns the top 10 repositories with the highest such daily peak, ensuring each repository appears only once.\n\n\nSELECT\n  repo_name,\n  max(stars_in_a_day) AS max_daily_stars\nFROM (\n  SELECT\n    repo_name,\n    toDate(created_at) AS day,\n    count() AS stars_in_a_day\n  FROM github_events\n  WHERE event_type = 'WatchEvent'\n  GROUP BY\n    repo_name,\n    day\n)\nGROUP BY repo_name\nORDER BY max_daily_stars DESC\nLIMIT 10\n\n\n### Explanation\n\n- **Step 1:** The inner query groups all `WatchEvent` events by `repo_name` and day, counting the number of stars each repository received per day.\n- **Step 2:** The outer query finds the maximum daily star count for each repository.\n- **Step 3:** The results are ordered by the highest daily star count, and only the top 10 unique repositories are returned.\n\nThis approach ensures:\n- Each repository is listed only once (no repeats).\n- The ranking reflects the highest number of stars received in a single day at any instant for each repository.\n- The result is limited to 10 repositories, as requested.\n\n\n\n"
       }
     },
     "humanResults": {
@@ -12662,6 +12830,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2016) AS stars_2016,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2017) AS stars_2017,\n    stars_2017 - stars_2016 AS growth,\n    if(stars_2016 > 0, ((stars_2017 - stars_2016) / stars_2016) * 100, 0) AS growth_percentage\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND toYear(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING stars_2016 >= 1 AND stars_2017 > stars_2016\nORDER BY growth DESC\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "### Top 10 GitHub Repositories with Highest YoY Star Growth (2016–2017)\n\nTo identify the repositories with the highest year-over-year (YoY) growth in stars from 2016 to 2017, starting from exactly 1 star at the end of 2016, use the following valid Tinybird/ClickHouse SQL query. This query counts the number of stars (WatchEvent) for each repository at the end of 2016 and 2017, filters for those with exactly 1 star at the end of 2016, and ranks by the increase in stars during 2017.\n\n\nSELECT\n  s2017.repo_name,\n  (s2017.star_count_end_2017 - s2016.star_count_end_2016) AS growth\nFROM\n  (\n    SELECT\n      repo_name,\n      COUNT(*) AS star_count_end_2016\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n      AND created_at <= '2016-12-31'\n    GROUP BY repo_name\n  ) AS s2016\nINNER JOIN\n  (\n    SELECT\n      repo_name,\n      COUNT(*) AS star_count_end_2017\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n      AND created_at <= '2017-12-31'\n    GROUP BY repo_name\n  ) AS s2017\nON s2016.repo_name = s2017.repo_name\nWHERE s2016.star_count_end_2016 = 1\n  AND (s2017.star_count_end_2017 - s2016.star_count_end_2016) > 0\nORDER BY growth DESC\nLIMIT 10\n\n\n#### How This Query Works\n\n- **Counts stars for each repo at the end of 2016 and 2017.**\n- **Filters for repos with exactly 1 star at the end of 2016.**\n- **Calculates the growth in stars during 2017.**\n- **Returns the top 10 repositories with the highest growth.**\n\nThis approach ensures you only consider repositories that started 2017 with a single star, highlighting those that experienced explosive growth in that year.\n\n\n\n\n\n"
       }
     },
     "humanResults": {
@@ -13680,6 +13862,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2016) AS stars_2016,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2017) AS stars_2017,\n    stars_2016 - stars_2017 AS stagnation\nFROM github_events\nWHERE toYear(created_at) IN (2016, 2017)\n    AND event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING stars_2017 >= 1 AND stars_2016 > stars_2017\nORDER BY stagnation DESC\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "I understand the issue. The problem is that you're including markdown formatting (headers, tables, and explanations) in the SQL query itself, which ClickHouse/Tinybird cannot parse. SQL queries must contain **only valid SQL code** with no markdown or explanatory text.\n\nHere's the corrected SQL query:\n\n\nSELECT\n  repo_name,\n  countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2016) AS stars_2016,\n  countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2017) AS stars_2017,\n  (countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2017) - countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2016)) AS star_change\nFROM github_events\nGROUP BY repo_name\nHAVING countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2017) > 0\nORDER BY star_change ASC\nLIMIT 10\n\n\n**Key fixes:**\n\n- Removed all markdown headers, tables, and explanatory text\n- Moved the star count filtering to a `HAVING` clause instead of a subquery (ClickHouse prefers this approach)\n- Kept only the pure SQL SELECT statement\n- The query now counts WatchEvents (stars) for each repository in 2016 and 2017, calculates the change, filters for repos with at least one star in 2017, and sorts by the worst stagnation (most negative change)\n\nThis query will execute successfully and return the top 10 repositories with the worst stagnation between 2016 and 2017."
       }
     },
     "humanResults": {
@@ -14684,6 +14880,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as total_stars,\n    toStartOfMonth(created_at) as month,\n    COUNT(*) / COUNT(DISTINCT toStartOfMonth(created_at)) as avg_stars_per_month,\n    stddevPop(COUNT(*)) OVER (PARTITION BY repo_name) as star_growth_stddev\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND created_at >= now() - INTERVAL 1 YEAR\nGROUP BY repo_name, month\nHAVING COUNT(DISTINCT month) >= 6\nORDER BY star_growth_stddev ASC, total_stars DESC\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "## Top 10 GitHub Repositories with the Most Steady Star Growth Rate\n\nSteady star growth on GitHub highlights repositories that consistently attract new users and maintain ongoing interest from the developer community. These projects typically gain stars at a regular pace over months or years, rather than experiencing short-lived viral spikes.\n\n### How Steady Star Growth Is Measured\n\nTo identify repositories with the most steady star growth rate, we analyze the number of stars (i.e., `WatchEvent` events) each repository receives per month. By applying a linear regression (using the `boundingRatio` aggregate function) to the monthly star counts, we can determine which repositories have the most consistent, linear growth patterns.\n\n### SQL Query\n\nBelow is a valid Tinybird/ClickHouse SQL query to find the top 10 repositories with the most steady (highest slope) star growth rate over time:\n\n\nSELECT\n  repo_name,\n  boundingRatio(toYYYYMM(created_at), 1) AS star_growth_slope,\n  count() AS total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY star_growth_slope DESC\nLIMIT 10\n\n\n- `boundingRatio(toYYYYMM(created_at), 1)` computes the slope of star growth per month for each repository.\n- The query groups by `repo_name` and orders by the highest slope, returning the top 10 repositories with the steadiest star growth.\n\n### Why These Repositories Stand Out\n\n- **Consistent Utility:** These projects provide ongoing value, such as learning resources, frameworks, and curated lists.\n- **Community Engagement:** They maintain active communities and regular updates, sustaining long-term interest.\n- **Linearity of Growth:** Their star accumulation is steady and linear, reflecting enduring relevance rather than viral surges.\n\n### Additional Insights\n\n- Many of these repositories have been popular for several years, and their steady star growth reflects both the expansion of the GitHub user base and the lasting importance of their content.\n- Foundational projects like React and freeCodeCamp continue to attract new users steadily, rather than relying on fleeting popularity.\n\n\n\n"
       }
     },
     "humanResults": {
@@ -15694,6 +15904,20 @@
         "humanRowCount": 7,
         "llmRowCount": 7,
         "sql": "\nSELECT \n    toDayOfWeek(created_at) as day_of_week,\n    CASE toDayOfWeek(created_at)\n        WHEN 1 THEN 'Monday'\n        WHEN 2 THEN 'Tuesday'\n        WHEN 3 THEN 'Wednesday'\n        WHEN 4 THEN 'Thursday'\n        WHEN 5 THEN 'Friday'\n        WHEN 6 THEN 'Saturday'\n        WHEN 7 THEN 'Sunday'\n    END as day_name,\n    count() as total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY total_stars DESC\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 7,
+        "llmRowCount": 0,
+        "sql": "## Best Day of the Week to Catch a Star on GitHub\n\nTo determine the best day of the week to \"catch a star\" (i.e., when users are most likely to star a GitHub repository), the following SQL query analyzes the number of \"WatchEvent\" events (which represent stars) grouped by the day of the week:\n\n\nSELECT\n  dayOfWeek(created_at) AS day_of_week,\n  count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY stars DESC\nLIMIT 10\n\n\n### How to Interpret the Results\n\n- **day_of_week**: Returns a number from 1 (Monday) to 7 (Sunday), indicating the day of the week.\n- **stars**: The total number of stars (WatchEvents) given on that day.\n\n### Key Insights\n\n- The day with the highest count in the results is the best day to \"catch a star\" on GitHub.\n- This analysis is based on actual user activity and provides a data-driven answer to the question.\n\n### Additional Tips\n\n- For more granular insights, you can further break down the data by hour or by specific repositories.\n- Consider running this query periodically to observe any changes in user behavior over time."
       }
     },
     "humanResults": {
@@ -16658,6 +16882,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count(DISTINCT actor_login) as total_users\nFROM github_events\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.000052934128674804696,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT count(DISTINCT actor_login) AS total_github_users FROM github_events LIMIT 10"
       }
     },
     "humanResults": {
@@ -17607,6 +17845,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count(DISTINCT actor_login) as total_users\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0014793406252330366,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT count(DISTINCT actor_login) AS total_users_with_star\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -18528,6 +18780,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count(DISTINCT actor_login) as total_users\nFROM github_events\nWHERE event_type = 'PushEvent'\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0018759619527295886,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT countDistinct(actor_login) AS total_users_with_push\nFROM github_events\nWHERE event_type = 'PushEvent'\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -19449,6 +19715,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count(DISTINCT actor_login) as total_users\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\nAND action = 'opened'\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0017507922334856522,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT count(DISTINCT actor_login) AS total_users_with_pr\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -20394,6 +20674,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login\n        FROM github_events\n        WHERE event_type = 'PullRequestEvent'\n            AND action = 'opened'\n    )\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND actor_login IN (\n    SELECT actor_login\n    FROM github_events\n    WHERE event_type = 'PullRequestEvent'\n      AND action = 'opened'\n    GROUP BY actor_login\n  )\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -21362,6 +21656,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\nGROUP BY repo_name, actor_login\nHAVING count() >= 10\nORDER BY pr_count DESC\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  count(DISTINCT actor_login) AS num_authors_with_10_or_more_prs\nFROM\n  (\n    SELECT\n      repo_name,\n      actor_login,\n      count() AS pr_count\n    FROM github_events\n    WHERE event_type = 'PullRequestEvent'\n      AND action = 'opened'\n    GROUP BY repo_name, actor_login\n    HAVING pr_count >= 10\n  )\nGROUP BY repo_name\nORDER BY num_authors_with_10_or_more_prs DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -22338,6 +22646,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\nGROUP BY repo_name\nORDER BY pr_count DESC\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  count() AS pull_request_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\nGROUP BY repo_name\nORDER BY pull_request_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -23328,6 +23650,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "# Top 10 GitHub Repositories by Pull Request Contributors\n\nTo identify the repositories with the highest number of unique pull request contributors, use the following valid Tinybird/ClickHouse SQL query:\n\n\nSELECT\n  repo_name,\n  uniq(actor_login) AS pr_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\nGROUP BY repo_name\nORDER BY pr_contributors DESC\nLIMIT 10\n\n\nThis query will return a table with the top 10 repositories, ranked by the number of unique users who have opened pull requests.\n\n## How the Query Works\n\n- **repo_name**: The name of the repository.\n- **uniq(actor_login)**: Counts the number of unique users who have opened pull requests.\n- **event_type = 'PullRequestEvent' AND action = 'opened'**: Filters for events where a pull request was opened.\n- **GROUP BY repo_name**: Aggregates by repository.\n- **ORDER BY pr_contributors DESC LIMIT 10**: Returns the top 10 repositories with the most unique pull request contributors.\n\n## Why This Matters\n\n- **Community Engagement**: Repositories with more unique PR contributors tend to have more active and diverse communities.\n- **Project Popularity**: High contributor counts often correlate with project popularity and impact.\n- **Open Source Health**: These metrics are useful for evaluating the health and vibrancy of open source projects.\n\n\n\n"
       }
     },
     "humanResults": {
@@ -24314,6 +24650,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n    AND action = 'opened'\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  count() AS issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n  AND action = 'opened'\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -25290,6 +25640,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_contributors\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  count(DISTINCT actor_login) AS push_access_people\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY repo_name\nORDER BY push_access_people DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -26266,6 +26630,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_pushers\nFROM github_events\nWHERE event_type = 'PushEvent'\n    AND base_ref = 'refs/heads/main'\nGROUP BY repo_name\nORDER BY unique_pushers DESC\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "### Top 10 GitHub Repositories by Most People with Push Access to the Main Branch\n\nIdentifying the exact number of people with push access to the main branch of each repository is not possible using public event data alone, as GitHub does not expose this information directly. However, we can approximate repositories with the largest number of people who have likely had push access by counting the number of unique users who have performed a `PushEvent` (i.e., pushed code) to each repository. This method provides a reasonable proxy for repositories with large, active teams and many trusted contributors.\n\n#### SQL Query\n\nBelow is a valid Tinybird/ClickHouse SQL query to find the top 10 repositories with the most unique users who have performed a push (which typically requires push access):\n\n\nSELECT\n  repo_name,\n  uniq(actor_login) AS unique_push_users\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY repo_name\nORDER BY unique_push_users DESC\nLIMIT 10\n\n\n#### Explanation\n\n- **repo_name**: The name of the repository.\n- **uniq(actor_login)**: Counts the number of unique users who have performed a push event.\n- **event_type = 'PushEvent'**: Filters for push events, which require push access.\n- **ORDER BY unique_push_users DESC**: Sorts repositories by the number of unique pushers, in descending order.\n- **LIMIT 10**: Returns only the top 10 repositories.\n\n#### Important Notes\n\n- This query does not guarantee that all counted users currently have push access, only that they have pushed code at some point.\n- The actual list of users with push access may be larger or smaller, depending on repository governance and access changes over time.\n- For precise, up-to-date access lists, repository owners must check the \"Collaborators & Teams\" section in GitHub repository settings.\n\n#### Why This Approach?\n\n- GitHub's public event data does not include explicit access control lists.\n- Counting unique pushers is the closest available proxy for identifying repositories with large numbers of trusted contributors.\n\n"
       }
     },
     "humanResults": {
@@ -27256,6 +27634,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_pushers,\n    countIf(event_type = 'WatchEvent') as stars\nFROM github_events\nWHERE event_type IN ('PushEvent', 'WatchEvent')\nGROUP BY repo_name\nHAVING stars > 99\nORDER BY unique_pushers DESC\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT\n  repo_name,\n  count(DISTINCT actor_login) AS push_access_count\nFROM github_events\nWHERE event_type = 'PushEvent'\n  AND ref = 'refs/heads/main'\n  AND repo_name IN (\n    SELECT repo_name\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n    HAVING count() > 99\n  )\nGROUP BY repo_name\nORDER BY push_access_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -28260,6 +28652,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as member_invitations\nFROM github_events\nWHERE event_type = 'MemberEvent'\n    AND action = 'added'\nGROUP BY repo_name\nORDER BY member_invitations DESC\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "## Top 10 GitHub Repositories by Member Invitations\n\nTo identify the repositories with the most member invitations, we analyze GitHub events data for the `MemberEvent` type. Each time a member is invited or added to a repository, a `MemberEvent` is recorded. By aggregating these events per repository, we can determine which repositories have extended the most invitations.\n\n### SQL Query\n\nBelow is the correct Tinybird/ClickHouse SQL query to retrieve the top 10 repositories by the number of member invitations:\n\n\nSELECT\n  repo_name,\n  count() AS member_invitations\nFROM github_events\nWHERE event_type = 'MemberEvent'\nGROUP BY repo_name\nORDER BY member_invitations DESC\nLIMIT 10\n\n\n### Explanation\n\n- **repo_name**: The name of the repository.\n- **count()**: Counts the number of `MemberEvent` events, representing member invitations.\n- **WHERE event_type = 'MemberEvent'**: Filters for member invitation events.\n- **GROUP BY repo_name**: Aggregates the count per repository.\n- **ORDER BY member_invitations DESC**: Sorts results to show repositories with the most invitations at the top.\n- **LIMIT 10**: Returns only the top 10 repositories.\n\n### Notes\n\n- Each `MemberEvent` typically corresponds to a member invitation or addition.\n- If you want to count only unique invitations (e.g., by user), you can use `uniq(actor_login)` instead of `count()`.\n- The query is valid for Tinybird/ClickHouse and does not include any unsupported syntax or comments.\n\n### Usage\n\nRun this query in your Tinybird or ClickHouse environment to get a real-time leaderboard of repositories with the most member invitations.\n\n[1]"
       }
     },
     "humanResults": {
@@ -29250,6 +29656,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as fork_count\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY fork_count DESC\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  count() AS forks\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY forks DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -30222,6 +30642,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    countIf(event_type = 'WatchEvent') as stars,\n    countIf(event_type = 'ForkEvent') as forks,\n    stars / nullIf(forks, 0) as star_fork_ratio\nFROM github_events\nWHERE event_type IN ('WatchEvent', 'ForkEvent')\nGROUP BY repo_name\nHAVING forks > 0\nORDER BY star_fork_ratio DESC\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  countIf(event_type = 'WatchEvent') AS stars,\n  countIf(event_type = 'ForkEvent') AS forks,\n  if(countIf(event_type = 'ForkEvent') = 0, 0, countIf(event_type = 'WatchEvent') / countIf(event_type = 'ForkEvent')) AS stars_to_forks_ratio\nFROM github_events\nGROUP BY repo_name\nHAVING forks > 0\nORDER BY stars_to_forks_ratio DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -31226,6 +31660,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT\n    countIf(event_type = 'WatchEvent') AS total_stars,\n    countIf(event_type = 'ForkEvent') AS total_forks,\n    round(countIf(event_type = 'WatchEvent') / countIf(event_type = 'ForkEvent'), 2) AS stars_to_forks_ratio\nFROM github_events\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "# GitHub Repositories: Total Stars, Forks, and Star/Fork Ratio\n\nTo obtain the total number of stars, forks, and the ratio (rounded to two decimal places) between stars and forks for all repositories in the dataset, use the following valid Tinybird/ClickHouse SQL query:\n\n\nSELECT\n  countIf(event_type = 'WatchEvent') AS total_stars,\n  countIf(event_type = 'ForkEvent') AS total_forks,\n  round(\n    if(countIf(event_type = 'ForkEvent') = 0, 0,\n      countIf(event_type = 'WatchEvent') / countIf(event_type = 'ForkEvent')\n    ), 2\n  ) AS star_fork_ratio\nFROM github_events\nLIMIT 10\n\n\n## Explanation\n\n- **total_stars**: Counts all \"WatchEvent\" events, representing stars given to repositories.\n- **total_forks**: Counts all \"ForkEvent\" events, representing forks of repositories.\n- **star_fork_ratio**: Calculates the ratio of stars to forks, rounded to two decimal places. If there are no forks, the ratio is set to 0 to avoid division by zero.\n\nThis query will return a single row with the total stars, total forks, and the calculated ratio for all repositories in the dataset.\n\n[1]"
       }
     },
     "humanResults": {
@@ -32157,6 +32605,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count() as total_issues\nFROM github_events\nWHERE event_type = 'IssuesEvent'\nAND action = 'opened'\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "SELECT count() AS total_issues_opened\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n  AND action = 'opened'\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -33106,6 +33568,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as issue_comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY issue_comment_count DESC\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  count() AS issue_comment_events\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY issue_comment_events DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -34078,6 +34554,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    countIf(event_type = 'IssueCommentEvent') as issue_comments,\n    countIf(event_type = 'IssuesEvent' AND action = 'opened') as issues_opened,\n    if(issues_opened > 0, issue_comments / issues_opened, 0) as comment_to_issue_ratio\nFROM github_events\nWHERE event_type IN ('IssueCommentEvent', 'IssuesEvent')\nGROUP BY repo_name\nHAVING issues_opened > 0\nORDER BY comment_to_issue_ratio DESC\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "### Top 10 GitHub Repositories by Issue Comments-to-Issues Ratio\n\nTo identify the repositories with the most active discussions per issue, the following valid Tinybird/ClickHouse SQL query calculates the ratio of issue comments to issues for each repository and returns the top 10:\n\n\nSELECT\n  repo_name,\n  countIf(event_type = 'IssueCommentEvent') AS issue_comments,\n  countIf(event_type = 'IssuesEvent' AND action = 'opened') AS issues,\n  issue_comments / issues AS comments_per_issue\nFROM github_events\nGROUP BY repo_name\nHAVING issues > 0\nORDER BY comments_per_issue DESC\nLIMIT 10\n\n\n---\n\n#### What This Query Does\n\n- **Counts the number of issue comments** (`IssueCommentEvent`) for each repository.\n- **Counts the number of issues opened** (`IssuesEvent` with `action = 'opened'`) for each repository.\n- **Calculates the ratio** of comments per issue.\n- **Returns the top 10 repositories** with the highest comments-to-issues ratio.\n\n---\n\n#### Why This Metric Matters\n\n- **High Ratio:** Indicates active discussions, complex problems, or a highly engaged community.\n- **Low Ratio:** Suggests issues are resolved quickly or with minimal discussion.\n\n---\n\n#### Example Output Table\n\n| Rank | Repository         | Issue Comments | Issues | Comments per Issue |\n|------|-------------------|---------------|--------|--------------------|\n| 1    | repo1             | 1,200         | 100    | 12.0               |\n| 2    | repo2             | 950           | 90     | 10.6               |\n| ...  | ...               | ...           | ...    | ...                |\n\n---\n\n#### How to Use This Query\n\n- Run the query in your Tinybird or ClickHouse environment.\n- The result will show which repositories foster the most discussion per issue, helping you identify highly engaged or complex projects.\n\n\n\n---\n\n#### Additional Insights\n\n- Repositories with a high comments-to-issues ratio often have large contributor bases, frequent updates, and active maintainers.\n- This metric is useful for assessing community health and engagement on open-source projects.\n\n"
       }
     },
     "humanResults": {
@@ -35082,6 +35572,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    number,\n    max(comments) as total_comments\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n    AND action = 'opened'\nGROUP BY repo_name, number\nORDER BY total_comments DESC\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  number AS issue_number,\n  max(comments) AS comment_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n  AND action = 'opened'\nGROUP BY repo_name, issue_number\nORDER BY comment_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -36068,6 +36572,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    number as issue_number,\n    countDistinct(actor_login) as comment_authors,\n    count() as total_comments\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\n    AND number > 10\nGROUP BY repo_name, number\nHAVING comment_authors >= 10\nORDER BY total_comments DESC\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  number AS issue_number,\n  count() AS total_comments,\n  uniq(actor_login) AS unique_comment_authors\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\n  AND (repo_name || toString(number)) > '10'\nGROUP BY repo_name, issue_number\nHAVING unique_comment_authors >= 10\nORDER BY total_comments DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -37068,6 +37586,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as event_count\nFROM github_events\nWHERE lower(body) LIKE '%tensorflow%' \n   OR lower(title) LIKE '%tensorflow%'\n   OR lower(repo_name) LIKE '%tensorflow%'\nGROUP BY repo_name\nORDER BY event_count DESC\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  count(*) AS num_events\nFROM github_events\nWHERE (lower(body) LIKE '%tensorflow%' OR lower(title) LIKE '%tensorflow%' OR lower(repo_name) LIKE '%tensorflow%')\nGROUP BY repo_name\nORDER BY num_events DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -38058,6 +38590,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as commit_comments\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY commit_comments DESC\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "### Top 10 GitHub Repositories by Number of Commit Comments\n\nTo find the repositories with the most commit comments, use the following valid Tinybird/ClickHouse SQL query:\n\n\nSELECT\n  repo_name,\n  count() AS commit_comments\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY commit_comments DESC\nLIMIT 10\n\n\nThis query will return the top 10 repositories ranked by the number of commit comments. It works by:\n\n- Filtering for events where `event_type` is `'CommitCommentEvent'`, which corresponds to comments made on commits.\n- Grouping the results by `repo_name` to aggregate the count of commit comments per repository.\n- Ordering the results in descending order by the count of commit comments.\n- Limiting the output to the top 10 repositories.\n\nYou can use this query directly in your Tinybird or ClickHouse environment to get an up-to-date ranking based on your dataset.\n\n"
       }
     },
     "humanResults": {
@@ -39048,6 +39594,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    concat('https://github.com/', repo_name, '/commit/', commit_id) AS commit_url,\n    count() AS total_comments,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\n    AND commit_id != ''\nGROUP BY repo_name, commit_id\nHAVING unique_authors >= 10\nORDER BY total_comments DESC\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  concat('https://github.com/', repo_name, '/commit/', commit_id) AS commit_url,\n  count() AS total_comments,\n  uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name, commit_id\nHAVING uniq(actor_login) >= 10\nORDER BY total_comments DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -40052,6 +40612,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    concat('https://github.com/', repo_name, '/pull/', toString(number)) AS pr_url,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\n    AND number > 0\nGROUP BY repo_name, number\nORDER BY unique_authors DESC\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0.18181818181818177,
+          "numeric": 0,
+          "fScore": 0.9
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  'https://github.com/' || repo_name || '/pull/' || toString(number) AS pr_url,\n  count(DISTINCT actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\nGROUP BY repo_name, number\nORDER BY unique_authors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -41042,6 +41616,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    actor_login,\n    COUNT(*) as push_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY push_count DESC\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  actor_login AS author,\n  count() AS pushes\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY pushes DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -42032,6 +42620,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    splitByChar('/', repo_name)[1] AS organization,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY organization\nORDER BY stars DESC\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  splitByChar('/', repo_name)[1] AS owner,\n  count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY owner\nORDER BY stars DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -43008,6 +43610,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    splitByChar('/', repo_name)[1] AS organization,\n    uniqExact(repo_name) AS repository_count\nFROM github_events\nGROUP BY organization\nORDER BY repository_count DESC\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  splitByChar('/', repo_name)[1] AS organization,\n  count(DISTINCT repo_name) AS repo_count\nFROM github_events\nWHERE repo_name != ''\nGROUP BY organization\nORDER BY repo_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -43998,6 +44614,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as pr_count,\n    uniq(actor_login) as unique_authors,\n    sum(additions) as total_adds,\n    sum(deletions) as total_dels,\n    sum(additions + deletions) as total_churn\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\n    AND additions < 10000\n    AND deletions < 10000\nGROUP BY repo_name\nORDER BY total_churn DESC\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "## Top 10 GitHub Repositories by Code Churn from Pull Requests\n\nThe following SQL query will return the top 10 repositories ranked by total code churn (sum of additions and deletions) from pull requests that were opened, including only PRs with fewer than 10,000 additions and fewer than 10,000 deletions. For each repository, the query returns:\n\n- Repository name\n- Number of qualifying PRs\n- Number of unique PR authors\n- Total additions\n- Total deletions\n\n### SQL Query\n\n\nSELECT\n  repo_name AS repository,\n  count() AS pr_count,\n  uniq(actor_login) AS unique_authors,\n  sum(additions) AS total_adds,\n  sum(deletions) AS total_dels\nFROM github_events\nWHERE\n  event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND additions < 10000\n  AND deletions < 10000\nGROUP BY repo_name\nORDER BY (sum(additions) + sum(deletions)) DESC\nLIMIT 10\n\n\n### Explanation\n\n- **Filtering**: Only includes pull requests (`event_type = 'PullRequestEvent'` and `action = 'opened'`) with less than 10,000 additions and less than 10,000 deletions.\n- **Grouping**: Aggregates by repository name.\n- **Aggregations**:\n  - `count()` counts the number of qualifying PRs.\n  - `uniq(actor_login)` counts unique PR authors.\n  - `sum(additions)` and `sum(deletions)` total the lines added and deleted.\n- **Ordering**: Ranks repositories by total code churn (additions + deletions), descending.\n- **Limiting**: Returns only the top 10 repositories.\n\n### Output Table Structure\n\n| Repository         | PR Count | Unique Authors | Total Adds | Total Dels |\n|--------------------|----------|---------------|------------|------------|\n| ...                | ...      | ...           | ...        | ...        |\n\n> Replace the ellipses with actual data from your database.\n\n---\n\nThis query is fully compatible with Tinybird and ClickHouse, and avoids any non-SQL content or invalid syntax. It will provide the precise metrics you requested for code churn analysis across GitHub repositories."
       }
     },
     "humanResults": {
@@ -45030,6 +45660,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    actor_login as author,\n    count() as total_pr_comments,\n    uniq(repo_name) as unique_repositories,\n    uniq(number) as unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\n    AND action = 'created'\nGROUP BY actor_login\nORDER BY total_pr_comments DESC\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "### Top 10 Authors with the Most Code Reviews\n\nThe following SQL query will return the top 10 authors who have created the most pull request review comments. For each author, it provides:\n- The total number of pull request review comments they created.\n- The number of unique repositories where these comments were made.\n- The number of unique pull requests they participated in.\n\n\nSELECT\n  actor_login AS author,\n  count() AS pr_comments_created,\n  uniq(repo_name) AS unique_repositories,\n  uniq(number) AS unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\nGROUP BY actor_login\nORDER BY pr_comments_created DESC\nLIMIT 10\n\n\n#### How This Works\n\n- **actor_login**: The GitHub username of the reviewer.\n- **pr_comments_created**: Total number of pull request review comments made by the author.\n- **unique_repositories**: Number of distinct repositories where the author has commented.\n- **unique_prs**: Number of distinct pull requests where the author has commented.\n\nThis query is fully compatible with Tinybird and ClickHouse, and will efficiently aggregate the required metrics without any markdown, comments, or non-SQL content in the query itself.\n\n\n\n---\n\n#### Why These Metrics Matter\n\n- **Identifying top reviewers** helps recognize contributors who are most active in code review, which is crucial for maintaining code quality and fostering collaboration.\n- **Unique repositories and PRs** show the breadth of a reviewer's impact across projects and discussions.\n\n"
       }
     },
     "humanResults": {
@@ -46030,6 +46674,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    arrayJoin(labels) AS label,\n    count() AS usage_count\nFROM github_events\nWHERE event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')\n    AND action IN ('created', 'opened', 'labeled')\n    AND length(labels) > 0\nGROUP BY label\nORDER BY usage_count DESC\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    arrayJoin(labels) AS label,\n    count() AS usage_count\nFROM github_events\nWHERE\n    (\n        (event_type = 'IssuesEvent' AND (action = 'opened' OR action = 'labeled'))\n        OR\n        (event_type = 'PullRequestEvent' AND (action = 'opened' OR action = 'labeled'))\n        OR\n        (event_type = 'IssueCommentEvent' AND action = 'created')\n    )\n    AND length(label) > 0\nGROUP BY label\nORDER BY usage_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -47006,6 +47664,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    splitByChar('/', repo_name)[1] as organization,\n    uniq(actor_login) as unique_authors,\n    uniqIf(actor_login, event_type = 'PullRequestEvent' AND action = 'opened') as unique_pr_authors,\n    uniqIf(actor_login, event_type = 'IssuesEvent' AND action = 'opened') as unique_issue_authors,\n    uniqIf(actor_login, event_type = 'IssueCommentEvent') as unique_issue_comment_authors,\n    uniqIf(actor_login, event_type = 'PushEvent') as unique_push_authors\nFROM github_events\nWHERE repo_name != ''\nGROUP BY organization\nORDER BY unique_authors DESC\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n    splitByChar('/', repo_name)[1] AS organization,\n    uniq(actor_login) AS unique_authors,\n    uniqIf(actor_login, event_type = 'PullRequestEvent' AND action = 'opened') AS unique_pr_authors,\n    uniqIf(actor_login, event_type = 'IssuesEvent' AND action = 'opened') AS unique_issue_authors,\n    uniqIf(actor_login, event_type = 'IssueCommentEvent') AS unique_issue_comment_authors,\n    uniqIf(actor_login, event_type = 'PushEvent') AS unique_push_authors\nFROM github_events\nWHERE repo_name != ''\nGROUP BY organization\nORDER BY unique_authors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -48066,6 +48738,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    length(repo_name) as name_length\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY name_length DESC\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "## Top 10 Longest GitHub Repository Names With At Least 1 Star\n\nTo find the longest repository names that have received at least one star, use the following valid Tinybird/ClickHouse SQL query:\n\n\nSELECT\n  repo_name,\n  length(repo_name) AS name_length\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY name_length DESC, repo_name ASC\nLIMIT 10\n\n\n### Explanation\n\n- **Filters for repositories** that have received at least one star (i.e., a \"WatchEvent\").\n- **Calculates the length** of each repository name using the `length()` function.\n- **Groups by repository name** to ensure each repo is counted only once.\n- **Orders the results** by name length (descending) and then alphabetically.\n- **Returns the top 10 longest names**.\n\n### Result Table Structure\n\n| Repository Name         | Name Length |\n|------------------------|-------------|\n| (example) repo_name_1  | 100         |\n| (example) repo_name_2  | 98          |\n| (example) repo_name_3  | 97          |\n| (example) repo_name_4  | 95          |\n| (example) repo_name_5  | 94          |\n| (example) repo_name_6  | 93          |\n| (example) repo_name_7  | 92          |\n| (example) repo_name_8  | 91          |\n| (example) repo_name_9  | 90          |\n| (example) repo_name_10 | 89          |\n\n> The actual repository names and their lengths will be determined by running the above query on your dataset.\n\n"
       }
     },
     "humanResults": {
@@ -49042,6 +49728,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING count() >= 1\nORDER BY length(repo_name) ASC\nLIMIT 10\n"
+      },
+      "perplexity/sonar-pro-search": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "### Top 10 Shortest GitHub Repository Names with at Least 1 Star\n\nTo retrieve the top 10 shortest repository names that have received at least one star, use the following valid Tinybird/ClickHouse SQL query:\n\n\nSELECT\n  repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY length(repo_name) ASC, repo_name ASC\nLIMIT 10\n\n\nThis query:\n- Selects repository names from the `github_events` table.\n- Filters for events where a repository has received a star (`event_type = 'WatchEvent'`).\n- Groups by repository name to ensure uniqueness.\n- Orders the results by the length of the repository name (shortest first), and then alphabetically.\n- Limits the output to the top 10 results.\n\n[1]"
       }
     },
     "humanResults": {
@@ -49623,6 +50323,14 @@
         "avgExactDistance": 0.5383838383838385,
         "avgNumericDistance": 0.39462101454809,
         "avgFScore": 0.4699999999999999
+      },
+      "perplexity/sonar-pro-search": {
+        "totalMatches": 22,
+        "exactMatches": 15,
+        "numericMatches": 22,
+        "avgExactDistance": 0.6836363636363637,
+        "avgNumericDistance": 0.5515504447264257,
+        "avgFScore": 0.318
       }
     }
   }
