@@ -118,6 +118,11 @@
       "models": [
         "cydonia-24b-v4.1"
       ]
+    },
+    "amazon": {
+      "models": [
+        "nova-premier-v1"
+      ]
     }
   }
 }
