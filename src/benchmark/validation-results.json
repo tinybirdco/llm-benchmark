@@ -924,6 +924,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count() as total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT COUNT(*) as total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\n"
       }
     },
     "humanResults": {
@@ -1869,6 +1883,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    count() as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -2855,6 +2883,20 @@
         "humanRowCount": 5,
         "llmRowCount": 5,
         "sql": "\nSELECT\n    pow(10, floor(log10(stars + 1))) as star_bucket,\n    count(DISTINCT repo_name) as repo_count\nFROM (\n    SELECT \n        repo_name,\n        count() as stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n)\nWHERE stars > 0\nGROUP BY star_bucket\nORDER BY star_bucket ASC\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 5,
+        "llmRowCount": 0,
+        "sql": "\nSELECT \n  stars,\n  count() as repo_count\nFROM repositories\nGROUP BY stars\nORDER BY stars\n"
       }
     },
     "humanResults": {
@@ -3825,6 +3867,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count(DISTINCT repo_name) as total_repositories\nFROM github_events\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.4025510962316544,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT count(DISTINCT repo_name) as total_repositories\nFROM github_events\nWHERE event_type = 'CreateEvent'\n"
       }
     },
     "humanResults": {
@@ -4770,6 +4826,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    toYear(created_at) as year,\n    repo_name,\n    count() as events_count\nFROM github_events\nWHERE toYear(created_at) >= 2015\nGROUP BY year, repo_name\nORDER BY year ASC, events_count DESC\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Looking at the error, I can see the issue is with the subquery structure. In ClickHouse, when using a subquery with GROUP BY, you need to properly alias the result and then apply the WHERE clause. Let me fix this:\n\n\nSELECT \n    repo_name,\n    year,\n    stars_count,\n    forks_count,\n    issues_count,\n    pull_requests_count,\n    recent_commits,\n    rank_in_year\nFROM (\n    SELECT \n        repo_name,\n        toYear(created_at) as year,\n        countIf(event_type = 'WatchEvent') as stars_count,\n        countIf(event_type = 'ForkEvent') as forks_count,\n        countIf(event_type = 'IssuesEvent' AND action = 'opened') as issues_count,\n        countIf(event_type = 'PullRequestEvent' AND action = 'opened') as pull_requests_count,\n        countIf(event_type = 'PushEvent') as recent_commits,\n        dense_rank() OVER (PARTITION BY toYear(created_at) ORDER BY countIf(event_type = 'WatchEvent') DESC, countIf(event_type = 'ForkEvent') DESC) as rank_in_year\n    FROM github_events\n    WHERE created_at >= '2015-01-01'\n    GROUP BY repo_name, toYear(created_at)\n) \nWHERE rank_in_year <= 100\nORDER BY year, rank_in_year\n\n\nThe key changes I made:\n1. Changed `GROUP BY repo_name, year` to `GROUP BY repo_name, toYear(created_at)` to avoid potential type issues\n2. Removed the unnecessary `year` alias reference in the outer query since we're selecting it directly from the subquery\n3. Kept the WHERE clause after the subquery closing parenthesis as before\n\nThis query will now correctly show how the top 100 repositories have changed over the years from 2015 onwards, displaying metrics like stars, forks, issues, pull requests, and recent commits for each repository by year."
       }
     },
     "humanResults": {
@@ -5770,6 +5840,20 @@
         "humanRowCount": 2,
         "llmRowCount": 2,
         "sql": "\nSELECT \n    toYear(created_at) as year,\n    count() as total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 2,
+        "llmRowCount": 2,
+        "sql": "\nSELECT\n    toYear(created_at) AS year,\n    count() AS total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year\nLIMIT 100\n"
       }
     },
     "humanResults": {
@@ -6714,6 +6798,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    actor_login,\n    COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY star_count DESC\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    actor_login,\n    count() as stars_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY stars_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -7704,6 +7802,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND actor_login IN (\n    SELECT DISTINCT actor_login\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n      AND repo_name = 'tensorflow/tensorflow'\n  )\n  AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 1,
+        "sql": "\nSELECT \n    repo_name,\n    count() as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND repo_name = 'tensorflow/tensorflow'\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -8680,6 +8792,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "\nSELECT \n    actor_login,\n    countIf(repo_name LIKE 'javisantana/%') as javisantana_stars,\n    countIf(repo_name NOT LIKE 'javisantana/%') as other_stars,\n    countIf(repo_name LIKE 'javisantana/%') as total_stars,\n    javisantana_stars / total_stars as javisantana_ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nHAVING javisantana_stars > 0\nORDER BY javisantana_ratio DESC, javisantana_stars DESC\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Looking at the error, it seems there's a syntax issue with the query structure. The problem appears to be with the nested subqueries and the way they're formatted. Let me fix this by simplifying the approach and ensuring proper syntax for Tinybird/ClickHouse.\n\n\nSELECT \n    actor_login,\n    javisantana_stars,\n    total_stars,\n    round(javisantana_stars / total_stars, 4) as ratio\nFROM (\n    SELECT \n        actor_login,\n        sum(if(repo_name = 'javisantana', 1, 0)) as javisantana_stars,\n        count() as total_stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    AND repo_name = 'javisantana'\n    GROUP BY actor_login\n    HAVING total_stars > 0\n)\nORDER BY ratio DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -9684,6 +9810,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_tf_contributors,\n    count() as total_prs\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login \n        FROM github_events \n        WHERE event_type = 'PullRequestEvent' \n            AND repo_name LIKE '%tensorflow%'\n            AND action = 'opened'\n    )\n    AND repo_name NOT LIKE '%tensorflow%'\nGROUP BY repo_name\nORDER BY unique_tf_contributors DESC, total_prs DESC\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    count(DISTINCT actor_login) as unique_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\n    AND NOT lower(repo_name) LIKE '%tensorflow%'\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -10670,6 +10810,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    actor_login,\n    COUNT(*) as issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n    AND action = 'opened'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login \n        FROM github_events \n        WHERE event_type = 'IssuesEvent' \n            AND action = 'opened'\n            AND repo_name = 'tensorflow/tensorflow'\n    )\n    AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name, actor_login\nORDER BY issue_count DESC\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Looking at the error message, it seems like the query is being interpreted as plain text rather than SQL. This suggests there might be an issue with how the query is being formatted or passed to the system.\n\nLet me provide a corrected SQL query that should work properly:\n\n\nSELECT \n    repo_name,\n    count() as issue_count,\n    uniq(author_login) as unique_authors\nFROM github_events\nWHERE \n    event_type = 'IssuesEvent'\n    AND action = 'opened'\n    AND repo_name != 'tensorflow/tensorflow'\n    AND author_login IN (\n        SELECT DISTINCT actor_login\n        FROM github_events\n        WHERE \n            event_type = 'IssuesEvent'\n            AND action = 'opened'\n            AND repo_name = 'tensorflow/tensorflow'\n    )\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10\n\n\nThe key fixes:\n1. Removed any explanatory text that might be causing parsing issues\n2. Kept the core SQL query structure intact\n3. Maintained the subquery approach to find users who opened issues in tensorflow/tensorflow\n4. Count issues per repository and rank by issue count\n\nThis query should correctly identify the top 10 repositories with the most issues opened by users who also opened issues in tensorflow/tensorflow."
       }
     },
     "humanResults": {
@@ -11662,6 +11816,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    toDate(created_at) as date,\n    uniq(actor_login) as stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name, date\nORDER BY stars DESC\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT uniq(repo_name) as unique_repos, repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY unique_repos DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -12662,6 +12830,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2016) AS stars_2016,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2017) AS stars_2017,\n    stars_2017 - stars_2016 AS growth,\n    if(stars_2016 > 0, ((stars_2017 - stars_2016) / stars_2016) * 100, 0) AS growth_percentage\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND toYear(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING stars_2016 >= 1 AND stars_2017 > stars_2016\nORDER BY growth DESC\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    t2016.repo_name,\n    t2016.star_count AS stars_2016,\n    t2017.star_count AS stars_2017,\n    (t2017.star_count - t2016.star_count) AS growth,\n    t2016.star_count + t2017.star_count AS total_stars\nFROM (\n    SELECT \n        repo_name,\n        count() AS star_count\n    FROM github_events\n    WHERE \n        event_type = 'WatchEvent'\n        AND toYear(created_at) = 2016\n    GROUP BY repo_name\n    HAVING star_count >= 1\n) t2016\nINNER JOIN (\n    SELECT \n        repo_name,\n        count() AS star_count\n    FROM github_events\n    WHERE \n        event_type = 'WatchEvent'\n        AND toYear(created_at) = 2017\n    GROUP BY repo_name\n) t2017\nON t2016.repo_name = t2017.repo_name\nORDER BY growth DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -13680,6 +13862,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2016) AS stars_2016,\n    countIf(event_type = 'WatchEvent' AND toYear(created_at) = 2017) AS stars_2017,\n    stars_2016 - stars_2017 AS stagnation\nFROM github_events\nWHERE toYear(created_at) IN (2016, 2017)\n    AND event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING stars_2017 >= 1 AND stars_2016 > stars_2017\nORDER BY stagnation DESC\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as stars_2017,\n    SUM(CASE WHEN created_at >= '2017-01-01' AND created_at < '2018-01-01' THEN 1 ELSE 0 END) as events_2017,\n    SUM(CASE WHEN created_at >= '2016-01-01' AND created_at < '2017-01-01' THEN 1 ELSE 0 END) as events_2016,\n    SUM(additions) as total_additions_2017,\n    SUM(deletions) as total_deletions_2017,\n    SUM(commits) as total_commits_2017,\n    MAX(created_at) as last_activity_2017,\n    MAX(updated_at) as last_updated_2017\nFROM github_events\nWHERE event_type = 'WatchEvent' \n    AND created_at >= '2017-01-01' \n    AND created_at < '2018-01-01'\nGROUP BY repo_name\nHAVING stars_2017 > 0\nORDER BY \n    (events_2016 - events_2017) DESC,\n    (total_additions_2017 + total_deletions_2017) ASC,\n    repo_name ASC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -14684,6 +14880,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as total_stars,\n    toStartOfMonth(created_at) as month,\n    COUNT(*) / COUNT(DISTINCT toStartOfMonth(created_at)) as avg_stars_per_month,\n    stddevPop(COUNT(*)) OVER (PARTITION BY repo_name) as star_growth_stddev\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND created_at >= now() - INTERVAL 1 YEAR\nGROUP BY repo_name, month\nHAVING COUNT(DISTINCT month) >= 6\nORDER BY star_growth_stddev ASC, total_stars DESC\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as total_stars,\n    avg(growth_rate) as avg_growth_rate,\n    varPop(growth_rate) as growth_rate_variance,\n    min(growth_rate) as min_growth_rate,\n    max(growth_rate) as max_growth_rate\nFROM (\n    SELECT \n        repo_name,\n        created_at,\n        COUNT(*) as stars_in_period,\n        COUNT(*) - LAG(COUNT(*)) OVER (PARTITION BY repo_name ORDER BY created_at) as growth_rate\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name, toStartOfMonth(created_at)\n)\nGROUP BY repo_name\nORDER BY growth_rate_variance ASC, avg_growth_rate DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -15694,6 +15904,20 @@
         "humanRowCount": 7,
         "llmRowCount": 7,
         "sql": "\nSELECT \n    toDayOfWeek(created_at) as day_of_week,\n    CASE toDayOfWeek(created_at)\n        WHEN 1 THEN 'Monday'\n        WHEN 2 THEN 'Tuesday'\n        WHEN 3 THEN 'Wednesday'\n        WHEN 4 THEN 'Thursday'\n        WHEN 5 THEN 'Friday'\n        WHEN 6 THEN 'Saturday'\n        WHEN 7 THEN 'Sunday'\n    END as day_name,\n    count() as total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY total_stars DESC\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 7,
+        "llmRowCount": 0,
+        "sql": "Looking at the error messages, it seems like there might be an issue with the query structure or how it's being executed in the Tinybird environment. Let me provide a corrected version that should work properly:\n\n\nSELECT \n    toDayOfWeek(created_at) AS day_of_week,\n    count() AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY star_count DESC\nLIMIT 1\n\n\nThis query:\n1. Filters for WatchEvent events (when someone stars a repository)\n2. Uses `toDayOfWeek()` to extract the day of the week from the created_at timestamp\n3. Groups by day of the week and counts the occurrences\n4. Orders by star count in descending order\n5. Limits to 1 result to get the best day\n\nThe day of the week is returned as a number (1-7) where Monday=1, Tuesday=2, etc. If you want the actual day name instead of the number, you can modify it to:\n\n\nSELECT \n    toString(toDayOfWeek(created_at)) AS day_name,\n    count() AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_name\nORDER BY star_count DESC\nLIMIT 1\n"
       }
     },
     "humanResults": {
@@ -16658,6 +16882,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count(DISTINCT actor_login) as total_users\nFROM github_events\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.6782320173113771,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT count(DISTINCT actor_login) as total_users\nFROM github_events\nWHERE event_type = 'CreateEvent'\n"
       }
     },
     "humanResults": {
@@ -17607,6 +17845,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count(DISTINCT actor_login) as total_users\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0014793406252330366,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT COUNT(DISTINCT actor_login) AS total_users_with_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\n"
       }
     },
     "humanResults": {
@@ -18528,6 +18780,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count(DISTINCT actor_login) as total_users\nFROM github_events\nWHERE event_type = 'PushEvent'\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0018759619527295886,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT count(DISTINCT actor_login) as total_users_with_push\nFROM github_events\nWHERE event_type = 'PushEvent'\n"
       }
     },
     "humanResults": {
@@ -19449,6 +19715,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count(DISTINCT actor_login) as total_users\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\nAND action = 'opened'\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0017507922334856522,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT count(DISTINCT actor_login) as total_users_with_prs\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n"
       }
     },
     "humanResults": {
@@ -20394,6 +20674,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login\n        FROM github_events\n        WHERE event_type = 'PullRequestEvent'\n            AND action = 'opened'\n    )\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Looking at the error, it seems the issue is with the response format - the system is expecting just the SQL query, not explanatory text. Let me provide the corrected SQL query:\n\n\nSELECT \n    repo_name,\n    count() as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND repo_name IN (\n        SELECT DISTINCT repo_name\n        FROM github_events\n        WHERE event_type = 'PullRequestEvent'\n            AND action = 'opened'\n    )\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -21362,6 +21656,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\nGROUP BY repo_name, actor_login\nHAVING count() >= 10\nORDER BY pr_count DESC\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    actor_login,\n    count() as pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\nGROUP BY repo_name, actor_login\nHAVING pr_count >= 10\nORDER BY pr_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -22338,6 +22646,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\nGROUP BY repo_name\nORDER BY pr_count DESC\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.9929439966674258,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    count() as pull_requests_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\nGROUP BY repo_name\nORDER BY pull_requests_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -23328,6 +23650,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0.9473684210526316,
+          "numeric": 0.007013121364457529,
+          "fScore": 0.09999999999999998
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    count(DISTINCT actor_login) as contributor_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\nGROUP BY repo_name\nORDER BY contributor_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -24314,6 +24650,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n    AND action = 'opened'\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    count() as issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n    AND action = 'opened'\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -25290,6 +25640,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_contributors\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Looking at the error, it seems there's an issue with the query structure. The error indicates a syntax problem with quote handling. Let me fix the query by ensuring proper parameter handling and removing any problematic quote characters.\n\n\nSELECT \n    repo_name,\n    count(DISTINCT actor_login) as push_access_users\nFROM github_events\nWHERE \n    event_type = 'PushEvent'\n    AND author_association IN ('CONTRIBUTOR', 'OWNER', 'COLLABORATOR', 'MEMBER')\nGROUP BY repo_name\nORDER BY push_access_users DESC\nLIMIT 10\n\n\nThe query is now properly formatted without any problematic quote characters that could cause the syntax error. It should correctly identify the top 10 repositories with the most people who have push access based on the `author_association` field values."
       }
     },
     "humanResults": {
@@ -26266,6 +26630,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_pushers\nFROM github_events\nWHERE event_type = 'PushEvent'\n    AND base_ref = 'refs/heads/main'\nGROUP BY repo_name\nORDER BY unique_pushers DESC\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Looking at the error, it seems the issue is with the query explanation text being included in the SQL. The query itself appears to be correct, but the error suggests there's a formatting issue. Let me provide just the SQL query without any explanatory text:\n\n\nSELECT \n    repo_name,\n    count(DISTINCT member_login) as push_access_count\nFROM github_events\nWHERE event_type = 'MemberEvent'\n    AND action = 'added'\n    AND ref_type = 'branch'\n    AND ref = 'main'\nGROUP BY repo_name\nORDER BY push_access_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -27256,6 +27634,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_pushers,\n    countIf(event_type = 'WatchEvent') as stars\nFROM github_events\nWHERE event_type IN ('PushEvent', 'WatchEvent')\nGROUP BY repo_name\nHAVING stars > 99\nORDER BY unique_pushers DESC\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Looking at the error, it seems there was an issue with the query formatting. Let me provide a corrected SQL query that properly answers your original question about the top 10 repositories with the most people who have push access to the main branch, with a cutoff for repositories having more than 99 stars.\n\nSince the schema doesn't include star count information in the `github_events` table, I'll provide a query that focuses on the push access to main branch aspect, and note that the star count filter cannot be applied with the given schema:\n\n\nSELECT \n    repo_name,\n    count(DISTINCT actor_login) as push_access_users\nFROM github_events\nWHERE event_type = 'PushEvent'\n    AND ref = 'main'\n    AND repo_name NOT LIKE '%.%' \n    AND repo_name NOT LIKE '%..%'\nGROUP BY repo_name\nHAVING count(DISTINCT actor_login) > 0\nORDER BY push_access_users DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -28260,6 +28652,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as member_invitations\nFROM github_events\nWHERE event_type = 'MemberEvent'\n    AND action = 'added'\nGROUP BY repo_name\nORDER BY member_invitations DESC\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    count() as member_invitation_count\nFROM github_events\nWHERE event_type = 'MemberEvent'\nGROUP BY repo_name\nORDER BY member_invitation_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -29250,6 +29656,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as fork_count\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY fork_count DESC\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as fork_count\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY fork_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -30222,6 +30642,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    countIf(event_type = 'WatchEvent') as stars,\n    countIf(event_type = 'ForkEvent') as forks,\n    stars / nullIf(forks, 0) as star_fork_ratio\nFROM github_events\nWHERE event_type IN ('WatchEvent', 'ForkEvent')\nGROUP BY repo_name\nHAVING forks > 0\nORDER BY star_fork_ratio DESC\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    countIf(event_type = 'WatchEvent') AS stars,\n    countIf(event_type = 'ForkEvent') AS forks,\n    toFloat64(countIf(event_type = 'WatchEvent')) / countIf(event_type = 'ForkEvent') AS star_fork_ratio\nFROM github_events\nWHERE event_type IN ('WatchEvent', 'ForkEvent')\nGROUP BY repo_name\nORDER BY star_fork_ratio DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -31226,6 +31660,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT\n    countIf(event_type = 'WatchEvent') AS total_stars,\n    countIf(event_type = 'ForkEvent') AS total_forks,\n    round(countIf(event_type = 'WatchEvent') / countIf(event_type = 'ForkEvent'), 2) AS stars_to_forks_ratio\nFROM github_events\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    repo_name,\n    count() as stars,\n    sum(CAST(event_type = 'ForkEvent' AND action = 'created', 'UInt32')) as forks,\n    round(sum(CAST(event_type = 'ForkEvent' AND action = 'created', 'UInt32')) / count(), 2) as stars_to_forks_ratio\nFROM github_events\nWHERE event_type IN ('WatchEvent', 'ForkEvent')\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -32157,6 +32605,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count() as total_issues\nFROM github_events\nWHERE event_type = 'IssuesEvent'\nAND action = 'opened'\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT count() as total_issues_opened\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n  AND action = 'opened'\n"
       }
     },
     "humanResults": {
@@ -33094,6 +33556,20 @@
         "sql": "SELECT repo_name, COUNT(*) as issue_comment_events_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY issue_comment_events_count DESC\nLIMIT 10"
       },
       "anthropic/claude-4.5-sonnet": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    count() as issue_comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY issue_comment_count DESC\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
         "matches": true,
         "exactMatches": true,
         "numericMatches": true,
@@ -34078,6 +34554,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    countIf(event_type = 'IssueCommentEvent') as issue_comments,\n    countIf(event_type = 'IssuesEvent' AND action = 'opened') as issues_opened,\n    if(issues_opened > 0, issue_comments / issues_opened, 0) as comment_to_issue_ratio\nFROM github_events\nWHERE event_type IN ('IssueCommentEvent', 'IssuesEvent')\nGROUP BY repo_name\nHAVING issues_opened > 0\nORDER BY comment_to_issue_ratio DESC\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    countIf(event_type = 'IssuesEvent' AND action = 'opened') AS issues_count,\n    countIf(event_type = 'IssueCommentEvent') AS comments_count,\n    toFloat64(countIf(event_type = 'IssueCommentEvent')) / countIf(event_type = 'IssuesEvent' AND action = 'opened') AS comment_to_issue_ratio\nFROM github_events\nWHERE (event_type = 'IssuesEvent' AND action = 'opened') OR event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nHAVING issues_count > 0\nORDER BY comment_to_issue_ratio DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -35082,6 +35572,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    number,\n    max(comments) as total_comments\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n    AND action = 'opened'\nGROUP BY repo_name, number\nORDER BY total_comments DESC\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    number,\n    comments\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nORDER BY comments DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -36068,6 +36572,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    number as issue_number,\n    countDistinct(actor_login) as comment_authors,\n    count() as total_comments\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\n    AND number > 10\nGROUP BY repo_name, number\nHAVING comment_authors >= 10\nORDER BY total_comments DESC\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    number,\n    comments,\n    uniq(actor_login) as comment_authors\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\n    AND comments >= 10\nGROUP BY repo_name, number, comments\nORDER BY comments DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -37068,6 +37586,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as event_count\nFROM github_events\nWHERE lower(body) LIKE '%tensorflow%' \n   OR lower(title) LIKE '%tensorflow%'\n   OR lower(repo_name) LIKE '%tensorflow%'\nGROUP BY repo_name\nORDER BY event_count DESC\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.7312391882426198,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    count() as event_count\nFROM github_events\nWHERE \n    event_type IN ('IssuesEvent', 'PullRequestEvent', 'PullRequestReviewCommentEvent', 'IssueCommentEvent')\n    AND (\n        body ILIKE '%tensorflow%' OR \n        title ILIKE '%tensorflow%' OR\n        labels[1] ILIKE '%tensorflow%' OR\n        labels[2] ILIKE '%tensorflow%' OR\n        labels[3] ILIKE '%tensorflow%' OR\n        labels[4] ILIKE '%tensorflow%' OR\n        labels[5] ILIKE '%tensorflow%'\n    )\nGROUP BY repo_name\nORDER BY event_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -38058,6 +38590,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as commit_comments\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY commit_comments DESC\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    count() as commit_comments_count\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY commit_comments_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -39048,6 +39594,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    concat('https://github.com/', repo_name, '/commit/', commit_id) AS commit_url,\n    count() AS total_comments,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\n    AND commit_id != ''\nGROUP BY repo_name, commit_id\nHAVING unique_authors >= 10\nORDER BY total_comments DESC\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Looking at the error, it seems there's an issue with the JSONHas function syntax. The JSONHas function in ClickHouse requires the JSON column and the path to extract, but the syntax appears to be incorrect. Let me fix this by using the proper JSON extraction syntax:\n\n\nSELECT \n    commit_id,\n    repo_name as base_repo_name,\n    ref as base_ref,\n    head_sha as base_sha,\n    commits,\n    comments,\n    uniqCombined64(assignees) as unique_authors\nFROM github_events\nWHERE event_type = 'PushEvent'\n    AND JSONHas(commit_id, 'url') = 1\n    AND JSONHas(repo_name, 'name') = 1\n    AND JSONHas(ref, 'ref') = 1\n    AND JSONHas(head_sha, 'sha') = 1\n    AND commits >= 10\nGROUP BY \n    commit_id,\n    repo_name,\n    ref,\n    head_sha,\n    commits,\n    comments\nORDER BY comments DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -40052,6 +40612,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    concat('https://github.com/', repo_name, '/pull/', toString(number)) AS pr_url,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\n    AND number > 0\nGROUP BY repo_name, number\nORDER BY unique_authors DESC\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Looking at the error, the issue is that `author_login` is not a column in the `github_events` table - it's likely named `actor_login` based on the schema provided. Let me fix the query:\n\n\nSELECT \n    'https://github.com/' || repo_name || '/pull/' || number AS pr_url,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\n    AND comments > 0\nGROUP BY repo_name, number\nORDER BY unique_authors DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -41042,6 +41616,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    actor_login,\n    COUNT(*) as push_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY push_count DESC\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    actor_login,\n    count() as push_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY push_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -42032,6 +42620,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    splitByChar('/', repo_name)[1] AS organization,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY organization\nORDER BY stars DESC\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.6336230671198414,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    repo_name,\n    count() as stars_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -43008,6 +43610,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    splitByChar('/', repo_name)[1] AS organization,\n    uniqExact(repo_name) AS repository_count\nFROM github_events\nGROUP BY organization\nORDER BY repository_count DESC\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    splitByChar('/', repo_name)[1] AS organization_name,\n    count() AS repository_count\nFROM github_events\nWHERE event_type = 'CreateEvent'\nGROUP BY organization_name\nORDER BY repository_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -43998,6 +44614,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as pr_count,\n    uniq(actor_login) as unique_authors,\n    sum(additions) as total_adds,\n    sum(deletions) as total_dels,\n    sum(additions + deletions) as total_churn\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\n    AND additions < 10000\n    AND deletions < 10000\nGROUP BY repo_name\nORDER BY total_churn DESC\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Looking at the error, it seems like there was an issue with the previous response containing extra text. Let me provide the corrected SQL query without any additional commentary:\n\n\nSELECT \n    repo_name,\n    count() as pr_count,\n    uniq(actor_login) as unique_authors,\n    sum(additions) as total_adds,\n    sum(deletions) as total_dels\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\n    AND additions < 10000\n    AND deletions < 10000\nGROUP BY repo_name\nORDER BY (sum(additions) + sum(deletions)) DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -45030,6 +45660,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    actor_login as author,\n    count() as total_pr_comments,\n    uniq(repo_name) as unique_repositories,\n    uniq(number) as unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\n    AND action = 'created'\nGROUP BY actor_login\nORDER BY total_pr_comments DESC\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    actor_login,\n    count() as pull_request_comments,\n    uniq(repo_name) as unique_repositories,\n    uniq(number) as unique_pull_requests\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\nGROUP BY actor_login\nORDER BY pull_request_comments DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -46030,6 +46674,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    arrayJoin(labels) AS label,\n    count() AS usage_count\nFROM github_events\nWHERE event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')\n    AND action IN ('created', 'opened', 'labeled')\n    AND length(labels) > 0\nGROUP BY label\nORDER BY usage_count DESC\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n    label,\n    sum(issue_count) as total_issues,\n    sum(pr_count) as total_pull_requests,\n    sum(comment_count) as total_comments\nFROM (\n    SELECT \n        labels[1] as label,\n        count() as issue_count,\n        0 as pr_count,\n        0 as comment_count\n    FROM github_events\n    WHERE event_type = 'IssuesEvent' AND action = 'opened'\n    GROUP BY label\n    \n    UNION ALL\n    \n    SELECT \n        labels[1] as label,\n        0 as issue_count,\n        count() as pr_count,\n        0 as comment_count\n    FROM github_events\n    WHERE event_type = 'PullRequestEvent' AND action = 'opened'\n    GROUP BY label\n    \n    UNION ALL\n    \n    SELECT \n        labels[1] as label,\n        0 as issue_count,\n        0 as pr_count,\n        count() as comment_count\n    FROM github_events\n    WHERE event_type = 'IssueCommentEvent' AND action = 'created'\n    GROUP BY label\n) \nGROUP BY label\nORDER BY total_issues + total_pull_requests + total_comments DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -47006,6 +47664,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    splitByChar('/', repo_name)[1] as organization,\n    uniq(actor_login) as unique_authors,\n    uniqIf(actor_login, event_type = 'PullRequestEvent' AND action = 'opened') as unique_pr_authors,\n    uniqIf(actor_login, event_type = 'IssuesEvent' AND action = 'opened') as unique_issue_authors,\n    uniqIf(actor_login, event_type = 'IssueCommentEvent') as unique_issue_comment_authors,\n    uniqIf(actor_login, event_type = 'PushEvent') as unique_push_authors\nFROM github_events\nWHERE repo_name != ''\nGROUP BY organization\nORDER BY unique_authors DESC\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Looking at the error, the issue is with the query structure. The problem is that we're trying to use ARRAY JOIN with subqueries that return multiple columns, but ClickHouse doesn't support this directly.\n\nLet me provide a corrected query that uses a different approach:\n\n\nSELECT\n    splitByChar('/', repo_name)[0] AS organization_name,\n    uniq(author_login) AS unique_authors,\n    uniq(PULL_REQUEST_AUTHORS.author_login) AS unique_pull_request_authors,\n    uniq(ISSUE_AUTHORS.author_login) AS unique_issue_authors,\n    uniq(ISSUE_COMMENT_AUTHORS.author_login) AS unique_issue_comment_authors,\n    uniq(PUSH_AUTHORS.author_login) AS unique_push_authors\nFROM github_events\nARRAY JOIN\n    (SELECT DISTINCT author_login FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened') AS PULL_REQUEST_AUTHORS,\n    (SELECT DISTINCT author_login FROM github_events WHERE event_type IN ('IssuesEvent', 'IssueCommentEvent') AND action = 'opened') AS ISSUE_AUTHORS,\n    (SELECT DISTINCT author_login FROM github_events WHERE event_type = 'IssueCommentEvent') AS ISSUE_COMMENT_AUTHORS,\n    (SELECT DISTINCT author_login FROM github_events WHERE event_type = 'PushEvent') AS PUSH_AUTHORS\nWHERE event_type IN ('PullRequestEvent', 'IssuesEvent', 'IssueCommentEvent', 'PushEvent')\nGROUP BY organization_name\nORDER BY unique_authors DESC\nLIMIT 10\n\n\nActually, let me use a more direct approach with CTEs to make it clearer and more efficient:\n\n\nWITH pull_request_authors AS (\n    SELECT DISTINCT author_login FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened'\n),\nissue_authors AS (\n    SELECT DISTINCT author_login FROM github_events WHERE event_type IN ('IssuesEvent', 'IssueCommentEvent') AND action = 'opened'\n),\nissue_comment_authors AS (\n    SELECT DISTINCT author_login FROM github_events WHERE event_type = 'IssueCommentEvent'\n),\npush_authors AS (\n    SELECT DISTINCT author_login FROM github_events WHERE event_type = 'PushEvent'\n)\nSELECT\n    splitByChar('/', repo_name)[0] AS organization_name,\n    uniq(author_login) AS unique_authors,\n    uniq(PULL_REQUEST_AUTHORS.author_login) AS unique_pull_request_authors,\n    uniq(ISSUE_AUTHORS.author_login) AS unique_issue_authors,\n    uniq(ISSUE_COMMENT_AUTHORS.author_login) AS unique_issue_comment_authors,\n    uniq(PUSH_AUTHORS.author_login) AS unique_push_authors\nFROM github_events\nARRAY JOIN\n    pull_request_authors,\n    issue_authors,\n    issue_comment_authors,\n    push_authors\nWHERE event_type IN ('PullRequestEvent', 'IssuesEvent', 'IssueCommentEvent', 'PushEvent')\nGROUP BY organization_name\nORDER BY unique_authors DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -48066,6 +48738,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    length(repo_name) as name_length\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY name_length DESC\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Looking at the error, I can see there's a syntax issue with the quotes in the query. Let me fix the SQL query to properly answer your question about the top 10 longest repository names with at least 1 star.\n\n\nSELECT \n    repo_name,\n    length(repo_name) as repo_name_length\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND repo_name != ''\nGROUP BY repo_name\nHAVING count(*) >= 1\nORDER BY repo_name_length DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -49042,6 +49728,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING count() >= 1\nORDER BY length(repo_name) ASC\nLIMIT 10\n"
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.75,
+          "numeric": 1,
+          "fScore": 0.40000000000000013
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name FROM github_events WHERE event_type = 'WatchEvent' AND repo_name != '' GROUP BY repo_name ORDER BY length(repo_name) ASC LIMIT 10"
       }
     },
     "humanResults": {
@@ -49623,6 +50323,14 @@
         "avgExactDistance": 0.5383838383838385,
         "avgNumericDistance": 0.39462101454809,
         "avgFScore": 0.4699999999999999
+      },
+      "moonshotai/kimi-linear-48b-a3b-instruct": {
+        "totalMatches": 15,
+        "exactMatches": 11,
+        "numericMatches": 15,
+        "avgExactDistance": 0.7739473684210526,
+        "avgNumericDistance": 0.6690141716349765,
+        "avgFScore": 0.23
       }
     }
   }
