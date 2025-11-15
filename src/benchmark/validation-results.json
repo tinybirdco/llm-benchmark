@@ -924,6 +924,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count() as total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 10\n"
+      },
+      "openrouter/sherlock-think-alpha": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT count() FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -2855,6 +2869,20 @@
         "humanRowCount": 5,
         "llmRowCount": 5,
         "sql": "\nSELECT\n    pow(10, floor(log10(stars + 1))) as star_bucket,\n    count(DISTINCT repo_name) as repo_count\nFROM (\n    SELECT \n        repo_name,\n        count() as stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n)\nWHERE stars > 0\nGROUP BY star_bucket\nORDER BY star_bucket ASC\n"
+      },
+      "openrouter/sherlock-think-alpha": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 5,
+        "llmRowCount": 5,
+        "sql": "\nSELECT\n  approx_stars,\n  count() AS num_repos\nFROM (\n  SELECT\n    CASE\n      WHEN count() < 10 THEN 1\n      WHEN count() < 100 THEN 10\n      WHEN count() < 1000 THEN 100\n      WHEN count() < 10000 THEN 1000\n      WHEN count() < 100000 THEN 10000\n      WHEN count() < 1000000 THEN 100000\n      WHEN count() < 10000000 THEN 1000000\n      ELSE 10000000\n    END AS approx_stars\n  FROM github_events\n  WHERE event_type = 'WatchEvent'\n  GROUP BY repo_name\n) AS repo_buckets\nGROUP BY approx_stars\nORDER BY approx_stars ASC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -4770,6 +4798,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    toYear(created_at) as year,\n    repo_name,\n    count() as events_count\nFROM github_events\nWHERE toYear(created_at) >= 2015\nGROUP BY year, repo_name\nORDER BY year ASC, events_count DESC\nLIMIT 10\n"
+      },
+      "openrouter/sherlock-think-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.5,
+          "numeric": 0.4884875640384983,
+          "fScore": 0.6666666666666666
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 20,
+        "sql": "\nSELECT\n  YEAR(created_at) AS year,\n  repo_name,\n  count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND action = 'started'\n  AND created_at >= '2015-01-01'\n  AND repo_name != ''\nGROUP BY year, repo_name\nORDER BY year ASC, stars DESC\nLIMIT 10 BY year\nLIMIT 100\n"
       }
     },
     "humanResults": {
@@ -6714,6 +6756,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    actor_login,\n    COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY star_count DESC\nLIMIT 10\n"
+      },
+      "openrouter/sherlock-think-alpha": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  actor_login,\n  count() AS stars_given\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY stars_given DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -7704,6 +7760,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND actor_login IN (\n    SELECT DISTINCT actor_login\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n      AND repo_name = 'tensorflow/tensorflow'\n  )\n  AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n"
+      },
+      "openrouter/sherlock-think-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT \n  e2.repo_name AS repo_name,\n  count() AS stars_count\nFROM github_events AS e1\nINNER JOIN github_events AS e2 ON e1.actor_login = e2.actor_login\nWHERE \n  e1.event_type = 'WatchEvent' \n  AND e1.action = 'started' \n  AND e1.repo_name = 'tensorflow/tensorflow'\n  AND e2.event_type = 'WatchEvent' \n  AND e2.action = 'started' \n  AND e2.repo_name != 'tensorflow/tensorflow'\nGROUP BY e2.repo_name\nORDER BY stars_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -9684,6 +9754,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_tf_contributors,\n    count() as total_prs\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login \n        FROM github_events \n        WHERE event_type = 'PullRequestEvent' \n            AND repo_name LIKE '%tensorflow%'\n            AND action = 'opened'\n    )\n    AND repo_name NOT LIKE '%tensorflow%'\nGROUP BY repo_name\nORDER BY unique_tf_contributors DESC, total_prs DESC\nLIMIT 10\n"
+      },
+      "openrouter/sherlock-think-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.18095166080355407,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n  pr.repo_name,\n  countDistinct(pr.actor_login) AS unique_tf_contributors\nFROM github_events AS pr\nINNER JOIN github_events AS tf\nON pr.actor_login = tf.actor_login\nWHERE pr.event_type = 'PullRequestEvent'\n  AND pr.action = 'opened'\n  AND pr.repo_name != 'tensorflow/tensorflow'\n  AND tf.event_type = 'PullRequestEvent'\n  AND tf.action = 'opened'\n  AND tf.repo_name = 'tensorflow/tensorflow'\nGROUP BY pr.repo_name\nORDER BY unique_tf_contributors DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -10670,6 +10754,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    actor_login,\n    COUNT(*) as issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n    AND action = 'opened'\n    AND actor_login IN (\n        SELECT DISTINCT actor_login \n        FROM github_events \n        WHERE event_type = 'IssuesEvent' \n            AND action = 'opened'\n            AND repo_name = 'tensorflow/tensorflow'\n    )\n    AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name, actor_login\nORDER BY issue_count DESC\nLIMIT 10\n"
+      },
+      "openrouter/sherlock-think-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.921366691261145,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  count(*) AS issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n  AND action = 'opened'\n  AND repo_name != 'tensorflow/tensorflow'\n  AND actor_login IN (\n    SELECT actor_login\n    FROM github_events\n    WHERE event_type = 'IssuesEvent'\n      AND action = 'opened'\n      AND repo_name = 'tensorflow/tensorflow'\n    GROUP BY actor_login\n  )\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -14684,6 +14782,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "\nSELECT \n    repo_name,\n    COUNT(*) as total_stars,\n    toStartOfMonth(created_at) as month,\n    COUNT(*) / COUNT(DISTINCT toStartOfMonth(created_at)) as avg_stars_per_month,\n    stddevPop(COUNT(*)) OVER (PARTITION BY repo_name) as star_growth_stddev\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND created_at >= now() - INTERVAL 1 YEAR\nGROUP BY repo_name, month\nHAVING COUNT(DISTINCT month) >= 6\nORDER BY star_growth_stddev ASC, total_stars DESC\nLIMIT 10\n"
+      },
+      "openrouter/sherlock-think-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT\n  repo_name,\n  count() AS total_stars,\n  STDDEV_POP(CAST(created_at AS UInt32)) AS std_ts,\n  CAST(max(created_at) AS UInt32) - CAST(min(created_at) AS UInt32) AS span_seconds,\n  STDDEV_POP(CAST(created_at AS UInt32)) * 3.46410161514 / (CAST(max(created_at) AS UInt32) - CAST(min(created_at) AS UInt32) + 1e-9) AS steadiness_ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND created_at >= now() - INTERVAL 1 YEAR\nGROUP BY repo_name\nHAVING total_stars >= 100\n  AND span_seconds > 0\nORDER BY steadiness_ratio DESC, total_stars DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -16658,6 +16770,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count(DISTINCT actor_login) as total_users\nFROM github_events\nLIMIT 10\n"
+      },
+      "openrouter/sherlock-think-alpha": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.000052934128674804696,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT uniqExact(actor_login) AS total_users FROM github_events LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -18528,6 +18654,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count(DISTINCT actor_login) as total_users\nFROM github_events\nWHERE event_type = 'PushEvent'\nLIMIT 10\n"
+      },
+      "openrouter/sherlock-think-alpha": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.0018759619527295886,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT countDistinct(actor_login) FROM github_events WHERE event_type = 'PushEvent' LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -21362,6 +21502,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\nGROUP BY repo_name, actor_login\nHAVING count() >= 10\nORDER BY pr_count DESC\nLIMIT 10\n"
+      },
+      "openrouter/sherlock-think-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT repo_name, sum(pr_count) AS total_prs_by_prolific_authors FROM (SELECT repo_name, actor_login, count() AS pr_count FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' GROUP BY repo_name, actor_login HAVING pr_count >= 10) GROUP BY repo_name ORDER BY total_prs_by_prolific_authors DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -23328,6 +23482,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10\n"
+      },
+      "openrouter/sherlock-think-alpha": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n  repo_name,\n  count(distinct actor_login) AS pr_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY pr_contributors DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -26266,6 +26434,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "\nSELECT \n    repo_name,\n    uniq(actor_login) as unique_pushers\nFROM github_events\nWHERE event_type = 'PushEvent'\n    AND base_ref = 'refs/heads/main'\nGROUP BY repo_name\nORDER BY unique_pushers DESC\nLIMIT 10\n"
+      },
+      "openrouter/sherlock-think-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n  repo_name,\n  countDistinct(actor_login) AS pushers_count\nFROM github_events\nWHERE event_type = 'PushEvent'\n  AND ref = 'refs/heads/main'\nGROUP BY repo_name\nORDER BY pushers_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -30222,6 +30404,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    countIf(event_type = 'WatchEvent') as stars,\n    countIf(event_type = 'ForkEvent') as forks,\n    stars / nullIf(forks, 0) as star_fork_ratio\nFROM github_events\nWHERE event_type IN ('WatchEvent', 'ForkEvent')\nGROUP BY repo_name\nHAVING forks > 0\nORDER BY star_fork_ratio DESC\nLIMIT 10\n"
+      },
+      "openrouter/sherlock-think-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n  repo_name,\n  sum(event_type = 'WatchEvent') AS stars,\n  sum(event_type = 'ForkEvent') AS forks,\n  sum(event_type = 'WatchEvent') / sum(event_type = 'ForkEvent') AS star_fork_ratio\nFROM github_events\nWHERE event_type IN ('WatchEvent', 'ForkEvent')\nGROUP BY repo_name\nHAVING sum(event_type = 'ForkEvent') > 0\nORDER BY star_fork_ratio DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -31226,6 +31422,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT\n    countIf(event_type = 'WatchEvent') AS total_stars,\n    countIf(event_type = 'ForkEvent') AS total_forks,\n    round(countIf(event_type = 'WatchEvent') / countIf(event_type = 'ForkEvent'), 2) AS stars_to_forks_ratio\nFROM github_events\nLIMIT 10\n"
+      },
+      "openrouter/sherlock-think-alpha": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0.004424139993790239,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT\n  sum((event_type = 'WatchEvent')) AS stars,\n  sum((event_type = 'ForkEvent')) AS forks,\n  CAST(sum((event_type = 'WatchEvent')) * 1.0 / sum((event_type = 'ForkEvent')) AS Decimal(20, 2)) AS ratio\nFROM github_events\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -32157,6 +32367,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "\nSELECT count() as total_issues\nFROM github_events\nWHERE event_type = 'IssuesEvent'\nAND action = 'opened'\nLIMIT 10\n"
+      },
+      "openrouter/sherlock-think-alpha": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 1,
+        "llmRowCount": 1,
+        "sql": "\nSELECT COUNT(*) FROM github_events WHERE event_type = 'IssuesEvent' AND action = 'opened' LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -34078,6 +34302,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    countIf(event_type = 'IssueCommentEvent') as issue_comments,\n    countIf(event_type = 'IssuesEvent' AND action = 'opened') as issues_opened,\n    if(issues_opened > 0, issue_comments / issues_opened, 0) as comment_to_issue_ratio\nFROM github_events\nWHERE event_type IN ('IssueCommentEvent', 'IssuesEvent')\nGROUP BY repo_name\nHAVING issues_opened > 0\nORDER BY comment_to_issue_ratio DESC\nLIMIT 10\n"
+      },
+      "openrouter/sherlock-think-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n  repo_name,\n  countIf(event_type = 'IssueCommentEvent') AS num_comments,\n  countIf(event_type = 'IssuesEvent' AND action = 'opened') AS num_issues,\n  num_comments / num_issues AS ratio\nFROM github_events\nGROUP BY repo_name\nHAVING num_issues > 0\nORDER BY ratio DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -38058,6 +38296,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as commit_comments\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY commit_comments DESC\nLIMIT 10\n"
+      },
+      "openrouter/sherlock-think-alpha": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "SELECT\n  repo_name,\n  count() AS num_commit_comments\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY num_commit_comments DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -40052,6 +40304,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    concat('https://github.com/', repo_name, '/pull/', toString(number)) AS pr_url,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\n    AND number > 0\nGROUP BY repo_name, number\nORDER BY unique_authors DESC\nLIMIT 10\n"
+      },
+      "openrouter/sherlock-think-alpha": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0.33333333333333337,
+          "numeric": 0,
+          "fScore": 0.8000000000000002
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n  'https://github.com/' || repo_name || '/pull/' || CAST(number AS String) AS pr_url,\n  uniqExact(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\nGROUP BY repo_name, number\nORDER BY unique_authors DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -41042,6 +41308,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    actor_login,\n    COUNT(*) as push_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY push_count DESC\nLIMIT 10\n"
+      },
+      "openrouter/sherlock-think-alpha": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n  actor_login,\n  count() AS pushes\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY pushes DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -42032,6 +42312,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    splitByChar('/', repo_name)[1] AS organization,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY organization\nORDER BY stars DESC\nLIMIT 10\n"
+      },
+      "openrouter/sherlock-think-alpha": {
+        "matches": true,
+        "exactMatches": false,
+        "numericMatches": true,
+        "distance": {
+          "exact": 1,
+          "numeric": 0,
+          "fScore": 0
+        },
+        "details": "Results match within numeric threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n  substringIndex(repo_name, '/', 1) AS owner,\n  count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY owner\nORDER BY stars DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -43008,6 +43302,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    splitByChar('/', repo_name)[1] AS organization,\n    uniqExact(repo_name) AS repository_count\nFROM github_events\nGROUP BY organization\nORDER BY repository_count DESC\nLIMIT 10\n"
+      },
+      "openrouter/sherlock-think-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n  substringIndex(repo_name, '/', 1) AS org_name,\n  count(DISTINCT repo_name) AS repo_count\nFROM github_events\nWHERE repo_name != ''\nGROUP BY org_name\nORDER BY repo_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -43998,6 +44306,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    repo_name,\n    count() as pr_count,\n    uniq(actor_login) as unique_authors,\n    sum(additions) as total_adds,\n    sum(deletions) as total_dels,\n    sum(additions + deletions) as total_churn\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\n    AND additions < 10000\n    AND deletions < 10000\nGROUP BY repo_name\nORDER BY total_churn DESC\nLIMIT 10\n"
+      },
+      "openrouter/sherlock-think-alpha": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n    repo_name,\n    count() AS pr_count,\n    uniqExact(actor_login) AS unique_authors,\n    sum(additions) AS total_adds,\n    sum(deletions) AS total_dels\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\n    AND additions < 10000\n    AND deletions < 10000\nGROUP BY repo_name\nORDER BY sum(additions) + sum(deletions) DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -45030,6 +45352,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    actor_login as author,\n    count() as total_pr_comments,\n    uniq(repo_name) as unique_repositories,\n    uniq(number) as unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\n    AND action = 'created'\nGROUP BY actor_login\nORDER BY total_pr_comments DESC\nLIMIT 10\n"
+      },
+      "openrouter/sherlock-think-alpha": {
+        "matches": true,
+        "exactMatches": true,
+        "numericMatches": true,
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "details": "Results match within exact threshold",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n  actor_login AS author,\n  count(*) AS num_comments,\n  countDistinct(repo_name) AS unique_repos,\n  countDistinct(tuple(repo_name, number)) AS unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent' AND action = 'created'\nGROUP BY actor_login\nORDER BY num_comments DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -47006,6 +47342,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT \n    splitByChar('/', repo_name)[1] as organization,\n    uniq(actor_login) as unique_authors,\n    uniqIf(actor_login, event_type = 'PullRequestEvent' AND action = 'opened') as unique_pr_authors,\n    uniqIf(actor_login, event_type = 'IssuesEvent' AND action = 'opened') as unique_issue_authors,\n    uniqIf(actor_login, event_type = 'IssueCommentEvent') as unique_issue_comment_authors,\n    uniqIf(actor_login, event_type = 'PushEvent') as unique_push_authors\nFROM github_events\nWHERE repo_name != ''\nGROUP BY organization\nORDER BY unique_authors DESC\nLIMIT 10\n"
+      },
+      "openrouter/sherlock-think-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT\n  SUBSTRING_INDEX(repo_name, '/', 1) AS organization_name,\n  uniqExact(actor_login) AS unique_authors,\n  uniqExact(if(event_type='PullRequestEvent' AND action='opened', actor_login, NULL)) AS unique_pull_request_authors,\n  uniqExact(if(event_type='IssuesEvent' AND action='opened', actor_login, NULL)) AS unique_issue_authors,\n  uniqExact(if(event_type='IssueCommentEvent', actor_login, NULL)) AS unique_issue_comment_authors,\n  uniqExact(if(event_type='PushEvent', actor_login, NULL)) AS unique_push_authors\nFROM github_events\nWHERE repo_name != ''\nGROUP BY organization_name\nHAVING organization_name != ''\nORDER BY unique_authors DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -49042,6 +49392,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING count() >= 1\nORDER BY length(repo_name) ASC\nLIMIT 10\n"
+      },
+      "openrouter/sherlock-think-alpha": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 0.75,
+          "numeric": 1,
+          "fScore": 0.40000000000000013
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 10,
+        "sql": "\nSELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING count() >= 1\nORDER BY CHAR_LENGTH(repo_name) ASC, repo_name ASC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -49623,6 +49987,14 @@
         "avgExactDistance": 0.5383838383838385,
         "avgNumericDistance": 0.39462101454809,
         "avgFScore": 0.4699999999999999
+      },
+      "openrouter/sherlock-think-alpha": {
+        "totalMatches": 14,
+        "exactMatches": 9,
+        "numericMatches": 14,
+        "avgExactDistance": 0.3116666666666667,
+        "avgNumericDistance": 0.21194317904356785,
+        "avgFScore": 0.2173333333333333
       }
     }
   }
