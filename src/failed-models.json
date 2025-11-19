@@ -1,6 +1,6 @@
 {
-  "generated_at": "2025-11-19T18:14:48.349Z",
-  "total_count": 15,
+  "generated_at": "2025-11-19T18:15:13.111Z",
+  "total_count": 16,
   "models": [
     {
       "provider": "openrouter",
@@ -120,6 +120,14 @@
       "modelId": "z-ai/glm-4.6",
       "reason": "PR rejected/closed without merging",
       "failed_at": "2025-11-19T18:14:48.349Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "tngtech",
+      "model": "deepseek-r1t2-chimera",
+      "modelId": "tngtech/deepseek-r1t2-chimera",
+      "reason": "PR rejected/closed without merging",
+      "failed_at": "2025-11-19T18:15:13.111Z",
       "attempt_count": 1
     }
   ]

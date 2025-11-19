@@ -1,6 +1,6 @@
 {
-  "generated_at": "2025-11-19T18:14:48.350Z",
-  "total_count": 293,
+  "generated_at": "2025-11-19T18:15:13.112Z",
+  "total_count": 294,
   "models": [
     {
       "provider": "meituan",
@@ -1496,6 +1496,13 @@
       "modelId": "z-ai/glm-4.6",
       "reason": "Failed: PR rejected/closed without merging",
       "failed_at": "2025-11-19T18:14:48.350Z"
+    },
+    {
+      "provider": "tngtech",
+      "model": "deepseek-r1t2-chimera",
+      "modelId": "tngtech/deepseek-r1t2-chimera",
+      "reason": "Failed: PR rejected/closed without merging",
+      "failed_at": "2025-11-19T18:15:13.112Z"
     }
   ]
 }
