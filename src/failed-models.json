@@ -1,6 +1,6 @@
 {
-  "generated_at": "2025-09-29T18:20:00.199Z",
-  "total_count": 14,
+  "generated_at": "2025-11-19T18:14:48.349Z",
+  "total_count": 15,
   "models": [
     {
       "provider": "openrouter",
@@ -112,6 +112,14 @@
       "modelId": "anthropic/claude-sonnet-4.5",
       "reason": "PR rejected/closed without merging",
       "failed_at": "2025-09-29T18:20:00.199Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "z-ai",
+      "model": "glm-4.6",
+      "modelId": "z-ai/glm-4.6",
+      "reason": "PR rejected/closed without merging",
+      "failed_at": "2025-11-19T18:14:48.349Z",
       "attempt_count": 1
     }
   ]

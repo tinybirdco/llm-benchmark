@@ -1,6 +1,6 @@
 {
-  "generated_at": "2025-09-29T18:20:00.200Z",
-  "total_count": 292,
+  "generated_at": "2025-11-19T18:14:48.350Z",
+  "total_count": 293,
   "models": [
     {
       "provider": "meituan",
@@ -1489,6 +1489,13 @@
       "modelId": "anthropic/claude-sonnet-4.5",
       "reason": "Failed: PR rejected/closed without merging",
       "failed_at": "2025-09-29T18:20:00.200Z"
+    },
+    {
+      "provider": "z-ai",
+      "model": "glm-4.6",
+      "modelId": "z-ai/glm-4.6",
+      "reason": "Failed: PR rejected/closed without merging",
+      "failed_at": "2025-11-19T18:14:48.350Z"
     }
   ]
 }
