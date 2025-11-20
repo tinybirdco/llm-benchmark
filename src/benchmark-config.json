@@ -112,7 +112,8 @@
     },
     "alibaba": {
       "models": [
-        "tongyi-deepresearch-30b-a3b"
+        "tongyi-deepresearch-30b-a3b",
+        "tongyi-deepresearch-30b-a3b:free"
       ]
     },
     "thedrummer": {
