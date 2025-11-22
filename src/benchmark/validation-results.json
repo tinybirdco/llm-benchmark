@@ -938,6 +938,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count() FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10"
+      },
+      "allenai/olmo-3-32b-think": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT COUNT(*) AS star_count FROM github_events WHERE event_type = 15 LIMIT 10"
       }
     },
     "humanResults": {
@@ -1897,6 +1911,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "allenai/olmo-3-32b-think": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT repo_name, COUNT(*) AS star_count FROM github_events WHERE event_type = 'WatchEvent' GROUP BY repo_name ORDER BY star_count DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -2897,6 +2925,20 @@
         "humanRowCount": 5,
         "llmRowCount": 5,
         "sql": "SELECT\n    CASE CHAR_LENGTH(CAST(stars AS String))\n        WHEN 1 THEN 1\n        WHEN 2 THEN 10\n        WHEN 3 THEN 100\n        WHEN 4 THEN 1000\n        WHEN 5 THEN 10000\n        WHEN 6 THEN 100000\n        WHEN 7 THEN 1000000\n        ELSE 10000000\n    END as power_of_10,\n    count() as repo_count\nFROM (\n    SELECT\n        repo_name,\n        count() as stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n)\nGROUP BY power_of_10\nORDER BY power_of_10 ASC\nLIMIT 10"
+      },
+      "allenai/olmo-3-32b-think": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 5,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT bin, COUNT(*) AS repo_count FROM (SELECT CASE WHEN LENGTH(CAST(star_count AS String)) = 1 THEN 1 WHEN LENGTH(CAST(star_count AS String)) = 2 THEN 10 WHEN LENGTH(CAST(star_count AS String)) = 3 THEN 100 WHEN LENGTH(CAST(star_count AS String)) = 4 THEN 1000 WHEN LENGTH(CAST(star_count AS String)) = 5 THEN 10000 WHEN LENGTH(CAST(star_count AS String)) = 6 THEN 100000 WHEN LENGTH(CAST(star_count AS String)) = 7 THEN 1000000 WHEN LENGTH(CAST(star_count AS String)) = 8 THEN 10000000 WHEN LENGTH(CAST(star_count AS String)) = 9 THEN 100000000 WHEN LENGTH(CAST(star_count AS String)) >= 10 THEN 1000000000 ELSE 0 END AS bin FROM (SELECT repo_name, COUNT(*) AS star_count FROM github_events WHERE event_type = 'WatchEvent' GROUP BY repo_name HAVING COUNT(*) > 0) AS star_counts) AS binned WHERE bin > 0 GROUP BY bin ORDER BY bin LIMIT 10"
       }
     },
     "humanResults": {
@@ -3881,6 +3923,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniq(repo_name) FROM github_events LIMIT 10"
+      },
+      "allenai/olmo-3-32b-think": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT COUNT(DISTINCT repo_name) FROM github_events LIMIT 10"
       }
     },
     "humanResults": {
@@ -4840,6 +4896,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    YEAR(created_at) AS year,\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent' AND YEAR(created_at) >= 2015\nGROUP BY year, repo_name\nORDER BY year ASC, stars DESC\nLIMIT 10 BY year\nLIMIT 10"
+      },
+      "allenai/olmo-3-32b-think": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT \n    toYear(created_at) AS year,\n    repo_name,\n    COUNT(*) AS event_count,\n    ROW_NUMBER() OVER (PARTITION BY toYear(created_at) ORDER BY COUNT(*) DESC) as rn\nFROM github_events\nWHERE event_type = 15 AND created_at >= toDate('2015-01-01')\nGROUP BY year, repo_name\nORDER BY year, rn\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -5854,6 +5924,20 @@
         "humanRowCount": 2,
         "llmRowCount": 2,
         "sql": "SELECT\n    YEAR(created_at) AS year,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year ASC\nLIMIT 10"
+      },
+      "allenai/olmo-3-32b-think": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 2,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT \n    toYear(created_at) AS year,\n    COUNT(*) AS total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -6812,6 +6896,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT actor_login, count() as count FROM github_events WHERE event_type = 'WatchEvent' GROUP BY actor_login ORDER BY count DESC LIMIT 10"
+      },
+      "allenai/olmo-3-32b-think": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT actor_login, COUNT(*) AS star_count FROM github_events WHERE event_type = 'WatchEvent' GROUP BY actor_login ORDER BY star_count DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -7816,6 +7914,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nAND actor_login IN (\n    SELECT\n        actor_login\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    AND repo_name = 'tensorflow/tensorflow'\n)\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "allenai/olmo-3-32b-think": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT e2.repo_name, COUNT(DISTINCT e2.actor_login) AS star_count FROM github_events e1 JOIN github_events e2 ON e1.actor_login = e2.actor_login WHERE e1.event_type = 15 AND e1.action = 1 AND e1.repo_name = 'tensorflow/tensorflow' AND e2.event_type = 15 AND e2.action = 1 AND e2.repo_name != 'tensorflow/tensorflow' GROUP BY e2.repo_name ORDER BY star_count DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -8806,6 +8918,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "SELECT\n    actor_login,\n    sum(CASE WHEN substring_index(repo_name, '/', 1) = 'javisantana' THEN 1 ELSE 0 END) AS javisantana_stars,\n    sum(CASE WHEN substring_index(repo_name, '/', 1) != 'javisantana' THEN 1 ELSE 0 END) AS other_stars,\n    javisantana_stars / (javisantana_stars + other_stars) AS ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nHAVING javisantana_stars > 0\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "allenai/olmo-3-32b-think": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT\n    actor_login AS user_name,\n    SUM(CASE WHEN repo_name LIKE 'javisantana/%' OR repo_name = 'javisantana' THEN 1 ELSE 0 END) AS javisantana_stars,\n    COUNT(*) AS total_stars,\n    (SUM(CASE WHEN repo_name LIKE 'javisantana/%' OR repo_name = 'javisantana' THEN 1 ELSE 0 END) * 1.0) / COUNT(*) AS ratio\nFROM github_events\nWHERE event_type = 'WatchEvent' AND action = 'started'\nGROUP BY actor_login\nHAVING COUNT(*) > 0\nORDER BY ratio DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -9824,6 +9950,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    uniqExact(actor_login) AS unique_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND repo_name != 'tensorflow/tensorflow'\n  AND actor_login IN (\n      SELECT\n          actor_login\n      FROM github_events\n      WHERE event_type = 'PullRequestEvent'\n        AND action = 'opened'\n        AND repo_name = 'tensorflow/tensorflow'\n  )\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10"
+      },
+      "allenai/olmo-3-32b-think": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n\n%\nSELECT e.repo_name, COUNT(DISTINCT e.actor_login) AS unique_contributors FROM github_events e JOIN github_events tf ON e.actor_login = tf.actor_login WHERE e.event_type = 'PullRequestEvent' AND e.action = 'opened' AND e.repo_name != 'tensorflow/tensorflow' AND tf.repo_name = 'tensorflow/tensorflow' AND tf.event_type = 'PullRequestEvent' AND tf.action = 'opened' AND (tf.author_association = 'CONTRIBUTOR' OR tf.author_association = 'OWNER') GROUP BY e.repo_name ORDER BY unique_contributors DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -10824,6 +10964,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    t2.repo_name,\n    uniq(t2.actor_login) AS num_authors\nFROM github_events AS t1\nINNER JOIN github_events AS t2 ON t1.actor_login = t2.actor_login\nWHERE t1.event_type = 'IssuesEvent'\n  AND t1.action = 'opened'\n  AND t1.repo_name = 'tensorflow/tensorflow'\n  AND t2.event_type = 'IssuesEvent'\n  AND t2.action = 'opened'\n  AND t2.repo_name != 'tensorflow/tensorflow'\nGROUP BY t2.repo_name\nORDER BY num_authors DESC\nLIMIT 10"
+      },
+      "allenai/olmo-3-32b-think": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT a.repo_name, COUNT(*) AS issue_count FROM github_events a JOIN github_events b ON a.actor_login = b.actor_login WHERE a.event_type = 'IssuesEvent' AND a.action = 'opened' AND a.repo_name != 'tensorflow/tensorflow' AND b.repo_name = 'tensorflow/tensorflow' AND b.event_type = 'IssuesEvent' AND b.action = 'opened' GROUP BY a.repo_name ORDER BY issue_count DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -11830,6 +11984,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    DATE(created_at) AS date,\n    count() AS daily_stars\nFROM github_events\nWHERE\n    event_type = 'WatchEvent'\nGROUP BY\n    repo_name,\n    date\nORDER BY\n    daily_stars DESC\nLIMIT 1 BY repo_name\nLIMIT 10"
+      },
+      "allenai/olmo-3-32b-think": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT repo_name, MAX(daily_count) AS max_daily_stars FROM (SELECT repo_name, TO_DATE(created_at) AS event_date, COUNT(*) AS daily_count FROM github_events WHERE event_type = 15 GROUP BY repo_name, event_date) GROUP BY repo_name ORDER BY max_daily_stars DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -12844,6 +13012,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, sum(YEAR(created_at) = 2016) AS stars_2016, sum(YEAR(created_at) = 2017) AS stars_2017, (stars_2017 - stars_2016) / stars_2016 AS growth FROM github_events WHERE event_type = 'WatchEvent' AND YEAR(created_at) IN (2016, 2017) GROUP BY repo_name HAVING stars_2016 >= 1 ORDER BY growth DESC LIMIT 10"
+      },
+      "allenai/olmo-3-32b-think": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT repo_name, SUM(if(CAST(DATE_FORMAT(created_at, '%Y') AS UInt32) = 2016, 1, 0)) AS stars_2016, SUM(if(CAST(DATE_FORMAT(created_at, '%Y') AS UInt32) = 2017, 1, 0)) AS stars_2017, (stars_2017 - stars_2016) AS growth FROM github_events WHERE event_type = 15 AND CAST(DATE_FORMAT(created_at, '%Y') AS UInt32) IN (2016, 2017) GROUP BY repo_name HAVING stars_2016 >= 1 ORDER BY growth DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -13876,6 +14058,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    sum(CASE WHEN YEAR(created_at) = 2016 THEN 1 ELSE 0 END) AS stars_2016,\n    sum(CASE WHEN YEAR(created_at) = 2017 THEN 1 ELSE 0 END) AS stars_2017,\n    stars_2017 - stars_2016 AS stagnation_diff\nFROM github_events\nWHERE event_type = 'WatchEvent' AND YEAR(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING stars_2017 >= 1\nORDER BY stagnation_diff ASC\nLIMIT 10"
+      },
+      "allenai/olmo-3-32b-think": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT repo_name, SUM(CASE WHEN YEAR(created_at) = 2016 THEN 1 ELSE 0 END) AS stars_2016, SUM(CASE WHEN YEAR(created_at) = 2017 THEN 1 ELSE 0 END) AS stars_2017 FROM github_events WHERE event_type = '15' GROUP BY repo_name HAVING stars_2017 >= 1 ORDER BY (stars_2016 - stars_2017) DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -14894,6 +15090,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    sum(stars) as total_stars,\n    avg(stars) as avg_monthly_stars,\n    stddevSamp(stars) as star_stddev,\n    (star_stddev / avg_monthly_stars) as variability_score\nFROM (\n    SELECT\n        repo_name,\n        DATE_TRUNC('month', created_at) as month,\n        count() as stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name, month\n)\nGROUP BY repo_name\nHAVING total_stars > 200\nORDER BY variability_score ASC\nLIMIT 10"
+      },
+      "allenai/olmo-3-32b-think": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT repo_name,COUNT(*) AS total_stars,MIN(DATE(created_at)) AS first_date,MAX(DATE(created_at)) AS last_date,COUNT(*)/(DATEDIFF(MAX(DATE(created_at)),MIN(DATE(created_at)))+1) AS growth_rate FROM github_events WHERE event_type=15 AND action=1 GROUP BY repo_name ORDER BY growth_rate DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -15918,6 +16128,20 @@
         "humanRowCount": 7,
         "llmRowCount": 7,
         "sql": "SELECT\n    date_format(created_at, '%W') AS day_of_week,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "allenai/olmo-3-32b-think": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 7,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT \n    formatDateTime(created_at, 'f') AS day_of_week,\n    COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 15\nGROUP BY day_of_week\nORDER BY star_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -16896,6 +17120,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniq(actor_login) AS total_users FROM github_events LIMIT 10"
+      },
+      "allenai/olmo-3-32b-think": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT COUNT(DISTINCT actor_login) FROM github_events"
       }
     },
     "humanResults": {
@@ -17859,6 +18097,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniqExact(actor_login) FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10"
+      },
+      "allenai/olmo-3-32b-think": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT COUNT(DISTINCT actor_login) FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10"
       }
     },
     "humanResults": {
@@ -18794,6 +19046,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniq(actor_login) FROM github_events WHERE event_type = 'PushEvent' LIMIT 10"
+      },
+      "allenai/olmo-3-32b-think": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT COUNT(DISTINCT author_login) AS total_users FROM github_events WHERE event_type = 12 LIMIT 10"
       }
     },
     "humanResults": {
@@ -19729,6 +19995,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniqExact(actor_login) FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' LIMIT 10"
+      },
+      "allenai/olmo-3-32b-think": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT COUNT(DISTINCT actor_login) FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' LIMIT 10"
       }
     },
     "humanResults": {
@@ -20688,6 +20968,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nAND actor_login IN (\n    SELECT\n        actor_login\n    FROM github_events\n    WHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\n)\nGROUP BY\n    repo_name\nORDER BY\n    stars DESC\nLIMIT 10"
+      },
+      "allenai/olmo-3-32b-think": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT repo_name, COUNT(DISTINCT event_id) AS star_count FROM github_events we JOIN github_events pr ON we.actor_login = pr.actor_login AND pr.event_type = 10 WHERE we.event_type = 15 GROUP BY repo_name ORDER BY star_count DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -21670,6 +21964,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() AS total_prs FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' AND actor_login IN (SELECT actor_login FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' GROUP BY actor_login HAVING count() >= 10) GROUP BY repo_name ORDER BY total_prs DESC LIMIT 10"
+      },
+      "allenai/olmo-3-32b-think": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT repo_name, SUM(cnt) AS total_prs FROM (SELECT repo_name, COUNT(*) AS cnt FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' GROUP BY repo_name) AS t WHERE repo_name IN (SELECT repo_name FROM github_events WHERE author_login IN (SELECT author_login FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' GROUP BY author_login HAVING COUNT(*) >= 10) AND event_type = 'PullRequestEvent' AND action = 'opened') GROUP BY repo_name ORDER BY total_prs DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -22660,6 +22968,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY pr_count DESC\nLIMIT 10"
+      },
+      "allenai/olmo-3-32b-think": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT repo_name, COUNT(*) AS pull_request_count FROM github_events WHERE event_type = 10 AND action = 'opened' GROUP BY repo_name ORDER BY pull_request_count DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -23664,6 +23986,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    uniq(actor_login) AS contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY contributors DESC\nLIMIT 10"
+      },
+      "allenai/olmo-3-32b-think": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT repo_name, COUNT(DISTINCT author_login) AS contributor_count FROM github_events WHERE event_type = 10 AND action = 'opened' GROUP BY repo_name ORDER BY contributor_count DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -24664,6 +25000,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS issues_count\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY issues_count DESC\nLIMIT 10"
+      },
+      "allenai/olmo-3-32b-think": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT repo_name, COUNT(*) AS issue_count FROM github_events WHERE event_type = 7 AND action = 'opened' GROUP BY repo_name ORDER BY issue_count DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -25654,6 +26004,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, uniqExact(actor_login) as authors_count FROM github_events WHERE event_type = 'PushEvent' GROUP BY repo_name ORDER BY authors_count DESC LIMIT 10"
+      },
+      "allenai/olmo-3-32b-think": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT repo_name, COUNT(DISTINCT actor_login) AS user_count FROM github_events WHERE event_type = 12 GROUP BY repo_name ORDER BY user_count DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -28666,6 +29030,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS invitations\nFROM github_events\nWHERE event_type = 'MemberEvent' AND action = 'added'\nGROUP BY repo_name\nORDER BY invitations DESC\nLIMIT 10"
+      },
+      "allenai/olmo-3-32b-think": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT repo_name, COUNT(*) AS member_invitations FROM github_events WHERE event_type = 8 AND action = 'added' GROUP BY repo_name ORDER BY member_invitations DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -29670,6 +30048,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() as total_forks FROM github_events WHERE event_type = 'ForkEvent' GROUP BY repo_name ORDER BY total_forks DESC LIMIT 10"
+      },
+      "allenai/olmo-3-32b-think": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT repo_name, COUNT(*) AS fork_count FROM github_events WHERE event_type = 'ForkEvent' GROUP BY repo_name ORDER BY fork_count DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -35586,6 +35978,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    number,\n    count() AS total_comments\nFROM github_events\nWHERE event_type = 'IssueCommentEvent' AND action = 'created'\nGROUP BY\n    repo_name,\n    number\nORDER BY\n    total_comments DESC\nLIMIT 10"
+      },
+      "allenai/olmo-3-32b-think": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT repo_name, number, COUNT(*) AS comment_count FROM github_events WHERE event_type = 'IssueCommentEvent' GROUP BY repo_name, number ORDER BY comment_count DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -37600,6 +38006,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT\n    repo_name,\n    count() AS matching_events\nFROM github_events\nWHERE\n    CHAR_LENGTH(REGEXP_EXTRACT(repo_name, '(?i)(tensorflow)')) > 0\n    OR CHAR_LENGTH(REGEXP_EXTRACT(title, '(?i)(tensorflow)')) > 0\n    OR CHAR_LENGTH(REGEXP_EXTRACT(body, '(?i)(tensorflow)')) > 0\nGROUP BY\n    repo_name\nORDER BY\n    matching_events DESC\nLIMIT 10\n"
+      },
+      "allenai/olmo-3-32b-think": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT repo_name, COUNT(*) AS event_count\nFROM github_events\nWHERE body IS NOT NULL AND REGEXP_MATCHES(body, '.*tensorflow.*', 'i')\nGROUP BY repo_name\nORDER BY event_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -39608,6 +40028,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    'https://github.com/' || repo_name || '/commit/' || commit_id AS commit_url,\n    count() AS total_comments,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'CommitCommentEvent' AND repo_name != '' AND commit_id != ''\nGROUP BY\n    repo_name,\n    commit_id\nHAVING unique_authors >= 10\nORDER BY\n    total_comments DESC\nLIMIT 10"
+      },
+      "allenai/olmo-3-32b-think": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT CONCAT('https://github.com/', repo_name, '/commit/', commit_id) AS commit_url, COUNT(*) AS total_comments, COUNT(DISTINCT author_login) AS unique_authors FROM github_events WHERE event_type = 11 AND commit_id IS NOT NULL AND repo_name IS NOT NULL GROUP BY repo_name, commit_id HAVING COUNT(DISTINCT author_login) >= 10 ORDER BY total_comments DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -40626,6 +41060,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    'https://github.com/' || repo_name || '/pull/' || CAST(number AS String) AS pr_url,\n    uniqExact(actor_login) AS num_authors\nFROM github_events\nWHERE event_type IN ('PullRequestReviewCommentEvent', 'PullRequestReviewEvent')\nGROUP BY\n    repo_name,\n    number\nORDER BY num_authors DESC\nLIMIT 10"
+      },
+      "allenai/olmo-3-32b-think": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT CONCAT('https://github.com/', SUBSTRING_INDEX(repo_name, '/', 1), '/', SUBSTRING_INDEX(repo_name, '/', -1), '/pull/', toString(number)) AS pr_url, COUNT(DISTINCT actor_login) AS unique_authors FROM github_events WHERE event_type = 11 AND number IS NOT NULL GROUP BY repo_name, number ORDER BY unique_authors DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -41630,6 +42078,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    actor_login,\n    count() AS pushes\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY pushes DESC\nLIMIT 10"
+      },
+      "allenai/olmo-3-32b-think": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT actor_login, COUNT(*) AS push_count FROM github_events WHERE event_type = '12' GROUP BY actor_login ORDER BY push_count DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -43624,6 +44086,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    SUBSTRING_INDEX(repo_name, '/', 1) AS org_name,\n    uniqExact(repo_name) AS repo_count\nFROM github_events\nWHERE repo_name != ''\nGROUP BY org_name\nORDER BY repo_count DESC\nLIMIT 10"
+      },
+      "allenai/olmo-3-32b-think": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT regexp_extract(repo_name, '^(.*?)(?:/|$)', 1) AS organization, COUNT(DISTINCT repo_name) AS repository_count FROM github_events GROUP BY organization ORDER BY repository_count DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -44628,6 +45104,16 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS pr_count,\n    uniq(actor_login) AS unique_authors,\n    sum(additions) AS total_adds,\n    sum(deletions) AS total_dels\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND additions < 10000\n  AND deletions < 10000\nGROUP BY repo_name\nORDER BY (total_adds + total_dels) DESC\nLIMIT 10"
+      },
+      "allenai/olmo-3-32b-think": {
+        "matches": false,
+        "reason": "Missing data in results",
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "sql": null
       }
     },
     "humanResults": {
@@ -45674,6 +46160,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    actor_login,\n    count() AS comments_created,\n    uniq(repo_name) AS unique_repos,\n    uniq(repo_name, number) AS unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\n  AND action = 'created'\nGROUP BY actor_login\nORDER BY comments_created DESC\nLIMIT 10"
+      },
+      "allenai/olmo-3-32b-think": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT actor_login AS author, COUNT(*) AS pull_request_comments, COUNT(DISTINCT repo_name) AS unique_repositories, COUNT(DISTINCT number) AS unique_prs FROM github_events WHERE event_type = 11 GROUP BY actor_login ORDER BY pull_request_comments DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -46688,6 +47188,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    label,\n    count(*) AS count\nFROM github_events\nARRAY JOIN labels AS label\nWHERE\n    event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')\n    AND action IN ('opened', 'created', 'labeled')\n    AND label != ''\nGROUP BY label\nORDER BY count DESC\nLIMIT 10"
+      },
+      "allenai/olmo-3-32b-think": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT\n    label,\n    SUM(CASE WHEN event_type = 'IssuesEvent' THEN 1 ELSE 0 END) AS issue_count,\n    SUM(CASE WHEN event_type = 'PullRequestEvent' THEN 1 ELSE 0 END) AS pr_count,\n    SUM(CASE WHEN event_type = 'IssueCommentEvent' THEN 1 ELSE 0 END) AS comment_count\nFROM (\n    SELECT\n        FLATTEN(labels) AS label,\n        event_type,\n        action\n    FROM github_events\n    WHERE \n        labels IS NOT NULL \n        AND (\n            (event_type IN ('IssuesEvent', 'PullRequestEvent') AND action = 'opened')\n            OR \n            (event_type = 'IssueCommentEvent' AND action IN ('created', 'opened', 'labeled'))\n        )\n) AS events\nGROUP BY label\nORDER BY (issue_count + pr_count + comment_count) DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -47678,6 +48192,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    SUBSTRING_INDEX(repo_name, '/', 1) AS organization_name,\n    count(DISTINCT actor_login) AS num_authors,\n    count(DISTINCT CASE WHEN event_type = 'PullRequestEvent' AND action = 'opened' THEN actor_login ELSE NULL END) AS num_pr_authors,\n    count(DISTINCT CASE WHEN event_type = 'IssuesEvent' AND action = 'opened' THEN actor_login ELSE NULL END) AS num_issue_authors,\n    count(DISTINCT CASE WHEN event_type = 'IssueCommentEvent' THEN actor_login ELSE NULL END) AS num_issue_comment_authors,\n    count(DISTINCT CASE WHEN event_type = 'PushEvent' THEN actor_login ELSE NULL END) AS num_push_authors\nFROM github_events\nWHERE repo_name != '' AND actor_login != ''\nGROUP BY organization_name\nORDER BY num_authors DESC\nLIMIT 10"
+      },
+      "allenai/olmo-3-32b-think": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT\n    SUBSTRING_INDEX(repo_name, '/', 1) AS org_name,\n    COUNT(DISTINCT author_login) AS unique_authors,\n    COUNT(DISTINCT CASE WHEN event_type = 'PullRequestEvent' AND action = 'opened' THEN author_login END) AS pr_authors,\n    COUNT(DISTINCT CASE WHEN event_type = 'IssuesEvent' AND action = 'opened' THEN author_login END) AS issue_authors,\n    COUNT(DISTINCT CASE WHEN event_type = 'IssueCommentEvent' AND action = 'created' THEN author_login END) AS issue_comment_authors,\n    COUNT(DISTINCT CASE WHEN event_type = 'PushEvent' THEN author_login END) AS push_authors\nFROM github_events\nWHERE repo_name LIKE '%/%'\nGROUP BY org_name\nORDER BY unique_authors DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -48752,6 +49280,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, CHAR_LENGTH(repo_name) AS repo_name_length FROM github_events WHERE event_type = 'WatchEvent' GROUP BY repo_name ORDER BY repo_name_length DESC LIMIT 10"
+      },
+      "allenai/olmo-3-32b-think": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT repo_name, CHARACTER_LENGTH(repo_name) AS name_length FROM github_events WHERE event_type = 15 GROUP BY repo_name ORDER BY name_length DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -49742,6 +50284,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent' AND repo_name != ''\nGROUP BY repo_name\nORDER BY CHAR_LENGTH(repo_name) ASC, repo_name ASC\nLIMIT 10"
+      },
+      "allenai/olmo-3-32b-think": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n\nSELECT DISTINCT repo_name FROM github_events WHERE event_type = 'WatchEvent' AND repo_name != '' ORDER BY CHAR_LENGTH(repo_name) ASC, repo_name ASC LIMIT 10"
       }
     },
     "humanResults": {
@@ -50331,6 +50887,14 @@
         "avgExactDistance": 0.4295454545454546,
         "avgNumericDistance": 0.3031657331603074,
         "avgFScore": 0.58
+      },
+      "allenai/olmo-3-32b-think": {
+        "totalMatches": 0,
+        "exactMatches": 0,
+        "numericMatches": 0,
+        "avgExactDistance": 0.78,
+        "avgNumericDistance": 0.78,
+        "avgFScore": 0.02
       }
     }
   }
