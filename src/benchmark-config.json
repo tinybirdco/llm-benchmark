@@ -17,7 +17,8 @@
         "claude-sonnet-4",
         "claude-3.5-haiku",
         "claude-opus-4.1",
-        "claude-4.5-sonnet"
+        "claude-4.5-sonnet",
+        "claude-opus-4.5"
       ]
     },
     "deepseek": {
