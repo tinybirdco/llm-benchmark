@@ -119,6 +119,11 @@
       "models": [
         "cydonia-24b-v4.1"
       ]
+    },
+    "prime-intellect": {
+      "models": [
+        "intellect-3"
+      ]
     }
   }
 }
