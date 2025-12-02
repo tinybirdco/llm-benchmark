@@ -938,6 +938,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count() FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\nSELECT COUNT(*) FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -1897,6 +1911,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT \n    repo_name,\n    COUNT(*) AS star_count\nFROM \n    github_events\nWHERE \n    event_type = 'WatchEvent'\nGROUP BY \n    repo_name\nORDER BY \n    star_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -2897,6 +2925,20 @@
         "humanRowCount": 5,
         "llmRowCount": 5,
         "sql": "SELECT\n    CASE CHAR_LENGTH(CAST(stars AS String))\n        WHEN 1 THEN 1\n        WHEN 2 THEN 10\n        WHEN 3 THEN 100\n        WHEN 4 THEN 1000\n        WHEN 5 THEN 10000\n        WHEN 6 THEN 100000\n        WHEN 7 THEN 1000000\n        ELSE 10000000\n    END as power_of_10,\n    count() as repo_count\nFROM (\n    SELECT\n        repo_name,\n        count() as stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n)\nGROUP BY power_of_10\nORDER BY power_of_10 ASC\nLIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 5,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n  count() AS repo_count,\n  number_of_stars\nFROM (\n  SELECT\n    repo_name,\n    count() AS star_count\n  FROM github_events\n  WHERE event_type = 'WatchEvent'\n  GROUP BY repo_name\n)\nGROUP BY \n  floor(log10(star_count)) AS number_of_stars\nORDER BY number_of_stars\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -3881,6 +3923,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniq(repo_name) FROM github_events LIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n  COUNT(DISTINCT repo_name) AS total_repositories\nFROM github_events\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -4840,6 +4896,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    YEAR(created_at) AS year,\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent' AND YEAR(created_at) >= 2015\nGROUP BY year, repo_name\nORDER BY year ASC, stars DESC\nLIMIT 10 BY year\nLIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT \n    repo_name,\n    COUNT(*) AS total_events\nFROM \n    github_events\nWHERE \n    created_at >= '2015-01-01' \n    AND created_at < '2024-01-01'\nGROUP BY \n    repo_name\nORDER BY \n    total_events DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -5854,6 +5924,20 @@
         "humanRowCount": 2,
         "llmRowCount": 2,
         "sql": "SELECT\n    YEAR(created_at) AS year,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year ASC\nLIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 2,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT \n    toYear(created_at) AS year,\n    COUNT() AS total_stars\nFROM \n    github_events\nWHERE \n    event_type = 'WatchEvent'\nGROUP BY \n    year\nORDER BY \n    year\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -6812,6 +6896,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT actor_login, count() as count FROM github_events WHERE event_type = 'WatchEvent' GROUP BY actor_login ORDER BY count DESC LIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT \n    actor_login,\n    COUNT(*) AS star_count\nFROM \n    github_events\nWHERE \n    event_type = 'WatchEvent'\nGROUP BY \n    actor_login\nORDER BY \n    star_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -7816,6 +7914,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nAND actor_login IN (\n    SELECT\n        actor_login\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    AND repo_name = 'tensorflow/tensorflow'\n)\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT \n    repo_name,\n    COUNT(*) AS star_count\nFROM \n    github_events\nWHERE \n    event_type = 'WatchEvent' \n    AND repo_name = 'tensorflow/tensorflow'\nGROUP BY \n    repo_name\nORDER BY \n    star_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -8806,6 +8918,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "SELECT\n    actor_login,\n    sum(CASE WHEN substring_index(repo_name, '/', 1) = 'javisantana' THEN 1 ELSE 0 END) AS javisantana_stars,\n    sum(CASE WHEN substring_index(repo_name, '/', 1) != 'javisantana' THEN 1 ELSE 0 END) AS other_stars,\n    javisantana_stars / (javisantana_stars + other_stars) AS ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nHAVING javisantana_stars > 0\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    actor_login AS user_name,\n    SUM(IF(repo_name LIKE '%javisantana%', 1, 0)) AS javisantana_stars,\n    COUNT(*) - SUM(IF(repo_name LIKE '%javisantana%', 1, 0)) AS other_stars,\n    SUM(IF(repo_name LIKE '%javisantana%', CAST(1 AS Float32), 0)) / COUNT(*) AS ratio\nFROM github_events\nWHERE event_type = 'WatchEvent' AND action = 'created'\nGROUP BY actor_login\nHAVING javisantana_stars > 0\nORDER BY ratio DESC\nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -9824,6 +9950,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    uniqExact(actor_login) AS unique_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND repo_name != 'tensorflow/tensorflow'\n  AND actor_login IN (\n      SELECT\n          actor_login\n      FROM github_events\n      WHERE event_type = 'PullRequestEvent'\n        AND action = 'opened'\n        AND repo_name = 'tensorflow/tensorflow'\n  )\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT \n    repo_name,\n    COUNT(DISTINCT actor_login) AS unique_contributors\nFROM \n    github_events\nWHERE \n    event_type = 'PullRequestEvent' \n    AND action = 'opened'\n    AND repo_name != 'tensorflow/tensorflow'\n    AND actor_login NOT IN (\n        SELECT DISTINCT actor_login \n        FROM github_events \n        WHERE \n            repo_name = 'tensorflow/tensorflow' \n            AND event_type = 'PullRequestEvent' \n            AND action = 'opened'\n    )\nGROUP BY \n    repo_name\nORDER BY \n    unique_contributors DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -10824,6 +10964,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    t2.repo_name,\n    uniq(t2.actor_login) AS num_authors\nFROM github_events AS t1\nINNER JOIN github_events AS t2 ON t1.actor_login = t2.actor_login\nWHERE t1.event_type = 'IssuesEvent'\n  AND t1.action = 'opened'\n  AND t1.repo_name = 'tensorflow/tensorflow'\n  AND t2.event_type = 'IssuesEvent'\n  AND t2.action = 'opened'\n  AND t2.repo_name != 'tensorflow/tensorflow'\nGROUP BY t2.repo_name\nORDER BY num_authors DESC\nLIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT \n  repo_name,\n  COUNT(*) AS issue_count\nFROM github_events\nWHERE \n  event_type = 'IssuesEvent' \n  AND action = 'opened'\n  AND author_association IN ('CONTRIBUTOR', 'MEMBER', 'OWNER', 'COLLABORATOR')\n  AND repo_name != 'tensorflow/tensorflow'\n  AND actor_login IN (\n    SELECT DISTINCT actor_login\n    FROM github_events\n    WHERE \n      event_type = 'IssuesEvent' \n      AND action = 'opened'\n      AND repo_name = 'tensorflow/tensorflow'\n  )\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -11830,6 +11984,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    DATE(created_at) AS date,\n    count() AS daily_stars\nFROM github_events\nWHERE\n    event_type = 'WatchEvent'\nGROUP BY\n    repo_name,\n    date\nORDER BY\n    daily_stars DESC\nLIMIT 1 BY repo_name\nLIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT \n  repo_name,\n  COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND created_at >= today() - interval 1 day\n  AND created_at < today()\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -12844,6 +13012,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, sum(YEAR(created_at) = 2016) AS stars_2016, sum(YEAR(created_at) = 2017) AS stars_2017, (stars_2017 - stars_2016) / stars_2016 AS growth FROM github_events WHERE event_type = 'WatchEvent' AND YEAR(created_at) IN (2016, 2017) GROUP BY repo_name HAVING stars_2016 >= 1 ORDER BY growth DESC LIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT \n    repo_name,\n    COUNT(*) AS star_count_2016\nFROM \n    github_events\nWHERE \n    event_type = 'WatchEvent' \n    AND created_at BETWEEN '2016-01-01' AND '2016-12-31'\nGROUP BY \n    repo_name\nORDER BY \n    star_count_2016 DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -13876,6 +14058,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    sum(CASE WHEN YEAR(created_at) = 2016 THEN 1 ELSE 0 END) AS stars_2016,\n    sum(CASE WHEN YEAR(created_at) = 2017 THEN 1 ELSE 0 END) AS stars_2017,\n    stars_2017 - stars_2016 AS stagnation_diff\nFROM github_events\nWHERE event_type = 'WatchEvent' AND YEAR(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING stars_2017 >= 1\nORDER BY stagnation_diff ASC\nLIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT \n    repo_name,\n    COUNT(DISTINCT IF(year = 2016, actor_login, NULL)) AS unique_contributors_2016,\n    COUNT(DISTINCT IF(year = 2017, actor_login, NULL)) AS unique_contributors_2017,\n    unique_contributors_2016 - unique_contributors_2017 AS contributor_loss\nFROM (\n    SELECT \n        repo_name, \n        actor_login, \n        YEAR(created_at) AS year\n    FROM github_events\n    WHERE \n        event_type = 'WatchEvent' \n        AND created_at BETWEEN '2016-01-01' AND '2017-12-31'\n)\nGROUP BY repo_name\nHAVING unique_contributors_2016 > 0 AND unique_contributors_2017 > 0\nORDER BY contributor_loss DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -14894,6 +15090,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    sum(stars) as total_stars,\n    avg(stars) as avg_monthly_stars,\n    stddevSamp(stars) as star_stddev,\n    (star_stddev / avg_monthly_stars) as variability_score\nFROM (\n    SELECT\n        repo_name,\n        DATE_TRUNC('month', created_at) as month,\n        count() as stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name, month\n)\nGROUP BY repo_name\nHAVING total_stars > 200\nORDER BY variability_score ASC\nLIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT \n    repo_name,\n    COUNT(*) AS star_count\nFROM \n    github_events\nWHERE \n    event_type = 'WatchEvent'\nGROUP BY \n    repo_name\nORDER BY \n    star_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -15918,6 +16128,20 @@
         "humanRowCount": 7,
         "llmRowCount": 7,
         "sql": "SELECT\n    date_format(created_at, '%W') AS day_of_week,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 7,
+        "llmRowCount": 0,
+        "sql": "%\nSELECT\n  dayOfWeek(created_at) AS day_of_week,\n  COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY star_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -16896,6 +17120,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniq(actor_login) AS total_users FROM github_events LIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT \n    COUNT(DISTINCT actor_login) AS total_users\nFROM \n    github_events\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -17859,6 +18097,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniqExact(actor_login) FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\nSELECT \n    COUNT(DISTINCT actor_login) AS total_users\nFROM \n    github_events\nWHERE \n    event_type = 'WatchEvent'\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -18794,6 +19046,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniq(actor_login) FROM github_events WHERE event_type = 'PushEvent' LIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT \n    COUNT(DISTINCT actor_login) AS total_users_with_push\nFROM \n    github_events\nWHERE \n    event_type = 'PushEvent'\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -20688,6 +20954,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nAND actor_login IN (\n    SELECT\n        actor_login\n    FROM github_events\n    WHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\n)\nGROUP BY\n    repo_name\nORDER BY\n    stars DESC\nLIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT repo_name, COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND action = 'created'\n  AND repo_name IN (\n    SELECT DISTINCT repo_name\n    FROM github_events\n    WHERE event_type = 'PullRequestEvent'\n      AND action = 'opened'\n  )\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -21670,6 +21950,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() AS total_prs FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' AND actor_login IN (SELECT actor_login FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' GROUP BY actor_login HAVING count() >= 10) GROUP BY repo_name ORDER BY total_prs DESC LIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT \n    repo_name,\n    COUNT(DISTINCT actor_login) AS unique_authors\nFROM \n    github_events\nWHERE \n    event_type = 'PullRequestEvent' \n    AND action = 'opened'\nGROUP BY \n    repo_name\nHAVING \n    unique_authors >= 10\nORDER BY \n    unique_authors DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -22660,6 +22954,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY pr_count DESC\nLIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT \n    repo_name,\n    COUNT(*) AS pr_count\nFROM \n    github_events\nWHERE \n    event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY \n    repo_name\nORDER BY \n    pr_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -23664,6 +23972,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    uniq(actor_login) AS contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY contributors DESC\nLIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT \n    repo_name,\n    COUNT(DISTINCT actor_login) AS unique_contributors\nFROM \n    github_events\nWHERE \n    event_type = 'PullRequestEvent' \n    AND action = 'opened'\nGROUP BY \n    repo_name\nORDER BY \n    unique_contributors DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -24664,6 +24986,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS issues_count\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY issues_count DESC\nLIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT \n    repo_name,\n    COUNT(*) AS issue_count\nFROM \n    github_events\nWHERE \n    event_type = 'IssuesEvent' AND action = 'opened'\nGROUP BY \n    repo_name\nORDER BY \n    issue_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -25654,6 +25990,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, uniqExact(actor_login) as authors_count FROM github_events WHERE event_type = 'PushEvent' GROUP BY repo_name ORDER BY authors_count DESC LIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT \n    repo_name,\n    COUNT(DISTINCT actor_login) AS unique_push_users\nFROM \n    github_events\nWHERE \n    event_type = 'PushEvent'\nGROUP BY \n    repo_name\nORDER BY \n    unique_push_users DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -26644,6 +26994,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    uniq(actor_login) AS num_pushers\nFROM github_events\nWHERE event_type = 'PushEvent'\n  AND ref IN ('refs/heads/main', 'refs/heads/master')\nGROUP BY repo_name\nORDER BY num_pushers DESC\nLIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT \n    repo_name,\n    COUNT(DISTINCT actor_login) AS unique_push_users\nFROM \n    github_events\nWHERE \n    event_type = 'PushEvent' \n    AND ref_type = 'branch' \n    AND ref = 'main'\nGROUP BY \n    repo_name\nORDER BY \n    unique_push_users DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -27648,6 +28012,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT\n    repo_name,\n    uniqExact(CASE WHEN event_type = 'PushEvent' AND (ref = 'refs/heads/main' OR ref = 'refs/heads/master') THEN actor_login ELSE NULL END) - 1 AS pushers\nFROM github_events\nGROUP BY repo_name\nHAVING sum(event_type = 'WatchEvent') > 99\nORDER BY pushers DESC\nLIMIT 10\n"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT \n    repo_name,\n    COUNT(DISTINCT actor_login) AS push_access_count\nFROM \n    github_events\nWHERE \n    event_type = 'PushEvent' \n    AND ref_type = 'branch' \n    AND ref = 'main' \n    AND repo_name IN (\n        SELECT \n            repo_name \n        FROM \n            github_events \n        WHERE \n            event_type = 'WatchEvent' \n            AND action = 'created' \n        GROUP BY \n            repo_name \n        HAVING \n            COUNT(*) > 99\n    )\nGROUP BY \n    repo_name\nORDER BY \n    push_access_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -28666,6 +29044,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS invitations\nFROM github_events\nWHERE event_type = 'MemberEvent' AND action = 'added'\nGROUP BY repo_name\nORDER BY invitations DESC\nLIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT \n    repo_name,\n    MAX(number) AS max_member_invitations\nFROM \n    github_events\nWHERE \n    event_type = 'MemberEvent' \n    AND action = 'created'\nGROUP BY \n    repo_name\nORDER BY \n    max_member_invitations DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -29670,6 +30062,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() as total_forks FROM github_events WHERE event_type = 'ForkEvent' GROUP BY repo_name ORDER BY total_forks DESC LIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT repo_name, COUNT(*) AS fork_count\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY fork_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -30656,6 +31062,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    sum(event_type = 'WatchEvent') AS stars,\n    sum(event_type = 'ForkEvent') AS forks,\n    stars / forks AS ratio\nFROM github_events\nWHERE event_type IN ('WatchEvent', 'ForkEvent') AND repo_name != ''\nGROUP BY repo_name\nHAVING forks > 0\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT \n    repo_name,\n    COUNT_IF(event_type = 'WatchEvent') AS stars,\n    COUNT_IF(event_type = 'ForkEvent') AS forks,\n    COUNT_IF(event_type = 'WatchEvent') * 1.0 / NULLIF(COUNT_IF(event_type = 'ForkEvent'), 0) AS star_to_fork_ratio\nFROM \n    github_events\nGROUP BY \n    repo_name\nORDER BY \n    star_to_fork_ratio DESC\nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -31674,6 +32094,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT\n    sum(event_type = 'WatchEvent') AS stars,\n    sum(event_type = 'ForkEvent') AS forks,\n    CAST(sum(event_type = 'WatchEvent') / sum(event_type = 'ForkEvent') AS Decimal(10, 2)) AS ratio\nFROM github_events\nLIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT \n    COUNT_IF(event_type = 'WatchEvent') AS total_stars,\n    COUNT_IF(event_type = 'ForkEvent') AS total_forks,\n    round(COUNT_IF(event_type = 'WatchEvent') * 1.0 / NULLIF(COUNT_IF(event_type = 'ForkEvent'), 0), 2) AS stars_to_forks_ratio\nFROM github_events\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -32619,6 +33053,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count(*) FROM github_events WHERE event_type = 'IssuesEvent' AND action = 'opened' LIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\nSELECT COUNT() AS total_issues_opened\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -33582,6 +34030,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS total_issue_comments\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY total_issue_comments DESC\nLIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT \n    repo_name,\n    COUNT(*) AS issue_comment_events_count\nFROM \n    github_events\nWHERE \n    event_type = 'IssueCommentEvent'\nGROUP BY \n    repo_name\nORDER BY \n    issue_comment_events_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -34568,6 +35030,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    sum(event_type = 'IssueCommentEvent' AND action = 'created') AS num_comments,\n    sum(event_type = 'IssuesEvent' AND action = 'opened') AS num_issues,\n    num_comments / num_issues AS ratio\nFROM github_events\nGROUP BY repo_name\nHAVING num_issues > 0\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT \n  repo_name,\n  COUNT(DISTINCT number) AS issue_count,\n  COUNT(DISTINCT comment_id) AS comment_count,\n  comment_count / issue_count AS comment_to_issue_ratio\nFROM \n  github_events\nWHERE \n  event_type IN ('IssuesEvent', 'IssueCommentEvent')\nGROUP BY \n  repo_name\nORDER BY \n  comment_to_issue_ratio DESC\nLIMIT 10\n\n"
       }
     },
     "humanResults": {
@@ -35586,6 +36062,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    number,\n    count() AS total_comments\nFROM github_events\nWHERE event_type = 'IssueCommentEvent' AND action = 'created'\nGROUP BY\n    repo_name,\n    number\nORDER BY\n    total_comments DESC\nLIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT \n    repo_name AS repo,\n    number AS issue_number,\n    count() AS comments_count\nFROM \n    github_events\nWHERE \n    event_type = 'IssueCommentEvent'\nGROUP BY \n    repo_name, number\nORDER BY \n    comments_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -36586,6 +37076,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    number,\n    count() AS comments_created,\n    uniq(actor_login) AS comment_authors\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\n  AND action = 'created'\n  AND number > 10\nGROUP BY\n    repo_name,\n    number\nHAVING comment_authors >= 10\nORDER BY\n    comments_created DESC\nLIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT \n    repo_name,\n    number AS issue_number,\n    count() AS total_comments,\n    uniq(actor_login) AS unique_comment_authors\nFROM \n    github_events\nWHERE \n    event_type = 'IssueCommentEvent' \n    AND action = 'created'\n    AND number > 10\nGROUP BY \n    repo_name, issue_number\nHAVING \n    total_comments >= 10\nORDER BY \n    total_comments DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -37600,6 +38104,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT\n    repo_name,\n    count() AS matching_events\nFROM github_events\nWHERE\n    CHAR_LENGTH(REGEXP_EXTRACT(repo_name, '(?i)(tensorflow)')) > 0\n    OR CHAR_LENGTH(REGEXP_EXTRACT(title, '(?i)(tensorflow)')) > 0\n    OR CHAR_LENGTH(REGEXP_EXTRACT(body, '(?i)(tensorflow)')) > 0\nGROUP BY\n    repo_name\nORDER BY\n    matching_events DESC\nLIMIT 10\n"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT \n    repo_name AS repository_name,\n    COUNT(*) AS event_count\nFROM \n    github_events\nWHERE \n    body LIKE '%tensorflow%'\nGROUP BY \n    repo_name\nORDER BY \n    event_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -38604,6 +39122,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() AS total_comments FROM github_events WHERE event_type = 'CommitCommentEvent' GROUP BY repo_name ORDER BY total_comments DESC LIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT \n    repo_name,\n    COUNT(*) AS commit_comments_count\nFROM \n    github_events\nWHERE \n    event_type = 'CommitCommentEvent'\nGROUP BY \n    repo_name\nORDER BY \n    commit_comments_count DESC\nLIMIT 10\n%\n"
       }
     },
     "humanResults": {
@@ -39608,6 +40140,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    'https://github.com/' || repo_name || '/commit/' || commit_id AS commit_url,\n    count() AS total_comments,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'CommitCommentEvent' AND repo_name != '' AND commit_id != ''\nGROUP BY\n    repo_name,\n    commit_id\nHAVING unique_authors >= 10\nORDER BY\n    total_comments DESC\nLIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT \n    commit_id AS full_commit_url,\n    COUNT(DISTINCT actor_login) AS unique_authors,\n    COUNT(*) AS total_comments\nFROM \n    github_events\nWHERE \n    event_type = 'PushEvent'\nGROUP BY \n    commit_id\nHAVING \n    COUNT(DISTINCT actor_login) >= 10\nORDER BY \n    total_comments DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -40626,6 +41172,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    'https://github.com/' || repo_name || '/pull/' || CAST(number AS String) AS pr_url,\n    uniqExact(actor_login) AS num_authors\nFROM github_events\nWHERE event_type IN ('PullRequestReviewCommentEvent', 'PullRequestReviewEvent')\nGROUP BY\n    repo_name,\n    number\nORDER BY num_authors DESC\nLIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT \n    'https://github.com/' || repo_name || '/pull/' || number AS pr_url,\n    COUNT(DISTINCT actor_login) AS unique_authors_count\nFROM \n    github_events\nWHERE \n    event_type = 'PullRequestReviewCommentEvent' AND action = 'created'\nGROUP BY \n    repo_name, number\nORDER BY \n    unique_authors_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -41630,6 +42190,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    actor_login,\n    count() AS pushes\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY pushes DESC\nLIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT \n    actor_login AS author_login,\n    COUNT(*) AS push_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY push_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -42634,6 +43208,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT SUBSTRING_INDEX(repo_name, '/', 1) AS organization, count(*) AS stars FROM github_events WHERE event_type = 'WatchEvent' GROUP BY organization ORDER BY stars DESC LIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT \n    CASE \n        WHEN position(repo_name, '/') = 0 THEN repo_name \n        ELSE substring(repo_name, position(repo_name, '/') + 1) \n    END AS organization,\n    COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY organization\nORDER BY star_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -43624,6 +44212,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    SUBSTRING_INDEX(repo_name, '/', 1) AS org_name,\n    uniqExact(repo_name) AS repo_count\nFROM github_events\nWHERE repo_name != ''\nGROUP BY org_name\nORDER BY repo_count DESC\nLIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT \n    splitByChar('/')(repo_name)[1] AS organization,\n    COUNT(DISTINCT repo_name) AS repo_count\nFROM \n    github_events\nGROUP BY \n    organization\nORDER BY \n    repo_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -44628,6 +45230,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS pr_count,\n    uniq(actor_login) AS unique_authors,\n    sum(additions) AS total_adds,\n    sum(deletions) AS total_dels\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND additions < 10000\n  AND deletions < 10000\nGROUP BY repo_name\nORDER BY (total_adds + total_dels) DESC\nLIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT \n    repo_name AS repo,\n    COUNT(DISTINCT number) AS pr_count,\n    COUNT(DISTINCT actor_login) AS unique_authors,\n    SUM(additions) AS total_adds,\n    SUM(deletions) AS total_dels\nFROM \n    github_events\nWHERE \n    event_type = 'PullRequestEvent' \n    AND action = 'opened'\n    AND additions < 10000\n    AND deletions < 10000\nGROUP BY \n    repo_name\nORDER BY \n    (total_adds + total_dels) DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -45674,6 +46290,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    actor_login,\n    count() AS comments_created,\n    uniq(repo_name) AS unique_repos,\n    uniq(repo_name, number) AS unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\n  AND action = 'created'\nGROUP BY actor_login\nORDER BY comments_created DESC\nLIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT \n    actor_login AS author,\n    COUNT(DISTINCT comment_id) AS pull_request_comments_count,\n    COUNT(DISTINCT repo_name) AS unique_repositories_count,\n    COUNT(DISTINCT number) AS unique_prs_count\nFROM \n    github_events\nWHERE \n    event_type = 'PullRequestReviewCommentEvent'\nGROUP BY \n    actor_login\nORDER BY \n    pull_request_comments_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -46688,6 +47318,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    label,\n    count(*) AS count\nFROM github_events\nARRAY JOIN labels AS label\nWHERE\n    event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')\n    AND action IN ('opened', 'created', 'labeled')\n    AND label != ''\nGROUP BY label\nORDER BY count DESC\nLIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n  arrayJoin(labels) AS label,\n  count() AS usage_count\nFROM github_events\nWHERE (event_type = 'IssuesEvent' OR event_type = 'PullRequestEvent' OR event_type = 'IssueCommentEvent')\n  AND (action = 'opened' OR action = 'labeled' OR action = 'created')\n  AND labels != []\nGROUP BY label\nORDER BY usage_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -47678,6 +48322,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    SUBSTRING_INDEX(repo_name, '/', 1) AS organization_name,\n    count(DISTINCT actor_login) AS num_authors,\n    count(DISTINCT CASE WHEN event_type = 'PullRequestEvent' AND action = 'opened' THEN actor_login ELSE NULL END) AS num_pr_authors,\n    count(DISTINCT CASE WHEN event_type = 'IssuesEvent' AND action = 'opened' THEN actor_login ELSE NULL END) AS num_issue_authors,\n    count(DISTINCT CASE WHEN event_type = 'IssueCommentEvent' THEN actor_login ELSE NULL END) AS num_issue_comment_authors,\n    count(DISTINCT CASE WHEN event_type = 'PushEvent' THEN actor_login ELSE NULL END) AS num_push_authors\nFROM github_events\nWHERE repo_name != '' AND actor_login != ''\nGROUP BY organization_name\nORDER BY num_authors DESC\nLIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT \n    repo_name AS organization_name,\n    COUNT(DISTINCT actor_login) AS unique_authors,\n    COUNT(DISTINCT CASE WHEN event_type = 'PullRequestEvent' AND action = 'opened' THEN actor_login END) AS unique_pr_authors,\n    COUNT(DISTINCT CASE WHEN event_type = 'IssuesEvent' AND action = 'opened' THEN actor_login END) AS unique_issue_authors,\n    COUNT(DISTINCT CASE WHEN event_type = 'IssueCommentEvent' THEN actor_login END) AS unique_issue_comment_authors,\n    COUNT(DISTINCT CASE WHEN event_type = 'PushEvent' THEN actor_login END) AS unique_push_authors\nFROM github_events\nGROUP BY repo_name\nORDER BY unique_authors DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -48752,6 +49410,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, CHAR_LENGTH(repo_name) AS repo_name_length FROM github_events WHERE event_type = 'WatchEvent' GROUP BY repo_name ORDER BY repo_name_length DESC LIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT repo_name AS repository_name, LENGTH(repo_name) AS repository_name_length\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY repository_name_length DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -49742,6 +50414,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent' AND repo_name != ''\nGROUP BY repo_name\nORDER BY CHAR_LENGTH(repo_name) ASC, repo_name ASC\nLIMIT 10"
+      },
+      "amazon/nova-2-lite-v1": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING count() >= 1\nORDER BY length(repo_name) ASC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -50331,6 +51017,14 @@
         "avgExactDistance": 0.4295454545454546,
         "avgNumericDistance": 0.3031657331603074,
         "avgFScore": 0.58
+      },
+      "amazon/nova-2-lite-v1": {
+        "totalMatches": 0,
+        "exactMatches": 0,
+        "numericMatches": 0,
+        "avgExactDistance": 0.98,
+        "avgNumericDistance": 0.98,
+        "avgFScore": 0
       }
     }
   }
