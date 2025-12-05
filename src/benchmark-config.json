@@ -51,7 +51,8 @@
         "devstral-medium",
         "devstral-small",
         "codestral-2508",
-        "mistral-medium-3.1"
+        "mistral-medium-3.1",
+        "ministral-8b-2512"
       ]
     },
     "openai": {

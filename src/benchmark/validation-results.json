@@ -938,6 +938,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count() FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "The error you encountered is unrelated to the SQL query itself—it's an authentication issue. The query is correct for counting stars (WatchEvents) in the `github_events` table. Here's the same query again, ensuring it's valid for Tinybird/ClickHouse:\n\n\nSELECT COUNT(*) AS total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\n"
       }
     },
     "humanResults": {
@@ -1897,6 +1911,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "The error you're seeing is not related to the SQL query itself, but rather an authentication issue with Tinybird. The SQL query is correct for ClickHouse/Tinybird to find the top 10 repositories by stars (watch events).\n\nHowever, to ensure the query is properly formatted for Tinybird's context, here's the corrected version with proper parameter handling (though no parameters are needed for this query):\n\n\nSELECT\n    repo_name,\n    countDistinct(actor_login) AS stars_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -2897,6 +2925,20 @@
         "humanRowCount": 5,
         "llmRowCount": 5,
         "sql": "SELECT\n    CASE CHAR_LENGTH(CAST(stars AS String))\n        WHEN 1 THEN 1\n        WHEN 2 THEN 10\n        WHEN 3 THEN 100\n        WHEN 4 THEN 1000\n        WHEN 5 THEN 10000\n        WHEN 6 THEN 100000\n        WHEN 7 THEN 1000000\n        ELSE 10000000\n    END as power_of_10,\n    count() as repo_count\nFROM (\n    SELECT\n        repo_name,\n        count() as stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n)\nGROUP BY power_of_10\nORDER BY power_of_10 ASC\nLIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 5,
+        "llmRowCount": 0,
+        "sql": "SELECT\n    CASE\n        WHEN stars < 10 THEN '1'\n        WHEN stars BETWEEN 10 AND 99 THEN '10'\n        WHEN stars BETWEEN 100 AND 999 THEN '100'\n        WHEN stars BETWEEN 1000 AND 9999 THEN '1000'\n        WHEN stars BETWEEN 10000 AND 99999 THEN '10000'\n        WHEN stars BETWEEN 100000 AND 999999 THEN '100000'\n        WHEN stars BETWEEN 1000000 AND 9999999 THEN '1000000'\n        WHEN stars BETWEEN 10000000 AND 99999999 THEN '10000000'\n        WHEN stars BETWEEN 100000000 AND 999999999 THEN '100000000'\n        WHEN stars >= 1000000000 THEN '1000000000+'\n    END AS star_power_of_10,\n    count() AS repo_count\nFROM (\n    SELECT\n        countDistinct(repo_name) AS stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n)\nGROUP BY star_power_of_10\nORDER BY\n    CASE star_power_of_10\n        WHEN '1' THEN 0\n        WHEN '10' THEN 1\n        WHEN '100' THEN 2\n        WHEN '1000' THEN 3\n        WHEN '10000' THEN 4\n        WHEN '100000' THEN 5\n        WHEN '1000000' THEN 6\n        WHEN '10000000' THEN 7\n        WHEN '100000000' THEN 8\n        WHEN '1000000000+' THEN 9\n    END\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -3881,6 +3923,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniq(repo_name) FROM github_events LIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "The error you're encountering is not related to the SQL query itself but to authentication. Since I can't modify authentication settings, I'll provide a corrected SQL query that should work once authentication is resolved. This query will count distinct repositories efficiently by leveraging the existing partitioning and sorting:\n\n\nSELECT COUNT(DISTINCT repo_name) AS total_repositories FROM github_events\n"
       }
     },
     "humanResults": {
@@ -4840,6 +4896,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    YEAR(created_at) AS year,\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent' AND YEAR(created_at) >= 2015\nGROUP BY year, repo_name\nORDER BY year ASC, stars DESC\nLIMIT 10 BY year\nLIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT\n    toYear(created_at) AS year,\n    repo_name,\n    COUNT(DISTINCT actor_login) AS unique_star_count,\n    RANK() OVER (PARTITION BY toYear(created_at) ORDER BY COUNT(DISTINCT actor_login) DESC) AS rank\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year, repo_name\nORDER BY year, rank\nLIMIT 100"
       }
     },
     "humanResults": {
@@ -5854,6 +5924,20 @@
         "humanRowCount": 2,
         "llmRowCount": 2,
         "sql": "SELECT\n    YEAR(created_at) AS year,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year ASC\nLIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 2,
+        "llmRowCount": 0,
+        "sql": "The error you encountered is not related to the SQL query itself but rather to authentication. The query you provided is correct for Tinybird/ClickHouse. Here is the same query again for reference:\n\n\nSELECT\n    toYear(created_at) AS year,\n    COUNT(DISTINCT actor_login) AS total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -6812,6 +6896,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT actor_login, count() as count FROM github_events WHERE event_type = 'WatchEvent' GROUP BY actor_login ORDER BY count DESC LIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "The error you encountered is unrelated to the SQL query itself—it's an authentication issue with Tinybird. The SQL query is correct for ClickHouse and Tinybird. Here is the same query again for reference:\n\n\nSELECT\n    actor_login,\n    count() AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY star_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -7816,6 +7914,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nAND actor_login IN (\n    SELECT\n        actor_login\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    AND repo_name = 'tensorflow/tensorflow'\n)\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "The error you're encountering is unrelated to the SQL query itself—it's an authentication issue with Tinybird. However, I'll correct the SQL query to properly answer your original question about repositories starred by people who starred `tensorflow/tensorflow`.\n\nThe issue with your previous query is that `actor_login` refers to the user who starred the repo, not the repository itself. To find repositories starred by people who starred `tensorflow/tensorflow`, you need to:\n\n1. First identify users who starred `tensorflow/tensorflow` (via `WatchEvent` with `repo_name = 'tensorflow/tensorflow'`).\n2. Then find repositories starred by those users.\n\nSince we can't join tables directly in Tinybird/ClickHouse for this exploration, we'll use a node-based approach. Here's the corrected query to find the top 10 repositories starred by users who starred `tensorflow/tensorflow`:\n\n\nSELECT\n    repo_name,\n    count() AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND actor_login IN (\n    SELECT actor_login\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n      AND repo_name = 'tensorflow/tensorflow'\n  )\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -8806,6 +8918,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "SELECT\n    actor_login,\n    sum(CASE WHEN substring_index(repo_name, '/', 1) = 'javisantana' THEN 1 ELSE 0 END) AS javisantana_stars,\n    sum(CASE WHEN substring_index(repo_name, '/', 1) != 'javisantana' THEN 1 ELSE 0 END) AS other_stars,\n    javisantana_stars / (javisantana_stars + other_stars) AS ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nHAVING javisantana_stars > 0\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "The error you encountered is unrelated to the SQL query itself—it's an authentication issue with Tinybird. The SQL query is correct for ClickHouse/Tinybird. Here's the same query again for clarity:\n\n\nSELECT\n    actor_login AS user_name,\n    COUNTIF(event_type = 'WatchEvent' AND repo_name LIKE '%javisantana%') AS javisantana_stars,\n    COUNTIF(event_type = 'WatchEvent' AND repo_name NOT LIKE '%javisantana%') AS other_stars,\n    ROUND(\n        COUNTIF(event_type = 'WatchEvent' AND repo_name LIKE '%javisantana%') /\n        NULLIF(COUNTIF(event_type = 'WatchEvent'), 0),\n        4\n    ) AS javisantana_ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY javisantana_ratio DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -9824,6 +9950,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    uniqExact(actor_login) AS unique_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND repo_name != 'tensorflow/tensorflow'\n  AND actor_login IN (\n      SELECT\n          actor_login\n      FROM github_events\n      WHERE event_type = 'PullRequestEvent'\n        AND action = 'opened'\n        AND repo_name = 'tensorflow/tensorflow'\n  )\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "The error you're encountering is not related to the SQL query itself but rather to authentication issues in Tinybird. The query is syntactically correct for ClickHouse/Tinybird. Here's the corrected query with case-insensitive matching for the `actor_login` field to ensure we capture all variations of \"tensorflow\" (e.g., \"TensorFlow\", \"tensorflow.org\", etc.):\n\n\nSELECT\n    repo_name,\n    uniq(actor_login) AS unique_contributors_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND lower(actor_login) LIKE '%tensorflow%'\n  AND repo_name NOT LIKE '%tensorflow%' AND repo_name NOT LIKE '%TensorFlow%'\n  AND repo_name NOT LIKE '%tensorflow%' AND repo_name NOT LIKE '%tensorflow.org%'\nGROUP BY repo_name\nORDER BY unique_contributors_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -10824,6 +10964,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    t2.repo_name,\n    uniq(t2.actor_login) AS num_authors\nFROM github_events AS t1\nINNER JOIN github_events AS t2 ON t1.actor_login = t2.actor_login\nWHERE t1.event_type = 'IssuesEvent'\n  AND t1.action = 'opened'\n  AND t1.repo_name = 'tensorflow/tensorflow'\n  AND t2.event_type = 'IssuesEvent'\n  AND t2.action = 'opened'\n  AND t2.repo_name != 'tensorflow/tensorflow'\nGROUP BY t2.repo_name\nORDER BY num_authors DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS issue_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n  AND action = 'opened'\n  AND actor_login IN (\n    SELECT actor_login\n    FROM github_events\n    WHERE event_type = 'IssuesEvent'\n      AND action = 'opened'\n      AND repo_name = 'tensorflow/tensorflow'\n      AND actor_login IS NOT NULL\n      LIMIT 1000000\n  )\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -11830,6 +11984,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    DATE(created_at) AS date,\n    count() AS daily_stars\nFROM github_events\nWHERE\n    event_type = 'WatchEvent'\nGROUP BY\n    repo_name,\n    date\nORDER BY\n    daily_stars DESC\nLIMIT 1 BY repo_name\nLIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT\n    repo_name,\n    countDistinct(actor_login) AS stars_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -12844,6 +13012,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, sum(YEAR(created_at) = 2016) AS stars_2016, sum(YEAR(created_at) = 2017) AS stars_2017, (stars_2017 - stars_2016) / stars_2016 AS growth FROM github_events WHERE event_type = 'WatchEvent' AND YEAR(created_at) IN (2016, 2017) GROUP BY repo_name HAVING stars_2016 >= 1 ORDER BY growth DESC LIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) FILTER (WHERE toYear(created_at) = 2016) AS stars_2016,\n    COUNT(DISTINCT actor_login) FILTER (WHERE toYear(created_at) = 2017) AS stars_2017,\n    COUNT(DISTINCT actor_login) FILTER (WHERE toYear(created_at) = 2017) -\n    COUNT(DISTINCT actor_login) FILTER (WHERE toYear(created_at) = 2016) AS growth_2017\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND toYear(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING stars_2016 > 0\nORDER BY growth_2017 DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -13876,6 +14058,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    sum(CASE WHEN YEAR(created_at) = 2016 THEN 1 ELSE 0 END) AS stars_2016,\n    sum(CASE WHEN YEAR(created_at) = 2017 THEN 1 ELSE 0 END) AS stars_2017,\n    stars_2017 - stars_2016 AS stagnation_diff\nFROM github_events\nWHERE event_type = 'WatchEvent' AND YEAR(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING stars_2017 >= 1\nORDER BY stagnation_diff ASC\nLIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS stars_2017,\n    COUNT(DISTINCT CASE WHEN toYear(created_at) = 2016 THEN actor_login END) AS stars_2016,\n    COUNT(DISTINCT CASE WHEN toYear(created_at) = 2017 THEN actor_login END) - COUNT(DISTINCT CASE WHEN toYear(created_at) = 2016 THEN actor_login END) AS stagnation_diff\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND toYear(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING COUNT(DISTINCT CASE WHEN toYear(created_at) = 2017 THEN actor_login END) >= 1\nORDER BY stagnation_diff ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -14894,6 +15090,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    sum(stars) as total_stars,\n    avg(stars) as avg_monthly_stars,\n    stddevSamp(stars) as star_stddev,\n    (star_stddev / avg_monthly_stars) as variability_score\nFROM (\n    SELECT\n        repo_name,\n        DATE_TRUNC('month', created_at) as month,\n        count() as stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name, month\n)\nGROUP BY repo_name\nHAVING total_stars > 200\nORDER BY variability_score ASC\nLIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "The error you're encountering is unrelated to the SQL query itself—it's an authentication issue with Tinybird. However, I'll refine the query to better measure **steady star growth rate over time** by analyzing trends rather than just a simple average. Here's the corrected SQL:\n\n\nSELECT\n    repo_name,\n    countDistinct(toDate(created_at)) AS days_with_stars,\n    sum(if(action = 'star', 1, 0)) AS total_stars,\n    sum(if(action = 'star', 1, 0)) / countDistinct(toDate(created_at)) AS avg_daily_stars,\n    sum(if(action = 'star', 1, 0)) / countDistinct(toDate(created_at)) / 30 AS avg_monthly_stars,\n    sum(if(\n        action = 'star',\n        toDate(created_at),\n        null\n    )) AS last_star_date\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING countDistinct(toDate(created_at)) >= 30  -- Ensure at least 30 days of data\nORDER BY avg_monthly_stars DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -15918,6 +16128,20 @@
         "humanRowCount": 7,
         "llmRowCount": 7,
         "sql": "SELECT\n    date_format(created_at, '%W') AS day_of_week,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 7,
+        "llmRowCount": 0,
+        "sql": "SELECT\n    dayOfWeek(toStartOfDay(created_at)) AS day_of_week,\n    toDate(toStartOfDay(created_at)) AS day,\n    count() AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY dayOfWeek(toStartOfDay(created_at)), day\nORDER BY star_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -16896,6 +17120,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniq(actor_login) AS total_users FROM github_events LIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "The error you're encountering is not related to the SQL query itself, but rather to authentication issues with Tinybird. However, I'll provide a corrected and optimized SQL query for your original question about the total number of unique users on GitHub from the dataset:\n\n\nSELECT\n    uniqExact(actor_login) AS total_unique_users\nFROM github_events\nLIMIT 1000000\n\n\nKey improvements:\n1. Using `uniqExact` instead of `uniq` for more accurate counting of unique values\n2. Increased the limit to 1,000,000 to better capture the total unique users\n3. The query remains valid ClickHouse/Tinybird syntax\n\nThe authentication error you're seeing suggests you need to:\n1. Verify your Tinybird API token is correct\n2. Ensure you're using the token with the correct host\n3. Check your workspace permissions in Tinybird\n\nThis query will still return the same result as before but with better accuracy for counting unique users."
       }
     },
     "humanResults": {
@@ -17859,6 +18097,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniqExact(actor_login) FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "The error you're encountering is not related to the SQL query itself but to authentication issues with Tinybird. The query is correct for ClickHouse/Tinybird. Here's the valid SQL query again (without the `%` since no dynamic parameters are needed):\n\n\nSELECT COUNT(DISTINCT actor_login) AS total_users_with_star\nFROM github_events\nWHERE event_type = 'WatchEvent'\nLIMIT 1000000\n"
       }
     },
     "humanResults": {
@@ -18794,6 +19046,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniq(actor_login) FROM github_events WHERE event_type = 'PushEvent' LIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "SELECT COUNT(DISTINCT actor_login) AS total_users_with_push\nFROM github_events\nWHERE event_type = 'PushEvent'"
       }
     },
     "humanResults": {
@@ -19729,6 +19995,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniqExact(actor_login) FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' LIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "The error you encountered is unrelated to the SQL query itself—it's an authentication issue with Tinybird. The SQL query you provided is correct for answering the question \"Total number of users with at least one created PR\" in ClickHouse/Tinybird.\n\nHere is the corrected query (unchanged, as it is valid):\n\n\nSELECT COUNT(DISTINCT actor_login) AS total_users_with_created_pr\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'created'\n"
       }
     },
     "humanResults": {
@@ -20688,6 +20968,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nAND actor_login IN (\n    SELECT\n        actor_login\n    FROM github_events\n    WHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\n)\nGROUP BY\n    repo_name\nORDER BY\n    stars DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT\n    repo_name,\n    count() AS stars_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nINTERSECT\nSELECT DISTINCT repo_name\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY stars_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -21670,6 +21964,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() AS total_prs FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' AND actor_login IN (SELECT actor_login FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' GROUP BY actor_login HAVING count() >= 10) GROUP BY repo_name ORDER BY total_prs DESC LIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "The error you're encountering is unrelated to the SQL query itself—it's an authentication issue with Tinybird. The query is correct for ClickHouse/Tinybird. Here's the same query again (unchanged, as it is valid):\n\n\nSELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS authors_with_prs_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\nGROUP BY repo_name\nHAVING COUNT(DISTINCT actor_login) >= 10\nORDER BY authors_with_prs_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -22660,6 +22968,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY pr_count DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "The error you're encountering is not related to the SQL query itself, but rather an authentication issue with Tinybird. The SQL query you provided is correct for ClickHouse/Tinybird to answer the question about the top 10 repositories with the maximum amount of pull requests.\n\nHere is the same query again (unchanged, as it is correct):\n\n\nSELECT\n    repo_name,\n    countIf(action = 'opened') AS pull_request_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\nGROUP BY repo_name\nORDER BY pull_request_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -23664,6 +23986,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    uniq(actor_login) AS contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY contributors DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT\n    repo_name,\n    uniq(actor_login) AS pull_request_contributors_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\nGROUP BY repo_name\nORDER BY pull_request_contributors_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -24664,6 +25000,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS issues_count\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY issues_count DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "The error you're encountering is not related to the SQL query itself but to authentication in Tinybird. The query is correct for ClickHouse/Tinybird. Here's the same query again for reference:\n\n\nSELECT\n    repo_name,\n    countIf(action = 'opened') AS total_issues_opened\nFROM github_events\nWHERE event_type = 'IssuesEvent'\nGROUP BY repo_name\nORDER BY total_issues_opened DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -25654,6 +26004,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, uniqExact(actor_login) as authors_count FROM github_events WHERE event_type = 'PushEvent' GROUP BY repo_name ORDER BY authors_count DESC LIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "The error you're encountering is not related to the SQL query itself, but rather an authentication issue with Tinybird. The SQL query you provided is correct for ClickHouse/Tinybird to find repositories with the most users who have push access.\n\nHere is the same query again (unchanged, as it is correct):\n\n\nSELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS push_access_users_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY repo_name\nORDER BY push_access_users_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -26644,6 +27008,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    uniq(actor_login) AS num_pushers\nFROM github_events\nWHERE event_type = 'PushEvent'\n  AND ref IN ('refs/heads/main', 'refs/heads/master')\nGROUP BY repo_name\nORDER BY num_pushers DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "The error you're encountering is unrelated to the SQL query itself—it's an authentication issue with Tinybird. The SQL query you provided is correct for answering the question about repositories with the most contributors who have push access to the main branch.\n\nHere’s the corrected SQL query (unchanged, as it was correct):\n\n\nSELECT\n    repo_name,\n    countDistinct(actor_login) AS push_access_users_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY repo_name\nORDER BY push_access_users_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -27648,6 +28026,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT\n    repo_name,\n    uniqExact(CASE WHEN event_type = 'PushEvent' AND (ref = 'refs/heads/main' OR ref = 'refs/heads/master') THEN actor_login ELSE NULL END) - 1 AS pushers\nFROM github_events\nGROUP BY repo_name\nHAVING sum(event_type = 'WatchEvent') > 99\nORDER BY pushers DESC\nLIMIT 10\n"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "The error you're encountering is not related to the SQL query itself but rather to authentication issues in Tinybird. The SQL query is correct for ClickHouse. Here's the corrected query with proper syntax and pagination:\n\n\nSELECT\n    repo_name,\n    countDistinct(actor_login) AS push_access_users_count\nFROM github_events\nWHERE\n    event_type = 'PushEvent'\n    AND ref_type = 'branch'\n    AND ref = 'main'\n    AND repo_name IN (\n        SELECT repo_name\n        FROM github_events\n        WHERE event_type = 'WatchEvent'\n        GROUP BY repo_name\n        HAVING count(*) > 99\n    )\nGROUP BY repo_name\nORDER BY push_access_users_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -28666,6 +29058,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS invitations\nFROM github_events\nWHERE event_type = 'MemberEvent' AND action = 'added'\nGROUP BY repo_name\nORDER BY invitations DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "The error you're encountering is not related to the SQL query itself, but rather to authentication issues with Tinybird. The query you provided is correct for answering the question about the top 10 repositories by maximum number of member invitations.\n\nHere is the corrected SQL query (same as your last one, which is correct):\n\n\nSELECT\n    repo_name,\n    COUNT(*) AS member_invitations\nFROM github_events\nWHERE event_type = 'MemberEvent'\nGROUP BY repo_name\nORDER BY member_invitations DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -29670,6 +30076,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() as total_forks FROM github_events WHERE event_type = 'ForkEvent' GROUP BY repo_name ORDER BY total_forks DESC LIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "The error you're encountering is not related to the SQL query itself, but rather an authentication issue with Tinybird. The SQL query you provided is correct for retrieving the top 10 most forked repositories from the `github_events` table.\n\nSince the issue is authentication-related and not a SQL problem, here is the same query again (unchanged) as it is correct for ClickHouse/Tinybird:\n\n\nSELECT\n    repo_name,\n    COUNT(*) AS forks_count\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY forks_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -30656,6 +31076,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    sum(event_type = 'WatchEvent') AS stars,\n    sum(event_type = 'ForkEvent') AS forks,\n    stars / forks AS ratio\nFROM github_events\nWHERE event_type IN ('WatchEvent', 'ForkEvent') AND repo_name != ''\nGROUP BY repo_name\nHAVING forks > 0\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "The error you're encountering is not related to the SQL query itself, but rather an authentication issue with Tinybird. The SQL query is correct for ClickHouse/Tinybird. Here's the corrected query with proper division handling to avoid division by zero:\n\n\nSELECT\n    repo_name,\n    countIf(event_type = 'WatchEvent') AS stars,\n    countIf(event_type = 'ForkEvent') AS forks,\n    if(forks > 0, countIf(event_type = 'WatchEvent') / countIf(event_type = 'ForkEvent'), 0) AS stars_to_forks_ratio\nFROM github_events\nGROUP BY repo_name\nORDER BY stars_to_forks_ratio DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -31674,6 +32108,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT\n    sum(event_type = 'WatchEvent') AS stars,\n    sum(event_type = 'ForkEvent') AS forks,\n    CAST(sum(event_type = 'WatchEvent') / sum(event_type = 'ForkEvent') AS Decimal(10, 2)) AS ratio\nFROM github_events\nLIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "The error you're encountering is not related to the SQL query itself but to authentication issues with Tinybird. The SQL query is correct for ClickHouse/Tinybird. Here's the corrected query with proper formatting and logic to ensure it works as intended:\n\n\nSELECT\n    repo_name,\n    COUNT(DISTINCT CASE WHEN event_type = 'WatchEvent' THEN actor_login END) AS stars,\n    COUNT(DISTINCT CASE WHEN event_type = 'ForkEvent' THEN actor_login END) AS forks,\n    ROUND(\n        NULLIF(\n            COUNT(DISTINCT CASE WHEN event_type = 'WatchEvent' THEN actor_login END)::Float32,\n            0\n        ) /\n        NULLIF(\n            COUNT(DISTINCT CASE WHEN event_type = 'ForkEvent' THEN actor_login END),\n            0\n        ),\n        2\n    ) AS stars_to_forks_ratio\nFROM github_events\nWHERE event_type IN ('WatchEvent', 'ForkEvent')\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -32619,6 +33067,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count(*) FROM github_events WHERE event_type = 'IssuesEvent' AND action = 'opened' LIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "The error you're encountering is not related to the SQL query itself, but rather to authentication in Tinybird. The query is correct for counting issues opened on GitHub. Here's the same query again (valid for Tinybird/ClickHouse):\n\n\nSELECT COUNT(*) AS total_issues_opened\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\n"
       }
     },
     "humanResults": {
@@ -33582,6 +34044,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS total_issue_comments\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY total_issue_comments DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "The error you encountered is not related to the SQL query itself but rather to authentication or workspace configuration in Tinybird. The SQL query you provided is correct for ClickHouse and should work in Tinybird if the datasource is properly connected.\n\nSince the issue is unrelated to the SQL logic, here is the same query again (unchanged) as it is correct for your original question:\n\n\nSELECT\n    repo_name,\n    COUNT(*) AS issue_comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY issue_comment_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -34568,6 +35044,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    sum(event_type = 'IssueCommentEvent' AND action = 'created') AS num_comments,\n    sum(event_type = 'IssuesEvent' AND action = 'opened') AS num_issues,\n    num_comments / num_issues AS ratio\nFROM github_events\nGROUP BY repo_name\nHAVING num_issues > 0\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "The error you're encountering is not related to the SQL query itself but rather to authentication issues with Tinybird. The SQL query is correct for ClickHouse/Tinybird. Here's the refined query with proper handling of division by zero and rounding:\n\n\nSELECT\n    repo_name,\n    countIf(action = 'opened' AND event_type = 'IssuesEvent') AS total_issues,\n    countIf(action = 'opened' AND event_type = 'IssueCommentEvent') AS total_issue_comments,\n    if(\n        countIf(action = 'opened' AND event_type = 'IssuesEvent') > 0,\n        round(\n            countIf(action = 'opened' AND event_type = 'IssueCommentEvent') /\n            countIf(action = 'opened' AND event_type = 'IssuesEvent'),\n            2\n        ),\n        0\n    ) AS issue_comments_to_issues_ratio\nFROM github_events\nGROUP BY repo_name\nORDER BY issue_comments_to_issues_ratio DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -35586,6 +36076,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    number,\n    count() AS total_comments\nFROM github_events\nWHERE event_type = 'IssueCommentEvent' AND action = 'created'\nGROUP BY\n    repo_name,\n    number\nORDER BY\n    total_comments DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "The error you're encountering is not related to the SQL query itself, but rather to authentication in Tinybird. The query is valid for ClickHouse/Tinybird. Here's the corrected query with a slight adjustment to ensure we're capturing the most accurate count of comments for opened issues:\n\n\nSELECT\n    repo_name AS repo,\n    number AS issue_number,\n    comments\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n  AND action = 'opened'\n  AND state = 'open'\nORDER BY comments DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -36586,6 +37090,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    number,\n    count() AS comments_created,\n    uniq(actor_login) AS comment_authors\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\n  AND action = 'created'\n  AND number > 10\nGROUP BY\n    repo_name,\n    number\nHAVING comment_authors >= 10\nORDER BY\n    comments_created DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "The error you're encountering is not related to the SQL query itself but to authentication issues with Tinybird. The SQL query is correct for ClickHouse/Tinybird. Here's the refined query with proper filtering for issue comments (since `IssuesEvent` alone won't capture comments):\n\n\nSELECT\n    repo_name AS repository,\n    number AS issue_number,\n    comments AS total_comments,\n    uniq(actor_login) AS unique_comment_authors\nFROM github_events\nWHERE event_type IN ('IssuesEvent', 'IssueCommentEvent')\n  AND (event_type = 'IssuesEvent' AND action = 'opened')\n  AND number > 10\nGROUP BY repo_name, number\nHAVING comments >= 10\nORDER BY total_comments DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -37600,6 +38118,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT\n    repo_name,\n    count() AS matching_events\nFROM github_events\nWHERE\n    CHAR_LENGTH(REGEXP_EXTRACT(repo_name, '(?i)(tensorflow)')) > 0\n    OR CHAR_LENGTH(REGEXP_EXTRACT(title, '(?i)(tensorflow)')) > 0\n    OR CHAR_LENGTH(REGEXP_EXTRACT(body, '(?i)(tensorflow)')) > 0\nGROUP BY\n    repo_name\nORDER BY\n    matching_events DESC\nLIMIT 10\n"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "The error you're encountering is not related to the SQL query itself but to authentication issues with Tinybird. The SQL query is correct for ClickHouse/Tinybird. Here's the query again with minor improvements for case-insensitive matching:\n\n\nSELECT\n    repo_name,\n    COUNT(*) AS event_count\nFROM github_events\nWHERE\n    LOWER(body) LIKE '%tensorflow%' OR LOWER(title) LIKE '%tensorflow%'\n    OR LOWER(body) LIKE '%tensorflow%' OR LOWER(title) LIKE '%tensorflow%'\nGROUP BY repo_name\nHAVING COUNT(*) > 0\nORDER BY event_count DESC\nLIMIT 10\n\n\nHowever, since the issue is authentication-related, I'll provide a more robust version that handles potential NULL values and improves the matching logic:\n\n\nSELECT\n    repo_name,\n    COUNT(*) AS event_count\nFROM github_events\nWHERE\n    (LOWER(body) LIKE '%tensorflow%' OR LOWER(title) LIKE '%tensorflow%')\n    AND repo_name IS NOT NULL\nGROUP BY repo_name\nHAVING COUNT(*) > 0\nORDER BY event_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -38604,6 +39136,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() AS total_comments FROM github_events WHERE event_type = 'CommitCommentEvent' GROUP BY repo_name ORDER BY total_comments DESC LIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT\n    repo_name,\n    countIf(comment_id > 0) AS commit_comment_count\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY commit_comment_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -39608,6 +40154,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    'https://github.com/' || repo_name || '/commit/' || commit_id AS commit_url,\n    count() AS total_comments,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'CommitCommentEvent' AND repo_name != '' AND commit_id != ''\nGROUP BY\n    repo_name,\n    commit_id\nHAVING unique_authors >= 10\nORDER BY\n    total_comments DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "The error you're encountering is unrelated to the SQL query itself—it's an authentication issue with Tinybird. However, I'll provide a corrected SQL query that properly addresses your original question while ensuring it's valid for Tinybird/ClickHouse:\n\n\nSELECT\n    commit_id,\n    repo_name,\n    arrayJoin(arrayMap(x -> concat('https://github.com/', repo_name, '/commit/', x), arrayDistinct(commit_id))) AS full_commit_url,\n    countDistinct(actor_login) AS unique_authors,\n    count() AS total_comments\nFROM github_events\nWHERE event_type = 'PushEvent'\n  AND body IS NOT NULL\nGROUP BY commit_id, repo_name\nHAVING countDistinct(actor_login) >= 10\nORDER BY total_comments DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -40626,6 +41186,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    'https://github.com/' || repo_name || '/pull/' || CAST(number AS String) AS pr_url,\n    uniqExact(actor_login) AS num_authors\nFROM github_events\nWHERE event_type IN ('PullRequestReviewCommentEvent', 'PullRequestReviewEvent')\nGROUP BY\n    repo_name,\n    number\nORDER BY num_authors DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT\n    repo_name,\n    number AS pr_number,\n    'https://github.com/' || repo_name || '/pull/' || number AS full_pr_url,\n    uniq(actor_login) AS unique_authors_count\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\nGROUP BY repo_name, number\nORDER BY unique_authors_count DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -41630,6 +42204,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    actor_login,\n    count() AS pushes\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY pushes DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "The error you encountered is unrelated to the SQL query itself—it's an authentication issue with Tinybird. The SQL query you provided is correct for ClickHouse and should work in Tinybird if the authentication is resolved.\n\nHere’s the same query again for reference (no changes needed):\n\n\nSELECT\n    actor_login AS author,\n    COUNT(*) AS push_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY push_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -42634,6 +43222,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT SUBSTRING_INDEX(repo_name, '/', 1) AS organization, count(*) AS stars FROM github_events WHERE event_type = 'WatchEvent' GROUP BY organization ORDER BY stars DESC LIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "The error you're encountering is not related to the SQL query itself, but rather an authentication issue with Tinybird. However, I'll provide a corrected SQL query that properly extracts organization names from `repo_name` (assuming the format is `organization/repo_name`) and counts stars:\n\n\nSELECT\n    if(\n        contains(repo_name, '/'),\n        splitByChar('/', repo_name, 1),\n        repo_name\n    ) AS organization_name,\n    count() AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY organization_name\nORDER BY star_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -43624,6 +44226,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    SUBSTRING_INDEX(repo_name, '/', 1) AS org_name,\n    uniqExact(repo_name) AS repo_count\nFROM github_events\nWHERE repo_name != ''\nGROUP BY org_name\nORDER BY repo_count DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "The error you're encountering is not related to the SQL query itself but rather to authentication issues with Tinybird. The query is syntactically correct for ClickHouse/Tinybird.\n\nHere is the corrected SQL query to ensure it works properly in Tinybird:\n\n\nSELECT\n    substringIndex(repo_name, '/', -1) AS organization_name,\n    count() AS repo_count\nFROM github_events\nGROUP BY organization_name\nORDER BY repo_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -44628,6 +45244,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS pr_count,\n    uniq(actor_login) AS unique_authors,\n    sum(additions) AS total_adds,\n    sum(deletions) AS total_dels\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND additions < 10000\n  AND deletions < 10000\nGROUP BY repo_name\nORDER BY (total_adds + total_dels) DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "The error you're encountering is unrelated to the SQL query itself—it's an authentication issue with Tinybird. The SQL query you provided is correct for ClickHouse/Tinybird. Here's the same query again for reference:\n\n\nSELECT\n    repo_name AS repo,\n    count(DISTINCT number) AS pr_count,\n    uniq(actor_login) AS unique_authors,\n    sum(additions) AS total_adds,\n    sum(deletions) AS total_dels\nFROM github_events\nWHERE\n    event_type = 'PullRequestEvent'\n    AND action = 'opened'\n    AND additions < 10000\n    AND deletions < 10000\nGROUP BY repo_name\nORDER BY total_adds + total_dels DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -45674,6 +46304,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    actor_login,\n    count() AS comments_created,\n    uniq(repo_name) AS unique_repos,\n    uniq(repo_name, number) AS unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\n  AND action = 'created'\nGROUP BY actor_login\nORDER BY comments_created DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "The error you encountered is unrelated to the SQL query itself—it's an authentication issue with Tinybird. The SQL query you provided is correct for answering the question about top authors with the most code reviews. Here is the same query again for reference:\n\n\nSELECT\n    actor_login AS author,\n    COUNT(DISTINCT repo_name) AS unique_repositories,\n    COUNT(DISTINCT number) AS unique_prs,\n    COUNT(*) AS pull_request_comments\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\nGROUP BY actor_login\nORDER BY pull_request_comments DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -46688,6 +47332,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    label,\n    count(*) AS count\nFROM github_events\nARRAY JOIN labels AS label\nWHERE\n    event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')\n    AND action IN ('opened', 'created', 'labeled')\n    AND label != ''\nGROUP BY label\nORDER BY count DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT\n    label,\n    COUNT() AS total_usage\nFROM (\n    SELECT\n        arrayJoin(labels) AS label\n    FROM github_events\n    WHERE event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')\n    AND action IN ('created', 'opened', 'labeled')\n    AND labels IS NOT NULL\n    AND arrayLength(labels) > 0\n)\nGROUP BY label\nORDER BY total_usage DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -47678,6 +48336,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    SUBSTRING_INDEX(repo_name, '/', 1) AS organization_name,\n    count(DISTINCT actor_login) AS num_authors,\n    count(DISTINCT CASE WHEN event_type = 'PullRequestEvent' AND action = 'opened' THEN actor_login ELSE NULL END) AS num_pr_authors,\n    count(DISTINCT CASE WHEN event_type = 'IssuesEvent' AND action = 'opened' THEN actor_login ELSE NULL END) AS num_issue_authors,\n    count(DISTINCT CASE WHEN event_type = 'IssueCommentEvent' THEN actor_login ELSE NULL END) AS num_issue_comment_authors,\n    count(DISTINCT CASE WHEN event_type = 'PushEvent' THEN actor_login ELSE NULL END) AS num_push_authors\nFROM github_events\nWHERE repo_name != '' AND actor_login != ''\nGROUP BY organization_name\nORDER BY num_authors DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "The error you're encountering is unrelated to the SQL query itself—it's an authentication issue with Tinybird. The SQL query you provided is correct for ClickHouse/Tinybird syntax. Here's the same query again for reference:\n\n\nSELECT\n    substringIndex(repo_name, '/', -1) AS organization_name,\n    uniq(actor_login) AS unique_authors,\n    uniqIf(action = 'opened' AND event_type = 'PullRequestEvent', actor_login) AS unique_pr_authors,\n    uniqIf(action = 'opened' AND event_type = 'IssuesEvent', actor_login) AS unique_issue_authors,\n    uniqIf(event_type = 'IssueCommentEvent', actor_login) AS unique_issue_comment_authors,\n    uniqIf(event_type = 'PushEvent', actor_login) AS unique_push_authors\nFROM github_events\nGROUP BY organization_name\nORDER BY unique_authors DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -48752,6 +49424,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, CHAR_LENGTH(repo_name) AS repo_name_length FROM github_events WHERE event_type = 'WatchEvent' GROUP BY repo_name ORDER BY repo_name_length DESC LIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "The error you're encountering is not related to the SQL query itself, but rather to authentication issues with Tinybird. The SQL query is correct for ClickHouse and should work once the authentication is resolved.\n\nHere is the corrected SQL query (same as before, as it is correct for ClickHouse):\n\n\nSELECT\n    repo_name AS repository_name,\n    CHAR_LENGTH(repo_name) AS repository_name_length\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY CHAR_LENGTH(repo_name) DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -49742,6 +50428,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent' AND repo_name != ''\nGROUP BY repo_name\nORDER BY CHAR_LENGTH(repo_name) ASC, repo_name ASC\nLIMIT 10"
+      },
+      "mistralai/ministral-8b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT\n    repo_name\nFROM\n    github_events\nWHERE\n    event_type = 'WatchEvent'\nGROUP BY\n    repo_name\nHAVING\n    count(*) >= 1\nORDER BY\n    length(repo_name)\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -50331,6 +51031,14 @@
         "avgExactDistance": 0.4295454545454546,
         "avgNumericDistance": 0.3031657331603074,
         "avgFScore": 0.58
+      },
+      "mistralai/ministral-8b-2512": {
+        "totalMatches": 0,
+        "exactMatches": 0,
+        "numericMatches": 0,
+        "avgExactDistance": 1,
+        "avgNumericDistance": 1,
+        "avgFScore": 0
       }
     }
   }
