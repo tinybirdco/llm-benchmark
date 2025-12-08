@@ -119,6 +119,11 @@
       "models": [
         "cydonia-24b-v4.1"
       ]
+    },
+    "essentialai": {
+      "models": [
+        "rnj-1-instruct"
+      ]
     }
   }
 }
