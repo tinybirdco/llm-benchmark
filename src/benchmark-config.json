@@ -39,7 +39,8 @@
       "models": [
         "llama-4-maverick",
         "llama-4-scout",
-        "llama-3.3-70b-instruct"
+        "llama-3.3-70b-instruct",
+        "llama-guard-4-12b:free"
       ]
     },
     "mistralai": {
