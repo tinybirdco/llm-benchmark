@@ -119,6 +119,11 @@
       "models": [
         "cydonia-24b-v4.1"
       ]
+    },
+    "nex-agi": {
+      "models": [
+        "deepseek-v3.1-nex-n1:free"
+      ]
     }
   }
 }
