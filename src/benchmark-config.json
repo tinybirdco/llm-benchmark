@@ -119,6 +119,11 @@
       "models": [
         "cydonia-24b-v4.1"
       ]
+    },
+    "allenai": {
+      "models": [
+        "olmo-3.1-32b-think:free"
+      ]
     }
   }
 }
