@@ -119,6 +119,11 @@
       "models": [
         "cydonia-24b-v4.1"
       ]
+    },
+    "allenai": {
+      "models": [
+        "molmo-2-8b"
+      ]
     }
   }
 }
