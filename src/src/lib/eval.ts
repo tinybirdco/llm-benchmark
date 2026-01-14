@@ -175,9 +175,21 @@ export function calculateRanks(metrics: ModelMetrics[]): ModelMetrics[] {
   });
 }
 
+/**
+ * Calculates a comprehensive exactness score for a model based on validation results.
+ * 
+ * This function calculates the average of individual exactness scores across all questions,
+ * which provides a more accurate representation than using average distance metrics.
+ * 
+ * The score properly accounts for:
+ * 1. Individual question scores (including perfect 100 scores)
+ * 2. Failed queries (scored as 0)
+ * 3. Exact match bonus for perfect accuracy
+ */
 function blendedExactnessScore(provider: string, model: string) {
   const modelKey = `${provider}/${model}`;
 
+  // Validate that model stats exist
   if (
     !validationSummaries.modelStats[
       modelKey as keyof typeof validationSummaries.modelStats
@@ -187,15 +199,71 @@ function blendedExactnessScore(provider: string, model: string) {
     return 0;
   }
 
-  const { avgExactDistance, avgNumericDistance, avgFScore } =
-    validationSummaries.modelStats[
-      modelKey as keyof typeof validationSummaries.modelStats
-    ];
+  const modelStats = validationSummaries.modelStats[
+    modelKey as keyof typeof validationSummaries.modelStats
+  ];
 
-  // strong preference for exact, numeric as backup, fscore as minor fallback (it's correlated with jaccard)
-  return blendScore(avgExactDistance, avgNumericDistance, avgFScore);
+  // Validate required fields exist and are numbers
+  if (
+    typeof modelStats.totalMatches !== 'number' ||
+    typeof modelStats.exactMatches !== 'number' ||
+    typeof validationSummaries.totalQuestions !== 'number' ||
+    validationSummaries.totalQuestions === 0
+  ) {
+    console.log(`Invalid validation data for ${modelKey}`);
+    return 0;
+  }
+
+  const { totalMatches, exactMatches } = modelStats;
+
+  // Calculate individual exactness scores for all questions
+  const individualScores: number[] = [];
+  
+  // Get all question keys from validation results
+  const questionKeys = Object.keys(validationResults).filter(key => key !== '_summary');
+  
+  // Validate we have questions to process
+  if (questionKeys.length === 0) {
+    console.log(`No questions found in validation results for ${modelKey}`);
+    return 0;
+  }
+  
+  for (const question of questionKeys) {
+    const individualScore = getExactnessScore(provider, model, question);
+    individualScores.push(individualScore);
+  }
+  
+  // Calculate average of individual scores (safe division)
+  const avgIndividualScore = individualScores.length > 0 
+    ? individualScores.reduce((sum, score) => sum + score, 0) / individualScores.length
+    : 0;
+  
+  // Apply exact match bonus (safe division)
+  const exactMatchRate = exactMatches / validationSummaries.totalQuestions;
+  
+  // Calculate bonus that ensures final score never exceeds 100
+  const maxPossibleBonus = Math.max(0, 100 - avgIndividualScore);
+  const exactMatchBonus = exactMatchRate * Math.min(5, maxPossibleBonus);
+  
+  const finalScore = avgIndividualScore + exactMatchBonus;
+  
+  // Validate final score is a valid number
+  if (!isFinite(finalScore)) {
+    console.log(`Invalid final score calculated for ${modelKey}: ${finalScore}`);
+    return 0;
+  }
+  
+  return Math.round(finalScore);
 }
 
+/**
+ * Blends different distance metrics into a single quality score.
+ * 
+ * @param exact - Exact distance metric (0 = perfect match, 1 = complete mismatch)
+ * @param numeric - Numeric distance metric (0 = perfect match, 1 = complete mismatch)  
+ * @param fscore - F-score metric (0 = worst, 1 = best)
+ * @returns Quality score on 0-100 scale (100 = perfect)
+ */
 function blendScore(exact: number, numeric: number, fscore: number) {
   return 100 * (0.65 * (1 - exact) + 0.25 * (1 - numeric) + 0.1 * fscore);
 }
