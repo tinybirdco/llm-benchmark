@@ -938,6 +938,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count() FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\nThe error indicates that the query is trying to access a non-existent table or column. Based on the schema, the table containing star-related data is likely `events`. We need"
       }
     },
     "humanResults": {
@@ -1897,6 +1911,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Here is a corrected and valid ClickHouse SQL query for your request:\n\n\nSELECT TOP 10 `repo_name` \nFROM github_events\nWHERE action = 'opened'\nORDER BY created_at DESC\nLIMIT 10\n\n\n### Notes:\n- This query uses standard ClickHouse syntax.\n- It filters for `action = 'opened'`, orders by `created_at DESC`, and limits the result to 10.\n- It assumes the `repo_name` column exists and is of type `text` or `string`.\n- If you need to include more columns or filter by other criteria, adjust the `WHERE` clause accordingly.\n\nLet me know if you need to include more columns or additional filters!"
       }
     },
     "humanResults": {
@@ -2897,6 +2925,20 @@
         "humanRowCount": 5,
         "llmRowCount": 5,
         "sql": "SELECT\n    CASE CHAR_LENGTH(CAST(stars AS String))\n        WHEN 1 THEN 1\n        WHEN 2 THEN 10\n        WHEN 3 THEN 100\n        WHEN 4 THEN 1000\n        WHEN 5 THEN 10000\n        WHEN 6 THEN 100000\n        WHEN 7 THEN 1000000\n        ELSE 10000000\n    END as power_of_10,\n    count() as repo_count\nFROM (\n    SELECT\n        repo_name,\n        count() as stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n)\nGROUP BY power_of_10\nORDER BY power_of_10 ASC\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 5,
+        "llmRowCount": 0,
+        "sql": "\nThe error occurs because the column `stars` is not present in the schema. We need to adjust the query to use a column name that exists, such as `comments_count` or another appropriate field. Also, ensure the query is properly parameterized for ClickHouse.\n\nHere’s the corrected query:\n\nSELECT COUNT(*) AS star_count\nFROM events\nWHERE session_id = '{{session_id}}'\n  AND action IN ('opened', 'created', 'added', 'edited', 'deleted', 'fork', 'merged', 'reopened', 'assigned')\nGROUP BY session_id\nORDER BY star_count ASC\nLIMIT 1000\n\n\nThis query:\n- Uses a parameterized `session_id` to avoid SQL injection.\n- Assumes `comments_count` is the correct field for counting stars (adjust if the actual field name differs).\n- Orders results by `star_count` in ascending order.\n- Limits the result to the top 1000 entries.\n  \nEnsure the `comments_count` column exists in your `events` table.\n"
       }
     },
     "humanResults": {
@@ -3881,6 +3923,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniq(repo_name) FROM github_events LIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\nThe error indicates that the query is being executed against a ClickHouse workspace that does not have the necessary authentication token. To fix this, ensure the ClickHouse workspace is properly authenticated with the correct token. If the token is missing or incorrect, the query will fail. Verify the token in the ClickHouse configuration and retry the query. If the issue persists, check the workspace permissions and access rights.\n\nThe SQL query itself remains valid for ClickHouse:\n\nSELECT COUNT(DISTINCT repo_name) AS total_repos\nFROM github_events\nWHERE action = 'opened'\nORDER BY created_at DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -6812,6 +6868,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT actor_login, count() as count FROM github_events WHERE event_type = 'WatchEvent' GROUP BY actor_login ORDER BY count DESC LIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nThe error occurs because the query is missing an authentication token. To fix this, we need to include the token in the query. Since the token is not provided, we'll assume a placeholder value. If authentication is required, you should include the token in the query parameters or headers. For now, here's the corrected query with a placeholder token:\n\n\nSELECT \n  author_association,\n  COUNT(*)\nFROM \n  events\nWHERE \n  action = 'opened'\nGROUP BY \n  author_association\nORDER BY \n  count(*) DESC\nLIMIT 10\n\n\nTo include the token, you can modify the query like this:\n\nSELECT \n  author_association,\n  COUNT(*) AS count\nFROM \n  events\nWHERE \n  action = 'opened'\n  AND auth_token = 'YOUR_AUTH_TOKEN'\nGROUP BY \n  author_association\nORDER BY \n  count DESC\nLIMIT 10\n\n\nReplace `'YOUR_AUTH_TOKEN'` with the actual authentication token.\n"
       }
     },
     "humanResults": {
@@ -8806,6 +8876,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "SELECT\n    actor_login,\n    sum(CASE WHEN substring_index(repo_name, '/', 1) = 'javisantana' THEN 1 ELSE 0 END) AS javisantana_stars,\n    sum(CASE WHEN substring_index(repo_name, '/', 1) != 'javisantana' THEN 1 ELSE 0 END) AS other_stars,\n    javisantana_stars / (javisantana_stars + other_stars) AS ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nHAVING javisantana_stars > 0\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nThe error occurs because the query is trying to use an authentication token, which is not available in the current environment. To fix this, we need to adjust the query to work without authentication or ensure the token is correctly provided. Since the user mentioned using Tinybird, we can assume the token is available in the environment. We'll modify the query to safely handle the authentication and ensure it groups and aggregates correctly.\n\nHere's"
       }
     },
     "humanResults": {
@@ -9824,6 +9908,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    uniqExact(actor_login) AS unique_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND repo_name != 'tensorflow/tensorflow'\n  AND actor_login IN (\n      SELECT\n          actor_login\n      FROM github_events\n      WHERE event_type = 'PullRequestEvent'\n        AND action = 'opened'\n        AND repo_name = 'tensorflow/tensorflow'\n  )\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nThe error indicates an authentication issue. Since the task requires adjusting the query, we need to ensure the correct event types and proper filtering. The original query was filtering for PR creation and opening events, but the schema and table names may differ. We should adjust the event_type and add proper filtering for repositories.\n\nWe'll modify the query to:\n1. Filter for PR creation events.\n2. Group by repository name.\n3. Count unique contributors.\n4. Order by the count of unique contributors in descending order.\n5. Limit to the top 10.\n\nThe corrected query should use the correct event_type and ensure proper table references.\n\n\nSELECT \n  repo_name,\n  COUNT(DISTINCT contributor_id) AS unique_contributors\nFROM \n  events\nWHERE \n  event_type = 'PR_created'\nGROUP BY \n  repo_name\nORDER BY \n  unique_contributors DESC\nLIMIT 10\n\n\nThis should resolve the error and correctly return the top 10 repositories by unique contributors.\n\nAnswer: \nSELECT \n  repo_name,\n  COUNT(DISTINCT contributor_id) AS unique_contributors\nFROM \n  events\nWHERE \n  event_type = 'PR_created'\nGROUP BY \n  repo_name\nORDER BY \n  unique_contributors DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -10824,6 +10922,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    t2.repo_name,\n    uniq(t2.actor_login) AS num_authors\nFROM github_events AS t1\nINNER JOIN github_events AS t2 ON t1.actor_login = t2.actor_login\nWHERE t1.event_type = 'IssuesEvent'\n  AND t1.action = 'opened'\n  AND t1.repo_name = 'tensorflow/tensorflow'\n  AND t2.event_type = 'IssuesEvent'\n  AND t2.action = 'opened'\n  AND t2.repo_name != 'tensorflow/tensorflow'\nGROUP BY t2.repo_name\nORDER BY num_authors DESC\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nThe error indicates an authentication issue, but the SQL query itself is syntactically correct for Tinybird/ClickHouse. The problem is likely due to authentication. To fix, ensure the Tinybird instance is running and the connection token is valid. If the issue persists, verify the token in the Tinybird configuration.\n\nThe query should be adjusted to use the correct authentication method if needed, but based on the provided error, the core query remains valid.\n\n**Answer:**  \nThe SQL query is correct for Tinybird/ClickHouse. The error suggests an authentication issue. Ensure the Tinybird instance is properly configured and authenticated. If the problem persists, verify the connection token or credentials.\n\nHowever, since the user requested a valid SQL query for the given context, here's the adjusted version with proper parameterization (if needed):\n\n\nSELECT \n  author_association,\n  COUNT(*) AS issue_count,\n  name,\n  COUNT(DISTINCT event_type) AS issues_opened\nFROM \n  events\nWHERE \n  action = 'opened'\n  AND session_id IN (\n    SELECT session_id\n    FROM issues\n    WHERE author_association = 'CONTRIBUTOR'\n  )\nGROUP BY \n  author_association\nORDER BY \n  issue_count DESC\nLIMIT 10\n\n\nEnsure the Tinybird instance is accessible and the token is correctly provided."
       }
     },
     "humanResults": {
@@ -11830,6 +11942,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    DATE(created_at) AS date,\n    count() AS daily_stars\nFROM github_events\nWHERE\n    event_type = 'WatchEvent'\nGROUP BY\n    repo_name,\n    date\nORDER BY\n    daily_stars DESC\nLIMIT 1 BY repo_name\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Here's a revised and validated SQL query tailored for Tinybird/ClickHouse that addresses your original request and resolves the authentication error:\n\n\nSELECT DISTINCT repo_name\nFROM events\nWHERE session_id = 'YOUR_SESSION_ID'\n  AND event_type = 'star'\nORDER BY created_at DESC\nLIMIT 10\nORDER BY created_at ASC\nWHERE created_at >= DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)\nORDER BY COUNT(*) DESC\n\n\n### Key Adjustments:\n1. **Authentication Fix**: Replace `'YOUR_SESSION_ID'` with your actual session identifier (e.g., `'1234567890'`).\n2. **Date Filtering**: Uses `DATE_SUB` to include events from the last 24 hours.\n3. **Ordering**: Ensures results are sorted by most recent events first, then by star count.\n4. **Distinct Repositories**: Uses `DISTINCT` to avoid duplicate repository names.\n5. **Performance**: Limits results to 10 and sorts efficiently.\n\n### Notes:\n- Ensure the `event_type` column exists in your `events` table.\n- If your session ID format differs, adjust the `session_id` value accordingly.\n- This query assumes `created_at` is stored as a timestamp. If not, adjust the date filter accordingly."
       }
     },
     "humanResults": {
@@ -12844,6 +12970,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, sum(YEAR(created_at) = 2016) AS stars_2016, sum(YEAR(created_at) = 2017) AS stars_2017, (stars_2017 - stars_2016) / stars_2016 AS growth FROM github_events WHERE event_type = 'WatchEvent' AND YEAR(created_at) IN (2016, 2017) GROUP BY repo_name HAVING stars_2016 >= 1 ORDER BY growth DESC LIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Here's a revised and validated SQL query tailored for Tinybird/ClickHouse that addresses your requirements and resolves the authentication error:\n\n\nSELECT \n    repo_name,\n    SUM(CASE WHEN event_type = 'PR' THEN 1 ELSE 0 END) AS growth_count\nFROM \n    events\nWHERE \n    session_id = 'your_session_id' -- Replace with your actual session ID\n    AND created_at >= DATE_TRUNC('year', CURRENT_DATE - INTERVAL '1 year')\n    AND created_at < DATE_TRUNC('year', CURRENT_DATE)\n    AND event_type = 'PR'\nGROUP BY \n    repo_name\nORDER BY \n    growth_count DESC\nLIMIT 10\n\n\n### Key Fixes:\n1. **Authentication**: Replaced the placeholder `'session_id_value'` with `'your_session_id'` (replace with your actual session ID).\n2. **Date Range**: Ensures events are from the last year (`created_at >= DATE_TRUNC('year', CURRENT_DATE - INTERVAL '1 year')` and `< DATE_TRUNC('year', CURRENT_DATE)`).\n3. **Filtering**: Correctly filters PR events (`event_type = 'PR'`).\n4. **Aggregation**: Counts PR events per repo and sorts by descending growth.\n5. **Output**: Limits results to the top 10 repositories.\n\n### Notes:\n- Ensure `event_type` matches your data schema (e.g., `'PR'` for PR events).\n- Replace `'your_session_id'` with your actual session ID.\n- This query uses ClickHouse-compatible syntax and avoids unnecessary complexity.\n\nLet me know if you need further adjustments!"
       }
     },
     "humanResults": {
@@ -13876,6 +14016,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    sum(CASE WHEN YEAR(created_at) = 2016 THEN 1 ELSE 0 END) AS stars_2016,\n    sum(CASE WHEN YEAR(created_at) = 2017 THEN 1 ELSE 0 END) AS stars_2017,\n    stars_2017 - stars_2016 AS stagnation_diff\nFROM github_events\nWHERE event_type = 'WatchEvent' AND YEAR(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING stars_2017 >= 1\nORDER BY stagnation_diff ASC\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nThe error indicates an authentication issue, but the core query logic is correct. To resolve it, ensure the authentication token is properly set in the Tinybird/ClickHouse environment. If the token is missing or incorrect, the query will fail. Verify the token configuration and retry.\n\nHere’s the adjusted query with proper formatting and pagination:\n\nSELECT \n  repositories.name,\n  COUNT(*) AS stagnation_count,\n  AVG(stars) AS average_star_rating\nFROM \n  events\nJOIN \n  repository_events ON events.session_id = repository_events.session_id\nWHERE \n  event_date BETWEEN '2017-01-01' AND '2018-12-31'\n  AND event_type = 'StarRated'\nGROUP BY \n  repositories.name\nHAVING \n  AVG(stars) < 3\nORDER BY \n  stagnation_count DESC\nLIMIT 10\n\n\nIf the authentication issue persists, ensure the workspace or token is correctly configured in Tinybird/ClickHouse.\n"
       }
     },
     "humanResults": {
@@ -14894,6 +15048,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    sum(stars) as total_stars,\n    avg(stars) as avg_monthly_stars,\n    stddevSamp(stars) as star_stddev,\n    (star_stddev / avg_monthly_stars) as variability_score\nFROM (\n    SELECT\n        repo_name,\n        DATE_TRUNC('month', created_at) as month,\n        count() as stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name, month\n)\nGROUP BY repo_name\nHAVING total_stars > 200\nORDER BY variability_score ASC\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Here is the corrected SQL query tailored for Tinybird/ClickHouse, ensuring proper authentication handling and accurate aggregation:\n\n\nSELECT \n  repository_name,\n  created_at,\n  COUNT(*) AS commit_count,\n  AVG(comments_count) AS avg_comment_count,\n  AVG(duration_seconds) AS avg_duration,\n  STDDEV(comments_count) AS std_comments,\n  STDDEV(duration_seconds) AS std_duration\nFROM \n  events\nWHERE \n  action = 'opened'\nGROUP BY \n  repository_name, created_at\nORDER BY \n  avg_duration ASC\nLIMIT 10\n\n\n### Key Adjustments:\n1. **Authentication Handling**: The query assumes a parameterized query (e.g., `?token`) for authentication. Replace `?token` with the actual token in your application logic.\n2. **Parameterization**: Ensure the query uses a parameterized approach to avoid SQL injection and handle authentication securely.\n3. **Aggregation**: The query correctly calculates the required metrics (counts, averages, standard deviations) for each repository.\n4. **Sorting and Limiting**: Groups by `repository_name` and `created_at`, sorts by `avg_duration`, and limits results to 10.\n\n### Notes:\n- Replace `?token` with the actual authentication token provided by your system.\n- If using a parameter in your application, ensure it is passed securely (e.g., via environment variables or a secure config).\n- This query adheres to Tinybird's syntax and ClickHouse's requirements."
       }
     },
     "humanResults": {
@@ -15918,6 +16086,20 @@
         "humanRowCount": 7,
         "llmRowCount": 7,
         "sql": "SELECT\n    date_format(created_at, '%W') AS day_of_week,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 7,
+        "llmRowCount": 0,
+        "sql": "\nThe error indicates an authentication issue, but since we're working within the Tinybird/ClickHouse context, we should ensure the query uses the correct authentication token. However, since the token is not provided, we'll adjust the query to be more general and focus on the relevant data without authentication dependencies.\n\nWe need to find the best day of the week for events where the action is 'opened', specifically for PRs/issues. The query should aggregate counts per day and return the day with the highest count.\n\nHere's the revised query:\n\nSELECT \n  DATE_TRUNC('day', created_at) AS day_of_week,\n  COUNT(*) AS event_count\nFROM \n  issues\nWHERE \n  action = 'opened'\nORDER BY \n  day_of_week ASC\nLIMIT 1\n\n\nThis query:\n- Truncates `created_at` to the day of the week.\n- Counts the number of 'opened' events per day.\n- Orders by day and selects the day with the highest count.\n\nEnsure the `created_at` column is of type `DATE` or `TIMESTAMP` for proper truncation.\n"
       }
     },
     "humanResults": {
@@ -16896,6 +17078,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniq(actor_login) AS total_users FROM github_events LIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\nThe error indicates that the query is missing authentication. Since the user mentioned using Tinybird/ClickHouse, we need to include the appropriate authentication token in the query. However, the provided error message suggests a missing token, so we should ensure the token is included in the query parameters or as a comment. \n\nTo fix this, we can modify the query to include the token in the `WHERE` clause or as a comment, ensuring it's properly formatted for ClickHouse. \n\nThe corrected query should look like this:\n\nSELECT COUNT(*) AS total_users FROM github_events WHERE action = 'opened' AND token = 'your_token_here' ORDER BY created_at DESC LIMIT 10\n\nReplace `'your_token_here'` with the actual authentication token.\n\nHowever, since the user wants the query in a format compatible with Tinybird, we can use a comment or a parameterized query. \n\nFor simplicity, here's the adjusted query with a placeholder for the token:\n\nSELECT COUNT(*) AS total_users FROM github_events WHERE action = 'opened' AND token = 'your_token_here' ORDER BY created_at DESC LIMIT 10\n\nMake sure to replace `'your_token_here'` with the actual token value.\n}"
       }
     },
     "humanResults": {
@@ -17859,6 +18055,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniqExact(actor_login) FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\nThe error indicates that the query is trying to use an authentication token, which is not supported in this context. Since the task is to adjust the query for Tinybird/ClickHouse, we need to modify it to use a different approach without authentication. The original intent was to count distinct users who gave at least one star, which can be achieved by counting unique user IDs in the 'opened' events.\n\nWe can use a subquery to filter 'opened' events and then count distinct user IDs.\n\n<final_answer>\nSELECT COUNT(DISTINCT user_id) AS total_users\nFROM events\nWHERE action = 'opened'\n"
       }
     },
     "humanResults": {
@@ -18794,6 +19004,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniq(actor_login) FROM github_events WHERE event_type = 'PushEvent' LIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\nThe error indicates that the query is not authenticated or the workspace token is missing. To fix, ensure the connection string includes the correct authentication token and workspace name. Assuming the correct connection string is provided, the query should be:\n\nSELECT COUNT(DISTINCT user_id) AS total_users\nFROM events\nWHERE action = 'push'\nAND session_id IS NOT NULL\nORDER BY created_at DESC\nLIMIT 100\n\n\nIf authentication is required, replace the placeholder token with the actual token from the workspace.\n\nExample with a valid token:\n\nSELECT COUNT(DISTINCT user_id) AS total_users\nFROM events\nWHERE action = 'push'\nAND session_id IS NOT NULL\nORDER BY created_at DESC\nLIMIT 100\n\n\nEnsure the workspace token is correctly formatted as per the Tinybird API documentation.\n\nAnswer: \nSELECT COUNT(DISTINCT user_id) AS total_users\nFROM events\nWHERE action = 'push'\nAND session_id IS NOT NULL\nORDER BY created_at DESC\nLIMIT 100\n"
       }
     },
     "humanResults": {
@@ -19729,6 +19953,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniqExact(actor_login) FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' LIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\nThe error indicates that the query is missing authentication. Since the user did not provide a token, we need to include a placeholder for the token or ensure the environment has the correct credentials. However, based on the context, we should adjust the query to include the necessary parameters and ensure it targets the correct table and action.\n\nThe original question was about counting users with at least one created PR, so we need to filter on 'created' action and 'PR_CREATED' event type. We should also include the repo_name filter if needed, but since the user didn't specify, we'll keep it general.\n\nWe need to add pagination with LIMIT 10 to match the pagination instruction.\n\nLet's adjust the query to include the necessary parameters and add LIMIT 10.\n\n<sql_query>\nSELECT COUNT(DISTINCT user_id) AS total_users\nFROM events\nWHERE action = 'created'\n  AND event_type = 'PR_CREATED'\nORDER BY created_at DESC\nLIMIT 10\n</sql_query>"
       }
     },
     "humanResults": {
@@ -20688,6 +20926,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nAND actor_login IN (\n    SELECT\n        actor_login\n    FROM github_events\n    WHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\n)\nGROUP BY\n    repo_name\nORDER BY\n    stars DESC\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Here's a revised SQL query that should work for Tinybird/ClickHouse, ensuring it meets your requirements and fixes the authentication error:\n\n\nSELECT COUNT(*) AS top10_starred\nFROM events\nWHERE event_type = 'CommitCommentEvent'\n  AND review_state = 'approved'\n  AND review_comments IS NOT NULL\n  AND created_at >= NOW() - INTERVAL '30 days'\n  AND merged_at IS NOT NULL\n  AND merged_by IS NOT NULL\n  AND merged_state = 'merged'\n  AND merged_release_tag_name IS NOT NULL\n  AND merged_number > 0\n  AND repository_id IN (\n      SELECT repo_name\n      FROM events\n      WHERE event_type = 'CommitCommentEvent'\n        AND review_state = 'approved'\n        AND review_comments IS NOT NULL\n        AND created_at >= NOW() - INTERVAL '30 days'\n        AND merged_at IS NOT NULL\n        AND merged_by IS NOT NULL\n        AND merged_state = 'merged'\n  )\nORDER BY COUNT(*) DESC\nLIMIT 10\n\n\n### Key Fixes & Improvements:\n1. **Authentication Fix**: Removed the placeholder token and used a direct query (no authentication required).\n2. **Subquery Optimization**: Simplified the subquery to directly filter `repository_id` from the main table.\n3. **Ordering & Limiting**: Added `ORDER BY COUNT(*) DESC` to sort by count and `LIMIT 10` to get the top 10.\n4. **Clarity**: Ensured proper use of `IN` clause for filtering `repository_id` and maintained readability.\n\nThis query will:\n- Count starred events with approved reviews.\n- Restrict results to repositories with at least one PR in the last 30 days.\n- Return the top 10 most starred repositories."
       }
     },
     "humanResults": {
@@ -21670,6 +21922,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() AS total_prs FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' AND actor_login IN (SELECT actor_login FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' GROUP BY actor_login HAVING count() >= 10) GROUP BY repo_name ORDER BY total_prs DESC LIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nThe error indicates that the query is missing authentication. Since the user mentioned using Tinybird/ClickHouse, we need to include the authentication token in the query. However, the provided error suggests the token is not being included. To fix this, we should ensure the token is correctly formatted and included in the query.\n\nThe original query was missing the authentication token. We need to add it to the WHERE clause or use a parameterized query. Since the user wants the query valid, we'll adjust it to include the token.\n\n**Answer:**\nAdd the authentication token to the query and ensure it's properly formatted"
       }
     },
     "humanResults": {
@@ -23664,6 +23930,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    uniq(actor_login) AS contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY contributors DESC\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nThe error indicates that the query is missing a parameter for authentication. To fix this, we need to include the necessary authentication token in the query. Since the token is not provided in the context, we'll assume a placeholder value or omit it if not required. For demonstration, I'll include a placeholder token.\n\n<sql_query>\nSELECT repository_name, COUNT(*) AS contributor_count\nFROM events\nWHERE action = 'opened'\nGROUP BY repository_name\nORDER BY contributor_count DESC\nLIMIT 10\nWHERE auth_token = 'your_auth_token_here'\n\n\nReplace `'your_auth_token_here'` with the actual authentication token. If authentication is not required, remove the `WHERE auth_token = ...` clause.\n\nIf you need further adjustments, let me know!"
       }
     },
     "humanResults": {
@@ -24664,6 +24944,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS issues_count\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY issues_count DESC\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nThe error indicates an authentication issue, but the SQL query itself is correct for Tinybird/ClickHouse. To resolve the error, ensure the ClickHouse workspace or token is properly configured. If the issue persists, verify the connection string or token in the query.\n\nThe query should remain the same as it correctly targets the 'opened' actions and returns the top 10 repositories.\n\nAnswer: \nSELECT repository_name, COUNT(*) AS issue_count\nFROM issues\nWHERE action = 'opened'\nGROUP BY repository_name\nORDER BY issue_count DESC\nLIMIT 10\n}"
       }
     },
     "humanResults": {
@@ -25654,6 +25948,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, uniqExact(actor_login) as authors_count FROM github_events WHERE event_type = 'PushEvent' GROUP BY repo_name ORDER BY authors_count DESC LIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nThe error indicates that the query is missing a parameter for authentication. To fix this, we need to include the necessary authentication token in the query. Since the token is not provided in the context, we'll assume a placeholder. In a real scenario, you would replace the placeholder with the actual token.\n\nThe SQL query should look like this:\n\n\nSELECT repository_name, push_access_count\nFROM events\nWHERE action = 'opened'\nGROUP BY repository_name\nORDER BY push_access_count DESC\nLIMIT 10\n\n\nIf you need to include authentication, you would typically add it as a parameter, but since the parameter function is not listed in the allowed functions, we'll omit it here.\n\n**Note:** Ensure the `event_type` column is named `action` in your schema to match the expected parameter. If it's different, adjust the query accordingly.\n}"
       }
     },
     "humanResults": {
@@ -26644,6 +26952,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    uniq(actor_login) AS num_pushers\nFROM github_events\nWHERE event_type = 'PushEvent'\n  AND ref IN ('refs/heads/main', 'refs/heads/master')\nGROUP BY repo_name\nORDER BY num_pushers DESC\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nThe error indicates an authentication issue, but the SQL query itself is correct for Tinybird/ClickHouse. The issue is likely due to missing credentials or workspace configuration. To fix, ensure the ClickHouse workspace is properly authenticated and the connection parameters are correct. If the error persists, verify the workspace token and credentials in the Tinybird settings.\n\nThe query should remain the same, as it correctly targets the required data.\n \n\n<validated_sql_query>\nSELECT \n  repo_name,\n  COUNT(DISTINCT"
       }
     },
     "humanResults": {
@@ -27648,6 +27970,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT\n    repo_name,\n    uniqExact(CASE WHEN event_type = 'PushEvent' AND (ref = 'refs/heads/main' OR ref = 'refs/heads/master') THEN actor_login ELSE NULL END) - 1 AS pushers\nFROM github_events\nGROUP BY repo_name\nHAVING sum(event_type = 'WatchEvent') > 99\nORDER BY pushers DESC\nLIMIT 10\n"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nThe error indicates an authentication issue. Since the error message mentions a token, it seems the query is being executed against a Tinybird instance that requires authentication. To fix this, ensure the Tinybird instance is properly authenticated and the query is run with the correct credentials. If the issue persists, verify the token configuration in Tinybird.\n\nThe SQL query should remain largely the same, but ensure the `session_id` and other parameters match the expected values in the database.\n\nAnswer: \nSELECT repository_name, COUNT(*) AS push_access_count\nFROM events\nWHERE session_id = 'main_branch'\n  AND action = 'opened'\n  AND created_at >= DATE_SUB(CURRENT_DATE, INTERVAL 30 DAY)\n  AND commits > 99\nGROUP BY repository_name\nORDER BY push_access_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -28666,6 +29002,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS invitations\nFROM github_events\nWHERE event_type = 'MemberEvent' AND action = 'added'\nGROUP BY repo_name\nORDER BY invitations DESC\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nThe error indicates that the query is missing authentication. Since the user mentioned using Tinybird/ClickHouse, we need to include the appropriate authentication token in the query. However, the provided error message suggests a token-related issue. To fix this, we should ensure the token is correctly formatted and included in the query.\n\nThe original query was intended to count member invitations per repository, but the error suggests a missing or incorrect authentication. We need to adjust the query to include the token and ensure it's properly formatted.\n\nThe corrected query should include the authentication token in the `WHERE` clause or ensure it's correctly referenced. Since the token is not provided in the context, we'll assume it's part of the query and adjust accordingly.\n\nHowever, based on the error, the most likely fix is to ensure the query uses the correct authentication token. Here's the adjusted query:\n\n\nSELECT \n  repo_name,\n  COUNT(*) AS member_invitations\nFROM \n  events\nWHERE \n  event_type = 'member_invitation' AND auth_token = 'your_auth_token_here'\nGROUP BY \n  repo_name\nORDER BY \n  member_invitations DESC\nLIMIT 10\n\n\nReplace `'your_auth_token_here'` with the actual authentication token.\n\nBut since the token is not provided, the user might need to adjust their environment or provide the correct token. The key is to ensure the query includes the necessary authentication parameter.\n \n\n<valid_sql_query>\nSELECT \n  repo_name,\n  COUNT(*) AS member_invitations\nFROM \n  events\nWHERE \n  event_type = 'member_invitation'\nGROUP BY \n  repo_name\nORDER BY \n  member_invitations DESC\nLIMIT 10\n</valid_sql_query>"
       }
     },
     "humanResults": {
@@ -29670,6 +30020,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() as total_forks FROM github_events WHERE event_type = 'ForkEvent' GROUP BY repo_name ORDER BY total_forks DESC LIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nThe error occurs because the authentication token is missing. To fix, we need to include a valid token in the query. Since the token is not provided, I'll assume a placeholder and adjust the query accordingly. If you have the actual token, replace `YOUR_TOKEN` with it.\n\nThe SQL should filter for events with `action = 'fork'` and order by `created_at DESC`, then limit to the top 10.\n\n<sql_query>\nSELECT COUNT(*) AS count FROM github_events WHERE action = 'fork' ORDER BY created_at DESC LIMIT 10\n</sql_query>"
       }
     },
     "humanResults": {
@@ -30656,6 +31020,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    sum(event_type = 'WatchEvent') AS stars,\n    sum(event_type = 'ForkEvent') AS forks,\n    stars / forks AS ratio\nFROM github_events\nWHERE event_type IN ('WatchEvent', 'ForkEvent') AND repo_name != ''\nGROUP BY repo_name\nHAVING forks > 0\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nThe error indicates that the query is missing authentication. To fix, include the necessary authentication token in the query. Since the token is not provided, I'll assume a placeholder value. Replace `'your_session_id'` with the actual session ID and the token accordingly.\n\nThe SQL query should look like this:\n\nSELECT repositories\nFROM events\nWHERE session_id = 'your_session_id'\nORDER BY stars / forks DESC\nLIMIT 10\nORDER BY stars / forks DESC\n\n\nIf the token is required, it should be added at the beginning of the query, like this:\n\nSELECT repositories\nFROM tinybird.pipe_stats\nWHERE session_id = 'your_session_id' AND auth_token = 'your_auth_token'\nORDER BY stars / forks DESC\nLIMIT 10\nORDER BY stars / forks DESC\n\n\nHowever, since the token is not provided, the first version is the most appropriate.\n\n**Final Answer**\n\nSELECT repositories\nFROM events\nWHERE session_id = 'your_session_id'\nORDER BY stars / forks DESC\nLIMIT 10\nORDER BY stars / forks DESC\n"
       }
     },
     "humanResults": {
@@ -31674,6 +32052,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT\n    sum(event_type = 'WatchEvent') AS stars,\n    sum(event_type = 'ForkEvent') AS forks,\n    CAST(sum(event_type = 'WatchEvent') / sum(event_type = 'ForkEvent') AS Decimal(10, 2)) AS ratio\nFROM github_events\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\nThe error indicates an authentication issue, but the query itself is correct for Tinybird/ClickHouse. It calculates the ratio of stars to forks and rounds it to two decimal places. Ensure the table name is correct and the schema matches.\n\nAnswer: \nSELECT ROUND(AVG(stars / forks), 2) AS ratio FROM events GROUP BY stars, forks ORDER BY stars DESC\n}"
       }
     },
     "humanResults": {
@@ -32619,6 +33011,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count(*) FROM github_events WHERE event_type = 'IssuesEvent' AND action = 'opened' LIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\nThe error indicates that the query is trying to use an authentication token, which is not available in the current context. Since the task is to adjust the query for Tinybird/ClickHouse, we need to modify it to use the correct parameters without authentication. The original query was for GitHub issues, so we should adjust the table and action accordingly.\n\nWe'll use the `issues` table and filter for `action = 'opened'` and `repo_name = 'GitHub'`, then limit the results to 10.\n\nThe SQL should be:\n\n\nSELECT COUNT(*) AS total_issues_opened\nFROM issues\nWHERE action = 'opened' AND repo_name = 'GitHub'\nORDER BY created_at DESC\nLIMIT 10\n\n\nThis query is valid for Tinybird/ClickHouse and should resolve the authentication error.\n\nAnswer: \nSELECT COUNT(*) AS total_issues_opened\nFROM issues\nWHERE action = 'opened' AND repo_name = 'GitHub'\nORDER BY created_at DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -33582,6 +33988,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS total_issue_comments\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY total_issue_comments DESC\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nThe error indicates an authentication issue, but the query itself is correct for Tinybird/ClickHouse. To fix it, ensure the authentication token is properly set in the Tinybird configuration. If the token is missing or incorrect, the query will fail. No SQL changes are needed. \n\nThe SQL query should remain the same as it is valid for the platform. \n\nAnswer: \nSELECT event_type, COUNT(*) AS count\nFROM github_events\nWHERE action = 'opened'\nORDER BY event_type DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -34568,6 +34988,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    sum(event_type = 'IssueCommentEvent' AND action = 'created') AS num_comments,\n    sum(event_type = 'IssuesEvent' AND action = 'opened') AS num_issues,\n    num_comments / num_issues AS ratio\nFROM github_events\nGROUP BY repo_name\nHAVING num_issues > 0\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT repositories.name, \n       (COUNT(issues.comments) / COUNT(issues.repository_id)) AS comment_ratio\nFROM repositories\nJOIN issues ON issues.repository_id = repositories.id\nWHERE issues.comments IS NOT NULL\nGROUP BY repositories.name\nORDER BY comment_ratio DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -35586,6 +36020,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    number,\n    count() AS total_comments\nFROM github_events\nWHERE event_type = 'IssueCommentEvent' AND action = 'created'\nGROUP BY\n    repo_name,\n    number\nORDER BY\n    total_comments DESC\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nThe error indicates an authentication issue, but the query itself is syntactically correct for Tinybird/ClickHouse. The issue likely lies in the environment setup or token configuration. To resolve, ensure the ClickHouse connection string or authentication token is properly configured in the query. If using a parameterized query, replace hardcoded values with placeholders.\n\nThe SQL query should be adjusted to use parameters for the date range and event type to avoid authentication issues.\n\nExample:\n\nSELECT \n  repo_name,\n  COUNT(*) AS comment_count\nFROM \n  github_events\nWHERE \n  event_type = 'CreateEvent'\n  AND event_created_at >= @date_range\nORDER BY \n  comment_count DESC\nLIMIT 10\n\n\nReplace `@date_range` with the actual date parameters.\n"
       }
     },
     "humanResults": {
@@ -36586,6 +37034,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    number,\n    count() AS comments_created,\n    uniq(actor_login) AS comment_authors\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\n  AND action = 'created'\n  AND number > 10\nGROUP BY\n    repo_name,\n    number\nHAVING comment_authors >= 10\nORDER BY\n    comments_created DESC\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nThe error indicates an authentication issue, but the query itself is syntactically correct for Tinybird/ClickHouse. To fix the authentication error, ensure the Tinybird connection string or token is properly configured in your environment. If the issue persists, verify the workspace or environment setup. Otherwise, the query should work as intended.\n\nHere’s the adjusted query with proper formatting for Tinybird:\n\nSELECT \n  event_type,\n  COUNT(DISTINCT author_association) AS comment_authors,\n  SUM(CASE WHEN comment_id IS NOT NULL THEN 1 ELSE 0 END) AS comment_count\nFROM \n  events\nWHERE \n  event_type = 'CreateEvent'\n  AND comment_id IS NOT NULL\nGROUP BY \n  event_type\nHAVING \n  comment_count >= 10\nORDER BY \n  comment_count DESC\nLIMIT 10\n\n\nThis should resolve the authentication error while maintaining correctness for Tinybird.\n}"
       }
     },
     "humanResults": {
@@ -37600,6 +38062,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT\n    repo_name,\n    count() AS matching_events\nFROM github_events\nWHERE\n    CHAR_LENGTH(REGEXP_EXTRACT(repo_name, '(?i)(tensorflow)')) > 0\n    OR CHAR_LENGTH(REGEXP_EXTRACT(title, '(?i)(tensorflow)')) > 0\n    OR CHAR_LENGTH(REGEXP_EXTRACT(body, '(?i)(tensorflow)')) > 0\nGROUP BY\n    repo_name\nORDER BY\n    matching_events DESC\nLIMIT 10\n"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nThe error indicates an authentication issue, but the query itself is correct for Tinybird/ClickHouse. To ensure it works, we need to confirm the table and column names match the schema. Assuming the table is named `events` and the column for repository name is `repository_name`, the query should be:\n\nSELECT repository_name, COUNT(*) AS event_count\nFROM events\nWHERE event_type = 'TensorFlow'\nORDER BY event_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -38604,6 +39080,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() AS total_comments FROM github_events WHERE event_type = 'CommitCommentEvent' GROUP BY repo_name ORDER BY total_comments DESC LIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nThe error indicates an authentication issue. Since the provided datasource does not include authentication details, we cannot include them in the query. We need to modify the query to use a default value for the authentication token or ensure the workspace is correctly referenced. However, based on the original intent, we should adjust the query to use a parameterized approach or ensure the workspace is valid.\n\nTo address the error, we can add a placeholder for the authentication token and use it in the query. However, since the user's task is to provide a valid SQL query for the given context, we'll adjust the query to include a parameter and ensure it's valid for Tinybird/ClickHouse.\n\n<final_answer>\nSELECT repo_name \nFROM github_events \nWHERE event_type = 'CommitCommentEvent' \nORDER BY number DESC\nLIMIT 10\n</final_answer>\n\nNote: Replace `{{%token_token}}` with the actual authentication token value if available. If not, ensure the workspace is correctly configured in the Tinybird/ClickHouse environment."
       }
     },
     "humanResults": {
@@ -39608,6 +40098,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    'https://github.com/' || repo_name || '/commit/' || commit_id AS commit_url,\n    count() AS total_comments,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'CommitCommentEvent' AND repo_name != '' AND commit_id != ''\nGROUP BY\n    repo_name,\n    commit_id\nHAVING unique_authors >= 10\nORDER BY\n    total_comments DESC\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nThe error indicates that the query is missing the `event_type` column in the SELECT clause. Based on the error message, the table name is likely `events` and the column is `event_type`. We need to include it in the query.\n\nAlso, the original request was to return the top 10 commits with at least 10 distinct commenters, including total comments and unique authors. The provided query already filters for `event_type = 'CommitCommentEvent'` and counts distinct commenters and authors, so it should work. We just need to ensure the table and column names match the schema.\n\nLet's verify the table and column names from the schema:\n- Table: events\n- Columns: event_type, event_id, url, ...\n\nThe query should look like this:\n\n\nSELECT \n  event_type,\n  event_id,\n  url,\n  COUNT(DISTINCT comment_id) AS total_comments,\n  COUNT(DISTINCT author_association) AS unique_authors\nFROM \n  events\nWHERE \n  event_type = 'CommitCommentEvent'\n  AND COUNT(DISTINCT author_association) >= 10\nORDER BY \n  COUNT(DISTINCT author_association) DESC\nLIMIT 10\n\n\nThis should resolve the error and fulfill the requirements.\n\n \n<valid_sql>\nSELECT \n  event_type,\n  event_id,\n  url,\n  COUNT(DISTINCT comment_id) AS total_comments,\n  COUNT(DISTINCT author_association) AS unique_authors\nFROM \n  events\nWHERE \n  event_type = 'CommitCommentEvent'\n  AND COUNT(DISTINCT author_association) >= 10\nORDER BY \n  COUNT(DISTINCT author_association) DESC\nLIMIT 10\n</valid_sql>\n"
       }
     },
     "humanResults": {
@@ -40626,6 +41130,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    'https://github.com/' || repo_name || '/pull/' || CAST(number AS String) AS pr_url,\n    uniqExact(actor_login) AS num_authors\nFROM github_events\nWHERE event_type IN ('PullRequestReviewCommentEvent', 'PullRequestReviewEvent')\nGROUP BY\n    repo_name,\n    number\nORDER BY num_authors DESC\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Based on your clarification and the error you encountered, it seems the dataset you're working with does not contain the necessary information about pull requests (PRs) and author involvement. To proceed, I'll provide a query template that assumes you have access to a `pull_requests` table and an `events` table, which is common in such contexts.\n\n### Assumptions:\n- `events` table contains event details (e.g., `session_id`, `action`).\n- `pull_requests` table contains pull request details (e.g., `session_id`, `author_id`).\n- You want to find the top 10 PRs with the most unique authors involved.\n\n### SQL Query:\n\nSELECT \n  pr.ID AS pr_id,\n  COUNT(DISTINCT pr.author_id) AS unique_authors\nFROM \n  events AS events\nJOIN \n  pull_requests AS prs ON events.session_id = prs.session_id\nWHERE \n  prs.state = 'opened' AND prs.action = 'opened'\nGROUP BY \n  pr.ID\nORDER BY \n  unique_authors DESC\nLIMIT 10\n\n\n### Explanation:\n- **`events` table**: Contains event details (e.g., `session_id`, `action`).\n- **`pull_requests` table**: Contains pull request details (e.g., `session_id`, `author_id`).\n- The query joins these tables on `session_id` and filters for opened PRs with the action `'opened'`.\n- It counts unique authors per PR and sorts by the number of unique authors in descending order.\n- Limits the result to the top 10 PRs.\n\n### Notes:\n- Replace `pr.ID`, `prs.session_id`, etc., with the actual column names from your schema.\n- If your schema uses different table/column names,"
       }
     },
     "humanResults": {
@@ -41630,6 +42148,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    actor_login,\n    count() AS pushes\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY pushes DESC\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nThe error indicates an authentication issue, but the"
       }
     },
     "humanResults": {
@@ -42634,6 +43166,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT SUBSTRING_INDEX(repo_name, '/', 1) AS organization, count(*) AS stars FROM github_events WHERE event_type = 'WatchEvent' GROUP BY organization ORDER BY stars DESC LIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nThe error indicates that the query is missing a parameter for authentication. To fix this, we need to include the authentication token in the query. Since the token is not provided in the context, I'll assume a placeholder value. In a real scenario, you would replace `{{%AUTH_TOKEN}}` with the actual token.\n\nHere's the corrected query:\n\n\nSELECT \n  event_type,\n  repo_name,\n  COUNT(*) AS star_count\nFROM \n  events\nWHERE \n  action = 'opened'\n  AND repo_name = '{{%AUTH_TOKEN}}' -- Replace with actual token\nGROUP BY \n  event_type, repo_name\nORDER BY \n  star_count DESC\nLIMIT 10\n\n\nIf you need to dynamically insert the token, you can use a parameterized query. For example:\n\n\nSELECT \n  event_type,\n  repo_name,\n  COUNT(*) AS star_count\nFROM \n  events\nWHERE \n  action = 'opened'\n  AND repo_name = :token\nGROUP BY \n  event_type, repo_name\nORDER BY \n  star_count DESC\nLIMIT 10\n\n\nMake sure to replace `:token` with the actual authentication token value.\n"
       }
     },
     "humanResults": {
@@ -43624,6 +44170,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    SUBSTRING_INDEX(repo_name, '/', 1) AS org_name,\n    uniqExact(repo_name) AS repo_count\nFROM github_events\nWHERE repo_name != ''\nGROUP BY org_name\nORDER BY repo_count DESC\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nThe error indicates that the query is missing a parameter for authentication. To fix this, we need to include the authentication token in the query. Since the token is not provided in the context, I'll assume a placeholder value or omit it if not required. For now, I'll adjust the query to include a placeholder for the token.\n\n<final_answer>\nSELECT \n  repo_name, \n  COUNT(*) AS repository_count\nFROM \n  github_events\nWHERE \n  action = 'opened'\nGROUP BY \n  repo_name\nORDER BY \n  repository_count DESC\nLIMIT 10\nWHERE \n  auth_token = 'your_token_here'\n</final_answer>"
       }
     },
     "humanResults": {
@@ -44628,6 +45188,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS pr_count,\n    uniq(actor_login) AS unique_authors,\n    sum(additions) AS total_adds,\n    sum(deletions) AS total_dels\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND additions < 10000\n  AND deletions < 10000\nGROUP BY repo_name\nORDER BY (total_adds + total_dels) DESC\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Here’s a revised and validated SQL query tailored to your requirements, ensuring compatibility with Tinybird/ClickHouse while addressing the authentication issue:\n\n\nSELECT \n  repo_name,\n  COUNT(DISTINCT author_association) AS pr_count,\n  COUNT(DISTINCT author_login) AS unique_authors,\n  SUM(CASE WHEN adds > 10000 THEN 1 ELSE 0 END) AS total_adds,\n  SUM(CASE WHEN dels > 10000 THEN 1 ELSE 0 END) AS total_delets\nFROM \n  events\nWHERE \n  event_type IN ('PullRequest', 'Created')\n  AND event_type = 'PullRequest'\n  AND session_id IN (\n    SELECT session_id\n    FROM events\n    WHERE event_type = 'PullRequest'\n    GROUP BY session_id\n    HAVING COUNT(*) > 0\n  )\n  AND (adds < 10000 OR dels < 10000)\nGROUP BY repo_name\nORDER BY total_adds DESC, pr_count DESC\nLIMIT 10\n\n\n### Key Fixes:\n1. **Authentication Handling**: The error suggests a missing authentication token. Ensure your ClickHouse instance is properly configured with the correct token (e.g., in `clickhouse.conf` or via environment variables). If using a local instance, verify the token is included in the connection string or environment variables.\n2. **Filtering Logic**: The original query used a subquery for `session_id`, which is less efficient. The revised query directly filters `event_type` and `session_id` in the `WHERE` clause for better performance.\n3. **Clarity and Readability**: Removed redundant conditions and ensured column aliases match the schema (`repo_name`).\n4. **Ordering and Limiting**: Preserved `ORDER BY` and `LIMIT 10` as requested.\n\nThis query should now execute successfully in Tinybird/ClickHouse. If the token issue persists, double-check your ClickHouse setup or environment configuration."
       }
     },
     "humanResults": {
@@ -45674,6 +46248,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    actor_login,\n    count() AS comments_created,\n    uniq(repo_name) AS unique_repos,\n    uniq(repo_name, number) AS unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\n  AND action = 'created'\nGROUP BY actor_login\nORDER BY comments_created DESC\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nThe error indicates an authentication issue, but the query itself is syntactically correct for Tinybird/ClickHouse. The issue is likely due to missing or incorrect parameters. To fix, ensure the query is properly formatted and the authentication token is valid. If the token is missing, you may need to adjust the connection settings in the Tinybird configuration.\n\nThe SQL query should be adjusted to include the correct parameters for the authentication token if required. However, based on the original intent, the query provided earlier is valid for the given schema. If the token is missing, the error will persist. \n\nTo resolve, verify the authentication token in the Tinybird configuration and retry the query.\n \n\n<validated_query_with_auth>\nSELECT \n  author,\n  COUNT(*) AS pull_request_comments_created,\n  COUNT(DISTINCT repo_name) AS unique_repositories,\n  COUNT(*) AS unique_prs\nFROM \n  events\nWHERE \n  action = 'opened'\n  AND event_type = 'PullRequest'\nORDER BY \n  pull_request_comments_created DESC\nLIMIT 10\n</validated_query_with_auth>\n"
       }
     },
     "humanResults": {
@@ -46688,6 +47276,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    label,\n    count(*) AS count\nFROM github_events\nARRAY JOIN labels AS label\nWHERE\n    event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')\n    AND action IN ('opened', 'created', 'labeled')\n    AND label != ''\nGROUP BY label\nORDER BY count DESC\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Here is the corrected SQL query to retrieve the top 10 most popular labels for issues and pull requests in ClickHouse:\n\n\nSELECT label, usage_count\nFROM issues\nWHERE issue_type IN ('IssueCommentEvent', 'PullRequestCommentEvent', 'PullRequest')\nGROUP BY label\nORDER BY usage_count DESC\nLIMIT 10\n\nSELECT label, usage_count\nFROM pull_requests\nWHERE action IN ('opened', 'created', 'reopened', 'assigned', 'unassigned', 'labeled', 'unlabeled', 'review_requested', 'review_request_removed', 'synchronize', 'started', 'published')\nGROUP BY label\nORDER BY usage_count DESC\nLIMIT 10\n\nSELECT label, usage_count\nFROM events\nWHERE action IN ('opened', 'created', 'reopened', 'assigned', 'unassigned', 'labeled', 'unlabeled', 'reopened', 'merged', 'started', 'published')\nGROUP BY label\nORDER BY usage_count DESC\n\n\nThis query will return the top 10 most frequently used labels across issues, pull requests, events, and other actions, based on the specified criteria."
       }
     },
     "humanResults": {
@@ -47678,6 +48280,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    SUBSTRING_INDEX(repo_name, '/', 1) AS organization_name,\n    count(DISTINCT actor_login) AS num_authors,\n    count(DISTINCT CASE WHEN event_type = 'PullRequestEvent' AND action = 'opened' THEN actor_login ELSE NULL END) AS num_pr_authors,\n    count(DISTINCT CASE WHEN event_type = 'IssuesEvent' AND action = 'opened' THEN actor_login ELSE NULL END) AS num_issue_authors,\n    count(DISTINCT CASE WHEN event_type = 'IssueCommentEvent' THEN actor_login ELSE NULL END) AS num_issue_comment_authors,\n    count(DISTINCT CASE WHEN event_type = 'PushEvent' THEN actor_login ELSE NULL END) AS num_push_authors\nFROM github_events\nWHERE repo_name != '' AND actor_login != ''\nGROUP BY organization_name\nORDER BY num_authors DESC\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Here's the corrected SQL query tailored for Tinybird/ClickHouse, addressing the authentication error and ensuring proper logic for your requirements:\n\n\nSELECT \n  repo_name,\n  COUNT(DISTINCT author_login) AS unique_authors,\n  COUNT(DISTINCT author_login) AS unique_pull_request_authors,\n  COUNT(DISTINCT author_login) AS unique_issue_authors,\n  COUNT(DISTINCT push_login) AS unique_push_authors\nFROM \n  events\nWHERE \n  repo_name IN (\n    SELECT repo_name \n    FROM github_events \n    WHERE action = 'opened'\n  )\nGROUP BY \n  repo_name\nORDER BY \n  unique_authors DESC\nLIMIT 10\n\n\n### Key Fixes:\n1. **Removed `author_login` from the `COUNT`**: The original query incorrectly used `author_login` in the `COUNT` function, which is invalid. Instead, we count unique `repo_name` entries.\n2. **Added `push_login`**: The original query missed `push_login` (likely a typo in the question). Added it to match the expected output.\n3. **Fixed Syntax**: Ensured proper use of ClickHouse syntax (e.g., `IN` clause, `GROUP BY`, `ORDER BY`).\n4. **Removed Unnecessary Columns**: Adjusted the output to match your requirements (replaced `issue_comment_authors` with `unique_issue_comment_authors` and `unique_push_authors`).\n\nThis query will now correctly return the top 10 organizations with the specified metrics."
       }
     },
     "humanResults": {
@@ -48752,6 +49368,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, CHAR_LENGTH(repo_name) AS repo_name_length FROM github_events WHERE event_type = 'WatchEvent' GROUP BY repo_name ORDER BY repo_name_length DESC LIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nThe error indicates that the query is missing a parameter for authentication. To fix this, we need to include the authentication token in the query. Since the token is not provided in the context, we'll assume a placeholder. In a real scenario, you would replace `{{auth_token}}` with the actual token value.\n\nThe SQL"
       }
     },
     "humanResults": {
@@ -49742,6 +50372,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent' AND repo_name != ''\nGROUP BY repo_name\nORDER BY CHAR_LENGTH(repo_name) ASC, repo_name ASC\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nThe error indicates that the authentication token is missing. To fix, we need to include the"
       }
     },
     "humanResults": {
@@ -50331,6 +50975,14 @@
         "avgExactDistance": 0.4295454545454546,
         "avgNumericDistance": 0.3031657331603074,
         "avgFScore": 0.58
+      },
+      "liquid/lfm-2.5-1.2b-instruct:free": {
+        "totalMatches": 0,
+        "exactMatches": 0,
+        "numericMatches": 0,
+        "avgExactDistance": 0.92,
+        "avgNumericDistance": 0.92,
+        "avgFScore": 0
       }
     }
   }
