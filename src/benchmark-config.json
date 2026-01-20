@@ -119,6 +119,11 @@
       "models": [
         "cydonia-24b-v4.1"
       ]
+    },
+    "liquid": {
+      "models": [
+        "lfm-2.5-1.2b-thinking:free"
+      ]
     }
   }
 }
