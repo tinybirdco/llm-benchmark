@@ -938,6 +938,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count() FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-thinking:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "SELECT COUNT(*) FROM github_events WHERE event_type = 'star' LIMIT 10"
       }
     },
     "humanResults": {
@@ -1897,6 +1911,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-thinking:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT * FROM events ORDER BY stars DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -2897,6 +2925,20 @@
         "humanRowCount": 5,
         "llmRowCount": 5,
         "sql": "SELECT\n    CASE CHAR_LENGTH(CAST(stars AS String))\n        WHEN 1 THEN 1\n        WHEN 2 THEN 10\n        WHEN 3 THEN 100\n        WHEN 4 THEN 1000\n        WHEN 5 THEN 10000\n        WHEN 6 THEN 100000\n        WHEN 7 THEN 1000000\n        ELSE 10000000\n    END as power_of_10,\n    count() as repo_count\nFROM (\n    SELECT\n        repo_name,\n        count() as stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n)\nGROUP BY power_of_10\nORDER BY power_of_10 ASC\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-thinking:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 5,
+        "llmRowCount": 0,
+        "sql": "SELECT COUNT(*) AS num_repos FROM repositories WHERE star_count BETWEEN (10^k - 100) AND (10^k + 100) ORDER BY star_count\n\nNote: The exact value of k is arbitrary here adjust 10^k as needed. The query adheres to Tinybird/ClickHouse syntax constraints."
       }
     },
     "humanResults": {
@@ -3881,6 +3923,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniq(repo_name) FROM github_events LIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-thinking:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "SELECT COUNT(*) FROM github_events LIMIT 10"
       }
     },
     "humanResults": {
@@ -4840,6 +4896,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    YEAR(created_at) AS year,\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent' AND YEAR(created_at) >= 2015\nGROUP BY year, repo_name\nORDER BY year ASC, stars DESC\nLIMIT 10 BY year\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-thinking:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT year, COUNT(*) AS total_repos FROM repositories GROUP BY year ORDER BY total_repos DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -6812,6 +6882,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT actor_login, count() as count FROM github_events WHERE event_type = 'WatchEvent' GROUP BY actor_login ORDER BY count DESC LIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-thinking:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT TOP 10 * FROM contributors WHERE stars_given = 5 ORDER BY stars_given DESC"
       }
     },
     "humanResults": {
@@ -8806,6 +8890,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "SELECT\n    actor_login,\n    sum(CASE WHEN substring_index(repo_name, '/', 1) = 'javisantana' THEN 1 ELSE 0 END) AS javisantana_stars,\n    sum(CASE WHEN substring_index(repo_name, '/', 1) != 'javisantana' THEN 1 ELSE 0 END) AS other_stars,\n    javisantana_stars / (javisantana_stars + other_stars) AS ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nHAVING javisantana_stars > 0\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-thinking:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT u.name, SUM(e.stars_javisantana) AS j, SUM(e.stars_others) AS o, (j / (j + o)) AS ratio FROM users u JOIN events e ON u.id = e.user_id WHERE e.repo_owner = 'javisantana' GROUP BY u.name ORDER BY ratio DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -9824,6 +9922,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    uniqExact(actor_login) AS unique_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND repo_name != 'tensorflow/tensorflow'\n  AND actor_login IN (\n      SELECT\n          actor_login\n      FROM github_events\n      WHERE event_type = 'PullRequestEvent'\n        AND action = 'opened'\n        AND repo_name = 'tensorflow/tensorflow'\n  )\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-thinking:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT r.name, COUNT(DISTINCT c.id) AS unique_contributors FROM repositories r JOIN contributors c ON r.id = c.repo_id WHERE contributors.puller_contributor = 'TensorFlow' GROUP BY r.name ORDER BY unique_contributors DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -15918,6 +16030,20 @@
         "humanRowCount": 7,
         "llmRowCount": 7,
         "sql": "SELECT\n    date_format(created_at, '%W') AS day_of_week,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-thinking:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 7,
+        "llmRowCount": 0,
+        "sql": "\nSELECT DAY(week) AS best_day FROM your_table WHERE condition_met\n\n\n**Note:** Replace `your_table` and `condition_met` with your specific table and criteria. The `best_day` column will indicate the optimal day (e.g., Friday, Saturday, etc.) based on your requirements. Ensure the table structure aligns with your schema for accurate results."
       }
     },
     "humanResults": {
@@ -16896,6 +17022,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniq(actor_login) AS total_users FROM github_events LIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-thinking:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\nSELECT COUNT(*) FROM users\n"
       }
     },
     "humanResults": {
@@ -17859,6 +17999,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniqExact(actor_login) FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-thinking:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\nWITH StarUsers AS (\n    SELECT DISTINCT user_id AS user \n    FROM messages \n    WHERE message LIKE '%star%' \n    GROUP BY user_id \n    HAVING COUNT(*) > 0\n)\nSELECT COUNT(DISTINCT user) AS total_users \nFROM StarUsers\n\n\n**Explanation:**  \nThis query identifies all unique users who have posted at least one \"star\" message. It uses a Common Table Expression (CTE) to filter users with relevant activity, then counts distinct users. The `COUNT(DISTINCT user)` ensures uniqueness, while `HAVING COUNT(*) > 0` guarantees at least one star message. The result directly answers the question with a single count."
       }
     },
     "humanResults": {
@@ -18794,6 +18948,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniq(actor_login) FROM github_events WHERE event_type = 'PushEvent' LIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-thinking:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "SELECT COUNT(DISTINCT user_id) FROM events WHERE event_type = 'PushEvent'"
       }
     },
     "humanResults": {
@@ -19729,6 +19897,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniqExact(actor_login) FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' LIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-thinking:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\nSELECT COUNT(DISTINCT user_id) \nFROM users \nWHERE SUM(CASE WHEN pr_count > 0 THEN 1 ELSE 0 END) > 0\n\n\n**Explanation:**  \nThis query counts users who have at least one PR record by summing a boolean indicator (1 if PR exists, 0 otherwise) and filtering for non-zero counts. It ensures uniqueness via `DISTINCT`, making it efficient and accurate for ClickHouse compatibility."
       }
     },
     "humanResults": {
@@ -26644,6 +26826,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    uniq(actor_login) AS num_pushers\nFROM github_events\nWHERE event_type = 'PushEvent'\n  AND ref IN ('refs/heads/main', 'refs/heads/master')\nGROUP BY repo_name\nORDER BY num_pushers DESC\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-thinking:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT r.name, COUNT(p.push_access) AS count\nFROM repositories r\nJOIN push_accesses p ON r.id = p.repo_id\nGROUP BY r.name\nORDER BY count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -27648,6 +27844,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT\n    repo_name,\n    uniqExact(CASE WHEN event_type = 'PushEvent' AND (ref = 'refs/heads/main' OR ref = 'refs/heads/master') THEN actor_login ELSE NULL END) - 1 AS pushers\nFROM github_events\nGROUP BY repo_name\nHAVING sum(event_type = 'WatchEvent') > 99\nORDER BY pushers DESC\nLIMIT 10\n"
+      },
+      "liquid/lfm-2.5-1.2b-thinking:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT name, stars \nFROM repositories \nWHERE stars > 99 \nORDER BY stars DESC \nLIMIT 10\n\n\n**Explanation:**  \nThis query retrieves the top 10 repositories with a star count exceeding 99. It filters rows where `stars > 99`, sorts results in descending order by stars, and limits the output to 10 rows. The table `repositories` is assumed to contain columns `name` and `stars` for this example. Adjust table/column names if your schema differs."
       }
     },
     "humanResults": {
@@ -30656,6 +30866,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    sum(event_type = 'WatchEvent') AS stars,\n    sum(event_type = 'ForkEvent') AS forks,\n    stars / forks AS ratio\nFROM github_events\nWHERE event_type IN ('WatchEvent', 'ForkEvent') AND repo_name != ''\nGROUP BY repo_name\nHAVING forks > 0\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-thinking:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT r.name, (COUNT(*) / COUNT(forks) AS ratio\nFROM repositories r\nGROUP BY r.name\nORDER BY ratio DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -31674,6 +31898,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT\n    sum(event_type = 'WatchEvent') AS stars,\n    sum(event_type = 'ForkEvent') AS forks,\n    CAST(sum(event_type = 'WatchEvent') / sum(event_type = 'ForkEvent') AS Decimal(10, 2)) AS ratio\nFROM github_events\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-thinking:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "SELECT stars, forks, ROUND((stars / forks) * 100 / 100 AS ratio) FROM github_events GROUP BY stars, forks ORDER BY stars DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -32619,6 +32857,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count(*) FROM github_events WHERE event_type = 'IssuesEvent' AND action = 'opened' LIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-thinking:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "SELECT COUNT(*) FROM events WHERE action='opened' LIMIT 10"
       }
     },
     "humanResults": {
@@ -33582,6 +33834,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS total_issue_comments\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY total_issue_comments DESC\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-thinking:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT repository_name, COUNT(*) AS count FROM issues WHERE event_type IN ('comment_event', 'issue_comment') GROUP BY repository_name ORDER BY count DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -34568,6 +34834,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    sum(event_type = 'IssueCommentEvent' AND action = 'created') AS num_comments,\n    sum(event_type = 'IssuesEvent' AND action = 'opened') AS num_issues,\n    num_comments / num_issues AS ratio\nFROM github_events\nGROUP BY repo_name\nHAVING num_issues > 0\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-thinking:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT r.name, (COUNT(CASE WHEN issue_comments IS NOT NULL THEN issue_comments ELSE 0 END) / COUNT(CASE WHEN issue_comments IS NOT NULL THEN issue_comments END) * 100 AS ratio\nFROM repositories r\nGROUP BY r.name\nORDER BY ratio DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -40626,6 +40906,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    'https://github.com/' || repo_name || '/pull/' || CAST(number AS String) AS pr_url,\n    uniqExact(actor_login) AS num_authors\nFROM github_events\nWHERE event_type IN ('PullRequestReviewCommentEvent', 'PullRequestReviewEvent')\nGROUP BY\n    repo_name,\n    number\nORDER BY num_authors DESC\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-thinking:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT p.URL, COUNT(DISTINCT a.AUTHOR) AS unique_authors \nFROM PRs p \nJOIN Authors a ON p.AUTHOR = a.AUTHOR \nGROUP BY p.URL \nORDER BY unique_authors DESC \nLIMIT 10"
       }
     },
     "humanResults": {
@@ -41630,6 +41924,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    actor_login,\n    count() AS pushes\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY pushes DESC\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-thinking:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT TOP 10 author_id FROM events GROUP BY author_id ORDER BY total_pushes DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -42634,6 +42942,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT SUBSTRING_INDEX(repo_name, '/', 1) AS organization, count(*) AS stars FROM github_events WHERE event_type = 'WatchEvent' GROUP BY organization ORDER BY stars DESC LIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-thinking:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT repo_name, SUM(stars) AS total_stars FROM events GROUP BY repo_name ORDER BY total_stars DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -43624,6 +43946,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    SUBSTRING_INDEX(repo_name, '/', 1) AS org_name,\n    uniqExact(repo_name) AS repo_count\nFROM github_events\nWHERE repo_name != ''\nGROUP BY org_name\nORDER BY repo_count DESC\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-thinking:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT organization_name, COUNT(repo_name) AS repo_count FROM github_events GROUP BY organization_name ORDER BY repo_count DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -44628,6 +44964,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS pr_count,\n    uniq(actor_login) AS unique_authors,\n    sum(additions) AS total_adds,\n    sum(deletions) AS total_dels\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND additions < 10000\n  AND deletions < 10000\nGROUP BY repo_name\nORDER BY (total_adds + total_dels) DESC\nLIMIT 10"
+      },
+      "liquid/lfm-2.5-1.2b-thinking:free": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT \n    repo_name,\n    COUNT(*) AS pr_count,\n    COUNT(DISTINCT author) AS unique_authors,\n    SUM(adds) AS total_adds,\n    SUM(deletes) AS total_deletes,\nORDER BY (adds + deletes) DESC LIMIT 10"
       }
     },
     "humanResults": {
@@ -50331,6 +50681,14 @@
         "avgExactDistance": 0.4295454545454546,
         "avgNumericDistance": 0.3031657331603074,
         "avgFScore": 0.58
+      },
+      "liquid/lfm-2.5-1.2b-thinking:free": {
+        "totalMatches": 0,
+        "exactMatches": 0,
+        "numericMatches": 0,
+        "avgExactDistance": 0.5,
+        "avgNumericDistance": 0.5,
+        "avgFScore": 0
       }
     }
   }
