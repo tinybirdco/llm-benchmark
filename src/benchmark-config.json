@@ -119,6 +119,11 @@
       "models": [
         "cydonia-24b-v4.1"
       ]
+    },
+    "reka": {
+      "models": [
+        "reka-edge"
+      ]
     }
   }
 }
