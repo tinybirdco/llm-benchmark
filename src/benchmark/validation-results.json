@@ -938,6 +938,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count() FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\nSELECT COUNT(*) FROM issues WHERE action = 'opened'\n\n\n"
       }
     },
     "humanResults": {
@@ -1897,6 +1911,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " \n{\n  \"name\": \"top_repositories_by_stars\",\n  \"query\": \"SELECT repo_name, COUNT(*) AS stars_count FROM repositories WHERE action = 'opened' GROUP BY repo_name ORDER BY stars_count DESC LIMIT 10\",\n  \"model\": \"Tornado\",\n  \"provider\": \"ClickHouse\",\n  \"name\": \"top_repositories_by_stars\",\n  \"description\": \"Top 10 repositories by stars (opened)\",\n  \"sql\": \"SELECT repo_name, COUNT(*) AS stars_count FROM repositories WHERE action = 'opened' GROUP BY repo_name ORDER BY stars_count DESC LIMIT 10\"\n}\n\n\n"
       }
     },
     "humanResults": {
@@ -2897,6 +2925,20 @@
         "humanRowCount": 5,
         "llmRowCount": 5,
         "sql": "SELECT\n    CASE CHAR_LENGTH(CAST(stars AS String))\n        WHEN 1 THEN 1\n        WHEN 2 THEN 10\n        WHEN 3 THEN 100\n        WHEN 4 THEN 1000\n        WHEN 5 THEN 10000\n        WHEN 6 THEN 100000\n        WHEN 7 THEN 1000000\n        ELSE 10000000\n    END as power_of_10,\n    count() as repo_count\nFROM (\n    SELECT\n        repo_name,\n        count() as stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n)\nGROUP BY power_of_10\nORDER BY power_of_10 ASC\nLIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 5,
+        "llmRowCount": 0,
+        "sql": "\nSELECT repo_name, COUNT(*) AS star_count\nFROM github_events\nWHERE action = 'opened'\n  AND repo_name LIKE '%10%' \n  AND repo_name LIKE '%100%' \n  AND repo_name LIKE '%1000%' \n  AND repo_name LIKE '%10000%' \n  AND repo_name LIKE '%100000%' \nORDER BY star_count ASC\n\n\n"
       }
     },
     "humanResults": {
@@ -3881,6 +3923,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniq(repo_name) FROM github_events LIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\nSELECT COUNT(*) FROM repositories\n\n\n"
       }
     },
     "humanResults": {
@@ -4840,6 +4896,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    YEAR(created_at) AS year,\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent' AND YEAR(created_at) >= 2015\nGROUP BY year, repo_name\nORDER BY year ASC, stars DESC\nLIMIT 10 BY year\nLIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT \n  repo_name,\n  COUNT(*) AS num_repos\nFROM \n  file_time\n  JOIN \n    ( \n      SELECT repo_name \n      FROM projects \n      WHERE created_at >= '2015-01-01' \n      AND created_at < '2024-12-31'\n    ) AS top_repos\n  ON file_time.repo_name = top_repos.repo_name\nORDER BY \n  COUNT(*) DESC\nLIMIT 10\n\n\n"
       }
     },
     "humanResults": {
@@ -5854,6 +5924,20 @@
         "humanRowCount": 2,
         "llmRowCount": 2,
         "sql": "SELECT\n    YEAR(created_at) AS year,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year ASC\nLIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 2,
+        "llmRowCount": 0,
+        "sql": "**SQL Query Fix for \"How has the total number of stars changed over time by year?\"**\n\n\nSELECT \n  year \nFROM \n  file_time \n  WHERE \n    action = 'opened' \n  OR \n    action = 'reopened' \nGROUP BY \n  year \nORDER BY \n  year \n  DESC\n\n\n**Explanation:**\n1. **Filtering:** The original query filtered only for `action = 'opened'`. To account for \"reopened\" stars, we add an OR clause. This ensures we capture all star-related actions, including \"reopened,\" which is critical for accurate reporting.\n2. **Aggregation:** The query groups by `year` and orders by year in descending order, ensuring we count all stars (opened and reopened) for each year. This provides the total number of stars for each year.\n3. **Result:** The adjusted query will return the total number of stars for each year, allowing you to analyze trends over time.\n\n**Fix:** The previous query mistakenly filtered only for \"opened\" actions, missing the necessary \"reopened\" condition. By adding the OR clause, we now capture all star-related actions for accurate reporting.\n\n"
       }
     },
     "humanResults": {
@@ -6812,6 +6896,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT actor_login, count() as count FROM github_events WHERE event_type = 'WatchEvent' GROUP BY actor_login ORDER BY count DESC LIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " \n{\n  \"name\": \"Who are top 10 people giving stars?\",\n  \"query\": \"SELECT author_association, count(*) AS star_count FROM watch Events WHERE action = 'opened' GROUP BY author_association ORDER BY star_count DESC LIMIT 10\",\n  \"model\": \"MergeTree\",\n  \"provider\": \"ClickHouse\",\n  \"name\": \"top_10_stars\"\n}\n\n\n"
       }
     },
     "humanResults": {
@@ -7816,6 +7914,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nAND actor_login IN (\n    SELECT\n        actor_login\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    AND repo_name = 'tensorflow/tensorflow'\n)\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT repo_name, COUNT(*) AS stars\nFROM events\nWHERE action = 'star'\nAND repo_name IN ('tensorflow', 'TensorFlow')\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10\n\n\n"
       }
     },
     "humanResults": {
@@ -8806,6 +8918,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "SELECT\n    actor_login,\n    sum(CASE WHEN substring_index(repo_name, '/', 1) = 'javisantana' THEN 1 ELSE 0 END) AS javisantana_stars,\n    sum(CASE WHEN substring_index(repo_name, '/', 1) != 'javisantana' THEN 1 ELSE 0 END) AS other_stars,\n    javisantana_stars / (javisantana_stars + other_stars) AS ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nHAVING javisantana_stars > 0\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n  SELECT \n    user_name,\n    COUNT(star_id) AS stars_given_to_javisantana,\n    COUNT(star_id) AS stars_given_to_other_repos,\n    (stars_given_to_javisantana / COUNT(star_id)) AS ratio_of_javisantana_stars_to_total_stars\n  FROM \n    file_time\n  JOIN users ON file_time.user_id = users.id\n  JOIN events ON file_time.event_id = events.id\n  JOIN events2 ON events.event_id = events2.id\n  WHERE \n    events.event_type = 'star' \n    AND events2.repo_name = 'javisantana'\n  GROUP BY \n    user_name\n  ORDER BY \n    stars_given_to_javisantana DESC\n  LIMIT 10\n\n\n"
       }
     },
     "humanResults": {
@@ -9824,6 +9950,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    uniqExact(actor_login) AS unique_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND repo_name != 'tensorflow/tensorflow'\n  AND actor_login IN (\n      SELECT\n          actor_login\n      FROM github_events\n      WHERE event_type = 'PullRequestEvent'\n        AND action = 'opened'\n        AND repo_name = 'tensorflow/tensorflow'\n  )\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT repo_name, COUNT(DISTINCT author_association) AS unique_contributors FROM pullRequestReviewCommentEvent JOIN pullRequestReviewEvent ON pullRequestReviewEvent.id = pullRequestReviewCommentEvent.id JOIN issuesEvent ON pullRequestReviewEvent.id = issuesEvent.id JOIN repo_name ON issuesEvent.repo_name = repo_name GROUP BY repo_name ORDER BY COUNT(DISTINCT author_association) DESC LIMIT 10\n\n\n"
       }
     },
     "humanResults": {
@@ -10824,6 +10964,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    t2.repo_name,\n    uniq(t2.actor_login) AS num_authors\nFROM github_events AS t1\nINNER JOIN github_events AS t2 ON t1.actor_login = t2.actor_login\nWHERE t1.event_type = 'IssuesEvent'\n  AND t1.action = 'opened'\n  AND t1.repo_name = 'tensorflow/tensorflow'\n  AND t2.event_type = 'IssuesEvent'\n  AND t2.action = 'opened'\n  AND t2.repo_name != 'tensorflow/tensorflow'\nGROUP BY t2.repo_name\nORDER BY num_authors DESC\nLIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT repo_name, COUNT(*) AS issue_count\nFROM issues\nJOIN repositories ON issues.repo_name = repositories.repo_name\nJOIN users ON issues.user_id = users.user_id\nJOIN issues_event ON issues.id = issues_event.id\nJOIN watch Events ON issues_event.repo_name = Events.repo_name\nJOIN users ON Events.user_id = users.user_id\nWHERE repo_name IN ('TensorFlow', 'TensorFlow Core')\n  AND user_association IN ('OWNER', 'COLLABORATOR')\n  AND action = 'opened'\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10\n\n\n"
       }
     },
     "humanResults": {
@@ -11830,6 +11984,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    DATE(created_at) AS date,\n    count() AS daily_stars\nFROM github_events\nWHERE\n    event_type = 'WatchEvent'\nGROUP BY\n    repo_name,\n    date\nORDER BY\n    daily_stars DESC\nLIMIT 1 BY repo_name\nLIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT DISTINCT repo_name\nFROM events\nWHERE repo_name IN (SELECT repo_name FROM events WHERE star_count > 1000 AND created_at BETWEEN '2023-01-01 00:00:00' AND '2023-01-01 23:59:59')\nORDER BY star_count DESC\nLIMIT 10\n\n\n"
       }
     },
     "humanResults": {
@@ -12844,6 +13012,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, sum(YEAR(created_at) = 2016) AS stars_2016, sum(YEAR(created_at) = 2017) AS stars_2017, (stars_2017 - stars_2016) / stars_2016 AS growth FROM github_events WHERE event_type = 'WatchEvent' AND YEAR(created_at) IN (2016, 2017) GROUP BY repo_name HAVING stars_2016 >= 1 ORDER BY growth DESC LIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT repo_name, growth_year_over_year FROM (SELECT repo_name, growth_year_over_year FROM repositories WHERE year = 2016 GROUP BY repo_name ORDER BY growth_year_over_year DESC LIMIT 10) UNION ALL SELECT repo_name, growth_year_over_year FROM repositories WHERE year = 2017 GROUP BY repo_name ORDER BY growth_year_over_year DESC LIMIT 10\n\n\n"
       }
     },
     "humanResults": {
@@ -13876,6 +14058,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    sum(CASE WHEN YEAR(created_at) = 2016 THEN 1 ELSE 0 END) AS stars_2016,\n    sum(CASE WHEN YEAR(created_at) = 2017 THEN 1 ELSE 0 END) AS stars_2017,\n    stars_2017 - stars_2016 AS stagnation_diff\nFROM github_events\nWHERE event_type = 'WatchEvent' AND YEAR(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING stars_2017 >= 1\nORDER BY stagnation_diff ASC\nLIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "`\nSELECT \n  repo_name,\n  AVG(1 / COUNT(*) / 1000000) stagnation_score\nFROM \n  (SELECT repo_name, AVG(1 / COUNT(*) / 1000000) AS stagnation_score\n   FROM issues\n   WHERE repo_name IN (%{github_events.repo_name} OR %{github_events repo_name})\n   AND issue_comment_event WHERE repo_name IN (%{github_events repo_name} OR %{github_events repo_name})\n   AND issue_comment_event action = 'opened'\n   AND (created_at >= DATE('2016-01-01') AND created_at <= DATE('2016-12-31') OR created_at >= DATE('2017-01-01') AND created_at <= DATE('2017-12-31'))\n   GROUP BY repo_name\n  WHERE year = 2017\n  AND created_at >= DATE('2016-01-01') AND created_at <= DATE('2016-12-31')\n  GROUP BY repo_name\nORDER BY stagnation_score DESC\nLIMIT 10\n\n**Fix Explanation:**\n1. **Authentication Handling:** The error indicates a missing token. We replaced the placeholder `%{github_events.repo_name}` with explicit parameter names `@{github_events.repo_name}` to ensure authentication is handled correctly.\n2. **Time Period Filtering:** We added explicit date ranges to correctly filter by year.\n3. **Data Type Consistency:** The `AVG` function is valid for numeric types, so we removed the `/1000000` scaling to ensure it returns a float value.\n4. **Parameter Handling:** The query now uses `@{github_events.repo_name}` for parameterized queries, which is supported by ClickHouse.\n\n**Validation:**\nSELECT \n  repo_name,\n  AVG(1 / COUNT(*) / 1000000) stagnation_score\nFROM \n  (SELECT repo_name, AVG(1 / COUNT(*) / 1000000) AS stagnation_score\n   FROM issues\n   WHERE repo_name IN (%{github_events.repo_name} OR %{github_events repo_name})\n   AND issue_comment_event WHERE repo_name IN (%{github_events repo_name} OR %{github_events repo_name})\n   AND issue_comment_event action = 'opened'\n   AND (created_at >= DATE('2016-01-01') AND created_at <= DATE('2016-12-31') OR created_at >= DATE('2017-01-01') AND created_at <= DATE('2017-12-31'))\n   GROUP BY repo_name\n  WHERE year = 2017\n  AND created_at >= DATE('2016-01-01') AND created_at <= DATE('2016-12-31')\n  GROUP BY repo_name\nORDER BY stagnation_score DESC\nLIMIT 10\n\n\n"
       }
     },
     "humanResults": {
@@ -14894,6 +15090,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    sum(stars) as total_stars,\n    avg(stars) as avg_monthly_stars,\n    stddevSamp(stars) as star_stddev,\n    (star_stddev / avg_monthly_stars) as variability_score\nFROM (\n    SELECT\n        repo_name,\n        DATE_TRUNC('month', created_at) as month,\n        count() as stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name, month\n)\nGROUP BY repo_name\nHAVING total_stars > 200\nORDER BY variability_score ASC\nLIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "</image>\n{\n  \"name\": \"Fix SQL Query for Top 10 Repositories with Steady Star Growth Rate\",\n  \"description\": \"Correct the SQL query to correctly calculate steady star growth rate for top 10 repositories.\",\n  \"sql\": \"SELECT repo_name, AVG((SELECT count(*) FROM issue_comment events WHERE repo_name = % AND created_at >= DATE_SUB(CURRENT_DATE, INTERVAL 30 day)) / (SELECT count(*) FROM issue_comment events WHERE repo_name = % AND created_at <= DATE_SUB(CURRENT_DATE, INTERVAL 30 day))) AS steady_growth_rate FROM repos WHERE repo_name IN (%[\\\"github_events\\\":\\\"CommitCommentEvent\\\" = 6] OR %[\\\"issuesEvent\\\" = 6]) GROUP BY repo_name ORDER BY steady_growth_rate DESC LIMIT 10\",\n  \"result\": \"The SQL query is valid for Tinybird/ClickHouse and correctly calculates steady star growth rate for top 10 repositories.\",\n  \"error\": \"The original query was invalid due to missing parameter handling. The corrected query now uses parameterized queries for clarity and security.\",\n  \"fix\": \"Added parameter handling for repo_name and adjusted time window to use INTERVAL 30 day instead of INTERVAL 1 day to calculate steady growth rate.\",\n  \"documentation\": \"https://docs.tinybird.co/api-reference/overview#authentication\"\n}\n}\n\n"
       }
     },
     "humanResults": {
@@ -15918,6 +16128,20 @@
         "humanRowCount": 7,
         "llmRowCount": 7,
         "sql": "SELECT\n    date_format(created_at, '%W') AS day_of_week,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 7,
+        "llmRowCount": 0,
+        "sql": "\nSELECT \n  day \nFROM \n  WatchEvent \n  WHERE \n    action = 'opened' \n  GROUP BY \n    day \nORDER BY \n  COUNT(*) \n  DESC \n  LIMIT 1\n\n\n"
       }
     },
     "humanResults": {
@@ -16896,6 +17120,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniq(actor_login) AS total_users FROM github_events LIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\nSELECT COUNT(*) FROM users\n\n\n"
       }
     },
     "humanResults": {
@@ -17859,6 +18097,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniqExact(actor_login) FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "**Fixed SQL Query:**\n\n\nSELECT COUNT(*) FROM watch Events WHERE action = 'opened'\n\n\n**Explanation:**\n1. **Select Clause:** Uses `COUNT(*)` to count the number of rows matching the criteria.\n2. **From Clause:** Uses `watch Events` to filter the data to watch events.\n3. **Where Clause:** Uses `action = 'opened'` to select only events where a user gave a star.\n4. **Result:** Returns the total number of users who gave at least one star.\n\n**Answer:** The SQL query returns the total number of users who gave at least one star.\n\n**Note:** The previous query mistakenly used `avg_duration_state` instead of `action` for filtering. The corrected query directly uses the `action` parameter for filtering.\n\n"
       }
     },
     "humanResults": {
@@ -18794,6 +19046,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniq(actor_login) FROM github_events WHERE event_type = 'PushEvent' LIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\nSELECT COUNT(DISTINCT user_id) AS total_users_with_at_least_one_push FROM users WHERE push_count >= 1\n\n\n"
       }
     },
     "humanResults": {
@@ -19729,6 +19995,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniqExact(actor_login) FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' LIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\nSELECT COUNT(DISTINCT user_login) FROM events WHERE action = 'created' AND repo_name IS NOT NULL\n\n\n"
       }
     },
     "humanResults": {
@@ -20688,6 +20968,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nAND actor_login IN (\n    SELECT\n        actor_login\n    FROM github_events\n    WHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\n)\nGROUP BY\n    repo_name\nORDER BY\n    stars DESC\nLIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " \n{\n  \"name\": \"Fix SQL Query for Counting Top 10 Starred Repositories with PRs\",\n  \"description\": \"Correct the SQL query to count top 10 starred repositories from users who made at least one PR in at least one repo.\",\n  \"sql\": \"SELECT repo_name, COUNT(*) AS stars_count FROM repositories WHERE stars = 1 AND (action = 'star' OR action = 'starred') AND (action = 'opened' OR action = 'reopened' OR action = 'assigned' OR action = 'unassigned' OR action = 'labeled' OR action = 'unlabeled' OR action = 'review_requested' OR action = 'review_request_removed' OR action = 'synchronize' OR action = 'started' OR action = 'published' OR action = 'update' OR action = 'create' OR action = 'fork' OR action = 'merged' OR action = 'mergeable' OR action = 'unstable' OR action = 'draft' OR action = 'blocked') ORDER BY stars DESC LIMIT 10\",\n  \"result\": \"The SQL query is valid for Tinybird/ClickHouse and correctly counts top 10 starred repositories with PRs.\",\n  \"error\": \"The previous error was due to a missing authentication token. The corrected query now uses the correct authentication mechanism and returns the required data.\",\n  \"status\": \"solved\"\n}\n\n\n"
       }
     },
     "humanResults": {
@@ -21670,6 +21964,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() AS total_prs FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' AND actor_login IN (SELECT actor_login FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' GROUP BY actor_login HAVING count() >= 10) GROUP BY repo_name ORDER BY total_prs DESC LIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "**Fixed SQL Query:**\n\n\nSELECT repo_name, author_association, COUNT(*) AS pr_count FROM repos WHERE author_association IN ('CONTRIBUTOR', 'OWNER') GROUP BY repo_name ORDER BY pr_count DESC LIMIT 10\n\n\n**Explanation:**\n1. **Author Association Filter:** The original query incorrectly used `author_association` as a column name. It should be `author_association` to match the correct parameter name.\n2. **PR Count Aggregation:** The `COUNT(*)` function is used to count the number of PRs for each repo.\n3. **Ordering:** The result is ordered descending by `pr_count` to prioritize repos with the highest PR activity.\n4. **Limit:** The `LIMIT 10` ensures the top 10 repos are returned.\n\n**Fix for Error:**\nThe error indicates a missing workspace token. Ensure you use the correct token host and authentication method for Tinybird/ClickHouse. The SQL query is now valid and will correctly answer your question.\n\n"
       }
     },
     "humanResults": {
@@ -22660,6 +22968,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY pr_count DESC\nLIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT \n  repo_name,\n  COUNT(*) AS pullRequestCount\nFROM \n  repositories\n  JOIN pullRequest events ON repositories.repo_id = events.repo_id\n  GROUP BY repo_name\nORDER BY pullRequestCount DESC\nLIMIT 10\n\n\n"
       }
     },
     "humanResults": {
@@ -23664,6 +23986,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    uniq(actor_login) AS contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY contributors DESC\nLIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT repo_name, COUNT(*) AS contributors FROM pullRequestReviewCommentEvent JOIN pullRequestReviewCommentEvent ON pullRequestReviewCommentEvent.id = pullRequestReviewCommentEventRelatedEvent.id JOIN pullRequestReviewEvent ON pullRequestReviewCommentEventRelatedEvent.event_id = pullRequestReviewEvent.id JOIN pullRequestEvent ON pullRequestEvent.id = pullRequestReviewEvent.id JOIN repository ON pullRequestEvent.repo_name = repository.repo_name GROUP BY repo_name ORDER BY contributors DESC LIMIT 10\n\n\n"
       }
     },
     "humanResults": {
@@ -24664,6 +25000,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS issues_count\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY issues_count DESC\nLIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT repo_name, COUNT(*) AS issues_count FROM repositories WHERE issue_comment_count > 10 GROUP BY repo_name ORDER BY issues_count DESC LIMIT 10\n\n\n"
       }
     },
     "humanResults": {
@@ -25654,6 +26004,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, uniqExact(actor_login) as authors_count FROM github_events WHERE event_type = 'PushEvent' GROUP BY repo_name ORDER BY authors_count DESC LIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT \n  repo_name,\n  COUNT(*) AS people_with_push_access\nFROM \n  file_time\nWHERE \n  action = 'opened'\n  AND repo_name IN ('github_events', 'issues', 'pull_request', 'pull_request_review', 'issues_event', 'member_event', 'public_event', 'gist_event', 'follow_event', 'download_event', 'pull_request', 'pull_request_review', 'fork_event', 'event', 'team_add_event', 'watch_event', 'gist_event', 'follow_event', 'download_event', 'pull_request_review', 'fork_event', 'event', 'team_add_event', 'watch_event'\n  GROUP BY repo_name\nORDER BY people_with_push_access DESC\nLIMIT 10\n\n\n"
       }
     },
     "humanResults": {
@@ -26644,6 +27008,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    uniq(actor_login) AS num_pushers\nFROM github_events\nWHERE event_type = 'PushEvent'\n  AND ref IN ('refs/heads/main', 'refs/heads/master')\nGROUP BY repo_name\nORDER BY num_pushers DESC\nLIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT repo_name, COUNT(*) AS people_count FROM repositories WHERE repo_name LIKE '%main%' GROUP BY repo_name ORDER BY people_count DESC LIMIT 10\n\n\n"
       }
     },
     "humanResults": {
@@ -27648,6 +28026,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT\n    repo_name,\n    uniqExact(CASE WHEN event_type = 'PushEvent' AND (ref = 'refs/heads/main' OR ref = 'refs/heads/master') THEN actor_login ELSE NULL END) - 1 AS pushers\nFROM github_events\nGROUP BY repo_name\nHAVING sum(event_type = 'WatchEvent') > 99\nORDER BY pushers DESC\nLIMIT 10\n"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT \n  repo_name,\n  COUNT(*) AS people_with_push_access_to_main_branch\nFROM \n  GitHubEvents \n  JOIN GitHubEventsRepos ON GitHubEvents.repo_name = GitHubEventsRepos.repo_name \n  JOIN Repos ON GitHubEvents.repo_name = Repos.repo_name \n  WHERE \n    action = 'opened' \n    AND repo_name IN ('main', 'main-branch') \n    AND created_at >= DATE_SUB(CURRENT_DATE, INTERVAL 30 DAY) \n  GROUP BY repo_name \nORDER BY people_with_push_access_to_main_branch DESC \nLIMIT 10\n\n\n"
       }
     },
     "humanResults": {
@@ -28666,6 +29058,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS invitations\nFROM github_events\nWHERE event_type = 'MemberEvent' AND action = 'added'\nGROUP BY repo_name\nORDER BY invitations DESC\nLIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " \n{\n  \"name\": \"original_query\",\n  \"query\": \"SELECT repo_name, COUNT(*) AS invitations_count FROM repositories WHERE invite_type = 'member' GROUP BY repo_name ORDER BY invitations_count DESC LIMIT 10\",\n  \"model\": \"SQL\",\n  \"provider\": \"ClickHouse\",\n  \"llm_time_to_first_token\": 0.0\n}\n\n\n"
       }
     },
     "humanResults": {
@@ -29670,6 +30076,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() as total_forks FROM github_events WHERE event_type = 'ForkEvent' GROUP BY repo_name ORDER BY total_forks DESC LIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "</image>\n{\"name\": \"corrected_top_10_most_forked_repositories\", \"query\": \"SELECT repo_name, COUNT(*) AS forks_count FROM repos WHERE action = 'fork' GROUP BY repo_name ORDER BY forks_count DESC LIMIT 10\", \"model\": \"SQL\", \"provider\": \"ClickHouse\", \"name\": \"corrected_top_10_most_forked_repositories\", \"description\": \"Corrects SQL query to properly handle 'action' parameter and returns the top 10 most forked repositories.\", \"data\": \"github_events\", \"schema\": \"github_events\", \"function\": \"corrected_top_10_most_forked_repositories\", \"instructions\": \"Corrects SQL query to properly handle 'action' parameter and returns the top 10 most forked repositories.\", \"dataSource\": \"github_events\", \"service\": \"data\", \"materialized_view\": \"most_forked_repositories\"}}\n</tool_call>\n\n"
       }
     },
     "humanResults": {
@@ -30656,6 +31076,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    sum(event_type = 'WatchEvent') AS stars,\n    sum(event_type = 'ForkEvent') AS forks,\n    stars / forks AS ratio\nFROM github_events\nWHERE event_type IN ('WatchEvent', 'ForkEvent') AND repo_name != ''\nGROUP BY repo_name\nHAVING forks > 0\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT repo_name, star_count, fork_count, (star_count / fork_count) AS ratio FROM repositories ORDER BY ratio DESC LIMIT 10\n\n\n"
       }
     },
     "humanResults": {
@@ -31674,6 +32108,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT\n    sum(event_type = 'WatchEvent') AS stars,\n    sum(event_type = 'ForkEvent') AS forks,\n    CAST(sum(event_type = 'WatchEvent') / sum(event_type = 'ForkEvent') AS Decimal(10, 2)) AS ratio\nFROM github_events\nLIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\nSELECT \n  star_count,\n  fork_count,\n  (star_count / fork_count) * 100.0 AS star_fork_ratio\nFROM \n  events\nWHERE \n  action = 'star' \n  OR \n  action = 'fork'\nORDER BY \n  created_at DESC\n\n\n"
       }
     },
     "humanResults": {
@@ -32619,6 +33067,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count(*) FROM github_events WHERE event_type = 'IssuesEvent' AND action = 'opened' LIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "**Fixed SQL Query:**\n\n\nSELECT COUNT(*) AS total_issues_opened \nFROM issues \nWHERE action = 'opened'\n\n\n**Explanation:**\n1. **Corrected Action Clause:** The original query used `action = 'opened'` which is a string. ClickHouse requires `action` to be an integer or a string with a default value (e.g., `1` for \"opened\"). This ensures the query correctly filters issues by the `opened` action.\n2. **Valid SELECT Statement:** The `COUNT(*)` aggregate function returns the total number of records matching the condition. This directly answers the question about the total number of issues opened.\n3. **No Authentication Required:** The error message indicates a workspace token is needed, but this query does not require authentication. It is a standard SQL query valid for both ClickHouse and Tinybird.\n\n**Result:** The query will return the total number of issues opened on GitHub.\n\n"
       }
     },
     "humanResults": {
@@ -33582,6 +34044,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS total_issue_comments\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY total_issue_comments DESC\nLIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT repo_name, COUNT(*) AS issue_comments_count FROM events WHERE action = 'commented' GROUP BY repo_name ORDER BY issue_comments_count DESC LIMIT 10\n\n\n"
       }
     },
     "humanResults": {
@@ -34568,6 +35044,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    sum(event_type = 'IssueCommentEvent' AND action = 'created') AS num_comments,\n    sum(event_type = 'IssuesEvent' AND action = 'opened') AS num_issues,\n    num_comments / num_issues AS ratio\nFROM github_events\nGROUP BY repo_name\nHAVING num_issues > 0\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " \n{\n  \"name\": \"top_repositories_by_ratio\",\n  \"query\": \"SELECT repo_name, COUNT(i.comments) AS comments_count, COUNT(i/issues) AS issues_count, (COUNT(i.comments) / COUNT(i/issues)) AS ratio FROM repositories AS repo WHERE i.comments > 0 GROUP BY repo.name ORDER BY ratio DESC LIMIT 10\"\n}\n\n\n"
       }
     },
     "humanResults": {
@@ -35586,6 +36076,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    number,\n    count() AS total_comments\nFROM github_events\nWHERE event_type = 'IssueCommentEvent' AND action = 'created'\nGROUP BY\n    repo_name,\n    number\nORDER BY\n    total_comments DESC\nLIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT \n  repo_name, issue_number, COUNT(*) AS comments_count\nFROM \n  issues\nJOIN (SELECT repo_name, issue_number, COUNT(*) AS comments_count FROM issues) AS t1 ON t1.repo_name = t2.repo_name\nJOIN (SELECT repo_name, issue_number, COUNT(*) AS comments_count FROM issues) AS t2 ON t2.repo_name = t1.repo_name\nGROUP BY repo_name, issue_number\nORDER BY comments_count DESC\nLIMIT 10\n\n\n"
       }
     },
     "humanResults": {
@@ -36586,6 +37090,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    number,\n    count() AS comments_created,\n    uniq(actor_login) AS comment_authors\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\n  AND action = 'created'\n  AND number > 10\nGROUP BY\n    repo_name,\n    number\nHAVING comment_authors >= 10\nORDER BY\n    comments_created DESC\nLIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n  SELECT \n    repo_name, issue_number, COUNT(*) AS comments_count,\n    author_association COUNT(DISTINCT author_login) AS comment_authors\n  FROM \n    issues\n  JOIN \n    comments ON issues.id = comments.issue_id\n  WHERE \n    repo_name IS NOT NULL AND issue_number > 10\n  GROUP BY \n    repo_name, issue_number\n  ORDER BY \n    comments_count DESC\n  LIMIT 10\n\n\n"
       }
     },
     "humanResults": {
@@ -37600,6 +38118,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT\n    repo_name,\n    count() AS matching_events\nFROM github_events\nWHERE\n    CHAR_LENGTH(REGEXP_EXTRACT(repo_name, '(?i)(tensorflow)')) > 0\n    OR CHAR_LENGTH(REGEXP_EXTRACT(title, '(?i)(tensorflow)')) > 0\n    OR CHAR_LENGTH(REGEXP_EXTRACT(body, '(?i)(tensorflow)')) > 0\nGROUP BY\n    repo_name\nORDER BY\n    matching_events DESC\nLIMIT 10\n"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT repo_name, COUNT(*) AS num_events\nFROM events\nWHERE repo_name LIKE '%tensorflow%' \n  AND action = 'opened'\n  AND (review_state = 'approved' OR review_state = 'changes_requested' OR review_state = 'commented' OR review_state = 'dismissed') \n  AND (created_at >= '2023-01-01' OR created_at >= '2023-01-01T00:00:00Z')\nGROUP BY repo_name\nORDER BY num_events DESC\nLIMIT 10\n\n\n"
       }
     },
     "humanResults": {
@@ -38604,6 +39136,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() AS total_comments FROM github_events WHERE event_type = 'CommitCommentEvent' GROUP BY repo_name ORDER BY total_comments DESC LIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " \n{\n  \"name\": \"top_repositories_by_commit_comments\",\n  \"query\": \"SELECT repo_name, COUNT(*) AS comments_count FROM repositories WHERE comments_count > 10 GROUP BY repo_name ORDER BY comments_count DESC LIMIT 10\"\n}\n\n\n"
       }
     },
     "humanResults": {
@@ -39608,6 +40154,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    'https://github.com/' || repo_name || '/commit/' || commit_id AS commit_url,\n    count() AS total_comments,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'CommitCommentEvent' AND repo_name != '' AND commit_id != ''\nGROUP BY\n    repo_name,\n    commit_id\nHAVING unique_authors >= 10\nORDER BY\n    total_comments DESC\nLIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " \n{\n  \"sql\": \"SELECT c.url, COUNT(c.comments) AS total_comments, COUNT(DISTINCT c.author_id) AS unique_authors FROM commits c WHERE c.comments_count >= 10 GROUP BY c.url ORDER BY total_comments DESC LIMIT 10\"\n}\n\n\n"
       }
     },
     "humanResults": {
@@ -40626,6 +41186,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    'https://github.com/' || repo_name || '/pull/' || CAST(number AS String) AS pr_url,\n    uniqExact(actor_login) AS num_authors\nFROM github_events\nWHERE event_type IN ('PullRequestReviewCommentEvent', 'PullRequestReviewEvent')\nGROUP BY\n    repo_name,\n    number\nORDER BY num_authors DESC\nLIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT \n  pr_id,\n  url,\n  COUNT(DISTINCT author_login) AS unique_authors\nFROM PRS \n  JOIN PR_REVIEW_COMMENTS ON PRS.pr_id = PR_REVIEW_COMMENTS.pr_id \n  WHERE action = 'opened' \n  AND comment_id IN (SELECT comment_id FROM PR_REVIEW_COMMENTS WHERE state = 'approved')\nORDER BY COUNT(DISTINCT author_login) DESC \nLIMIT 10\n\n\n"
       }
     },
     "humanResults": {
@@ -41630,6 +42204,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    actor_login,\n    count() AS pushes\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY pushes DESC\nLIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "</image>\n{\n  \"name\": \"fix_top_10_authors_query\",\n  \"sql\": \"SELECT author_login, COUNT(*) AS total_pitches FROM authors WHERE push_count > 10 GROUP BY author_login ORDER BY total_pitches DESC LIMIT 10\",\n  \"result\": \"The SQL query is valid for Tinybird/ClickHouse and correctly answers the original question 'Top 10 authors with the most pushes'.\"\n}\n}\n\n"
       }
     },
     "humanResults": {
@@ -42634,6 +43222,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT SUBSTRING_INDEX(repo_name, '/', 1) AS organization, count(*) AS stars FROM github_events WHERE event_type = 'WatchEvent' GROUP BY organization ORDER BY stars DESC LIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": " \n**SQL Query:**\n\nSELECT repo_name\nFROM (\n    SELECT repo_name, COUNT(*) AS star_count\n    FROM watch Events\n    WHERE action = 'opened'\n    GROUP BY repo_name\n) ORDER BY star_count DESC\nLIMIT 10\n\n\n**Explanation:**\n1. **Select Clause:** Retrieves the `repo_name` column from the `WatchEvent` table where the `action` is `opened`.\n2. **Group By Clause:** Groups the results by `repo_name` to count the number of `opened` actions for each organization.\n3. **Order Clause:** Orders the results by `star_count` in descending order to prioritize organizations with the highest number of stars.\n4. **Limit Clause:** Restricts the result set to the top 10 organizations.\n\n**Answer:** The SQL query correctly returns the organization names from the top 10 users/organizations by number of stars.\n\n\n"
       }
     },
     "humanResults": {
@@ -43624,6 +44226,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    SUBSTRING_INDEX(repo_name, '/', 1) AS org_name,\n    uniqExact(repo_name) AS repo_count\nFROM github_events\nWHERE repo_name != ''\nGROUP BY org_name\nORDER BY repo_count DESC\nLIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT DISTINCT repo_name FROM organizations WHERE count(repositories) = (SELECT MAX(count) FROM organizations) ORDER BY repo_name DESC LIMIT 10\n\n\n"
       }
     },
     "humanResults": {
@@ -44628,6 +45244,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS pr_count,\n    uniq(actor_login) AS unique_authors,\n    sum(additions) AS total_adds,\n    sum(deletions) AS total_dels\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND additions < 10000\n  AND deletions < 10000\nGROUP BY repo_name\nORDER BY (total_adds + total_dels) DESC\nLIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT \n  repo_name,\n  COUNT(*) AS pr_count,\n  SUM(CASE WHEN action = 'added' THEN 1 ELSE 0 END) AS total_adds,\n  SUM(CASE WHEN action = 'deleted' THEN 1 ELSE 0 END) AS total_delts\nFROM pullRequestReviewCommentEvent\nWHERE \n  action = 'opened'\n  AND repo_name NOT IN (\n    SELECT repo_name FROM github_events WHERE event_type IN ('CommitCommentEvent', 'CreateEvent', 'DeleteEvent', 'ForkEvent', 'GollumEvent', 'IssueCommentEvent', 'IssuesEvent', 'MemberEvent', 'PublicEvent', 'PullRequestEvent', 'PullRequestReviewCommentEvent', 'ForkApplyEvent', 'Event')\n  AND repo_name IN ('github.com', 'github.org', 'github.net')\n  AND created_at < DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 10 DAY)\n  AND created_at >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 10 DAY - INTERVAL 10 DAY)\n  AND PRS = COUNT(\n    SELECT pr_id FROM pullRequestReviewCommentEvent\n    WHERE repo_name = {{{json:$.repo_name}}}}\n  )\nGROUP BY repo_name\nORDER BY total_adds DESC, total_delts DESC\nLIMIT 10\n\n\n"
       }
     },
     "humanResults": {
@@ -45674,6 +46304,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    actor_login,\n    count() AS comments_created,\n    uniq(repo_name) AS unique_repos,\n    uniq(repo_name, number) AS unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\n  AND action = 'created'\nGROUP BY actor_login\nORDER BY comments_created DESC\nLIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT \n  author,\n  COUNT(*) AS comments,\n  COUNT(DISTINCT repo_name) AS unique_repos,\n  COUNT(DISTINCT pr_id) AS unique_prs\nFROM authors\nGROUP BY author\nORDER BY comments DESC\nLIMIT 10\n\n\n"
       }
     },
     "humanResults": {
@@ -46688,6 +47332,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    label,\n    count(*) AS count\nFROM github_events\nARRAY JOIN labels AS label\nWHERE\n    event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')\n    AND action IN ('opened', 'created', 'labeled')\n    AND label != ''\nGROUP BY label\nORDER BY count DESC\nLIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT\n  labels,\n  COUNT(*) AS times_used\nFROM issues\n  JOIN pullRequestEvents ON issues.id = pullRequestEvents.issue_id\n  JOIN issueComments ON issues.id = issueComments.issue_id\n  GROUP BY labels\nORDER BY times_used DESC\nLIMIT 10\n\n\n"
       }
     },
     "humanResults": {
@@ -47678,6 +48336,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    SUBSTRING_INDEX(repo_name, '/', 1) AS organization_name,\n    count(DISTINCT actor_login) AS num_authors,\n    count(DISTINCT CASE WHEN event_type = 'PullRequestEvent' AND action = 'opened' THEN actor_login ELSE NULL END) AS num_pr_authors,\n    count(DISTINCT CASE WHEN event_type = 'IssuesEvent' AND action = 'opened' THEN actor_login ELSE NULL END) AS num_issue_authors,\n    count(DISTINCT CASE WHEN event_type = 'IssueCommentEvent' THEN actor_login ELSE NULL END) AS num_issue_comment_authors,\n    count(DISTINCT CASE WHEN event_type = 'PushEvent' THEN actor_login ELSE NULL END) AS num_push_authors\nFROM github_events\nWHERE repo_name != '' AND actor_login != ''\nGROUP BY organization_name\nORDER BY num_authors DESC\nLIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT \n  repo_name AS organization_name,\n  COUNT(DISTINCT author_association) AS unique_authors,\n  COUNT(DISTINCT member_login) AS unique_prijs_authors,\n  COUNT(DISTINCT issue_comment_author) AS unique_issue_comment_authors,\n  COUNT(DISTINCT issue_author) AS unique_issue_authors,\n  COUNT(DISTINCT push_author) AS unique_push_authors\nFROM file_time\nWHERE repo_name IN (\n  SELECT repo_name FROM organizations\n)\nORDER BY organization_name DESC LIMIT 10\n\n\n"
       }
     },
     "humanResults": {
@@ -48752,6 +49424,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, CHAR_LENGTH(repo_name) AS repo_name_length FROM github_events WHERE event_type = 'WatchEvent' GROUP BY repo_name ORDER BY repo_name_length DESC LIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "`\n**SQL Query:**\n\nSELECT repo_name, LENGTH(repo_name) AS len FROM projects WHERE star_count >= 1 ORDER BY len DESC LIMIT 10\n\n**Explanation:**\n1. **SELECT Statement:** Retrieves the `repo_name` and calculates the length using `LENGTH` for each record.\n2. **FROM Clause:** Specifies the dataset for filtering.\n3. **WHERE Clause:** Filters for repositories with at least 1 star (`star_count >= 1`).\n4. **ORDER Clause:** Orders results by the length of the repository name in descending order.\n5. **LIMIT Clause:** Limits the result set to the top 10 entries.\n\n**Answer:**\nThe SQL query correctly returns the repository name and its length for the top 10 longest ones with at least 1 star.\n\n\n"
       }
     },
     "humanResults": {
@@ -49742,6 +50428,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent' AND repo_name != ''\nGROUP BY repo_name\nORDER BY CHAR_LENGTH(repo_name) ASC, repo_name ASC\nLIMIT 10"
+      },
+      "rekaai/reka-edge": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT repo_name FROM projects WHERE star_count >= 1 ORDER BY repo_name ASC LIMIT 10\n\n\n"
       }
     },
     "humanResults": {
@@ -50331,6 +51031,14 @@
         "avgExactDistance": 0.4295454545454546,
         "avgNumericDistance": 0.3031657331603074,
         "avgFScore": 0.58
+      },
+      "rekaai/reka-edge": {
+        "totalMatches": 0,
+        "exactMatches": 0,
+        "numericMatches": 0,
+        "avgExactDistance": 1,
+        "avgNumericDistance": 1,
+        "avgFScore": 0
       }
     }
   }
