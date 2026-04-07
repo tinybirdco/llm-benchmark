@@ -97,7 +97,9 @@
       "models": []
     },
     "z-ai": {
-      "models": []
+      "models": [
+        "glm-5.1"
+      ]
     },
     "nvidia": {
       "models": [
