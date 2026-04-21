@@ -107,7 +107,8 @@
     "openrouter": {
       "models": [
         "horizon-alpha",
-        "horizon-beta"
+        "horizon-beta",
+        "pareto-code"
       ]
     },
     "alibaba": {
