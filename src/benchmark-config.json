@@ -24,7 +24,8 @@
       "models": [
         "deepseek-chat-v3-0324",
         "deepseek-chat-v3-0324:free",
-        "deepseek-chat-v3.1"
+        "deepseek-chat-v3.1",
+        "deepseek-v4-pro"
       ]
     },
     "google": {
