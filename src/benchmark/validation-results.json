@@ -938,6 +938,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count() FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. The error you're encountering is related to authentication and workspace configuration, not the SQL query itself. The SQL query you provided is actually correct for counting all stars in the GitHub events dataset.\n\nHere's the correct SQL query to count all stars:\n\n\n%\nSELECT COUNT(*) as total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\n\n\nThis query:\n1. Uses the `github_events` table\n2. Filters for events where `event_type` is 'WatchEvent' (which represents when someone gives a star to a repo)\n3. Counts all these events to get the total number of stars\n\nThe error you're seeing is related to authentication and workspace configuration, which is outside the scope of the SQL query itself. You'll need to ensure you're using the correct authentication token and workspace URL for Tinybird to execute this query successfully."
       }
     },
     "humanResults": {
@@ -1897,6 +1911,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. The error you're encountering is related to authentication and not the SQL query itself. The SQL query I provided is actually correct for Tinybird/ClickHouse.\n\nTo fix this issue, you need to ensure you have:\n1. The correct Tinybird API token\n2. The correct workspace URL\n3. Proper authentication setup\n\nThe SQL query structure is correct and should work once authentication is resolved. Here's the query again for reference:\n\n\n%\nSELECT\n  repo_name,\n  COUNT(*) AS stars\nFROM\n  github_events\nWHERE\n  event_type = 'WatchEvent'\nGROUP BY\n  repo_name\nORDER BY\n  stars DESC\nLIMIT\n  10\n\n\nThis query:\n- Selects repository names and counts the number of watch events (stars)\n- Filters for only WatchEvent types\n- Groups by repository name\n- Orders by the count in descending order (most stars first)\n- Limits to the top 10 results\n\nThe authentication error you're seeing is: \"invalid authentication token. Workspace not found, make sure you use the token host\". This means you need to:\n1. Verify your API token is correct\n2. Ensure you're using the right workspace URL\n3. Check that the dataset name (github_events) is correct for your workspace\n\nOnce you've resolved these authentication issues, the SQL query should work correctly."
       }
     },
     "humanResults": {
@@ -2897,6 +2925,20 @@
         "humanRowCount": 5,
         "llmRowCount": 5,
         "sql": "SELECT\n    CASE CHAR_LENGTH(CAST(stars AS String))\n        WHEN 1 THEN 1\n        WHEN 2 THEN 10\n        WHEN 3 THEN 100\n        WHEN 4 THEN 1000\n        WHEN 5 THEN 10000\n        WHEN 6 THEN 100000\n        WHEN 7 THEN 1000000\n        ELSE 10000000\n    END as power_of_10,\n    count() as repo_count\nFROM (\n    SELECT\n        repo_name,\n        count() as stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n)\nGROUP BY power_of_10\nORDER BY power_of_10 ASC\nLIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 5,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. The error you're encountering is related to authentication and workspace access, not the SQL syntax itself. Since I can't directly access your Tinybird workspace, I'll provide a corrected SQL query that should work in Tinybird/ClickHouse.\n\nHere's the corrected SQL query:\n\n\n%\nSELECT\n  stars,\n  COUNT(*) AS repo_count\nFROM (\n  SELECT\n    CASE\n      WHEN stars < 10 THEN 1\n      WHEN stars < 100 THEN 10\n      WHEN stars < 1000 THEN 100\n      WHEN stars < 10000 THEN 1000\n      WHEN stars < 100000 THEN 10000\n      WHEN stars < 1000000 THEN 100000\n      WHEN stars < 10000000 THEN 1000000\n      WHEN stars < 100000000 THEN 10000000\n      WHEN stars < 1000000000 THEN 100000000\n      ELSE 1000000000\n    END AS stars\n  FROM (\n    SELECT\n      repo_name,\n      COUNT(*) AS stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n  )\n)\nGROUP BY stars\nORDER BY stars ASC\n\n\nThe issue with your previous query was that it was trying to count the number of `WatchEvent` events per repository, rather than counting the number of stars each repository has. The `WatchEvent` event represents when someone stars a repository, so we need to count these events per repository to determine how many stars each repository has.\n\nLet me explain the query:\n\n1. The innermost subquery counts the number of `WatchEvent` events for each repository:\n   \n   \n   SELECT\n     repo_name,\n     COUNT(*) AS stars\n   FROM github_events\n   WHERE event_type = 'WatchEvent'\n   GROUP BY repo_name\n   \n\n2. The middle query categorizes these star counts into powers of 10:\n   \n   \n   SELECT\n     CASE\n       WHEN stars < 10 THEN 1\n       WHEN stars < 100 THEN 10\n       WHEN stars < 1000 THEN 100\n       -- ... and so on for other ranges\n       ELSE 1000000000\n     END AS stars\n   FROM (\n     -- inner query here\n   )\n   \n\n3. The outer query groups by these categories and counts how many repositories fall into each category:\n   \n   \n   SELECT\n     stars,\n     COUNT(*) AS repo_count\n   FROM (\n     -- middle query here\n   )\n   GROUP BY stars\n   ORDER BY stars ASC\n   \n\nThis query will give you the count of repositories for each power of 10 star count range, ordered from smallest to largest.\n\nThe authentication error you're seeing is unrelated to the SQL syntax. It seems you're having issues with your Tinybird workspace authentication. You might want to check:\n1. That you're using the correct API token\n2. That the token has access to the workspace\n3. That the workspace URL is correct\n\nThe SQL query itself should work correctly for your intended purpose."
       }
     },
     "humanResults": {
@@ -3881,6 +3923,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniq(repo_name) FROM github_events LIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. The error you're encountering is related to authentication and workspace configuration, not the SQL query itself. The SQL query you've written is actually correct for counting the total number of distinct repositories on GitHub.\n\nThe error message suggests there's an issue with the authentication token or workspace configuration in Tinybird. This is not something that can be fixed by modifying the SQL query itself.\n\nSince I can't access the actual database or resolve the authentication issue, I'll provide you with the correct SQL query that would work if the authentication and workspace issues were resolved:\n\n\n%\nSELECT COUNT(DISTINCT repo_name) as total_repositories\nFROM github_events\n\n\nThis query will correctly count the total number of distinct repositories in the GitHub events dataset. The `%` at the beginning indicates that this is a parameterized query, which is the correct format for Tinybird queries.\n\nThe authentication error you're seeing is unrelated to the SQL syntax and would need to be resolved by checking your Tinybird workspace configuration and authentication token."
       }
     },
     "humanResults": {
@@ -4840,6 +4896,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    YEAR(created_at) AS year,\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent' AND YEAR(created_at) >= 2015\nGROUP BY year, repo_name\nORDER BY year ASC, stars DESC\nLIMIT 10 BY year\nLIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    toYear(created_at) AS year,\n    repo_name,\n    COUNT(*) AS event_count\nFROM\n    github_events\nWHERE\n    event_type IN ('WatchEvent', 'ForkEvent', 'PushEvent')\n    AND toYear(created_at) >= 2015\nGROUP BY\n    year,\n    repo_name\nORDER BY\n    year,\n    event_count DESC\nLIMIT 1000\n"
       }
     },
     "humanResults": {
@@ -5854,6 +5924,20 @@
         "humanRowCount": 2,
         "llmRowCount": 2,
         "sql": "SELECT\n    YEAR(created_at) AS year,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year ASC\nLIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 2,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. The error message you're seeing is related to authentication and workspace configuration, not the SQL query itself. The SQL query I provided should be valid for Tinybird/ClickHouse.\n\nLet me provide the correct SQL query again:\n\n\n%\nSELECT\n  year(created_at) AS year,\n  count(*) AS total_stars\nFROM\n  github_events\nWHERE\n  event_type = 'WatchEvent'\nGROUP BY\n  year\nORDER BY\n  year\nLIMIT 10\n\n\nThis query will:\n1. Extract the year from the `created_at` column\n2. Count the number of WatchEvents (star additions) for each year\n3. Group the results by year\n4. Order the results chronologically by year\n5. Limit the output to 10 results\n\nThe query should correctly answer your question about how the total number of stars has changed over time by year."
       }
     },
     "humanResults": {
@@ -6812,6 +6896,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT actor_login, count() as count FROM github_events WHERE event_type = 'WatchEvent' GROUP BY actor_login ORDER BY count DESC LIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. The error you're encountering is related to authentication and workspace configuration, not the SQL query itself. The SQL query you've written is actually correct for answering the question \"Who are the top 10 people giving stars?\" on GitHub.\n\nThe error message suggests there's an issue with the authentication token or workspace configuration in Tinybird. Since I can't access external systems or verify authentication credentials, I can't fix this specific error. However, I can confirm that your SQL query is correct for the task.\n\nHere's the SQL query again for reference:\n\n\n%\nSELECT\n  actor_login,\n  count(*) as stars\nFROM\n  github_events\nWHERE\n  event_type = 'WatchEvent'\nGROUP BY\n  actor_login\nORDER BY\n  stars DESC\nLIMIT 10\n\n\nThis query:\n1. Selects the actor_login (GitHub username) and counts the number of stars\n2. Filters for events of type 'WatchEvent' (which represents starring a repository)\n3. Groups by actor_login to count stars per user\n4. Orders by the count in descending order to show top users first\n5. Limits to 10 results to show the top 10 stargazers\n\nThe issue is likely with the authentication token or workspace configuration in Tinybird, not with the SQL query itself. You may want to check:\n1. That you're using the correct authentication token\n2. That the workspace is properly configured\n3. That the datasource name 'github_events' is correct and accessible\n\nWould you like me to help with anything else related to this query?"
       }
     },
     "humanResults": {
@@ -7816,6 +7914,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nAND actor_login IN (\n    SELECT\n        actor_login\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    AND repo_name = 'tensorflow/tensorflow'\n)\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. Let me provide a corrected SQL query that should work for Tinybird/ClickHouse to answer your question about the top 10 repositories sorted by the number of stars from people who starred the tensorflow/tensorflow repository.\n\nHere's the corrected SQL query:\n\n\n%\nSELECT\n  repo_name,\n  COUNT(*) AS num_stars\nFROM\n  github_events\nWHERE\n  event_type = 'WatchEvent'\n  AND actor_login IN (\n    SELECT DISTINCT\n      actor_login\n    FROM\n      github_events\n    WHERE\n      repo_name = 'tensorflow/tensorflow'\n      AND event_type = 'WatchEvent'\n  )\nGROUP BY\n  repo_name\nORDER BY\n  num_stars DESC\nLIMIT 10\n\n\nThis query:\n1. First identifies all distinct users who starred the tensorflow/tensorflow repository\n2. Then finds all repositories that were starred by those users\n3. Groups by repository name and counts the number of stars\n4. Orders by star count in descending order\n5. Limits to the top 10 results\n\nThe key changes from the previous attempt:\n1. Added DISTINCT to the subquery to avoid counting the same user multiple times if they starred multiple repositories\n2. The overall structure remains the same, ensuring we're only counting stars from people who specifically starred tensorflow/tensorflow\n\nThis should correctly answer your question about the top 10 repositories sorted by the number of stars from people who starred the tensorflow/tensorflow repository."
       }
     },
     "humanResults": {
@@ -8806,6 +8918,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "SELECT\n    actor_login,\n    sum(CASE WHEN substring_index(repo_name, '/', 1) = 'javisantana' THEN 1 ELSE 0 END) AS javisantana_stars,\n    sum(CASE WHEN substring_index(repo_name, '/', 1) != 'javisantana' THEN 1 ELSE 0 END) AS other_stars,\n    javisantana_stars / (javisantana_stars + other_stars) AS ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nHAVING javisantana_stars > 0\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. The error you're encountering is related to authentication and workspace issues, not the SQL query itself. Since I can't directly access Tinybird or ClickHouse to test the query, I'll provide a corrected SQL query that should work for your original question.\n\nHere's the corrected SQL query:\n\n\n%\nSELECT \n  actor_login AS user_name,\n  COUNTIF(repo_name LIKE '%javisantana%') AS javisantana_stars,\n  COUNT(*) - COUNTIF(repo_name LIKE '%javisantana%') AS other_stars,\n  COUNTIF(repo_name LIKE '%javisantana%') / NULLIF(COUNT(*) - COUNTIF(repo_name LIKE '%javisantana%'), 0) AS ratio\nFROM \n  github_events\nWHERE \n  event_type = 'WatchEvent'\nGROUP BY \n  actor_login\nORDER BY \n  ratio DESC\nLIMIT 10\n\n\nThis query should correctly answer your original question about finding the top 10 GitHub users who have the highest proportion of their stars given to repositories owned by 'javisantana' compared to all other repositories they've starred.\n\nThe key changes and considerations:\n1. The query uses `NULLIF` to avoid division by zero errors when a user has only starred javisantana repositories.\n2. It correctly counts the number of stars given to javisantana repositories and other repositories.\n3. The results are ordered by the ratio in descending order to show the users with the highest proportion of stars to javisantana repositories first.\n4. The `LIMIT 10` ensures we only get the top 10 users.\n\nThe authentication error you're seeing is unrelated to the SQL query itself and would need to be resolved by ensuring you're using the correct authentication token for your Tinybird workspace."
       }
     },
     "humanResults": {
@@ -9824,6 +9950,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    uniqExact(actor_login) AS unique_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND repo_name != 'tensorflow/tensorflow'\n  AND actor_login IN (\n      SELECT\n          actor_login\n      FROM github_events\n      WHERE event_type = 'PullRequestEvent'\n        AND action = 'opened'\n        AND repo_name = 'tensorflow/tensorflow'\n  )\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. The error you're encountering is related to authentication and workspace configuration, not the SQL query itself. The SQL query you provided is actually correct for Tinybird/ClickHouse.\n\nHowever, I can help you optimize the query to make it more efficient. The current query has a subquery that might be causing performance issues. Here's an optimized version:\n\n\n%\nSELECT\n  repo_name,\n  COUNT(DISTINCT actor_login) AS unique_contributors\nFROM\n  github_events\nWHERE\n  event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND repo_name NOT LIKE '%tensorflow%'\n  AND actor_login IN (\n    SELECT DISTINCT actor_login\n    FROM github_events\n    WHERE repo_name LIKE '%tensorflow%'\n    AND event_type = 'PullRequestEvent'\n    AND action = 'opened'\n  )\nGROUP BY\n  repo_name\nORDER BY\n  unique_contributors DESC\nLIMIT 10\n\n\nThe main difference is that I've added `DISTINCT` in the subquery to potentially improve performance by reducing the number of rows processed.\n\nSince the error you're encountering is related to authentication and workspace configuration, you'll need to ensure you're using the correct Tinybird API token and workspace URL. The SQL query itself is correct for Tinybird/ClickHouse."
       }
     },
     "humanResults": {
@@ -10824,6 +10964,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    t2.repo_name,\n    uniq(t2.actor_login) AS num_authors\nFROM github_events AS t1\nINNER JOIN github_events AS t2 ON t1.actor_login = t2.actor_login\nWHERE t1.event_type = 'IssuesEvent'\n  AND t1.action = 'opened'\n  AND t1.repo_name = 'tensorflow/tensorflow'\n  AND t2.event_type = 'IssuesEvent'\n  AND t2.action = 'opened'\n  AND t2.repo_name != 'tensorflow/tensorflow'\nGROUP BY t2.repo_name\nORDER BY num_authors DESC\nLIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. Let me provide a corrected SQL query that should work for your original question about finding the top 10 repositories with the most issues from users who also opened issues in tensorflow/tensorflow, ranked by author.\n\nHere's the SQL query:\n\n\n%\nSELECT\n  repo_name,\n  COUNT(*) AS issue_count\nFROM\n  github_events\nWHERE\n  event_type = 'IssuesEvent'\n  AND action = 'opened'\n  AND repo_name != 'tensorflow/tensorflow'\n  AND actor_login IN (\n    SELECT\n      actor_login\n    FROM\n      github_events\n    WHERE\n      repo_name = 'tensorflow/tensorflow'\n      AND event_type = 'IssuesEvent'\n      AND action = 'opened'\n  )\nGROUP BY\n  repo_name\nORDER BY\n  issue_count DESC\nLIMIT\n  10\n\n\nThis query is valid for Tinybird/ClickHouse and should correctly answer your question. The error you're encountering is related to authentication and workspace configuration, not the SQL query itself. The query logic is sound and should work once the authentication issues are resolved.\n\nThe query:\n1. Finds users who have opened issues in tensorflow/tensorflow\n2. Then finds repositories where those same users have opened issues\n3. Excludes tensorflow/tensorflow itself from the results\n4. Ranks the repositories by the number of issues opened by these users\n5. Returns the top 10 repositories\n\nIf you're still having authentication issues, you might want to check Tinybird's documentation on authentication and workspace access."
       }
     },
     "humanResults": {
@@ -11830,6 +11984,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    DATE(created_at) AS date,\n    count() AS daily_stars\nFROM github_events\nWHERE\n    event_type = 'WatchEvent'\nGROUP BY\n    repo_name,\n    date\nORDER BY\n    daily_stars DESC\nLIMIT 1 BY repo_name\nLIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. The error you're encountering is related to authentication and workspace configuration, not the SQL query itself. The SQL query you provided is actually correct for answering your original question about the top repositories with the most stars over one full day at any instant.\n\nHowever, I can help you modify the query to ensure it's optimized for Tinybird/ClickHouse and includes the necessary time-based filtering. Here's the improved version:\n\n\n%\nSELECT\n  repo_name,\n  COUNT(DISTINCT actor_login) AS unique_stars\nFROM\n  github_events\nWHERE\n  event_type = 'WatchEvent'\n  AND created_at BETWEEN {{DateTime(start_date, now() - INTERVAL 1 DAY)}} AND {{DateTime(end_date, now())}}\nGROUP BY\n  repo_name\nORDER BY\n  unique_stars DESC\nLIMIT 10\n\n\nThis query includes:\n1. Time-based filtering to consider only events from the last 24 hours\n2. Proper parameterization for dynamic date ranges\n3. The same logic to count unique stars per repository\n\nThe error you're seeing is related to authentication and workspace configuration, which is outside the scope of the SQL query itself. You'll need to ensure you're using the correct Tinybird workspace token and host URL for the query to execute successfully."
       }
     },
     "humanResults": {
@@ -13876,6 +14044,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    sum(CASE WHEN YEAR(created_at) = 2016 THEN 1 ELSE 0 END) AS stars_2016,\n    sum(CASE WHEN YEAR(created_at) = 2017 THEN 1 ELSE 0 END) AS stars_2017,\n    stars_2017 - stars_2016 AS stagnation_diff\nFROM github_events\nWHERE event_type = 'WatchEvent' AND YEAR(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING stars_2017 >= 1\nORDER BY stagnation_diff ASC\nLIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. Let me provide a corrected SQL query that addresses your question about the top 10 repositories with the worst stagnation in 2017 vs 2016, focusing on repositories with at least one star in 2017.\n\nThe error you encountered is related to authentication and workspace configuration, which is outside the scope of fixing the SQL query itself. Let's focus on creating a valid SQL query that answers your question.\n\nHere's the corrected SQL query:\n\n\n%\nSELECT\n  repo_name,\n  COUNT(DISTINCT CASE WHEN created_at BETWEEN '2016-01-01' AND '2016-12-31' THEN actor_login END) AS unique_contributors_2016,\n  COUNT(DISTINCT CASE WHEN created_at BETWEEN '2017-01-01' AND '2017-12-31' THEN actor_login END) AS unique_contributors_2017\nFROM\n  github_events\nWHERE\n  event_type = 'PushEvent'\n  AND (\n    created_at BETWEEN '2016-01-01' AND '2016-12-31'\n    OR created_at BETWEEN '2017-01-01' AND '2017-12-31'\n  )\nGROUP BY\n  repo_name\nHAVING\n  unique_contributors_2017 > 0\nORDER BY\n  unique_contributors_2016 - unique_contributors_2017 DESC\nLIMIT 10\n\n\nThis query is already correct in terms of SQL syntax for Tinybird/ClickHouse. The error you encountered is related to authentication and workspace configuration, not the SQL query itself.\n\nLet me explain what this query does:\n\n1. It selects repository names and counts unique contributors for each year (2016 and 2017)\n2. It filters for PushEvents (code commits) within the specified date ranges\n3. It groups by repository name\n4. It ensures the repository had at least one star in 2017 (through the HAVING clause)\n5. It orders by the difference in unique contributors between 2016 and 2017 in descending order\n6. It limits the results to the top 10\n\nThe query is designed to find repositories that had contributors in both 2016 and 2017, but had a decrease in unique contributors from 2016 to 2017, indicating stagnation.\n\nIf you're still encountering authentication issues, you'll need to ensure you're using the correct Tinybird workspace token and URL. The query itself is valid and should work once the authentication issue is resolved."
       }
     },
     "humanResults": {
@@ -14894,6 +15076,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    sum(stars) as total_stars,\n    avg(stars) as avg_monthly_stars,\n    stddevSamp(stars) as star_stddev,\n    (star_stddev / avg_monthly_stars) as variability_score\nFROM (\n    SELECT\n        repo_name,\n        DATE_TRUNC('month', created_at) as month,\n        count() as stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name, month\n)\nGROUP BY repo_name\nHAVING total_stars > 200\nORDER BY variability_score ASC\nLIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. Let me provide a corrected SQL query that properly addresses your question about the top 10 repositories with the most steady star growth rate over time. The previous error was related to authentication, not the SQL syntax itself.\n\nHere's a revised SQL query that should work correctly in Tinybird/ClickHouse:\n\n\n%\nSELECT\n  repo_name,\n  COUNT(*) AS total_stars,\n  COUNT(DISTINCT date_trunc('month', created_at)) AS months_with_stars,\n  -- Calculate the average stars per month\n  COUNT(*) / COUNT(DISTINCT date_trunc('month', created_at)) AS avg_stars_per_month,\n  -- Calculate the consistency score (lower is more consistent)\n  -- This measures how evenly stars are distributed across months\n  COUNT(DISTINCT date_trunc('month', created_at)) / COUNT(*) AS consistency_score\nFROM\n  github_events\nWHERE\n  event_type = 'WatchEvent'\nGROUP BY\n  repo_name\nORDER BY\n  consistency_score ASC,  -- Most consistent (even distribution) first\n  avg_stars_per_month DESC  -- Then by highest average stars per month\nLIMIT\n  10\n\n\nThis query calculates:\n1. The total number of stars for each repository\n2. The number of distinct months with stars\n3. The average stars per month\n4. A consistency score (lower is better) that shows how evenly stars are distributed across months\n\nThe consistency score is particularly important for measuring \"steady\" growth, as it shows repositories that maintain a regular pattern of star activity rather than just having a high total count.\n\nThe query is properly formatted for Tinybird/ClickHouse with:\n- The `%` character at the beginning to indicate dynamic parameters\n- Proper ClickHouse date functions\n- Correct aggregation and ordering\n- A LIMIT clause to return only the top 10 results\n\nThis should now correctly answer your question about repositories with the most steady star growth rate over time."
       }
     },
     "humanResults": {
@@ -15918,6 +16114,20 @@
         "humanRowCount": 7,
         "llmRowCount": 7,
         "sql": "SELECT\n    date_format(created_at, '%W') AS day_of_week,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 7,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. The issue is not with the SQL query itself, but rather with the authentication to the Tinybird service. The SQL query you have is correct and would work if the authentication were properly configured.\n\nHere's the correct SQL query that would answer your question about the best day of the week to catch a star:\n\n\n%\nSELECT\n  dayOfWeek(created_at) AS day_of_week,\n  count(*) AS stars\nFROM\n  github_events\nWHERE\n  event_type = 'WatchEvent'\nGROUP BY\n  dayOfWeek(created_at)\nORDER BY\n  stars DESC\nLIMIT 1\n\n\nThis query:\n1. Uses the `dayOfWeek` function to extract the day of the week from the `created_at` timestamp\n2. Filters for only `WatchEvent` events (which represent stars)\n3. Groups by the day of the week\n4. Counts the number of stars for each day\n5. Orders by the count in descending order\n6. Limits to the top result (the best day)\n\nThe query is valid for Tinybird/ClickHouse and should correctly identify the best day of the week to catch a star when the authentication issues are resolved. The authentication error is unrelated to the SQL syntax and would need to be addressed separately."
       }
     },
     "humanResults": {
@@ -16896,6 +17106,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniq(actor_login) AS total_users FROM github_events LIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. The error you're encountering is related to authentication and workspace configuration, not the SQL query itself. The SQL query you've written is actually correct for counting distinct users in the GitHub events dataset.\n\nSince I can't access the actual database to execute the query, I'll provide you with the correct SQL query that would work in a Tinybird/ClickHouse environment:\n\n\n%\nSELECT COUNT(DISTINCT actor_login) as total_users\nFROM github_events\n\n\nThis query:\n1. Uses the `%` character at the beginning to indicate it's a parameterized query\n2. Counts the distinct `actor_login` values to get the total number of unique users\n3. Aliases the result as `total_users`\n\nThe error you're seeing is related to authentication and workspace configuration, which is outside the scope of the SQL query itself. The SQL syntax is correct for Tinybird/ClickHouse."
       }
     },
     "humanResults": {
@@ -17859,6 +18083,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniqExact(actor_login) FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. The error you're encountering is related to authentication and workspace configuration, not the SQL query itself. The SQL query you've written is actually correct for counting the number of unique users who have given at least one star.\n\nHere's the correct SQL query again:\n\n\n%\nSELECT\n  COUNT(DISTINCT actor_login) AS total_users\nFROM\n  github_events\nWHERE\n  event_type = 'WatchEvent'\n\n\nThis query will correctly count the number of unique users who have given at least one star by:\n1. Filtering for events where `event_type = 'WatchEvent'` (which represents when someone gives a star to a repo)\n2. Counting distinct `actor_login` values to get the number of unique users\n\nThe error you're seeing is related to:\n1. Authentication issues with your Tinybird workspace\n2. Workspace configuration problems\n\nTo fix this, you would need to:\n1. Ensure you're using the correct authentication token for your Tinybird workspace\n2. Verify that the workspace is properly configured and accessible\n\nThe SQL query itself is correct and should work once the authentication and workspace issues are resolved."
       }
     },
     "humanResults": {
@@ -18794,6 +19032,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniq(actor_login) FROM github_events WHERE event_type = 'PushEvent' LIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. Let me provide a corrected SQL query that will properly answer your question about the total number of users with at least one push event. The previous attempts had some issues with the query logic and authentication.\n\nHere's the corrected SQL query:\n\n\n%\nSELECT\n  COUNT(DISTINCT actor_login) AS total_users\nFROM\n  github_events\nWHERE\n  event_type = 'PushEvent'\n\n\nThis query will return the total number of distinct users who have at least one push event. The query is simplified to directly answer your question, and I've removed the LIMIT clause since we're only returning a single aggregated value.\n\nThe query uses:\n- COUNT(DISTINCT actor_login) to count unique users\n- WHERE event_type = 'PushEvent' to filter only push events\n- No GROUP BY or HAVING clauses since we're calculating a single aggregate value\n\nThis should correctly answer your question about the total number of users with at least one push event."
       }
     },
     "humanResults": {
@@ -19729,6 +19981,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniqExact(actor_login) FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' LIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. Let me provide a corrected SQL query that will work for Tinybird/ClickHouse to answer your question about the total number of users with at least one created PR:\n\n\n%\nSELECT\n  COUNT(DISTINCT actor_login) AS total_users\nFROM\n  github_events\nWHERE\n  event_type = 'PullRequestEvent'\n  AND action = 'opened'\nLIMIT 1\n\n\nThis query:\n1. Uses COUNT(DISTINCT actor_login) to count the number of unique users\n2. Filters for PullRequestEvent type with action 'opened' to identify PR creation events\n3. Returns just the count as total_users\n4. Uses LIMIT 1 since we only need the total count\n\nThe previous query had issues with the HAVING clause and unnecessary GROUP BY clause. This corrected version properly counts the distinct users who have created PRs without grouping the results, which would have caused issues with the HAVING clause."
       }
     },
     "humanResults": {
@@ -20688,6 +20954,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nAND actor_login IN (\n    SELECT\n        actor_login\n    FROM github_events\n    WHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\n)\nGROUP BY\n    repo_name\nORDER BY\n    stars DESC\nLIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. The error you're encountering is related to authentication and workspace configuration, not the SQL query itself. Since I can't directly access the Tinybird environment to test the query, I'll provide the corrected SQL query that should work in a Tinybird/ClickHouse environment.\n\nHere's the corrected SQL query:\n\n\n%\nSELECT\n  repo_name,\n  COUNT(*) AS star_count\nFROM\n  github_events\nWHERE\n  event_type = 'WatchEvent'\n  AND actor_login IN (\n    SELECT\n      DISTINCT actor_login\n    FROM\n      github_events\n    WHERE\n      event_type = 'PullRequestEvent'\n      AND action = 'opened'\n  )\nGROUP BY\n  repo_name\nORDER BY\n  star_count DESC\nLIMIT 10\n\n\nThis query:\n1. First identifies all users who have opened at least one PR using the subquery\n2. Then finds all WatchEvents (starred repositories) from those users\n3. Groups by repository and counts the stars\n4. Orders by star count in descending order and limits to top 10\n\nThe key change from your previous query is that we're now filtering by `actor_login` (the user who performed the action) in the subquery, which correctly identifies users who have made PRs and then finds the repositories they've starred.\n\nSince I can't test this query directly, I recommend you try it in your Tinybird environment. If you encounter any specific errors related to the SQL syntax, please let me know and I'll help you troubleshoot them."
       }
     },
     "humanResults": {
@@ -21670,6 +21950,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() AS total_prs FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' AND actor_login IN (SELECT actor_login FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' GROUP BY actor_login HAVING count() >= 10) GROUP BY repo_name ORDER BY total_prs DESC LIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. Let me provide a corrected SQL query that should work with Tinybird/ClickHouse. The issue seems to be with the authentication token rather than the SQL query itself. Here's the corrected SQL query:\n\n\n%\nSELECT \n  repo_name,\n  actor_login,\n  COUNT(*) as pr_count\nFROM \n  github_events\nWHERE \n  event_type = 'PullRequestEvent' \n  AND action = 'opened'\nGROUP BY \n  repo_name, actor_login\nHAVING \n  COUNT(*) >= 10\nORDER BY \n  pr_count DESC\nLIMIT 10\n\n\nThis query:\n1. Selects the repository name and author login\n2. Counts the number of pull requests for each author in each repository\n3. Filters to only include authors with 10 or more PRs\n4. Orders by the count in descending order\n5. Limits to the top 10 results\n\nThe main issue with the previous query was that it was referencing a column alias in the HAVING clause, which is not allowed in ClickHouse. I've fixed this by using `COUNT(*)` directly in the HAVING clause.\n\nPlease ensure you have the correct authentication token and workspace access to execute this query. If you're still encountering issues, you may need to check your Tinybird workspace configuration or contact your Tinybird administrator."
       }
     },
     "humanResults": {
@@ -22660,6 +22954,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY pr_count DESC\nLIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. Let me provide a corrected SQL query that should work for your request. The previous query was actually correct in terms of SQL syntax, but let's ensure it's properly formatted for Tinybird/ClickHouse.\n\nHere's the SQL query:\n\n\n%\nSELECT\n  repo_name,\n  COUNT(*) AS pull_requests_count\nFROM\n  github_events\nWHERE\n  event_type = 'PullRequestEvent'\nGROUP BY\n  repo_name\nORDER BY\n  pull_requests_count DESC\nLIMIT\n  10\n\n\nThis query:\n1. Uses the `github_events` table\n2. Filters for events where `event_type = 'PullRequestEvent'`\n3. Groups by `repo_name` to count pull requests per repository\n4. Orders by the count in descending order\n5. Limits to the top 10 results\n\nThe query is properly formatted for Tinybird/ClickHouse with:\n- The `%` character at the beginning to indicate dynamic parameters\n- A newline after the `%` character\n- Proper SQL syntax with ClickHouse-specific features\n\nThe authentication error you're seeing is related to your environment configuration and not with the SQL syntax itself. The query should work correctly if you have proper authentication set up in your Tinybird environment."
       }
     },
     "humanResults": {
@@ -23664,6 +23972,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    uniq(actor_login) AS contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY contributors DESC\nLIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. The error message you're seeing is related to authentication and workspace configuration, not the SQL query itself. The SQL query I provided should be valid for Tinybird/ClickHouse.\n\nLet me provide the correct SQL query again:\n\n\n%\nSELECT\n  repo_name,\n  count(DISTINCT assignee) AS contributors_count\nFROM\n  github_events\nWHERE\n  event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND assignee != ''\nGROUP BY\n  repo_name\nORDER BY\n  contributors_count DESC\nLIMIT 10\n\n\nThis query will return the top 10 repositories with the maximum amount of pull request contributors. The `assignee` column is used to get the contributors to a pull request, and the `DISTINCT` keyword is used to count the unique contributors. The `WHERE` clause filters the events to only include pull request events with the `opened` action and non-empty assignee values.\n\nThe error you're seeing is likely due to authentication issues with your Tinybird workspace. Please make sure you're using the correct authentication token and workspace URL."
       }
     },
     "humanResults": {
@@ -24664,6 +24986,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS issues_count\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY issues_count DESC\nLIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. The error you're encountering is an authentication issue, not a problem with the SQL query itself. The SQL query I provided is correct for Tinybird/ClickHouse. \n\nSince I can't fix the authentication issue, I'll provide the correct SQL query again for reference:\n\n\n%\nSELECT\n  repo_name,\n  COUNT(*) AS issue_count\nFROM\n  github_events\nWHERE\n  event_type = 'IssuesEvent'\n  AND action = 'opened'\nGROUP BY\n  repo_name\nORDER BY\n  issue_count DESC\nLIMIT 10\n\n\nThis query:\n1. Filters for IssuesEvent type\n2. Filters for issues that were opened (action = 'opened')\n3. Groups by repository name\n4. Counts the number of issues per repository\n5. Orders by count in descending order\n6. Limits to top 10 results\n\nThe query is valid for Tinybird/ClickHouse and should work correctly if the authentication issue is resolved. The authentication error you're seeing is related to your Tinybird workspace configuration, not the SQL syntax."
       }
     },
     "humanResults": {
@@ -25654,6 +25990,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, uniqExact(actor_login) as authors_count FROM github_events WHERE event_type = 'PushEvent' GROUP BY repo_name ORDER BY authors_count DESC LIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. The issue is not with the SQL query itself, but rather with the authentication and workspace configuration. The SQL query you have is correct for Tinybird/ClickHouse to answer your question about the top 10 repositories with the most people who have push access.\n\nHere's the correct SQL query again:\n\n\n%\nSELECT\n  repo_name,\n  count(DISTINCT actor_login) AS num_pushers\nFROM\n  github_events\nWHERE\n  event_type = 'PushEvent'\nGROUP BY\n  repo_name\nORDER BY\n  num_pushers DESC\nLIMIT\n  10\n\n\nThis query:\n1. Filters for PushEvent types (which indicate push access)\n2. Groups by repository name\n3. Counts distinct actors (users) for each repository\n4. Orders by the count in descending order\n5. Limits to the top 10 results\n\nThe error you're encountering is related to authentication and workspace configuration, not the SQL query itself. The SQL syntax is correct for Tinybird/ClickHouse. You would need to ensure you're using the correct authentication token and workspace URL for Tinybird."
       }
     },
     "humanResults": {
@@ -26644,6 +26994,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    uniq(actor_login) AS num_pushers\nFROM github_events\nWHERE event_type = 'PushEvent'\n  AND ref IN ('refs/heads/main', 'refs/heads/master')\nGROUP BY repo_name\nORDER BY num_pushers DESC\nLIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT\n  repo_name,\n  COUNT(DISTINCT creator_user_login) AS push_access_count\nFROM\n  github_events\nWHERE\n  ref_type = 'branch'\n  AND action = 'created'\nGROUP BY\n  repo_name\nORDER BY\n  push_access_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -27648,6 +28012,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT\n    repo_name,\n    uniqExact(CASE WHEN event_type = 'PushEvent' AND (ref = 'refs/heads/main' OR ref = 'refs/heads/master') THEN actor_login ELSE NULL END) - 1 AS pushers\nFROM github_events\nGROUP BY repo_name\nHAVING sum(event_type = 'WatchEvent') > 99\nORDER BY pushers DESC\nLIMIT 10\n"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. The error you're encountering is related to authentication and workspace configuration, not the SQL query itself. The SQL query you've written is actually correct for answering your original question about finding the top 10 repositories with the most people who have push access to the main branch, with a cutoff for the number of stars at more than 99.\n\nThe error message suggests there's an issue with the authentication token or workspace configuration in Tinybird, which is beyond the scope of fixing the SQL query. Your SQL query is properly structured to:\n\n1. Select repositories where users have push access to the main branch\n2. Filter for repositories with more than 99 stars\n3. Count distinct pushers for each repository\n4. Return the top 10 repositories by number of pushers\n\nThe query uses appropriate joins, filters, and aggregations for Tinybird/ClickHouse. The authentication error you're seeing is likely due to either:\n\n1. An incorrect or expired API token\n2. Access permissions issues in your Tinybird workspace\n3. Workspace configuration problems\n\nTo resolve this, you would need to:\n1. Verify your Tinybird API token is correct and has the necessary permissions\n2. Ensure you're using the correct workspace URL\n3. Check that the data source is properly configured in your workspace\n\nThe SQL query itself is correct and should work once the authentication and workspace issues are resolved."
       }
     },
     "humanResults": {
@@ -28666,6 +29044,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS invitations\nFROM github_events\nWHERE event_type = 'MemberEvent' AND action = 'added'\nGROUP BY repo_name\nORDER BY invitations DESC\nLIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. Let me provide a corrected SQL query that should work for Tinybird/ClickHouse to answer your question about the top 10 repositories by maximum number of member invitations.\n\nThe previous query had a logical error in its structure. Here's the corrected version:\n\n\n%\nSELECT\n  repo_name,\n  count(*) AS member_invitations\nFROM\n  github_events\nWHERE\n  event_type = 'MemberEvent'\n  AND action = 'added'\nGROUP BY\n  repo_name\nORDER BY\n  member_invitations DESC\nLIMIT\n  10\n\n\nThis query:\n1. Filters for events of type 'MemberEvent' where the action is 'added' (which represents member invitations)\n2. Groups the results by repository name\n3. Counts the number of invitations for each repository\n4. Orders the results by the count in descending order\n5. Limits to the top 10 repositories\n\nThe key changes from the previous query are:\n- Added `AND action = 'added'` to only count actual member invitations\n- Removed the subquery as it was unnecessary for this query\n- Simplified the logic to directly count the invitations per repository\n\nThis should now correctly return the top 10 repositories with the highest number of member invitations."
       }
     },
     "humanResults": {
@@ -29670,6 +30062,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() as total_forks FROM github_events WHERE event_type = 'ForkEvent' GROUP BY repo_name ORDER BY total_forks DESC LIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. The error you're encountering is related to authentication and workspace configuration, not the SQL query itself. The SQL query you've written is actually correct for finding the top 10 most forked repositories.\n\nHere's the SQL query again for clarity:\n\n\n%\nSELECT\n  repo_name,\n  COUNT(*) AS fork_count\nFROM\n  github_events\nWHERE\n  event_type = 'ForkEvent'\nGROUP BY\n  repo_name\nORDER BY\n  fork_count DESC\nLIMIT 10\n\n\nThis query:\n1. Filters for events of type 'ForkEvent'\n2. Groups the results by repository name\n3. Counts the number of fork events for each repository\n4. Orders the results by the count in descending order (most forks first)\n5. Limits the output to the top 10 repositories\n\nThe error you're seeing is related to:\n1. Authentication issues with Tinybird\n2. Workspace configuration problems\n\nTo resolve this, you would need to:\n1. Ensure you're using the correct Tinybird API token\n2. Verify you're accessing the correct workspace\n3. Confirm the datasource name is correct\n\nThe SQL query itself is valid for Tinybird/ClickHouse and should work once the authentication and workspace issues are resolved."
       }
     },
     "humanResults": {
@@ -30656,6 +31062,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    sum(event_type = 'WatchEvent') AS stars,\n    sum(event_type = 'ForkEvent') AS forks,\n    stars / forks AS ratio\nFROM github_events\nWHERE event_type IN ('WatchEvent', 'ForkEvent') AND repo_name != ''\nGROUP BY repo_name\nHAVING forks > 0\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. The error you're encountering is related to authentication and workspace configuration, not the SQL query itself. Since I can't access the actual database or verify the authentication, I'll provide a corrected SQL query that should work for your original question about finding the top 10 repositories by the ratio between stars and forks.\n\nHere's the corrected SQL query:\n\n\n%\nSELECT\n  repo_name,\n  COUNT(*) AS stars,\n  COUNT(*) FILTER (WHERE event_type = 'WatchEvent') AS forks,\n  COUNT(*) FILTER (WHERE event_type = 'WatchEvent') / COUNT(*) AS ratio\nFROM\n  github_events\nWHERE\n  event_type IN ('WatchEvent', 'ForkEvent')\nGROUP BY\n  repo_name\nORDER BY\n  ratio DESC\nLIMIT 10\n\n\nThis query:\n1. Groups events by repository name\n2. Counts all events (stars) for each repository\n3. Counts only WatchEvents (which represent stars) to calculate forks\n4. Calculates the ratio of forks to stars\n5. Orders by this ratio in descending order\n6. Limits to the top 10 results\n\nThe query should work correctly for Tinybird/ClickHouse, assuming the table name and column names are correct. The authentication error you're seeing is unrelated to the SQL syntax and would need to be resolved by checking your Tinybird workspace configuration and authentication token."
       }
     },
     "humanResults": {
@@ -31674,6 +32094,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT\n    sum(event_type = 'WatchEvent') AS stars,\n    sum(event_type = 'ForkEvent') AS forks,\n    CAST(sum(event_type = 'WatchEvent') / sum(event_type = 'ForkEvent') AS Decimal(10, 2)) AS ratio\nFROM github_events\nLIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. The error you're encountering is related to authentication and not the SQL query itself. Since I can't access the actual database or resolve authentication issues, I'll provide you with the correct SQL query structure that should work for your original question.\n\nHere's the SQL query to calculate the total number of stars, forks, and the ratio between stars and forks:\n\n\n%\nSELECT\n  repo_name,\n  SUM(CASE WHEN event_type = 'WatchEvent' THEN 1 ELSE 0 END) AS stars,\n  SUM(CASE WHEN event_type = 'ForkEvent' THEN 1 ELSE 0 END) AS forks,\n  ROUND(SUM(CASE WHEN event_type = 'WatchEvent' THEN 1 ELSE 0 END) / NULLIF(SUM(CASE WHEN event_type = 'ForkEvent' THEN 1 ELSE 0 END), 0), 2) AS stars_to_forks_ratio\nFROM github_events\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10\n\n\nThis query:\n1. Groups the data by repository name\n2. Counts the number of WatchEvents (stars) and ForkEvents (forks) for each repository\n3. Calculates the ratio of stars to forks, rounded to 2 decimal places\n4. Orders the results by the number of stars in descending order\n5. Limits the output to the top 10 repositories\n\nThe error you're seeing is related to authentication and workspace configuration, which is outside the scope of the SQL query itself. You'll need to ensure you have the correct authentication token and workspace configuration to execute this query successfully."
       }
     },
     "humanResults": {
@@ -32619,6 +33053,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count(*) FROM github_events WHERE event_type = 'IssuesEvent' AND action = 'opened' LIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. The error you're encountering is related to authentication and workspace configuration, not the SQL query itself. The SQL query you've written is actually correct for counting the total number of issues opened on GitHub.\n\nSince I can't fix the authentication issue directly, I'll provide you with the correct SQL query again, which should work once the authentication issue is resolved:\n\n\n%\nSELECT\n  COUNT(*) AS total_issues\nFROM\n  github_events\nWHERE\n  event_type = 'IssuesEvent'\n  AND action = 'opened'\n\n\nThis query:\n1. Counts all events where `event_type` is 'IssuesEvent' (which represents issues-related events)\n2. Filters for actions where `action` is 'opened' (which specifically identifies when an issue is created)\n3. Returns the total count of such events as `total_issues`\n\nThe query is properly formatted for Tinybird/ClickHouse and should work correctly once the authentication issue is resolved."
       }
     },
     "humanResults": {
@@ -33582,6 +34030,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS total_issue_comments\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY total_issue_comments DESC\nLIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. Let me provide a corrected SQL query that should work for Tinybird/ClickHouse. The issue appears to be an authentication problem rather than a SQL syntax issue. Here's the correct SQL query:\n\n\n%\nSELECT\n  repo_name,\n  COUNT(*) AS comment_count\nFROM\n  github_events\nWHERE\n  event_type = 'IssueCommentEvent'\nGROUP BY\n  repo_name\nORDER BY\n  comment_count DESC\nLIMIT\n  10\n\n\nThis query:\n1. Uses the `github_events` table\n2. Filters for `IssueCommentEvent` type\n3. Groups by repository name\n4. Counts the number of comments per repository\n5. Orders by comment count in descending order\n6. Limits to top 10 results\n\nThe query is valid for Tinybird/ClickHouse and should correctly answer your question about the top 10 repositories by issue comment events. The authentication error is likely due to temporary access issues with Tinybird, not with the SQL query itself."
       }
     },
     "humanResults": {
@@ -34568,6 +35030,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    sum(event_type = 'IssueCommentEvent' AND action = 'created') AS num_comments,\n    sum(event_type = 'IssuesEvent' AND action = 'opened') AS num_issues,\n    num_comments / num_issues AS ratio\nFROM github_events\nGROUP BY repo_name\nHAVING num_issues > 0\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. Since I don't have access to the actual database or the authentication token, I cannot provide a working SQL query. However, I can help you modify the SQL query to correctly answer your original question.\n\nHere is the modified SQL query:\n\n\n%\nSELECT\n  repo_name,\n  COUNT(*) AS total_issues,\n  SUM(CASE WHEN action = 'opened' THEN 1 ELSE 0 END) AS opened_issues,\n  SUM(CASE WHEN action = 'commented' THEN 1 ELSE 0 END) AS total_comments,\n  SUM(CASE WHEN action = 'commented' THEN 1 ELSE 0 END) / NULLIF(SUM(CASE WHEN action = 'opened' THEN 1 ELSE 0 END), 0) AS comments_per_issue_ratio\nFROM github_events\nWHERE event_type = 'IssuesEvent'\nGROUP BY repo_name\nORDER BY comments_per_issue_ratio DESC\nLIMIT 10\n\n\nPlease replace `github_events` with the correct table name and ensure that you have the proper authentication token and workspace URL. If you still encounter issues, please provide more information about the error or the database schema."
       }
     },
     "humanResults": {
@@ -35586,6 +36062,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    number,\n    count() AS total_comments\nFROM github_events\nWHERE event_type = 'IssueCommentEvent' AND action = 'created'\nGROUP BY\n    repo_name,\n    number\nORDER BY\n    total_comments DESC\nLIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. The error you're encountering is related to authentication and workspace configuration, not the SQL query itself. The SQL query you've written is actually correct for retrieving the top 10 GitHub issues by number of comments.\n\nSince I can't fix the authentication issue directly, I'll provide you with the correct SQL query again, which should work once the authentication and workspace issues are resolved:\n\n\n%\nSELECT\n  repo_name,\n  number,\n  comments\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n  AND action = 'opened'\nORDER BY comments DESC\nLIMIT 10\n\n\nThis query:\n1. Selects the repository name, issue number, and comment count\n2. Filters for IssuesEvent type and only those where an issue was opened\n3. Orders the results by the number of comments in descending order\n4. Limits the output to the top 10 results\n\nThe query is correct and should work once the authentication issues are resolved. The error you're seeing is related to your Tinybird workspace configuration, not the SQL syntax itself."
       }
     },
     "humanResults": {
@@ -36586,6 +37076,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    number,\n    count() AS comments_created,\n    uniq(actor_login) AS comment_authors\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\n  AND action = 'created'\n  AND number > 10\nGROUP BY\n    repo_name,\n    number\nHAVING comment_authors >= 10\nORDER BY\n    comments_created DESC\nLIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. Let's create a valid SQL query for Tinybird/ClickHouse that answers your question about the top 10 GitHub issues with more than 10 comments and at least 10 comment authors.\n\n\n%\n\nSELECT\n  repo_name,\n  number,\n  comments,\n  count(DISTINCT creator_user_login) AS comment_authors\nFROM\n  github_events\nWHERE\n  event_type = 'IssuesEvent'\n  AND action = 'opened'\n  AND comments >= 10\nGROUP BY\n  repo_name,\n  number,\n  comments\nHAVING\n  count(DISTINCT creator_user_login) >= 10\nORDER BY\n  comments DESC\nLIMIT 10\n\n\nThis query:\n1. Selects the repository name, issue number, comment count, and distinct comment authors count\n2. Filters for IssuesEvent type with 'opened' action and at least 10 comments\n3. Groups by repository, issue number, and comment count\n4. Filters groups to only include those with at least 10 distinct comment authors\n5. Orders by comment count in descending order\n6. Limits to the top 10 results\n\nThe error you're encountering appears to be related to authentication and workspace configuration rather than the SQL syntax itself. The query should work correctly in a properly configured Tinybird environment."
       }
     },
     "humanResults": {
@@ -37600,6 +38104,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT\n    repo_name,\n    count() AS matching_events\nFROM github_events\nWHERE\n    CHAR_LENGTH(REGEXP_EXTRACT(repo_name, '(?i)(tensorflow)')) > 0\n    OR CHAR_LENGTH(REGEXP_EXTRACT(title, '(?i)(tensorflow)')) > 0\n    OR CHAR_LENGTH(REGEXP_EXTRACT(body, '(?i)(tensorflow)')) > 0\nGROUP BY\n    repo_name\nORDER BY\n    matching_events DESC\nLIMIT 10\n"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. The error you're encountering is related to authentication and workspace configuration, not the SQL query itself. Since I can't access the actual database or verify the authentication, I'll provide a corrected SQL query that should work for your original question about finding the top 10 repositories with the most events related to TensorFlow.\n\nHere's the corrected SQL query:\n\n\n%\nSELECT\n  repo_name,\n  count(*) as event_count\nFROM\n  github_events\nWHERE\n  event_type = 'WatchEvent'\n  AND body LIKE '%tensorflow%'\nGROUP BY\n  repo_name\nORDER BY\n  event_count DESC\nLIMIT 10\n\n\nThis query:\n1. Filters for WatchEvents (which represent repository stars)\n2. Looks for events where the body contains \"tensorflow\"\n3. Groups by repository name\n4. Counts the events for each repository\n5. Orders by count in descending order\n6. Limits to the top 10 results\n\nThe query appears correct for Tinybird/ClickHouse syntax. The authentication error you're seeing is likely due to workspace configuration issues rather than the SQL syntax itself. Make sure you're using the correct authentication token and workspace URL for your Tinybird instance."
       }
     },
     "humanResults": {
@@ -38604,6 +39122,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() AS total_comments FROM github_events WHERE event_type = 'CommitCommentEvent' GROUP BY repo_name ORDER BY total_comments DESC LIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. The error you're encountering is related to authentication and workspace configuration, not the SQL query itself. The SQL query you have is actually correct for answering the question about the top 10 repositories by the number of commit comments.\n\nHere's the SQL query again for clarity:\n\n\n%\nSELECT\n  repo_name,\n  count() AS commit_comments\nFROM\n  github_events\nWHERE\n  event_type = 'CommitCommentEvent'\nGROUP BY\n  repo_name\nORDER BY\n  commit_comments DESC\nLIMIT\n  10\n\n\nThis query:\n1. Filters for 'CommitCommentEvent' type events\n2. Groups by repository name\n3. Counts the number of events for each repository\n4. Orders by the count in descending order\n5. Limits the results to the top 10 repositories\n\nThe issue you're facing is with the authentication token and workspace configuration, which is outside the scope of the SQL query itself. The SQL syntax is correct for Tinybird/ClickHouse."
       }
     },
     "humanResults": {
@@ -39608,6 +40140,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    'https://github.com/' || repo_name || '/commit/' || commit_id AS commit_url,\n    count() AS total_comments,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'CommitCommentEvent' AND repo_name != '' AND commit_id != ''\nGROUP BY\n    repo_name,\n    commit_id\nHAVING unique_authors >= 10\nORDER BY\n    total_comments DESC\nLIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\nSELECT\n  repo_name,\n  commit_id,\n  concat('https://github.com/', repo_name, '/commit/', commit_id) as commit_url,\n  count(DISTINCT comment_id) as total_comments,\n  count(DISTINCT creator_user_login) as unique_authors\nFROM\n  github_events\nWHERE\n  event_type = 'PushEvent'\nGROUP BY\n  repo_name,\n  commit_id\nHAVING\n  unique_authors >= 10\nORDER BY\n  total_comments DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -40626,6 +41172,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    'https://github.com/' || repo_name || '/pull/' || CAST(number AS String) AS pr_url,\n    uniqExact(actor_login) AS num_authors\nFROM github_events\nWHERE event_type IN ('PullRequestReviewCommentEvent', 'PullRequestReviewEvent')\nGROUP BY\n    repo_name,\n    number\nORDER BY num_authors DESC\nLIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. Let me analyze the problem and provide a corrected SQL query that will work for Tinybird/ClickHouse.\n\nThe issue seems to be related to authentication and workspace configuration, but I'll focus on providing a correct SQL query that answers your original question about the top 10 most involved code reviews (PRs with the most authors involved creating comments).\n\nHere's the corrected SQL query:\n\n\n%\nSELECT\n  concat('https://github.com/', repo_name, '/pull/', toString(number)) as pr_url,\n  count(distinct creator_user_login) as unique_authors\nFROM\n  github_events\nWHERE\n  event_type = 'PullRequestEvent'\n  AND action = 'opened'\nGROUP BY\n  repo_name,\n  number\nORDER BY\n  unique_authors DESC\nLIMIT 10\n\n\nThis query:\n1. Creates the PR URL using the repo_name and PR number\n2. Counts distinct creator_user_login to get unique authors\n3. Filters for PullRequestEvent with action 'opened'\n4. Groups by repo_name and number\n5. Orders by unique authors in descending order\n6. Limits to top 10 results\n\nThe query is now properly formatted for Tinybird/ClickHouse with the percentage sign at the beginning to indicate dynamic parameters. The logic is correct for finding the top 10 PRs with the most authors involved.\n\nThe authentication error you're seeing is likely due to workspace configuration issues rather than the SQL query itself. The query syntax is correct for Tinybird/ClickHouse."
       }
     },
     "humanResults": {
@@ -41630,6 +42190,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    actor_login,\n    count() AS pushes\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY pushes DESC\nLIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. The issue is not with the SQL query itself, but rather with the authentication to the Tinybird service. The SQL query you have is correct for Tinybird/ClickHouse and would properly answer the question \"Top 10 authors with the most pushes\".\n\nThe authentication error is likely due to:\n1. Incorrect API token\n2. Missing or incorrect workspace configuration\n3. Network/firewall issues preventing access to the Tinybird API\n\nSince I cannot fix the authentication issue directly, I'll provide the correct SQL query again for reference:\n\n\n%\nSELECT\n  actor_login,\n  COUNT(*) AS push_count\nFROM\n  github_events\nWHERE\n  event_type = 'PushEvent'\nGROUP BY\n  actor_login\nORDER BY\n  push_count DESC\nLIMIT\n  10\n\n\nThis query is correct for Tinybird/ClickHouse and would properly answer the question \"Top 10 authors with the most pushes\" by:\n1. Filtering for PushEvent types\n2. Grouping by actor_login (the GitHub username)\n3. Counting the number of pushes for each user\n4. Ordering by the count in descending order\n5. Limiting to the top 10 results\n\nTo resolve the authentication issue, you would need to:\n1. Verify your Tinybird API token is correct\n2. Ensure you're using the correct workspace URL\n3. Check your network/firewall settings allow access to Tinybird\n4. Confirm you have the necessary permissions to access the github_events table\n\nThe SQL query itself is correct and should work with proper authentication."
       }
     },
     "humanResults": {
@@ -42634,6 +43208,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT SUBSTRING_INDEX(repo_name, '/', 1) AS organization, count(*) AS stars FROM github_events WHERE event_type = 'WatchEvent' GROUP BY organization ORDER BY stars DESC LIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n  splitByString('/', repo_name)[1] AS organization,\n  count(*) AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY organization\nORDER BY stars DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -43624,6 +44212,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    SUBSTRING_INDEX(repo_name, '/', 1) AS org_name,\n    uniqExact(repo_name) AS repo_count\nFROM github_events\nWHERE repo_name != ''\nGROUP BY org_name\nORDER BY repo_count DESC\nLIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. The error you're encountering is related to authentication and workspace configuration, not the SQL query itself. The SQL query you've written is actually correct for extracting the organization name from the repo_name and counting the repositories.\n\nLet me provide the correct SQL query again:\n\n\n%\nSELECT\n  splitByString('/', repo_name)[1] AS organization,\n  count() AS repo_count\nFROM github_events\nGROUP BY organization\nORDER BY repo_count DESC\nLIMIT 10\n\n\nThis query:\n1. Splits the repo_name by '/' to separate the organization name from the repository name\n2. Takes the first part (index 1) as the organization name\n3. Counts the number of repositories for each organization\n4. Orders the results by repository count in descending order\n5. Limits the output to the top 10 organizations\n\nThe error you're seeing is related to authentication and workspace configuration, which is outside the scope of the SQL query itself. The SQL syntax is correct for Tinybird/ClickHouse."
       }
     },
     "humanResults": {
@@ -44628,6 +45230,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS pr_count,\n    uniq(actor_login) AS unique_authors,\n    sum(additions) AS total_adds,\n    sum(deletions) AS total_dels\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND additions < 10000\n  AND deletions < 10000\nGROUP BY repo_name\nORDER BY (total_adds + total_dels) DESC\nLIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "Here's the corrected SQL query to answer the question:\n\n\nSELECT\n  repo_name,\n  count() AS pr_count,\n  count(DISTINCT creator_user_login) AS unique_authors,\n  sum(additions) AS total_adds,\n  sum(deletions) AS total_dels\nFROM\n  github_events\nWHERE\n  event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND additions < 10000\n  AND deletions < 10000\nGROUP BY\n  repo_name\nORDER BY\n  total_adds + total_dels DESC\nLIMIT 10\n\n\nThis query will return the top 10 repositories ranked by total code churn (adds + dels) from pull requests opened, with the following columns:\n\n* `repo_name`: The name of the repository\n* `pr_count`: The number of pull requests opened in the repository\n* `unique_authors`: The number of unique authors who opened pull requests in the repository\n* `total_adds`: The total number of lines added in the repository\n* `total_dels`: The total number of lines deleted in the repository\n\nThe query filters the results to only include pull requests with less than 10,000 adds and less than 10,000 dels, and orders the results by total code churn in descending order.\n\nThe error you encountered is related to authentication and workspace configuration, not the SQL query itself. The SQL query is valid for Tinybird/ClickHouse and should work correctly once the authentication and workspace issues are resolved."
       }
     },
     "humanResults": {
@@ -45674,6 +46290,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    actor_login,\n    count() AS comments_created,\n    uniq(repo_name) AS unique_repos,\n    uniq(repo_name, number) AS unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\n  AND action = 'created'\nGROUP BY actor_login\nORDER BY comments_created DESC\nLIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. The error you're encountering is related to authentication and workspace configuration, not the SQL query itself. Since I can't access the actual database or verify the authentication, I'll provide a corrected SQL query based on the original question and the schema provided.\n\nHere's the corrected SQL query:\n\n\n%\nSELECT\n  creator_user_login AS author,\n  count() AS num_comments,\n  count(DISTINCT repo_name) AS num_repos,\n  count(DISTINCT number) AS num_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\nGROUP BY creator_user_login\nORDER BY num_comments DESC\nLIMIT 10\n\n\nThis query:\n1. Selects the creator_user_login as author\n2. Counts the total number of comments\n3. Counts the number of distinct repositories\n4. Counts the number of distinct pull requests\n5. Filters for PullRequestReviewCommentEvent events\n6. Groups by the author\n7. Orders by the number of comments in descending order\n8. Limits to the top 10 results\n\nThe query appears to be correct based on the schema and your requirements. The authentication error is likely due to workspace configuration issues that are outside the scope of the SQL query itself."
       }
     },
     "humanResults": {
@@ -46688,6 +47318,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    label,\n    count(*) AS count\nFROM github_events\nARRAY JOIN labels AS label\nWHERE\n    event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')\n    AND action IN ('opened', 'created', 'labeled')\n    AND label != ''\nGROUP BY label\nORDER BY count DESC\nLIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. Let's focus on creating a correct SQL query that will work with the Tinybird/ClickHouse system. The authentication error is not related to the SQL query itself, but rather to your Tinybird workspace configuration.\n\nHere's a revised SQL query that should correctly answer your question about the top 10 most popular labels for issues and pull requests:\n\n\n%\nSELECT\n  label,\n  SUM(CASE WHEN event_type = 'IssuesEvent' AND action = 'opened' THEN 1 ELSE 0 END) AS issues_opened,\n  SUM(CASE WHEN event_type = 'PullRequestEvent' AND action = 'opened' THEN 1 ELSE 0 END) AS prs_opened,\n  SUM(CASE WHEN event_type = 'IssueCommentEvent' AND action = 'created' THEN 1 ELSE 0 END) AS issue_comments_created,\n  SUM(CASE WHEN event_type = 'IssuesEvent' AND action = 'labeled' THEN 1 ELSE 0 END) AS issues_labeled,\n  SUM(CASE WHEN event_type = 'PullRequestEvent' AND action = 'labeled' THEN 1 ELSE 0 END) AS prs_labeled\nFROM github_events\nWHERE event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')\n  AND action IN ('opened', 'created', 'labeled')\n  AND arrayLength(labels) > 0  -- Only count labels that actually exist\nGROUP BY label\nHAVING SUM(1) > 0  -- Only include labels that have been used at least once\nORDER BY issues_opened + prs_opened + issue_comments_created + issues_labeled + prs_labeled DESC\nLIMIT 10\n\n\nKey improvements:\n1. Changed `AND labels != '[]'` to `AND arrayLength(labels) > 0` to properly check for non-empty label arrays\n2. The query structure is correct for Tinybird/ClickHouse\n\nThis query will:\n1. Count the number of times each label has been used in issues, pull requests, and issue comments\n2. Only count labels that actually exist (not empty arrays)\n3. Only include labels that have been used at least once\n4. Return the top 10 most popular labels based on the total count\n5. Include separate columns for issues opened, PRs opened, issue comments created, issues labeled, and PRs labeled\n\nThe authentication error you're seeing is likely due to a configuration issue with your Tinybird workspace, not with the SQL query itself. Make sure you're using the correct authentication token and workspace URL."
       }
     },
     "humanResults": {
@@ -47678,6 +48322,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    SUBSTRING_INDEX(repo_name, '/', 1) AS organization_name,\n    count(DISTINCT actor_login) AS num_authors,\n    count(DISTINCT CASE WHEN event_type = 'PullRequestEvent' AND action = 'opened' THEN actor_login ELSE NULL END) AS num_pr_authors,\n    count(DISTINCT CASE WHEN event_type = 'IssuesEvent' AND action = 'opened' THEN actor_login ELSE NULL END) AS num_issue_authors,\n    count(DISTINCT CASE WHEN event_type = 'IssueCommentEvent' THEN actor_login ELSE NULL END) AS num_issue_comment_authors,\n    count(DISTINCT CASE WHEN event_type = 'PushEvent' THEN actor_login ELSE NULL END) AS num_push_authors\nFROM github_events\nWHERE repo_name != '' AND actor_login != ''\nGROUP BY organization_name\nORDER BY num_authors DESC\nLIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n  splitPart(repo_name, '/', 1) AS organization_name,\n  count(DISTINCT actor_login) AS unique_authors,\n  count(DISTINCT CASE WHEN event_type = 'PullRequestEvent' AND action = 'opened' THEN actor_login END) AS unique_pr_authors,\n  count(DISTINCT CASE WHEN event_type = 'IssuesEvent' AND action = 'opened' THEN actor_login END) AS unique_issue_authors,\n  count(DISTINCT CASE WHEN event_type = 'IssueCommentEvent' THEN actor_login END) AS unique_issue_comment_authors,\n  count(DISTINCT CASE WHEN event_type = 'PushEvent' THEN actor_login END) AS unique_push_authors\nFROM github_events\nGROUP BY organization_name\nORDER BY unique_authors DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -48752,6 +49410,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, CHAR_LENGTH(repo_name) AS repo_name_length FROM github_events WHERE event_type = 'WatchEvent' GROUP BY repo_name ORDER BY repo_name_length DESC LIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "I apologize for the confusion. The error you're encountering is related to authentication and workspace configuration, not the SQL query itself. The SQL query you've written is actually correct for answering the question about the top 10 longest repository names with at least 1 star.\n\nThe issue is that you're trying to execute this query directly in Tinybird, but you need to ensure you're using the correct authentication token and workspace URL. The query itself is valid for Tinybird/ClickHouse.\n\nHere's the correct SQL query again for clarity:\n\n\n%\nSELECT\n  repo_name,\n  length(repo_name) AS repo_name_length\nFROM\n  github_events\nWHERE\n  event_type = 'WatchEvent'\nGROUP BY\n  repo_name\nORDER BY\n  repo_name_length DESC\nLIMIT\n  10\n\n\nTo execute this query in Tinybird, you would need to:\n1. Ensure you have the correct authentication token\n2. Use the proper Tinybird API endpoint for your workspace\n3. Make sure the `github_events` datasource is properly configured in your workspace\n\nThe query itself is correct and should work once you have the proper authentication and workspace setup."
       }
     },
     "humanResults": {
@@ -49742,6 +50414,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent' AND repo_name != ''\nGROUP BY repo_name\nORDER BY CHAR_LENGTH(repo_name) ASC, repo_name ASC\nLIMIT 10"
+      },
+      "essentialai/rnj-1-instruct": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "%\nSELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY length(repo_name) ASC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -50331,6 +51017,14 @@
         "avgExactDistance": 0.4295454545454546,
         "avgNumericDistance": 0.3031657331603074,
         "avgFScore": 0.58
+      },
+      "essentialai/rnj-1-instruct": {
+        "totalMatches": 0,
+        "exactMatches": 0,
+        "numericMatches": 0,
+        "avgExactDistance": 0.98,
+        "avgNumericDistance": 0.98,
+        "avgFScore": 0
       }
     }
   }
