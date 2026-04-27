@@ -938,6 +938,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count() FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "SELECT COUNT(*) AS star_count FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -1897,6 +1911,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT repo_name, COUNT(*) as star_count\nFROM github_events\nWHERE event_type = 'WatchEvent' AND action = 'created'\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -2897,6 +2925,20 @@
         "humanRowCount": 5,
         "llmRowCount": 5,
         "sql": "SELECT\n    CASE CHAR_LENGTH(CAST(stars AS String))\n        WHEN 1 THEN 1\n        WHEN 2 THEN 10\n        WHEN 3 THEN 100\n        WHEN 4 THEN 1000\n        WHEN 5 THEN 10000\n        WHEN 6 THEN 100000\n        WHEN 7 THEN 1000000\n        ELSE 10000000\n    END as power_of_10,\n    count() as repo_count\nFROM (\n    SELECT\n        repo_name,\n        count() as stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n)\nGROUP BY power_of_10\nORDER BY power_of_10 ASC\nLIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 5,
+        "llmRowCount": 0,
+        "sql": "SELECT \n    POWER(10, k) AS star_power,\n    COUNT(DISTINCT repo_name) AS repo_count\nFROM (\n    SELECT \n        repo_name,\n        FLOOR(LOG(stars)/LOG(10)) AS k\n    FROM (\n        SELECT \n            repo_name,\n            COUNT(*) AS stars\n        FROM github_events\n        WHERE event_type = 'WatchEvent'\n        GROUP BY repo_name\n    ) AS repo_stars\n) AS stars_with_k\nGROUP BY k\nORDER BY star_power\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -3881,6 +3923,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniq(repo_name) FROM github_events LIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "SELECT COUNT(DISTINCT repo_name) AS total_repos FROM github_events\n"
       }
     },
     "humanResults": {
@@ -4840,6 +4896,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    YEAR(created_at) AS year,\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent' AND YEAR(created_at) >= 2015\nGROUP BY year, repo_name\nORDER BY year ASC, stars DESC\nLIMIT 10 BY year\nLIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT\n    toYear(created_at) as year,\n    repo_name,\n    count() as star_count,\n    rank() OVER (PARTITION BY year ORDER BY star_count DESC) as rank\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year, repo_name\nORDER BY year, rank\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -5854,6 +5924,20 @@
         "humanRowCount": 2,
         "llmRowCount": 2,
         "sql": "SELECT\n    YEAR(created_at) AS year,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year ASC\nLIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 2,
+        "llmRowCount": 0,
+        "sql": "SELECT toYear(created_at) AS year, count() AS total_stars FROM github_events WHERE event_type = 'WatchEvent' GROUP BY year ORDER BY year LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -6812,6 +6896,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT actor_login, count() as count FROM github_events WHERE event_type = 'WatchEvent' GROUP BY actor_login ORDER BY count DESC LIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT actor_login, COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent' AND action = 'created'\nORDER BY star_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -7816,6 +7914,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nAND actor_login IN (\n    SELECT\n        actor_login\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    AND repo_name = 'tensorflow/tensorflow'\n)\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT repo_name, COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND actor_login IN (\n    SELECT actor_login\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n      AND repo_name = 'tensorflow/tensorflow'\n      AND action = 'created'\n  )\n  AND repo_name != 'tensorflow/tensorflow'\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -8806,6 +8918,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "SELECT\n    actor_login,\n    sum(CASE WHEN substring_index(repo_name, '/', 1) = 'javisantana' THEN 1 ELSE 0 END) AS javisantana_stars,\n    sum(CASE WHEN substring_index(repo_name, '/', 1) != 'javisantana' THEN 1 ELSE 0 END) AS other_stars,\n    javisantana_stars / (javisantana_stars + other_stars) AS ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nHAVING javisantana_stars > 0\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT actor_login, COUNT(*) FILTER (WHERE repo_name = 'javisantana') AS javisantana_stars, COUNT(*) AS total_stars, (COUNT(*) FILTER (WHERE repo_name = 'javisantana') / COUNT(*)) AS ratio FROM github_events WHERE event_type = 'WatchEvent' AND action = 'opened' GROUP BY actor_login ORDER BY ratio DESC LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -9824,6 +9950,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    uniqExact(actor_login) AS unique_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND repo_name != 'tensorflow/tensorflow'\n  AND actor_login IN (\n      SELECT\n          actor_login\n      FROM github_events\n      WHERE event_type = 'PullRequestEvent'\n        AND action = 'opened'\n        AND repo_name = 'tensorflow/tensorflow'\n  )\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT repo_name, COUNT(DISTINCT actor_login) AS unique_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND repo_name NOT LIKE 'tensorflow/%'\n  AND repo_name != 'tensorflow'\n  AND actor_login IN (\n    SELECT DISTINCT actor_login\n    FROM github_events\n    WHERE event_type = 'PullRequestEvent'\n      AND action = 'opened'\n      AND repo_name LIKE 'tensorflow/%'\n      AND author_association IN ('CONTRIBUTOR', 'OWNER', 'MEMBER')\n  )\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -10824,6 +10964,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    t2.repo_name,\n    uniq(t2.actor_login) AS num_authors\nFROM github_events AS t1\nINNER JOIN github_events AS t2 ON t1.actor_login = t2.actor_login\nWHERE t1.event_type = 'IssuesEvent'\n  AND t1.action = 'opened'\n  AND t1.repo_name = 'tensorflow/tensorflow'\n  AND t2.event_type = 'IssuesEvent'\n  AND t2.action = 'opened'\n  AND t2.repo_name != 'tensorflow/tensorflow'\nGROUP BY t2.repo_name\nORDER BY num_authors DESC\nLIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "The SQL query you provided is **correct** for the original question. The error you're encountering (`invalid authentication token. Workspace not found`) is **not related to the SQL query itself** but rather to **authentication with Tinybird/ClickHouse**. \n\n### Key Points:\n1. **SQL Validity**: The query is valid for ClickHouse and correctly answers your original question. It:\n   - Identifies users who opened issues in `tensorflow/tensorflow`.\n   - Counts their issues in other repositories.\n   - Ranks repositories by issue count.\n\n2. **Authentication Error**: The error message indicates you're not providing a valid Tinybird API token or are using the wrong workspace. This is a **configuration issue**, not a SQL syntax problem.\n\n### Fix:\n- Ensure you're using a valid Tinybird API token and the correct workspace. For example, in Tinybird, you might need to include the token in the request headers (e.g., `Authorization: Bearer <your_token>`).\n- If you're using a tool like `curl`, the command should look like:\n  bash\n  curl -H \"Authorization: Bearer <your_token>\" \"https://api.tinybird.co/sql?query=SELECT...\"\n  \n\n### Final SQL Query (Unchanged):\n\nSELECT repo_name, COUNT(*) AS issue_count\nFROM github_events\nWHERE actor_login IN (\n  SELECT actor_login\n  FROM github_events\n  WHERE repo_name = 'tensorflow/tensorflow'\n  AND event_type = 'IssuesEvent'\n  AND action = 'opened'\n)\nAND repo_name != 'tensorflow/tensorflow'\nAND event_type = 'IssuesEvent'\nAND action = 'opened'\nGROUP BY repo_name\nORDER BY issue_count DESC\nLIMIT 10\n\n\nIf the error persists, double-check your Tinybird API token and workspace configuration. The SQL query itself is correct.\n"
       }
     },
     "humanResults": {
@@ -11830,6 +11984,16 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    DATE(created_at) AS date,\n    count() AS daily_stars\nFROM github_events\nWHERE\n    event_type = 'WatchEvent'\nGROUP BY\n    repo_name,\n    date\nORDER BY\n    daily_stars DESC\nLIMIT 1 BY repo_name\nLIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "reason": "Missing data in results",
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "sql": null
       }
     },
     "humanResults": {
@@ -12844,6 +13008,16 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, sum(YEAR(created_at) = 2016) AS stars_2016, sum(YEAR(created_at) = 2017) AS stars_2017, (stars_2017 - stars_2016) / stars_2016 AS growth FROM github_events WHERE event_type = 'WatchEvent' AND YEAR(created_at) IN (2016, 2017) GROUP BY repo_name HAVING stars_2016 >= 1 ORDER BY growth DESC LIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "reason": "Missing data in results",
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "sql": null
       }
     },
     "humanResults": {
@@ -13876,6 +14050,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    sum(CASE WHEN YEAR(created_at) = 2016 THEN 1 ELSE 0 END) AS stars_2016,\n    sum(CASE WHEN YEAR(created_at) = 2017 THEN 1 ELSE 0 END) AS stars_2017,\n    stars_2017 - stars_2016 AS stagnation_diff\nFROM github_events\nWHERE event_type = 'WatchEvent' AND YEAR(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING stars_2017 >= 1\nORDER BY stagnation_diff ASC\nLIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT \n    repo_name,\n    COUNT(CASE WHEN toYear(created_at) = 2016 THEN 1 END) AS stars_2016,\n    COUNT(CASE WHEN toYear(created_at) = 2017 THEN 1 END) AS stars_2017,\n    (stars_2017 - stars_2016) AS stagnation_change\nFROM github_events\nWHERE event_type = 'WatchEvent'\n    AND toYear(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING COUNT(CASE WHEN toYear(created_at) = 2017 THEN 1 END) >= 1\nORDER BY stagnation_change ASC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -14894,6 +15082,16 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    sum(stars) as total_stars,\n    avg(stars) as avg_monthly_stars,\n    stddevSamp(stars) as star_stddev,\n    (star_stddev / avg_monthly_stars) as variability_score\nFROM (\n    SELECT\n        repo_name,\n        DATE_TRUNC('month', created_at) as month,\n        count() as stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name, month\n)\nGROUP BY repo_name\nHAVING total_stars > 200\nORDER BY variability_score ASC\nLIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "reason": "Missing data in results",
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "sql": null
       }
     },
     "humanResults": {
@@ -15918,6 +16116,20 @@
         "humanRowCount": 7,
         "llmRowCount": 7,
         "sql": "SELECT\n    date_format(created_at, '%W') AS day_of_week,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 7,
+        "llmRowCount": 0,
+        "sql": "SELECT toDayName(created_at) AS day_name, count() AS event_count FROM github_events WHERE event_type = 'WatchEvent' GROUP BY day_name ORDER BY event_count DESC LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -16896,6 +17108,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniq(actor_login) AS total_users FROM github_events LIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "SELECT COUNT(DISTINCT actor_login) AS total_users FROM github_events\n"
       }
     },
     "humanResults": {
@@ -17859,6 +18085,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniqExact(actor_login) FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "SELECT COUNT(DISTINCT actor_login) FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -18794,6 +19034,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniq(actor_login) FROM github_events WHERE event_type = 'PushEvent' LIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "SELECT COUNT(DISTINCT actor_login) AS total_users FROM github_events WHERE event_type = 'PushEvent' AND action = 'created' LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -19729,6 +19983,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniqExact(actor_login) FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' LIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "SELECT COUNT(DISTINCT actor_login) AS total_users FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -20688,6 +20956,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nAND actor_login IN (\n    SELECT\n        actor_login\n    FROM github_events\n    WHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\n)\nGROUP BY\n    repo_name\nORDER BY\n    stars DESC\nLIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT repo_name, COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\n  AND actor_login IN (\n    SELECT DISTINCT actor_login\n    FROM github_events\n    WHERE event_type = 'PullRequestEvent'\n      AND action = 'opened'\n  )\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -21670,6 +21952,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() AS total_prs FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' AND actor_login IN (SELECT actor_login FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' GROUP BY actor_login HAVING count() >= 10) GROUP BY repo_name ORDER BY total_prs DESC LIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT repo_name, COUNT(*) as pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name, actor_login\nHAVING COUNT(*) >=10\nORDER BY pr_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -22660,6 +22956,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY pr_count DESC\nLIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT repo_name, COUNT(*) AS pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY pr_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -23664,6 +23974,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    uniq(actor_login) AS contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY contributors DESC\nLIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT repo_name, COUNT(DISTINCT actor_login) AS contributor_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY contributor_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -24664,6 +24988,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS issues_count\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY issues_count DESC\nLIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "The SQL query you provided is **correct** for the task of finding the top 10 repositories with the most issues. However, the error you're encountering is **not related to the query itself** but rather to **authentication**. \n\n### Why the Error Occurs:\nThe error message:\n\n{\"error\": \"invalid authentication token. Workspace not found, make sure you use the token host \"}\n\nindicates that the request to Tinybird/ClickHouse is missing a valid authentication token or the token is not properly configured. This is a **client-side issue**, not a problem with the SQL query.\n\n---\n\n### How to Fix It:\nTo resolve this, ensure you include a valid **Tinybird API token** in your request headers. For example, if you're using a tool like `curl`, you would add:\nbash\n-H \"Authorization: Token <your_token>\"\n\nReplace `<your_token>` with your actual Tinybird API token.\n\nIf you're using a different client (e.g., Python, JavaScript), make sure the token is included in the request headers as specified in the [Tinybird documentation](https://docs.tinybird.co/api-reference/overview#authentication).\n\n---\n\n### Final Note:\nYour SQL query is valid and will work once authentication is properly configured. The error is unrelated to the query structure. Let me know if you need help with the authentication setup!\n"
       }
     },
     "humanResults": {
@@ -25654,6 +25992,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, uniqExact(actor_login) as authors_count FROM github_events WHERE event_type = 'PushEvent' GROUP BY repo_name ORDER BY authors_count DESC LIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT repo_name, COUNT(DISTINCT actor_login) AS push_access_users FROM github_events WHERE event_type = 'PushEvent' GROUP BY repo_name ORDER BY push_access_users DESC LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -26644,6 +26996,16 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    uniq(actor_login) AS num_pushers\nFROM github_events\nWHERE event_type = 'PushEvent'\n  AND ref IN ('refs/heads/main', 'refs/heads/master')\nGROUP BY repo_name\nORDER BY num_pushers DESC\nLIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "reason": "Missing data in results",
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "sql": null
       }
     },
     "humanResults": {
@@ -27648,6 +28010,16 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT\n    repo_name,\n    uniqExact(CASE WHEN event_type = 'PushEvent' AND (ref = 'refs/heads/main' OR ref = 'refs/heads/master') THEN actor_login ELSE NULL END) - 1 AS pushers\nFROM github_events\nGROUP BY repo_name\nHAVING sum(event_type = 'WatchEvent') > 99\nORDER BY pushers DESC\nLIMIT 10\n"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "reason": "Missing data in results",
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "sql": null
       }
     },
     "humanResults": {
@@ -28666,6 +29038,16 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS invitations\nFROM github_events\nWHERE event_type = 'MemberEvent' AND action = 'added'\nGROUP BY repo_name\nORDER BY invitations DESC\nLIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "reason": "Missing data in results",
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "sql": null
       }
     },
     "humanResults": {
@@ -29670,6 +30052,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() as total_forks FROM github_events WHERE event_type = 'ForkEvent' GROUP BY repo_name ORDER BY total_forks DESC LIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT repo_name, COUNT(*) AS fork_count\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY fork_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -30656,6 +31052,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    sum(event_type = 'WatchEvent') AS stars,\n    sum(event_type = 'ForkEvent') AS forks,\n    stars / forks AS ratio\nFROM github_events\nWHERE event_type IN ('WatchEvent', 'ForkEvent') AND repo_name != ''\nGROUP BY repo_name\nHAVING forks > 0\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT \n    repo_name,\n    COUNT(CASE WHEN event_type = 'WatchEvent' THEN 1 END) AS stars,\n    COUNT(CASE WHEN event_type = 'ForkEvent' THEN 1 END) AS forks,\n    COUNT(CASE WHEN event_type = 'WatchEvent' THEN 1 END) / COUNT(CASE WHEN event_type = 'ForkEvent' THEN 1 END) AS ratio\nFROM github_events\nWHERE event_type IN ('WatchEvent', 'ForkEvent')\nGROUP BY repo_name\nORDER BY ratio DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -31674,6 +32084,16 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT\n    sum(event_type = 'WatchEvent') AS stars,\n    sum(event_type = 'ForkEvent') AS forks,\n    CAST(sum(event_type = 'WatchEvent') / sum(event_type = 'ForkEvent') AS Decimal(10, 2)) AS ratio\nFROM github_events\nLIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "reason": "Missing data in results",
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "sql": null
       }
     },
     "humanResults": {
@@ -32619,6 +33039,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count(*) FROM github_events WHERE event_type = 'IssuesEvent' AND action = 'opened' LIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "SELECT COUNT(*) FROM github_events WHERE event_type = 'IssuesEvent' AND action = 'opened'\n"
       }
     },
     "humanResults": {
@@ -33582,6 +34016,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS total_issue_comments\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY total_issue_comments DESC\nLIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT repo_name, COUNT(*) AS comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY comment_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -34568,6 +35016,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    sum(event_type = 'IssueCommentEvent' AND action = 'created') AS num_comments,\n    sum(event_type = 'IssuesEvent' AND action = 'opened') AS num_issues,\n    num_comments / num_issues AS ratio\nFROM github_events\nGROUP BY repo_name\nHAVING num_issues > 0\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT \n    issues.repo_name,\n    issues.issue_count,\n    comments.comment_count,\n    (comments.comment_count / issues.issue_count) AS ratio\nFROM \n    (SELECT repo_name, COUNT(*) AS issue_count FROM github_events WHERE event_type = 'IssuesEvent' AND action = 'opened' GROUP BY repo_name) issues\nJOIN \n    (SELECT repo_name, COUNT(*) AS comment_count FROM github_events WHERE event_type = 'IssueCommentEvent' AND action = 'created' GROUP BY repo_name) comments\nON issues.repo_name = comments.repo_name\nORDER BY ratio DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -35586,6 +36048,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    number,\n    count() AS total_comments\nFROM github_events\nWHERE event_type = 'IssueCommentEvent' AND action = 'created'\nGROUP BY\n    repo_name,\n    number\nORDER BY\n    total_comments DESC\nLIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT repo_name, number, COUNT(*) AS comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent' AND action = 'created'\nGROUP BY repo_name, number\nORDER BY comment_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -36586,6 +37062,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    number,\n    count() AS comments_created,\n    uniq(actor_login) AS comment_authors\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\n  AND action = 'created'\n  AND number > 10\nGROUP BY\n    repo_name,\n    number\nHAVING comment_authors >= 10\nORDER BY\n    comments_created DESC\nLIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "The SQL query you provided is **correct and valid** for Tinybird/ClickHouse. The error you're encountering is **not related to the query itself** but to **authentication**. The error message indicates that the authentication token is invalid or missing, and the workspace is not found. This is a configuration or access issue, not a problem with the SQL query.\n\n### Key Points:\n1. **Query Validity**: Your query is syntactically correct and aligns with the requirements (filtering `IssueCommentEvent`, counting comments/authors, applying thresholds, and limiting results).\n2. **Authentication Error**: The error `invalid authentication token. Workspace not found` means:\n   - You are not providing a valid Tinybird API token.\n   - The token is not configured to access the correct workspace.\n   - The token is missing entirely.\n\n### How to Fix:\n- **Ensure the token is valid**: Use the correct Tinybird API token (e.g., `Authorization: Token <your_token>`).\n- **Verify workspace access**: Confirm the token has permissions for the workspace where the `github_events` table resides.\n- **Check the query execution context**: If using a notebook or API, ensure the token is passed correctly (e.g., in headers or as a parameter).\n\n### Final Note:\nThe SQL query does **not** need modification. The error is purely an authentication issue. If you're still facing problems, double-check your token and workspace configuration.\n"
       }
     },
     "humanResults": {
@@ -37600,6 +38090,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT\n    repo_name,\n    count() AS matching_events\nFROM github_events\nWHERE\n    CHAR_LENGTH(REGEXP_EXTRACT(repo_name, '(?i)(tensorflow)')) > 0\n    OR CHAR_LENGTH(REGEXP_EXTRACT(title, '(?i)(tensorflow)')) > 0\n    OR CHAR_LENGTH(REGEXP_EXTRACT(body, '(?i)(tensorflow)')) > 0\nGROUP BY\n    repo_name\nORDER BY\n    matching_events DESC\nLIMIT 10\n"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT repo_name, COUNT(*) AS event_count\nFROM github_events\nWHERE repo_name LIKE '%tensorflow%'\nGROUP BY repo_name\nORDER BY event_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -38604,6 +39108,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() AS total_comments FROM github_events WHERE event_type = 'CommitCommentEvent' GROUP BY repo_name ORDER BY total_comments DESC LIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT repo_name, COUNT(*) AS commit_comments_count\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY commit_comments_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -39608,6 +40126,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    'https://github.com/' || repo_name || '/commit/' || commit_id AS commit_url,\n    count() AS total_comments,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'CommitCommentEvent' AND repo_name != '' AND commit_id != ''\nGROUP BY\n    repo_name,\n    commit_id\nHAVING unique_authors >= 10\nORDER BY\n    total_comments DESC\nLIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT \n    CONCAT('https://github.com/', repo_name, '/commit/', commit_id) AS full_commit_url,\n    COUNT(DISTINCT actor_login) AS unique_authors,\n    COUNT(*) AS total_comments\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name, commit_id\nHAVING COUNT(DISTINCT actor_login) >= 10\nORDER BY total_comments DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -40626,6 +41158,16 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    'https://github.com/' || repo_name || '/pull/' || CAST(number AS String) AS pr_url,\n    uniqExact(actor_login) AS num_authors\nFROM github_events\nWHERE event_type IN ('PullRequestReviewCommentEvent', 'PullRequestReviewEvent')\nGROUP BY\n    repo_name,\n    number\nORDER BY num_authors DESC\nLIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "reason": "Missing data in results",
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "sql": null
       }
     },
     "humanResults": {
@@ -41630,6 +42172,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    actor_login,\n    count() AS pushes\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY pushes DESC\nLIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT actor_login, COUNT(*) AS push_count FROM github_events WHERE event_type = 'PushEvent' GROUP BY actor_login ORDER BY push_count DESC LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -42634,6 +43190,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT SUBSTRING_INDEX(repo_name, '/', 1) AS organization, count(*) AS stars FROM github_events WHERE event_type = 'WatchEvent' GROUP BY organization ORDER BY stars DESC LIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT \n    substring(repo_name, 1, position(repo_name, '/') - 1) AS organization,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent' AND action = 'created'\nGROUP BY organization\nORDER BY stars DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -43624,6 +44194,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    SUBSTRING_INDEX(repo_name, '/', 1) AS org_name,\n    uniqExact(repo_name) AS repo_count\nFROM github_events\nWHERE repo_name != ''\nGROUP BY org_name\nORDER BY repo_count DESC\nLIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT splitByChar(repo_name, '/')[0] AS org_name, countDistinct(repo_name) AS repo_count FROM github_events GROUP BY org_name ORDER BY repo_count DESC LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -44628,6 +45212,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS pr_count,\n    uniq(actor_login) AS unique_authors,\n    sum(additions) AS total_adds,\n    sum(deletions) AS total_dels\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND additions < 10000\n  AND deletions < 10000\nGROUP BY repo_name\nORDER BY (total_adds + total_dels) DESC\nLIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT repo_name, COUNT(*) AS pr_count, COUNT(DISTINCT actor_login) AS unique_authors, SUM(additions) AS total_adds, SUM(deletions) AS total_dels FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' AND additions < 10000 AND deletions < 10000 GROUP BY repo_name ORDER BY (total_adds + total_dels) DESC LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -45674,6 +46272,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    actor_login,\n    count() AS comments_created,\n    uniq(repo_name) AS unique_repos,\n    uniq(repo_name, number) AS unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\n  AND action = 'created'\nGROUP BY actor_login\nORDER BY comments_created DESC\nLIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT actor_login AS author, COUNT(*) AS total_comments, COUNT(DISTINCT repo_name) AS unique_repos, COUNT(DISTINCT number) AS unique_prs FROM github_events WHERE event_type = 'PullRequestReviewCommentEvent' AND action = 'created' GROUP BY author_login ORDER BY total_comments DESC LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -46688,6 +47300,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    label,\n    count(*) AS count\nFROM github_events\nARRAY JOIN labels AS label\nWHERE\n    event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')\n    AND action IN ('opened', 'created', 'labeled')\n    AND label != ''\nGROUP BY label\nORDER BY count DESC\nLIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT\n  label,\n  COUNT(*) as count\nFROM (\n  SELECT\n    explode(labels) as label\n  FROM github_events\n  WHERE event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')\n    AND labels IS NOT NULL\n)\nGROUP BY label\nORDER BY count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -47678,6 +48304,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    SUBSTRING_INDEX(repo_name, '/', 1) AS organization_name,\n    count(DISTINCT actor_login) AS num_authors,\n    count(DISTINCT CASE WHEN event_type = 'PullRequestEvent' AND action = 'opened' THEN actor_login ELSE NULL END) AS num_pr_authors,\n    count(DISTINCT CASE WHEN event_type = 'IssuesEvent' AND action = 'opened' THEN actor_login ELSE NULL END) AS num_issue_authors,\n    count(DISTINCT CASE WHEN event_type = 'IssueCommentEvent' THEN actor_login ELSE NULL END) AS num_issue_comment_authors,\n    count(DISTINCT CASE WHEN event_type = 'PushEvent' THEN actor_login ELSE NULL END) AS num_push_authors\nFROM github_events\nWHERE repo_name != '' AND actor_login != ''\nGROUP BY organization_name\nORDER BY num_authors DESC\nLIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT \n  SUBSTRING_INDEX(repo_name, '/', 1) AS org_name,\n  COUNT(DISTINCT actor_login) AS total_unique_authors,\n  COUNT(DISTINCT CASE WHEN event_type = 'PullRequestEvent' THEN actor_login END) AS pr_authors,\n  COUNT(DISTINCT CASE WHEN event_type = 'IssuesEvent' THEN actor_login END) AS issue_authors,\n  COUNT(DISTINCT CASE WHEN event_type = 'IssueCommentEvent' THEN actor_login END) AS issue_comment_authors,\n  COUNT(DISTINCT CASE WHEN event_type = 'PushEvent' THEN actor_login END) AS push_authors\nFROM github_events\nGROUP BY org_name\nORDER BY total_unique_authors DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -48752,6 +49392,16 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, CHAR_LENGTH(repo_name) AS repo_name_length FROM github_events WHERE event_type = 'WatchEvent' GROUP BY repo_name ORDER BY repo_name_length DESC LIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "reason": "Missing data in results",
+        "distance": {
+          "exact": 0,
+          "numeric": 0,
+          "fScore": 1
+        },
+        "sql": null
       }
     },
     "humanResults": {
@@ -49742,6 +50392,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent' AND repo_name != ''\nGROUP BY repo_name\nORDER BY CHAR_LENGTH(repo_name) ASC, repo_name ASC\nLIMIT 10"
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "SELECT repo_name FROM github_events WHERE event_type = 9 AND action = 'created' ORDER BY length(repo_name) ASC LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -50331,6 +50995,14 @@
         "avgExactDistance": 0.4295454545454546,
         "avgNumericDistance": 0.3031657331603074,
         "avgFScore": 0.58
+      },
+      "nvidia/nemotron-nano-12b-v2-vl": {
+        "totalMatches": 0,
+        "exactMatches": 0,
+        "numericMatches": 0,
+        "avgExactDistance": 0.82,
+        "avgNumericDistance": 0.82,
+        "avgFScore": 0.18
       }
     }
   }
