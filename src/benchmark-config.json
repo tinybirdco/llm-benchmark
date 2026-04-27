@@ -101,7 +101,8 @@
     },
     "nvidia": {
       "models": [
-        "nemotron-nano-9b-v2"
+        "nemotron-nano-9b-v2",
+        "llama-3.3-nemotron-super-49b-v1.5"
       ]
     },
     "openrouter": {
