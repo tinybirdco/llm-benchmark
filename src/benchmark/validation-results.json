@@ -938,6 +938,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count() FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\nSELECT COUNT(DISTINCT actor_login) AS total_stars FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -1897,6 +1911,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY star_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -2897,6 +2925,20 @@
         "humanRowCount": 5,
         "llmRowCount": 5,
         "sql": "SELECT\n    CASE CHAR_LENGTH(CAST(stars AS String))\n        WHEN 1 THEN 1\n        WHEN 2 THEN 10\n        WHEN 3 THEN 100\n        WHEN 4 THEN 1000\n        WHEN 5 THEN 10000\n        WHEN 6 THEN 100000\n        WHEN 7 THEN 1000000\n        ELSE 10000000\n    END as power_of_10,\n    count() as repo_count\nFROM (\n    SELECT\n        repo_name,\n        count() as stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name\n)\nGROUP BY power_of_10\nORDER BY power_of_10 ASC\nLIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 5,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    power AS star_power,\n    10^power AS star_count,\n    countDistinct(repo_name) AS repo_count\nFROM (\n    SELECT\n        arrayJoin([0, 1, 2, 3, 4, 5, 6]) AS power\n)\nCROSS JOIN (\n    SELECT\n        repo_name,\n        arrayJoin([1, 10, 100, 1000, 10000, 100000, 1000000]) AS star_bounds\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n)\nWHERE\n    repo_name IS NOT NULL\n    AND arrayContains(star_bounds, 10^power)\nGROUP BY power\nORDER BY star_count ASC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -3881,6 +3923,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniq(repo_name) FROM github_events LIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    repo_name,\n    COUNT(DISTINCT repo_name) AS repo_count\nFROM github_events\nGROUP BY repo_name\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -4840,6 +4896,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    YEAR(created_at) AS year,\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent' AND YEAR(created_at) >= 2015\nGROUP BY year, repo_name\nORDER BY year ASC, stars DESC\nLIMIT 10 BY year\nLIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    toYear(created_at) AS year,\n    arrayDistinct(repo_name) AS top_repositories,\n    arrayLength(arraySortByKey(arrayMap('repo_name', arrayMap('actor_login', arrayMap('WatchEvent', github_events))))) AS repo_count\nFROM (\n    SELECT\n        event_type = 'WatchEvent',\n        repo_name,\n        actor_login\n    FROM github_events\n    WHERE created_at >= '2015-01-01'\n)\nGROUP BY toYear(created_at)\nORDER BY year ASC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -5854,6 +5924,20 @@
         "humanRowCount": 2,
         "llmRowCount": 2,
         "sql": "SELECT\n    YEAR(created_at) AS year,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year ASC\nLIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 2,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    toYear(created_at) AS year,\n    countDistinct(actor_login) AS total_stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY year\nORDER BY year\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -6812,6 +6896,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT actor_login, count() as count FROM github_events WHERE event_type = 'WatchEvent' GROUP BY actor_login ORDER BY count DESC LIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT actor_login AS star_giver, COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nORDER BY star_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -7816,6 +7914,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nAND actor_login IN (\n    SELECT\n        actor_login\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    AND repo_name = 'tensorflow/tensorflow'\n)\nGROUP BY repo_name\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent'\nAND repo_name = 'tensorflow/tensorflow'\nGROUP BY repo_name\nORDER BY COUNT(*) DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -8806,6 +8918,20 @@
         "humanRowCount": 10,
         "llmRowCount": 0,
         "sql": "SELECT\n    actor_login,\n    sum(CASE WHEN substring_index(repo_name, '/', 1) = 'javisantana' THEN 1 ELSE 0 END) AS javisantana_stars,\n    sum(CASE WHEN substring_index(repo_name, '/', 1) != 'javisantana' THEN 1 ELSE 0 END) AS other_stars,\n    javisantana_stars / (javisantana_stars + other_stars) AS ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nHAVING javisantana_stars > 0\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    actor_login AS user_name,\n    SUM(CASE WHEN repo_name = 'javisantana' THEN head_sha IS NOT NULL ELSE 0 END) AS javisantana_stars_count,\n    SUM(CASE WHEN repo_name <> 'javisantana' THEN head_sha IS NOT NULL ELSE 0 END) AS other_stars_count,\n    SUM(CASE WHEN repo_name = 'javisantana' THEN 1 ELSE 0 END) AS javisantana_star_count,\n    SUM(CASE WHEN repo_name <> 'javisantana' THEN 1 ELSE 0 END) AS total_stars,\n    SUM(CASE WHEN repo_name = 'javisantana' THEN 1 ELSE 0 END) * 1.0 / NULLIF(SUM(CASE WHEN repo_name <> 'javisantana' THEN 1 ELSE 0 END) + SUM(CASE WHEN repo_name = 'javisantana' THEN 1 ELSE 0 END), 0) AS star_ratio\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login\nHAVING COUNT(DISTINCT actor_login) > 0\nORDER BY star_ratio DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -9824,6 +9950,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    uniqExact(actor_login) AS unique_contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND repo_name != 'tensorflow/tensorflow'\n  AND actor_login IN (\n      SELECT\n          actor_login\n      FROM github_events\n      WHERE event_type = 'PullRequestEvent'\n        AND action = 'opened'\n        AND repo_name = 'tensorflow/tensorflow'\n  )\nGROUP BY repo_name\nORDER BY unique_contributors DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    repo_name,\n    arrayLength(DISTINCT arrayFilter(actor_login = 'tensorflow', requested_reviewers)) AS unique_contributors_count\nFROM github_events\nWHERE\n    event_type = 'PullRequestEvent'\n    AND action = 'opened'\n    AND repo_name NOT LIKE '%tensorflow%'\n    AND actor_login LIKE '%tensorflow%'\n    AND requested_reviewers IS NOT NULL\nGROUP BY repo_name\nORDER BY unique_contributors_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -10824,6 +10964,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    t2.repo_name,\n    uniq(t2.actor_login) AS num_authors\nFROM github_events AS t1\nINNER JOIN github_events AS t2 ON t1.actor_login = t2.actor_login\nWHERE t1.event_type = 'IssuesEvent'\n  AND t1.action = 'opened'\n  AND t1.repo_name = 'tensorflow/tensorflow'\n  AND t2.event_type = 'IssuesEvent'\n  AND t2.action = 'opened'\n  AND t2.repo_name != 'tensorflow/tensorflow'\nGROUP BY t2.repo_name\nORDER BY num_authors DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS unique_issue_contributors,\n    COUNT(*) AS total_issues\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n  AND action = 'opened'\n  AND repo_name IN (\n      SELECT repo_name\n      FROM github_events\n      WHERE event_type = 'IssuesEvent'\n        AND action = 'opened'\n        AND repo_name = 'tensorflow/tensorflow'\n  )\nGROUP BY repo_name, actor_login\nHAVING COUNT(DISTINCT actor_login) > 0\nORDER BY unique_issue_contributors DESC, total_issues DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -11830,6 +11984,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    DATE(created_at) AS date,\n    count() AS daily_stars\nFROM github_events\nWHERE\n    event_type = 'WatchEvent'\nGROUP BY\n    repo_name,\n    date\nORDER BY\n    daily_stars DESC\nLIMIT 1 BY repo_name\nLIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS unique_star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nAND action = 'started'  -- Stars are recorded as 'started' action in WatchEvent\nAND created_at >= now() - interval 1 day\nGROUP BY repo_name\nORDER BY unique_star_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -12844,6 +13012,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, sum(YEAR(created_at) = 2016) AS stars_2016, sum(YEAR(created_at) = 2017) AS stars_2017, (stars_2017 - stars_2016) / stars_2016 AS growth FROM github_events WHERE event_type = 'WatchEvent' AND YEAR(created_at) IN (2016, 2017) GROUP BY repo_name HAVING stars_2016 >= 1 ORDER BY growth DESC LIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    repo_name,\n    SUM(IF(event_type = 'WatchEvent' AND action = 'none' AND toYear(created_at) = 2016, 1, 0)) AS stars_2016,\n    SUM(IF(event_type = 'WatchEvent' AND action = 'none' AND toYear(created_at) = 2017, 1, 0)) AS stars_2017,\n    (stars_2017 - stars_2016) AS growth_2016_to_2017\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nHAVING stars_2016 > 0 AND stars_2017 > 0\nORDER BY growth_2016_to_2017 DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -13876,6 +14058,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    sum(CASE WHEN YEAR(created_at) = 2016 THEN 1 ELSE 0 END) AS stars_2016,\n    sum(CASE WHEN YEAR(created_at) = 2017 THEN 1 ELSE 0 END) AS stars_2017,\n    stars_2017 - stars_2016 AS stagnation_diff\nFROM github_events\nWHERE event_type = 'WatchEvent' AND YEAR(created_at) IN (2016, 2017)\nGROUP BY repo_name\nHAVING stars_2017 >= 1\nORDER BY stagnation_diff ASC\nLIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    repo_name,\n    SUM(CASE WHEN event_type = 'WatchEvent' AND created_at >= '2016-01-01' AND created_at < '2017-01-01' THEN 1 ELSE 0 END) AS stars_2016,\n    SUM(CASE WHEN event_type = 'WatchEvent' AND created_at >= '2017-01-01' AND created_at < '2018-01-01' THEN 1 ELSE 0 END) AS stars_2017,\n    SUM(CASE WHEN action = 'opened' AND created_at >= '2016-01-01' AND created_at < '2017-01-01' THEN 1 ELSE 0 END) AS pr_opened_2016,\n    SUM(CASE WHEN action = 'opened' AND created_at >= '2017-01-01' AND created_at < '2018-01-01' THEN 1 ELSE 0 END) AS pr_opened_2017,\n    SUM(CASE WHEN action = 'merged' AND created_at >= '2016-01-01' AND created_at < '2017-01-01' THEN 1 ELSE 0 END) AS pr_merged_2016,\n    SUM(CASE WHEN action = 'merged' AND created_at >= '2017-01-01' AND created_at < '2018-01-01' THEN 1 ELSE 0 END) AS pr_merged_2017,\n    (SUM(CASE WHEN action = 'merged' AND created_at >= '2016-01-01' AND created_at < '2017-01-01' THEN 1 ELSE 0 END) -\n     SUM(CASE WHEN action = 'merged' AND created_at >= '2017-01-01' AND created_at < '2018-01-01' THEN 1 ELSE 0 END)) -\n    (SUM(CASE WHEN action = 'opened' AND created_at >= '2016-01-01' AND created_at < '2017-01-01' THEN 1 ELSE 0 END) -\n     SUM(CASE WHEN action = 'opened' AND created_at >= '2017-01-01' AND created_at < '2018-01-01' THEN 1 ELSE 0 END)) AS stagnation_score,\n    SUM(CASE WHEN event_type = 'WatchEvent' AND created_at >= '2017-01-01' AND created_at < '2018-01-01' THEN 1 ELSE 0 END) AS stars_2017_filtered\nFROM github_events\nWHERE repo_name IS NOT NULL AND repo_name <> ''\nGROUP BY repo_name\nHAVING stars_2017_filtered > 0\nORDER BY stagnation_score DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -14894,6 +15090,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    sum(stars) as total_stars,\n    avg(stars) as avg_monthly_stars,\n    stddevSamp(stars) as star_stddev,\n    (star_stddev / avg_monthly_stars) as variability_score\nFROM (\n    SELECT\n        repo_name,\n        DATE_TRUNC('month', created_at) as month,\n        count() as stars\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n    GROUP BY repo_name, month\n)\nGROUP BY repo_name\nHAVING total_stars > 200\nORDER BY variability_score ASC\nLIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    repo_name,\n    AVG(TO_DAYS(created_at)) AS first_star_date_days,\n    COUNT(DISTINCT actor_login) AS total_star_givers,\n    AVG(\n        COUNT(DISTINCT actor_login)\n        OVER (\n            PARTITION BY repo_name\n            ORDER BY created_at\n            ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW\n            RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW\n        )\n    ) / NULLIF(AVG(TO_DAYS(created_at)) OVER (PARTITION BY repo_name), 0) AS steady_star_growth_rate\nFROM (\n    SELECT\n        repo_name,\n        actor_login,\n        created_at\n    FROM github_events\n    WHERE event_type = 'WatchEvent'\n)\nGROUP BY repo_name\nORDER BY steady_star_growth_rate DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -15918,6 +16128,20 @@
         "humanRowCount": 7,
         "llmRowCount": 7,
         "sql": "SELECT\n    date_format(created_at, '%W') AS day_of_week,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY day_of_week\nORDER BY stars DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 7,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    DAYOFWEEK(created_at) AS day_of_week,\n    COUNT(*) AS star_count,\n    DAYOFWEEK(created_at) AS day_number\nFROM\n    github_events\nWHERE\n    event_type = 'WatchEvent'\nGROUP BY\n    DAYOFWEEK(created_at)\nORDER BY\n    star_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -16896,6 +17120,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniq(actor_login) AS total_users FROM github_events LIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\nSELECT\n    COUNT(DISTINCT actor_login) AS total_users\nFROM github_events\nWHERE actor_login IS NOT NULL\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -17859,6 +18097,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniqExact(actor_login) FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\nSELECT COUNT(DISTINCT actor_login) AS total_star_givers FROM github_events WHERE event_type = 'WatchEvent' LIMIT 10\n"
       }
     },
     "humanResults": {
@@ -18794,6 +19046,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniq(actor_login) FROM github_events WHERE event_type = 'PushEvent' LIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\nSELECT COUNT(DISTINCT actor_login) AS total_users\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -19729,6 +19995,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT uniqExact(actor_login) FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' LIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\nSELECT COUNT(DISTINCT actor_login) AS total_users_with_created_pr\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\nAND action = 'created'\nGROUP BY actor_login\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -20688,6 +20968,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS stars\nFROM github_events\nWHERE event_type = 'WatchEvent'\nAND actor_login IN (\n    SELECT\n        actor_login\n    FROM github_events\n    WHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\n)\nGROUP BY\n    repo_name\nORDER BY\n    stars DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    s.repo_name,\n    COUNT(DISTINCT s.actor_login) AS star_count\nFROM github_events s\nWHERE s.event_type = 'WatchEvent'\nAND s.action = 'added'\nAND s.repo_name IN (\n    SELECT e.repo_name\n    FROM github_events e\n    WHERE e.event_type = 'PullRequestEvent'\n    AND e.action = 'opened'\n    GROUP BY e.repo_name\n    HAVING COUNT(DISTINCT e.actor_login) >= 1\n)\nGROUP BY s.repo_name\nORDER BY star_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -21670,6 +21964,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() AS total_prs FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' AND actor_login IN (SELECT actor_login FROM github_events WHERE event_type = 'PullRequestEvent' AND action = 'opened' GROUP BY actor_login HAVING count() >= 10) GROUP BY repo_name ORDER BY total_prs DESC LIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    repo_name,\n    actor_login,\n    SUM(CASE WHEN event_type = 'PullRequestEvent' AND action = 'opened' THEN 1 ELSE 0 END) as pr_count\nFROM github_events\nGROUP BY repo_name, actor_login\nHAVING SUM(CASE WHEN event_type = 'PullRequestEvent' AND action = 'opened' THEN 1 ELSE 0 END) >= 10\nORDER BY pr_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -22660,6 +22968,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS pr_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY pr_count DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT repo_name, SUM(1) total_pull_requests\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\nGROUP BY repo_name, action\nHAVING SUM(1) > 0\nORDER BY total_pull_requests DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -23664,6 +23986,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    uniq(actor_login) AS contributors\nFROM github_events\nWHERE event_type = 'PullRequestEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY contributors DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    repo_name,\n    ARRAY_AGG(DISTINCT actor_login) AS contributors,\n    ARRAY_SIZE(DISTINCT ARRAY_AGG(actor_login)) AS contributor_count\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\nGROUP BY repo_name\nORDER BY contributor_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -24664,6 +25000,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS issues_count\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nGROUP BY repo_name\nORDER BY issues_count DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    repo_name,\n    COUNT(*) AS total_issues\nFROM\n    github_events\nWHERE\n    event_type = 'IssuesEvent'\n    AND action = 'opened'\nGROUP BY\n    repo_name\nORDER BY\n    total_issues DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -25654,6 +26004,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, uniqExact(actor_login) as authors_count FROM github_events WHERE event_type = 'PushEvent' GROUP BY repo_name ORDER BY authors_count DESC LIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    repo_name,\n    ArraySort(uniq(actor_login)) AS contributors_with_push_access\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY repo_name, actor_login\nHAVING ArrayLength(uniq(actor_login)) > 1\nORDER BY ArrayLength(uniq(actor_login)) DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -26644,6 +27008,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    uniq(actor_login) AS num_pushers\nFROM github_events\nWHERE event_type = 'PushEvent'\n  AND ref IN ('refs/heads/main', 'refs/heads/master')\nGROUP BY repo_name\nORDER BY num_pushers DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    repo_name,\n    ArrayLength(ArrayUnion(\n        ArrayUnion(\n            ArrayFilter(actor_login = member_login, member_login),\n            ArrayFilter(actor_login = assignee, assignee)\n        ),\n        ArrayFilter(actor_login = creator_user_login, creator_user_login)\n    )) AS total_push_access_users\nFROM github_events\nWHERE event_type = 'PushEvent' AND action = 'create' AND ref_type = 'branch' AND ref = 'main'\nGROUP BY repo_name\nORDER BY total_push_access_users DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -27648,6 +28026,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT\n    repo_name,\n    uniqExact(CASE WHEN event_type = 'PushEvent' AND (ref = 'refs/heads/main' OR ref = 'refs/heads/master') THEN actor_login ELSE NULL END) - 1 AS pushers\nFROM github_events\nGROUP BY repo_name\nHAVING sum(event_type = 'WatchEvent') > 99\nORDER BY pushers DESC\nLIMIT 10\n"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS push_access_count\nFROM github_events\nWHERE event_type = 'PushEvent'\n    AND ref_type = 'branch'\n    AND ref = 'main'\n    AND repo_name IN (\n        SELECT repo_name\n        FROM github_events\n        WHERE event_type = 'WatchEvent'\n        AND repo_name IS NOT NULL\n        GROUP BY repo_name\n        HAVING SUM(1) > 99\n    )\nGROUP BY repo_name\nORDER BY push_access_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -28666,6 +29058,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS invitations\nFROM github_events\nWHERE event_type = 'MemberEvent' AND action = 'added'\nGROUP BY repo_name\nORDER BY invitations DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    repo_name,\n    countDistinct(actor_login) AS max_member_invitations\nFROM github_events\nWHERE event_type = 'MemberEvent' AND action = 'invited'\nGROUP BY repo_name\nORDER BY max_member_invitations DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -29670,6 +30076,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() as total_forks FROM github_events WHERE event_type = 'ForkEvent' GROUP BY repo_name ORDER BY total_forks DESC LIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    repo_name,\n    COUNT(DISTINCT actor_login) AS fork_count\nFROM github_events\nWHERE event_type = 'ForkEvent'\nGROUP BY repo_name\nORDER BY fork_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -30656,6 +31076,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    sum(event_type = 'WatchEvent') AS stars,\n    sum(event_type = 'ForkEvent') AS forks,\n    stars / forks AS ratio\nFROM github_events\nWHERE event_type IN ('WatchEvent', 'ForkEvent') AND repo_name != ''\nGROUP BY repo_name\nHAVING forks > 0\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    repo_name,\n    SUM(CASE WHEN event_type = 'WatchEvent' THEN 1 ELSE 0 END) AS stars_count,\n    SUM(CASE WHEN event_type = 'ForkEvent' THEN 1 ELSE 0 END) AS forks_count,\n    ROUND(\n        SUM(CASE WHEN event_type = 'WatchEvent' THEN 1 ELSE 0 END) * 100.0 /\n        NULLIF(SUM(CASE WHEN event_type = 'ForkEvent' THEN 1 ELSE 0 END), 0),\n        2\n    ) AS stars_to_forks_ratio,\n    SUM(CASE WHEN event_type = 'WatchEvent' THEN 1 ELSE 0 END) AS stars_count_final,\n    SUM(CASE WHEN event_type = 'ForkEvent' THEN 1 ELSE 0 END) AS forks_count_final\nFROM github_events\nWHERE event_type IN ('WatchEvent', 'ForkEvent')\nGROUP BY repo_name\nORDER BY stars_to_forks_ratio DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -31674,6 +32108,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT\n    sum(event_type = 'WatchEvent') AS stars,\n    sum(event_type = 'ForkEvent') AS forks,\n    CAST(sum(event_type = 'WatchEvent') / sum(event_type = 'ForkEvent') AS Decimal(10, 2)) AS ratio\nFROM github_events\nLIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    repo_name,\n    countIf(event_type = 'WatchEvent') AS total_stars,\n    countIf(event_type = 'ForkEvent') AS total_forks,\n    CASE\n        WHEN countIf(event_type = 'ForkEvent') = 0 THEN NULL\n        ELSE ROUND((countIf(event_type = 'WatchEvent') * 100.0 / countIf(event_type = 'ForkEvent')), 2)\n    END AS stars_to_forks_ratio\nFROM github_events\nGROUP BY repo_name\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -32619,6 +33067,20 @@
         "humanRowCount": 1,
         "llmRowCount": 1,
         "sql": "SELECT count(*) FROM github_events WHERE event_type = 'IssuesEvent' AND action = 'opened' LIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 1,
+        "llmRowCount": 0,
+        "sql": "\nSELECT countDistinct(number) as total_issues_opened\nFROM github_events\nWHERE event_type = 'IssuesEvent' AND action = 'opened'\nGROUP BY repo_name\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -33582,6 +34044,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS total_issue_comments\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY total_issue_comments DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    repo_name,\n    COUNT(*) AS issue_comment_count\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\nGROUP BY repo_name\nORDER BY issue_comment_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -34568,6 +35044,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    sum(event_type = 'IssueCommentEvent' AND action = 'created') AS num_comments,\n    sum(event_type = 'IssuesEvent' AND action = 'opened') AS num_issues,\n    num_comments / num_issues AS ratio\nFROM github_events\nGROUP BY repo_name\nHAVING num_issues > 0\nORDER BY ratio DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    repo_name,\n    COUNT(DISTINCT CASE WHEN event_type = 'IssuesEvent' THEN number END) AS total_issues,\n    SUM(CASE WHEN event_type = 'IssueCommentEvent' THEN comments ELSE 0 END) AS total_comments,\n    (SUM(CASE WHEN event_type = 'IssueCommentEvent' THEN comments ELSE 0 END) /\n     COUNT(DISTINCT CASE WHEN event_type = 'IssuesEvent' THEN number END)) AS comments_per_issue_ratio\nFROM github_events\nWHERE event_type IN ('IssuesEvent', 'IssueCommentEvent')\nGROUP BY repo_name\nORDER BY comments_per_issue_ratio DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -35586,6 +36076,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    number,\n    count() AS total_comments\nFROM github_events\nWHERE event_type = 'IssueCommentEvent' AND action = 'created'\nGROUP BY\n    repo_name,\n    number\nORDER BY\n    total_comments DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    repo_name,\n    number,\n    COUNT(comments) AS comment_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n    AND JSONExtract(actor_association, '$.author_association') = 'OWNER'\n    AND JSONExtract(state, '$.state') = 'open'\nGROUP BY repo_name, number\nORDER BY comment_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -36586,6 +37090,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    number,\n    count() AS comments_created,\n    uniq(actor_login) AS comment_authors\nFROM github_events\nWHERE event_type = 'IssueCommentEvent'\n  AND action = 'created'\n  AND number > 10\nGROUP BY\n    repo_name,\n    number\nHAVING comment_authors >= 10\nORDER BY\n    comments_created DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    repo_name,\n    number,\n    comments AS comment_count,\n    arrayLength(requested_reviewers) AS reviewer_count,\n    arrayLength(requested_teams) AS team_count,\n    arrayLength(assignees) AS assignee_count\nFROM github_events\nWHERE event_type = 'IssuesEvent'\n    AND action = 'opened'\n    AND comments > 10\nGROUP BY repo_name, number\nORDER BY comment_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -37600,6 +38118,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "\nSELECT\n    repo_name,\n    count() AS matching_events\nFROM github_events\nWHERE\n    CHAR_LENGTH(REGEXP_EXTRACT(repo_name, '(?i)(tensorflow)')) > 0\n    OR CHAR_LENGTH(REGEXP_EXTRACT(title, '(?i)(tensorflow)')) > 0\n    OR CHAR_LENGTH(REGEXP_EXTRACT(body, '(?i)(tensorflow)')) > 0\nGROUP BY\n    repo_name\nORDER BY\n    matching_events DESC\nLIMIT 10\n"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    repo_name,\n    ArrayLength(JSONExtractArrayRaw(body, '.*(tensorflow|TensorFlow).*', 1)) AS event_count\nFROM github_events\nWHERE\n    JSONExtract(body, '.*(tensorflow|TensorFlow).*i') IS NOT NULL\nGROUP BY repo_name\nORDER BY event_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -38604,6 +39136,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, count() AS total_comments FROM github_events WHERE event_type = 'CommitCommentEvent' GROUP BY repo_name ORDER BY total_comments DESC LIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    repo_name,\n    count(*) as commit_comment_count\nFROM github_events\nWHERE event_type = 'CommitCommentEvent'\nGROUP BY repo_name\nORDER BY commit_comment_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -39608,6 +40154,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    'https://github.com/' || repo_name || '/commit/' || commit_id AS commit_url,\n    count() AS total_comments,\n    uniq(actor_login) AS unique_authors\nFROM github_events\nWHERE event_type = 'CommitCommentEvent' AND repo_name != '' AND commit_id != ''\nGROUP BY\n    repo_name,\n    commit_id\nHAVING unique_authors >= 10\nORDER BY\n    total_comments DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    commit_id,\n    URL(\"https://github.com/{{{{String(repo_name)}}}}/commit/{{{{String(commit_id)}}}}\") AS full_commit_url,\n    commits,\n    arrayLength(uniq(actor_login)) AS unique_authors,\n    arrayLength(uniq(commit_id)) AS total_comments\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY commit_id, repo_name, commits\nHAVING arrayLength(uniq(actor_login)) >= 10\nLIMIT 10\n is incorrect. Let me correct the query to properly identify commits from `PushEvent` and accurately count distinct commenters from `CommitCommentEvent`/`PullRequestReviewEvent`.\n\n\n%\nSELECT\n    e.commit_id,\n    URL(\"https://github.com/{{{{String(e.repo_name)}}}}/commit/{{{{String(e.commit_id)}}}}\") AS full_commit_url,\n    e.commits,\n    arrayLength(uniq(ce.actor_login)) AS unique_authors,\n    arrayLength(uniq(ce.actor_login)) AS total_comments\nFROM github_events e\nJOIN (\n    SELECT\n        commit_id,\n        arrayLength(uniq(actor_login)) AS commenter_count\n    FROM github_events\n    WHERE event_type IN ('CommitCommentEvent', 'PullRequestReviewEvent')\n    GROUP BY commit_id\n    HAVING arrayLength(uniq(actor_login)) >= 10\n) ce ON e.commit_id = ce.commit_id\nWHERE e.event_type = 'PushEvent'\nGROUP BY e.commit_id, e.repo_name, e.commits\nLIMIT 10\n is still incorrect due to JOIN limitations. Here's the corrected version:\n\n\n%\nSELECT\n    e.commit_id,\n    URL(\"https://github.com/{{{{String(e.repo_name)}}}}/commit/{{{{String(e.commit_id)}}}}\") AS full_commit_url,\n    e.commits,\n    arrayLength(uniq(ce.actor_login)) AS unique_authors,\n    arrayLength(uniq(ce.actor_login)) AS total_comments\nFROM (\n    SELECT\n        commit_id,\n        repo_name,\n        commits,\n        arrayLength(uniq(actor_login)) AS commenter_count\n    FROM github_events\n    WHERE event_type IN ('CommitCommentEvent', 'PullRequestReviewEvent')\n    GROUP BY commit_id, repo_name, commits\n    HAVING arrayLength(uniq(actor_login)) >= 10\n) ce\nJOIN github_events e ON ce.commit_id = e.commit_id AND e.event_type = 'PushEvent'\nGROUP BY e.commit_id, e.repo_name, e.commits\nLIMIT 10\n is still not optimal. Here's the final corrected query using proper filtering:\n\n\n%\nSELECT\n    e.commit_id,\n    URL(\"https://github.com/{{{{String(e.repo_name)}}}}/commit/{{{{String(e.commit_id)}}}}\") AS full_commit_url,\n    e.commits,\n    arrayLength(uniq(ce.actor_login)) AS unique_authors,\n    arrayLength(uniq(ce.actor_login)) AS total_comments\nFROM github_events e\nWHERE e.event_type = 'PushEvent'\nAND e.commit_id IN (\n    SELECT commit_id\n    FROM github_events\n    WHERE event_type IN ('CommitCommentEvent', 'PullRequestReviewEvent')\n    GROUP BY commit_id\n    HAVING arrayLength(uniq(actor_login)) >= 10\n)\nGROUP BY e.commit_id, e.repo_name, e.commits\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -40626,6 +41186,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    'https://github.com/' || repo_name || '/pull/' || CAST(number AS String) AS pr_url,\n    uniqExact(actor_login) AS num_authors\nFROM github_events\nWHERE event_type IN ('PullRequestReviewCommentEvent', 'PullRequestReviewEvent')\nGROUP BY\n    repo_name,\n    number\nORDER BY num_authors DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    repo_name,\n    number,\n    ARRAYJoin(ARRAYDistinct(ARRAYMap(CAST(requested_reviewers AS Array(String)), x -> x))) AS reviewer_authors,\n    ARRAYJoin(ARRAYDistinct(ARRAYMap(CAST(assignees AS Array(String)), y -> y))) AS assignee_authors,\n    ARRAYLength(ARRAYJoin(ARRAYDistinct(ARRAYMap(CAST(requested_reviewers AS Array(String)), x -> x)))) +\n    ARRAYLength(ARRAYJoin(ARRAYDistinct(ARRAYMap(CAST(assignees AS Array(String)), y -> y)))) AS total_unique_authors,\n    CONCAT('https://github.com/', repo_name, '/pull/', CAST(number AS String)) AS pr_url\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\nAND action = 'opened'\nAND (requested_reviewers IS NOT NULL OR assignees IS NOT NULL)\nGROUP BY repo_name, number\nHAVING ARRAYLength(ARRAYJoin(ARRAYDistinct(ARRAYMap(CAST(requested_reviewers AS Array(String)), x -> x)))) +\n    ARRAYLength(ARRAYJoin(ARRAYDistinct(ARRAYMap(CAST(assignees AS Array(String)), y -> y)))) > 0\nORDER BY total_unique_authors DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -41630,6 +42204,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    actor_login,\n    count() AS pushes\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY pushes DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    actor_login,\n    COUNT(*) AS push_count\nFROM github_events\nWHERE event_type = 'PushEvent'\nGROUP BY actor_login\nORDER BY push_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -42634,6 +43222,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT SUBSTRING_INDEX(repo_name, '/', 1) AS organization, count(*) AS stars FROM github_events WHERE event_type = 'WatchEvent' GROUP BY organization ORDER BY stars DESC LIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    actor_login,\n    arrayJoin(splitByChar(repo_name, '/')) AS organization_name,\n    COUNT(*) AS star_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY actor_login, arrayJoin(splitByChar(repo_name, '/'))\nORDER BY star_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -43624,6 +44226,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    SUBSTRING_INDEX(repo_name, '/', 1) AS org_name,\n    uniqExact(repo_name) AS repo_count\nFROM github_events\nWHERE repo_name != ''\nGROUP BY org_name\nORDER BY repo_count DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    repo_name,\n    arrayLength(arrayMap(StringToUInt64, labels)) repo_count\nFROM github_events\nWHERE event_type = 'WatchEvent'\nGROUP BY repo_name\nORDER BY repo_count DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -44628,6 +45244,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    repo_name,\n    count() AS pr_count,\n    uniq(actor_login) AS unique_authors,\n    sum(additions) AS total_adds,\n    sum(deletions) AS total_dels\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n  AND action = 'opened'\n  AND additions < 10000\n  AND deletions < 10000\nGROUP BY repo_name\nORDER BY (total_adds + total_dels) DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    repo_name AS repo,\n    COUNT(DISTINCT number) AS pr_count,\n    ARRAY_LENGTH(ARRAY_DISTINCT(actor_login)) AS unique_authors,\n    SUM(additions) AS total_adds,\n    SUM(deletions) AS total_dels\nFROM github_events\nWHERE event_type = 'PullRequestEvent'\n    AND action = 'opened'\n    AND repo_name IS NOT NULL\n    AND additions < 10000\n    AND deletions < 10000\nGROUP BY repo_name, actor_login\nHAVING SUM(additions) + SUM(deletions) > 0\nORDER BY SUM(additions) + SUM(deletions) DESC\nLIMIT 10"
       }
     },
     "humanResults": {
@@ -45674,6 +46304,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    actor_login,\n    count() AS comments_created,\n    uniq(repo_name) AS unique_repos,\n    uniq(repo_name, number) AS unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\n  AND action = 'created'\nGROUP BY actor_login\nORDER BY comments_created DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    actor_login AS author,\n    SUM(ARRAY_LENGTH(ARRAY_FILTER(\n        github_events,\n        event_type = 'PullRequestReviewCommentEvent'\n    ))) AS total_pr_comments,\n    ARRAY_LENGTH(ARRAY_DISTINCT(\n        ARRAY_MAP(\n            github_events,\n            repo_name\n        )\n    )) AS unique_repositories,\n    COUNT(DISTINCT ARRAY_MAP(\n        github_events,\n        number\n    )) AS unique_prs\nFROM github_events\nWHERE event_type = 'PullRequestReviewCommentEvent'\nGROUP BY actor_login\nORDER BY total_pr_comments DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -46688,6 +47332,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    label,\n    count(*) AS count\nFROM github_events\nARRAY JOIN labels AS label\nWHERE\n    event_type IN ('IssuesEvent', 'PullRequestEvent', 'IssueCommentEvent')\n    AND action IN ('opened', 'created', 'labeled')\n    AND label != ''\nGROUP BY label\nORDER BY count DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    labels,\n    SUM(CASE WHEN event_type = 'IssuesEvent' AND action = 'opened' THEN 1 ELSE 0 END) AS opened_issues,\n    SUM(CASE WHEN event_type = 'IssuesEvent' AND action = 'labeled' THEN 1 ELSE 0 END) AS labeled_issues,\n    SUM(CASE WHEN event_type = 'PullRequestEvent' AND action = 'opened' THEN 1 ELSE 0 END) AS opened_prs,\n    SUM(CASE WHEN event_type = 'PullRequestEvent' AND action = 'labeled' THEN 1 ELSE 0 END) AS labeled_prs,\n    SUM(CASE WHEN event_type = 'IssueCommentEvent' AND action = 'created' THEN 1 ELSE 0 END) AS issue_comments_created\nFROM github_events\nWHERE repo_name IS NOT NULL AND labels IS NOT NULL\nGROUP BY labels\nORDER BY\n    SUM(CASE WHEN event_type = 'IssuesEvent' AND action = 'opened' THEN 1 ELSE 0 END) +\n    SUM(CASE WHEN event_type = 'IssuesEvent' AND action = 'labeled' THEN 1 ELSE 0 END) +\n    SUM(CASE WHEN event_type = 'PullRequestEvent' AND action = 'opened' THEN 1 ELSE 0 END) +\n    SUM(CASE WHEN event_type = 'PullRequestEvent' AND action = 'labeled' THEN 1 ELSE 0 END) +\n    SUM(CASE WHEN event_type = 'IssueCommentEvent' AND action = 'created' THEN 1 ELSE 0 END) DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -47678,6 +48336,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT\n    SUBSTRING_INDEX(repo_name, '/', 1) AS organization_name,\n    count(DISTINCT actor_login) AS num_authors,\n    count(DISTINCT CASE WHEN event_type = 'PullRequestEvent' AND action = 'opened' THEN actor_login ELSE NULL END) AS num_pr_authors,\n    count(DISTINCT CASE WHEN event_type = 'IssuesEvent' AND action = 'opened' THEN actor_login ELSE NULL END) AS num_issue_authors,\n    count(DISTINCT CASE WHEN event_type = 'IssueCommentEvent' THEN actor_login ELSE NULL END) AS num_issue_comment_authors,\n    count(DISTINCT CASE WHEN event_type = 'PushEvent' THEN actor_login ELSE NULL END) AS num_push_authors\nFROM github_events\nWHERE repo_name != '' AND actor_login != ''\nGROUP BY organization_name\nORDER BY num_authors DESC\nLIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    repo_name AS organization_name,\n    ArrayDistinct(actor_login) AS unique_authors,\n    ArrayDistinct(\n        CASE WHEN event_type = 'PullRequestEvent' AND action = 'opened' THEN actor_login END\n    ) AS unique_pr_authors,\n    ArrayDistinct(\n        CASE WHEN event_type = 'IssuesEvent' AND action IN ('opened', 'edited') THEN actor_login END\n    ) AS unique_issue_authors,\n    ArrayDistinct(\n        CASE WHEN event_type IN ('IssueCommentEvent', 'CommitCommentEvent') THEN actor_login END\n    ) AS unique_issue_comment_authors,\n    ArrayDistinct(\n        CASE WHEN event_type = 'PushEvent' THEN actor_login END\n    ) AS unique_push_authors,\n    ArrayLength(ArrayDistinct(actor_login)) AS total_unique_authors,\n    ArrayLength(ArrayDistinct(\n        CASE WHEN event_type = 'PullRequestEvent' AND action = 'opened' THEN actor_login END\n    )) AS unique_pr_authors_count,\n    ArrayLength(ArrayDistinct(\n        CASE WHEN event_type = 'IssuesEvent' AND action IN ('opened', 'edited') THEN actor_login END\n    )) AS unique_issue_authors_count,\n    ArrayLength(ArrayDistinct(\n        CASE WHEN event_type IN ('IssueCommentEvent', 'CommitCommentEvent') THEN actor_login END\n    )) AS unique_issue_comment_authors_count,\n    ArrayLength(ArrayDistinct(\n        CASE WHEN event_type = 'PushEvent' THEN actor_login END\n    )) AS unique_push_authors_count\nFROM github_events\nGROUP BY repo_name\nORDER BY total_unique_authors DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -48752,6 +49424,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name, CHAR_LENGTH(repo_name) AS repo_name_length FROM github_events WHERE event_type = 'WatchEvent' GROUP BY repo_name ORDER BY repo_name_length DESC LIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT\n    repo_name,\n    LENGTH(repo_name) AS repo_name_length\nFROM github_events\nWHERE event_type = 'WatchEvent'\nAND JSONExtract(repo_name, '$.name') IS NOT NULL\nGROUP BY repo_name\nHAVING COUNT(DISTINCT actor_login) >= 1\nORDER BY repo_name_length DESC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -49742,6 +50428,20 @@
         "humanRowCount": 10,
         "llmRowCount": 10,
         "sql": "SELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent' AND repo_name != ''\nGROUP BY repo_name\nORDER BY CHAR_LENGTH(repo_name) ASC, repo_name ASC\nLIMIT 10"
+      },
+      "mistralai/ministral-3b-2512": {
+        "matches": false,
+        "exactMatches": false,
+        "numericMatches": false,
+        "distance": {
+          "exact": 1,
+          "numeric": 1,
+          "fScore": 0
+        },
+        "details": "Results don't match",
+        "humanRowCount": 10,
+        "llmRowCount": 0,
+        "sql": "\n%\nSELECT repo_name\nFROM github_events\nWHERE event_type = 'WatchEvent' AND actor_login IS NOT NULL\nGROUP BY repo_name, actor_login\nHAVING COUNT(*) >= 1\nORDER BY LENGTH(repo_name) ASC\nLIMIT 10\n"
       }
     },
     "humanResults": {
@@ -50331,6 +51031,14 @@
         "avgExactDistance": 0.4295454545454546,
         "avgNumericDistance": 0.3031657331603074,
         "avgFScore": 0.58
+      },
+      "mistralai/ministral-3b-2512": {
+        "totalMatches": 0,
+        "exactMatches": 0,
+        "numericMatches": 0,
+        "avgExactDistance": 1,
+        "avgNumericDistance": 1,
+        "avgFScore": 0
       }
     }
   }
