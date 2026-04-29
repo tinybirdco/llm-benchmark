@@ -119,6 +119,11 @@
       "models": [
         "cydonia-24b-v4.1"
       ]
+    },
+    "inclusionai": {
+      "models": [
+        "ling-2.6-flash"
+      ]
     }
   }
 }
