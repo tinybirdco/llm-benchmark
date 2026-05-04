@@ -2,8 +2,8 @@ name: Auto-discover new OpenRouter models
 
 on:
   schedule:
-    # Run every 6 hours to check for new models
-    - cron: '0 */6 * * *'
+    # Run once daily
+    - cron: '17 8 * * *'
   workflow_dispatch:
     inputs:
       dry_run:
@@ -14,7 +14,7 @@ on:
       max_models:
         description: "Maximum number of new models to benchmark (0 = no limit)"
         required: false
-        default: "0"
+        default: "5"
         type: string
       force_run:
         description: "Force run even if no new models found (for testing)"
@@ -78,14 +78,31 @@ jobs:
             fi
           }
 
+      - name: Commit updated untested models list
+        if: steps.find-new-models.outputs.new_count > 0
+        working-directory: src
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+          if ! git diff --quiet untested-models.json 2>/dev/null; then
+            git add untested-models.json
+            git commit -m "Update untested models list (auto-discover)"
+            git pull --rebase origin main
+            git push origin main
+            echo "Updated untested-models.json committed"
+          else
+            echo "No changes to untested-models.json"
+          fi
+
       - name: Check for existing PRs and run benchmarks
         if: steps.find-new-models.outputs.new_count > 0 && github.event.inputs.dry_run != 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           NEW_MODELS="${{ steps.find-new-models.outputs.new_models }}"
-          MAX_MODELS="${{ github.event.inputs.max_models || '0' }}"
-          
+          MAX_MODELS="${{ github.event.inputs.max_models || '5' }}"
+
           echo "Checking for existing PRs and running benchmarks for new models: $NEW_MODELS"
           echo "Max models limit: $MAX_MODELS"
           
@@ -121,8 +138,8 @@ jobs:
             
             TRIGGERED_COUNT=$((TRIGGERED_COUNT + 1))
             
-            # Add a small delay between triggers
-            sleep 5
+            # Delay between triggers to avoid rate limits
+            sleep 60
           done
           
           echo "📊 Summary:"
@@ -136,7 +153,7 @@ jobs:
           NEW_COUNT="${{ steps.find-new-models.outputs.new_count }}"
           NEW_MODELS="${{ steps.find-new-models.outputs.new_models }}"
           DRY_RUN="${{ github.event.inputs.dry_run }}"
-          MAX_MODELS="${{ github.event.inputs.max_models || '0' }}"
+          MAX_MODELS="${{ github.event.inputs.max_models || '5' }}"
           FORCE_RUN="${{ github.event.inputs.force_run }}"
           
           if [ "$NEW_COUNT" -gt 0 ]; then

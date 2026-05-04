@@ -5,7 +5,6 @@ import { useMemo } from "react";
 
 import { Table } from "./table";
 import { ModelMetrics } from "@/lib/eval";
-import { useBenchmarkData } from "@/lib/use-benchmark-data";
 
 const ModelCell = ({ model }: { model: string }) => {
   return (
@@ -21,6 +20,8 @@ const ModelCell = ({ model }: { model: string }) => {
 };
 
 type BenchmarkTableProps = {
+  modelMetrics: ModelMetrics[];
+  humanMetrics: ModelMetrics[];
   showRelative?: boolean;
   selectedModels?: string[];
   selectedProviders?: string[];
@@ -30,6 +31,8 @@ type BenchmarkTableProps = {
 };
 
 export const BenchmarkTable = ({
+  modelMetrics,
+  humanMetrics,
   showRelative = false,
   selectedModels = [],
   selectedProviders = [],
@@ -37,11 +40,21 @@ export const BenchmarkTable = ({
   onProviderChange,
   onShowRelativeChange,
 }: BenchmarkTableProps) => {
-  const { modelMetrics, humanMetrics, getFilteredData } = useBenchmarkData();
+  const allData = useMemo(
+    () => [...humanMetrics, ...modelMetrics],
+    [humanMetrics, modelMetrics]
+  );
 
   const filteredData = useMemo(() => {
-    return getFilteredData(selectedModels, selectedProviders);
-  }, [getFilteredData, selectedModels, selectedProviders]);
+    return allData.filter((item) => {
+      const modelMatch =
+        selectedModels.length === 0 || selectedModels.includes(item.model);
+      const providerMatch =
+        selectedProviders.length === 0 ||
+        selectedProviders.includes(item.provider);
+      return modelMatch && providerMatch;
+    });
+  }, [allData, selectedModels, selectedProviders]);
 
   const columns = [
     {
@@ -192,7 +205,7 @@ export const BenchmarkTable = ({
           return (
             <div className="space-x-2">
               <span className="font-mono">
-                {(row.avgExecutionTime * 1000).toLocaleString()} ms
+                {(row.avgExecutionTime * 1000).toLocaleString("en-US")} ms
               </span>
               <span className="text-sm text-accent">
                 {percentage.toFixed(0)}%
@@ -203,7 +216,7 @@ export const BenchmarkTable = ({
 
         return (
           <span className="font-mono">
-            {(row.avgExecutionTime * 1000).toLocaleString()} ms
+            {(row.avgExecutionTime * 1000).toLocaleString("en-US")} ms
           </span>
         );
       },
@@ -225,7 +238,7 @@ export const BenchmarkTable = ({
           return (
             <div className="space-x-2">
               <span className="font-mono">
-                {Math.round(row.avgRowsRead).toLocaleString()}
+                {Math.round(row.avgRowsRead).toLocaleString("en-US")}
               </span>
               <span className="text-sm text-accent">
                 {percentage.toFixed(0)}%
@@ -235,7 +248,7 @@ export const BenchmarkTable = ({
         }
         return (
           <span className="font-mono">
-            {Math.round(row.avgRowsRead).toLocaleString()}
+            {Math.round(row.avgRowsRead).toLocaleString("en-US")}
           </span>
         );
       },
@@ -257,7 +270,7 @@ export const BenchmarkTable = ({
           return (
             <div className="space-x-2">
               <span className="font-mono">
-                {(row.avgBytesRead / (1024 * 1024)).toLocaleString(undefined, {
+                {(row.avgBytesRead / (1024 * 1024)).toLocaleString("en-US", {
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
                 })}{" "}
@@ -271,7 +284,7 @@ export const BenchmarkTable = ({
         }
         return (
           <span className="font-mono">
-            {(row.avgBytesRead / (1024 * 1024)).toLocaleString(undefined, {
+            {(row.avgBytesRead / (1024 * 1024)).toLocaleString("en-US", {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
             })}{" "}

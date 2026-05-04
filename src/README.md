@@ -1,36 +1,83 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# LLM Benchmark - Developer Setup
 
-## Getting Started
+Results dashboard and benchmark runner for evaluating LLM SQL generation against Tinybird.
 
-First, run the development server:
+Live at: https://llm-benchmark.tinybird.live/
+
+## Quick start
 
 ```bash
+npm install
+cp .env.example .env
+# Fill in the values (see below)
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000 to see the results dashboard.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Copy `.env.example` to `.env` and fill in the values.
 
-## Learn More
+**For the web app** (`npm run dev`): No additional env vars needed beyond what Vercel provides (OTel config).
 
-To learn more about Next.js, take a look at the following resources:
+**For the benchmark** (`npm run benchmark`): You need `OPENROUTER_API_KEY` and the two Tinybird vars (`TINYBIRD_API_HOST`, `TINYBIRD_WORKSPACE_TOKEN`). See `.env.example`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Scripts
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Command | Description |
+|---|---|
+| `npm run dev` | Start the Next.js dev server (Turbopack) |
+| `npm run benchmark` | Run benchmark for all configured models |
+| `npm run benchmark -- --model=provider/model` | Run benchmark for a single model |
+| `npm run benchmark -- --model=provider/model --debug` | Single model with verbose logging |
+| `npm run fetch-models` | Fetch available models from OpenRouter API |
+| `npm run check-new-models` | Check for new models locally (no API call) |
+| `npm run manage-failed-models` | CLI to list/add/remove failed models |
+| `npm run backfill-metadata` | Backfill model metadata (created date, name) from OpenRouter |
+| `npm run merge-pr-results` | Merge results from open benchmark PRs into main (one-time) |
+| `npm run build` | Production build |
+| `npm run start` | Start production server |
 
-## Deploy on Vercel
+## Project structure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+src/
+  benchmark/          Benchmark runner, OpenRouter client, results
+  src/app/            Next.js App Router (dashboard UI)
+  src/components/     React components (table, filters, code preview)
+  src/lib/            Data loading hooks and utilities
+  tinybird/           Tinybird datasources and endpoint definitions
+  benchmark-config.json   Models to benchmark (by provider)
+  failed-models.json      Models that failed benchmarking
+  untested-models.json    Models discovered but not yet tested
+  model-metadata.json     Per-model metadata (created date, display name)
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## How the auto-discovery pipeline works
+
+1. **Auto-discover** (`.github/workflows/auto-discover-models.yml`): Runs daily at 08:17 UTC. Fetches all models from OpenRouter, compares against tested/untested/failed lists, triggers `benchmark-append` for up to 5 new models per run (60s delay between).
+
+2. **Benchmark-append** (`.github/workflows/benchmark-append.yml`): Benchmarks a single model (50 SQL questions against Tinybird). On success, creates a PR with results and an LLM-generated review comment. Auto-merges if the review is positive. On failure, adds the model to `failed-models.json`.
+
+3. **Model tracking files**:
+   - `benchmark-config.json`: Models that have been successfully benchmarked
+   - `untested-models.json`: Models known but not yet tested (refreshed on each discovery run)
+   - `failed-models.json`: Models that failed benchmarking (excluded from future runs)
+   - `model-metadata.json`: Created timestamps and display names from OpenRouter
+
+## GitHub repo variables
+
+These are set in GitHub Settings > Variables and used by the workflows. Forks can configure their own values. See `.env.example` for reference.
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `PR_ASSIGNEES` | *(none)* | Comma-separated GitHub usernames to assign benchmark PRs |
+| `REVIEW_MODEL` | `openai/gpt-5.4-nano` | OpenRouter model ID used for LLM review of benchmark results |
+| `AUTO_MERGE` | `true` | Set to `false` to disable auto-merge on positive review |
+
+## Tech stack
+
+- Next.js 15 + React 19 + Tailwind CSS 4
+- Vercel AI SDK + OpenRouter provider (all LLM calls go through OpenRouter)
+- Tinybird for SQL execution and results storage

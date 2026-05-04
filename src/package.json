@@ -8,6 +8,8 @@
     "fetch-models": "tsx benchmark/fetch-openrouter-models.ts",
     "check-new-models": "tsx benchmark/check-new-models.ts",
     "manage-failed-models": "tsx benchmark/manage-failed-models.ts",
+    "backfill-metadata": "tsx benchmark/backfill-metadata.ts",
+    "migrate-to-tinybird": "tsx benchmark/migrate-to-tinybird.ts",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

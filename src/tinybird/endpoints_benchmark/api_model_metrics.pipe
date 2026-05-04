@@ -1,0 +1,25 @@
+DESCRIPTION >
+    Returns per-model aggregate metrics for the leaderboard.
+
+NODE endpoint
+SQL >
+    SELECT
+        model,
+        provider,
+        count() as total_queries,
+        countIf(sql_result_success = 1) as successful_queries,
+        countIf(first_attempt_success = 1) as first_attempt_successes,
+        avgIf(sql_result_execution_time, sql_result_success = 1) as avg_execution_time,
+        avgIf(llm_time_to_first_token, sql_result_success = 1) as avg_time_to_first_token,
+        avgIf(llm_total_duration, sql_result_success = 1) as avg_total_duration,
+        avgIf(sql_result_rows_read, sql_result_success = 1) as avg_rows_read,
+        avgIf(sql_result_bytes_read, sql_result_success = 1) as avg_bytes_read,
+        avg(length(sql)) as avg_query_length,
+        avg(llm_total_tokens) as avg_tokens,
+        avgIf(num_attempts, sql_result_success = 1) as avg_attempts,
+        100.0 * countIf(sql_result_success = 1) / count() as success_rate,
+        100.0 * countIf(first_attempt_success = 1) / count() as first_attempt_rate
+    FROM benchmark_results FINAL
+    GROUP BY model, provider
+
+TYPE endpoint

@@ -148,7 +148,9 @@ export function calculateRanks(metrics: ModelMetrics[]): ModelMetrics[] {
 
   // Calculate interpolated scores (0-10 scale, higher is better)
   const metricsWithScores = metrics.map((metric) => {
-    const efficiencyScore = 100 * (1 - metric.rawEfficiencyScore / maxRawScore); // Interpolate to 0-10 scale
+    const efficiencyScore = maxRawScore > 0
+      ? 100 * (1 - metric.rawEfficiencyScore / maxRawScore)
+      : 0;
     const exactnessScore = blendedExactnessScore(metric.provider, metric.model);
     const score = 0.5 * exactnessScore + 0.5 * efficiencyScore;
 

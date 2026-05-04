@@ -13,6 +13,7 @@ interface UntestedModel {
   provider: string;
   model: string;
   modelId: string;
+  created?: number;
 }
 
 interface UntestedModelsData {
@@ -92,13 +93,14 @@ function findNewModels(
     const provider = extractProviderFromModelId(model.id);
     const modelName = model.id.includes("/") ? model.id.split("/")[1] : model.id;
     const modelKey = `${provider}/${modelName}`;
-    
+
     // If not tested, not in untested list, and not failed, it's new
     if (!testedModels.has(modelKey) && !untestedModels.has(modelKey) && !failedModels.has(modelKey)) {
       newModels.push({
         provider,
         model: modelName,
-        modelId: model.id
+        modelId: model.id,
+        created: model.created
       });
     }
   }
@@ -159,6 +161,40 @@ async function main() {
     };
     writeFileSync("new-models.json", JSON.stringify(newModelsJson, null, 2));
     console.log("📄 Generated new models list: new-models.json");
+
+    // Refresh untested-models.json with all non-tested, non-failed models
+    const allUntested: UntestedModel[] = [];
+    const failedModelsList = loadFailedModels();
+    const failedSet = new Set(failedModelsList.map(m => `${m.provider}/${m.model}`));
+    const testedSet = new Set<string>();
+    for (const [provider, data] of Object.entries(config.providers)) {
+      for (const model of data.models) {
+        testedSet.add(`${provider}/${model}`);
+      }
+    }
+
+    for (const model of openrouterModels) {
+      const provider = extractProviderFromModelId(model.id);
+      const modelName = model.id.includes("/") ? model.id.split("/")[1] : model.id;
+      const modelKey = `${provider}/${modelName}`;
+
+      if (!testedSet.has(modelKey) && !failedSet.has(modelKey)) {
+        allUntested.push({
+          provider,
+          model: modelName,
+          modelId: model.id,
+          created: model.created
+        });
+      }
+    }
+
+    const untestedJson = {
+      generated_at: new Date().toISOString(),
+      total_count: allUntested.length,
+      models: allUntested
+    };
+    writeFileSync("untested-models.json", JSON.stringify(untestedJson, null, 2));
+    console.log(`📄 Refreshed untested models list: ${allUntested.length} models`);
     
     // Generate a script to run benchmarks for new models
     const benchmarkScript = `#!/bin/bash
