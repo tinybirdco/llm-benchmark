@@ -1,0 +1,33 @@
+DESCRIPTION >
+    Returns raw benchmark results, optionally filtered by model or question name.
+
+NODE endpoint
+SQL >
+    %
+    SELECT
+        sql,
+        sql_result_success,
+        sql_result_execution_time,
+        sql_result_error,
+        sql_result_query_latency,
+        sql_result_rows_read,
+        sql_result_bytes_read,
+        name,
+        question,
+        model,
+        provider,
+        llm_time_to_first_token,
+        llm_total_duration,
+        llm_prompt_tokens,
+        llm_completion_tokens,
+        llm_total_tokens,
+        llm_error,
+        num_attempts,
+        first_attempt_success
+    FROM benchmark_results FINAL
+    WHERE 1 = 1
+    {% if defined(model) %} AND model = {{ String(model) }} {% end %}
+    {% if defined(provider) %} AND provider = {{ String(provider) }} {% end %}
+    {% if defined(question_name) %} AND name = {{ String(question_name) }} {% end %}
+
+TYPE endpoint

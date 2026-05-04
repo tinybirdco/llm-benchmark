@@ -29,7 +29,7 @@ export function getDatasources() {
 }
 
 export function getEndpointQuestions() {
-  const endpoint = getEndpoints();
+  const endpoint = getEndpoints().filter((e) => e.name.startsWith("pipe_"));
 
   return endpoint.map((endpoint) => {
     const description = endpoint.content

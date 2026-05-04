@@ -98,6 +98,70 @@ function writeResults(results: ChatResponse[]) {
   writeFileSync(RESULTS_FILE, JSON.stringify(results, null, 2));
 }
 
+function extractDescription(content: string | undefined): string {
+  if (!content) return "";
+  const match = content.match(/DESCRIPTION\s*>\s*\n([\s\S]*?)(?=\nNODE|\nSQL|\nTYPE|$)/);
+  if (!match) return content.substring(0, 200);
+  return match[1].trim().replace(/\s+/g, " ");
+}
+
+async function pushToTinybird(results: ChatResponse[]) {
+  const { tinybird } = getConfig();
+  if (!tinybird.workspaceToken) return;
+
+  const ndjson = results.map((r) => {
+    const isHuman = r.model === "human" && r.provider === "human";
+    const numAttempts = r.attempts?.length ?? 1;
+    const firstAttemptSuccess =
+      isHuman
+        ? 1
+        : numAttempts === 1 && r.sqlResult?.success
+          ? 1
+          : 0;
+
+    return JSON.stringify({
+      sql: r.sql ?? "",
+      sql_result_success: r.sqlResult?.success ? 1 : 0,
+      sql_result_execution_time: r.sqlResult?.executionTime ?? 0,
+      sql_result_error: (r.sqlResult?.error ?? "").substring(0, 500),
+      sql_result_query_latency: r.sqlResult?.statistics?.elapsed ?? null,
+      sql_result_rows_read: r.sqlResult?.statistics?.rows_read ?? null,
+      sql_result_bytes_read: r.sqlResult?.statistics?.bytes_read ?? null,
+      name: r.name,
+      question: extractDescription(r.question?.content) || r.question?.question || "",
+      model: r.model,
+      provider: r.provider,
+      llm_time_to_first_token: r.metrics?.timeToFirstToken ?? 0,
+      llm_total_duration: r.metrics?.totalDuration ?? 0,
+      llm_prompt_tokens: r.metrics?.tokens?.promptTokens ?? 0,
+      llm_completion_tokens: r.metrics?.tokens?.completionTokens ?? 0,
+      llm_total_tokens: r.metrics?.tokens?.totalTokens ?? 0,
+      llm_error: r.error ?? "",
+      num_attempts: numAttempts,
+      first_attempt_success: firstAttemptSuccess,
+    });
+  }).join("\n");
+
+  try {
+    const res = await fetch(`${tinybird.apiHost}/v0/events?name=benchmark_results`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${tinybird.workspaceToken}` },
+      body: ndjson,
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      console.error(`Failed to push results to Tinybird (${res.status}): ${text}`);
+      return;
+    }
+
+    const json = await res.json();
+    console.log(`Pushed ${json.successful_rows} results to Tinybird`);
+  } catch (err) {
+    console.error("Failed to push results to Tinybird:", err);
+  }
+}
+
 interface ValidationResult {
   models: Record<string, ModelValidationResult>;
   humanResults: SqlResult;
@@ -418,9 +482,10 @@ async function runBenchmarkForModel(modelString: string) {
   const filteredResults = existingResults.filter(
     r => !(r.provider === providerName && r.model === modelName)
   );
-  
+
   const updatedResults = [...filteredResults, ...results];
   writeResults(updatedResults);
+  await pushToTinybird(results);
 }
 
 async function runBenchmark() {
@@ -452,6 +517,7 @@ async function runBenchmark() {
       );
       existingResults.push(...results);
       writeResults(existingResults);
+      await pushToTinybird(results);
 
       index++;
     }
@@ -471,16 +537,19 @@ async function runModelBenchmark(
   async function generateQueryWithRetry(
     question: ReturnType<typeof getEndpointQuestions>[number],
     retryCount = 0,
-    previousAttempts: ChatResponse[] = []
+    previousAttempts: ChatResponse[] = [],
+    originalQuestion?: ReturnType<typeof getEndpointQuestions>[number]
   ) {
+    const origQuestion = originalQuestion ?? question;
+
     debugLog(`Generating query for ${question.name}`, {
       attempt: retryCount + 1,
       model: `${provider}/${model}`,
       question: question.question.substring(0, 200) + (question.question.length > 200 ? '...' : '')
     });
-    
+
     const result = await client.generateQuery(question, provider, model, true);
-    
+
     debugLog(`LLM Response for ${question.name}`, {
       sql: result.sql,
       error: result.error,
@@ -508,7 +577,8 @@ async function runModelBenchmark(
           question: errorFeedback,
         },
         retryCount + 1,
-        currentAttempts
+        currentAttempts,
+        origQuestion
       );
     }
 
@@ -519,7 +589,7 @@ async function runModelBenchmark(
 
     return {
       ...result,
-      question,
+      question: origQuestion,
       model,
       provider,
       attempts: currentAttempts,

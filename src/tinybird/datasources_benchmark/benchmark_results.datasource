@@ -1,0 +1,28 @@
+DESCRIPTION >
+    Benchmark results for LLM SQL generation evaluation.
+
+SCHEMA >
+    `sql` String `json:$.sql`,
+    `sql_result_success` UInt8 `json:$.sql_result_success`,
+    `sql_result_execution_time` Float32 `json:$.sql_result_execution_time`,
+    `sql_result_error` String `json:$.sql_result_error` DEFAULT '',
+    `sql_result_query_latency` Nullable(Float32) `json:$.sql_result_query_latency`,
+    `sql_result_rows_read` Nullable(UInt64) `json:$.sql_result_rows_read`,
+    `sql_result_bytes_read` Nullable(UInt64) `json:$.sql_result_bytes_read`,
+    `name` String `json:$.name`,
+    `question` String `json:$.question`,
+    `model` String `json:$.model`,
+    `provider` String `json:$.provider`,
+    `llm_time_to_first_token` Float32 `json:$.llm_time_to_first_token`,
+    `llm_total_duration` Float32 `json:$.llm_total_duration`,
+    `llm_prompt_tokens` UInt32 `json:$.llm_prompt_tokens`,
+    `llm_completion_tokens` UInt32 `json:$.llm_completion_tokens`,
+    `llm_total_tokens` UInt32 `json:$.llm_total_tokens`,
+    `llm_error` String `json:$.llm_error` DEFAULT '',
+    `num_attempts` UInt8 `json:$.num_attempts`,
+    `first_attempt_success` UInt8 `json:$.first_attempt_success`,
+    `ingested_at` DateTime `json:$.ingested_at` DEFAULT now()
+
+ENGINE "ReplacingMergeTree"
+ENGINE_VER ingested_at
+ENGINE_SORTING_KEY "model, provider, name"

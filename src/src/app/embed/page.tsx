@@ -1,44 +1,11 @@
-"use client";
+import { fetchLeaderboardData } from "@/lib/fetch-benchmark-data";
+import { EmbedClient } from "./embed-client";
 
-import { Suspense } from "react";
-import { useSearchParams } from "next/navigation";
-import { BenchmarkTable } from "../components/benchmark-table";
+export const revalidate = 300;
 
-function EmbedContent() {
-  const searchParams = useSearchParams();
-  const hideBranding = searchParams.get('hide_branding') === 'true';
-
+export default async function EmbedPage() {
+  const { modelMetrics, humanMetrics } = await fetchLeaderboardData();
   return (
-    <div className="w-full h-full bg-[#0A0A0A] font-sans relative">
-      {!hideBranding && (
-        <div className="absolute top-2 left-2 z-10">
-          <a 
-            href="https://tinybird.co" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-start gap-2 whitespace-nowrap text-sm font-normal bg-[#27F795] text-[#0a0a0a] shadow hover:bg-[#267A52] hover:text-white transition-colors px-4 py-2 cursor-pointer hover:cursor-pointer"
-          >
-            Built by tinybird.co
-          </a>
-        </div>
-      )}
-      <div className={hideBranding ? "" : "pt-12"}>
-        <BenchmarkTable />
-      </div>
-    </div>
-  );
-}
-
-export default function EmbedPage() {
-  return (
-    <Suspense fallback={
-      <div className="w-full h-full bg-[#0A0A0A] font-sans relative">
-        <div className="pt-12">
-          <BenchmarkTable />
-        </div>
-      </div>
-    }>
-      <EmbedContent />
-    </Suspense>
+    <EmbedClient modelMetrics={modelMetrics} humanMetrics={humanMetrics} />
   );
 }

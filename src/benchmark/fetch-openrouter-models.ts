@@ -3,6 +3,7 @@ import { readFileSync, writeFileSync } from "fs";
 interface OpenRouterModel {
   id: string;
   name: string;
+  created: number;
   context_length: number;
   pricing: {
     prompt: string;
