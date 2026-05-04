@@ -120,6 +120,11 @@
       "models": [
         "cydonia-24b-v4.1"
       ]
+    },
+    "baidu": {
+      "models": [
+        "qianfan-ocr-fast:free"
+      ]
     }
   }
 }
