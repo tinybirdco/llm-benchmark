@@ -16,7 +16,8 @@ export async function queryTinybird<T = Record<string, unknown>>(
   });
 
   if (!res.ok) {
-    throw new Error(`Tinybird query failed (${res.status}): ${await res.text()}`);
+    console.error(`Tinybird query failed (${res.status}): ${await res.text()}`);
+    return [] as T[];
   }
 
   const json = await res.json();
