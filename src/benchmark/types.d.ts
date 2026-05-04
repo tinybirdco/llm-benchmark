@@ -13,27 +13,6 @@ export interface ChatResponse {
   attempts?: ChatResponse[];
 }
 
-export interface Message {
-  id: string;
-  createdAt: string;
-  role: string;
-  content: string;
-  parts: { type: string; text: string }[];
-}
-
-export interface ChatPayload {
-  id: string;
-  message: Message;
-  dataFiles: any[];
-  modelName: string;
-  provider: string;
-  apiHost: string;
-  userToken: string;
-  workspaceToken: string;
-  workspaceId: string;
-  exploration: ExplorationObject;
-}
-
 export interface SqlResult {
   success: boolean;
   data: any[];
@@ -44,16 +23,4 @@ export interface SqlResult {
   executionTime: number;
   requestId: string;
   error?: string;
-}
-
-export interface ExplorationObject {
-  nodes: any[];
-  id: string;
-  name: string;
-  description: string | null;
-  created_at: string;
-  updated_at: string;
-  shared_with: any[];
-  shared_by: any | null;
-  user_id: string;
 }
