@@ -1,5 +1,14 @@
 {
-  "generated_at": "2026-05-04T00:00:00.000Z",
-  "total_count": 0,
-  "models": []
+  "generated_at": "2026-05-05T13:55:05.130Z",
+  "total_count": 1,
+  "models": [
+    {
+      "provider": "x-ai",
+      "model": "grok-4.3",
+      "modelId": "x-ai/grok-4.3",
+      "reason": "PR rejected/closed without merging",
+      "failed_at": "2026-05-05T13:55:05.130Z",
+      "attempt_count": 1
+    }
+  ]
 }
