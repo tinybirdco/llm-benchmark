@@ -171,7 +171,8 @@
     },
     "ibm-granite": {
       "models": [
-        "granite-4.0-h-micro"
+        "granite-4.0-h-micro",
+        "granite-4.1-8b"
       ]
     },
     "sao10k": {
