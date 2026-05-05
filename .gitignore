@@ -185,3 +185,7 @@ next-env.d.ts
 # Benchmark data (stored in Tinybird, local copies for debugging only)
 src/benchmark/results-human.json
 src/benchmark/validation-results.json
+
+# Auto-discovery artifacts
+src/new-models.json
+src/benchmark-new-models.sh
