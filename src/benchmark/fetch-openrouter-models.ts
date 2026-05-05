@@ -47,8 +47,9 @@ async function fetchOpenRouterModels(): Promise<OpenRouterModel[]> {
     }
     
     const data: OpenRouterResponse = await response.json();
-    console.log(`Fetched ${data.data.length} models from OpenRouter`);
-    return data.data;
+    const textModels = data.data.filter(m => isTextOutputModel(m.architecture?.modality || ''));
+    console.log(`Fetched ${data.data.length} models from OpenRouter (${textModels.length} text-output models)`);
+    return textModels;
   } catch (error) {
     console.error("Error fetching OpenRouter models:", error);
     throw error;
@@ -275,6 +276,11 @@ async function main() {
 // Run the script
 if (require.main === module) {
   main();
+}
+
+export function isTextOutputModel(modality: string): boolean {
+  const outputPart = (modality.split('->')[1] || '').trim();
+  return outputPart === 'text';
 }
 
 export { fetchOpenRouterModels, findUntestedModels, extractProviderFromModelId };
