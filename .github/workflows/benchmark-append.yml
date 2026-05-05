@@ -137,7 +137,8 @@ jobs:
           METRICS=$(curl -s "${TINYBIRD_API_HOST}/v0/pipes/api_model_metrics.json?include_unvalidated=1" \
             -H "Authorization: Bearer ${WORKSPACE_TOKEN}" | node -e "
             const data = JSON.parse(require('fs').readFileSync('/dev/stdin','utf8'));
-            const m = data.data.find(r => r.model === '${MODEL_NAME}' && r.provider === '${PROVIDER}');
+            const rows = data.data || [];
+            const m = rows.find(r => r.model === '${MODEL_NAME}' && r.provider === '${PROVIDER}');
             if (m) {
               console.log(JSON.stringify({
                 total: m.total_queries,
