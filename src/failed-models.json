@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-05-05T13:59:42.584Z",
-  "total_count": 2,
+  "generated_at": "2026-05-05T14:00:06.081Z",
+  "total_count": 3,
   "models": [
     {
       "provider": "x-ai",
@@ -16,6 +16,14 @@
       "modelId": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
       "reason": "PR rejected/closed without merging",
       "failed_at": "2026-05-05T13:59:42.584Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "qwen",
+      "model": "qwen3.5-plus-20260420",
+      "modelId": "qwen/qwen3.5-plus-20260420",
+      "reason": "PR rejected/closed without merging",
+      "failed_at": "2026-05-05T14:00:06.081Z",
       "attempt_count": 1
     }
   ]
