@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-05-05T13:55:05.130Z",
-  "total_count": 1,
+  "generated_at": "2026-05-05T13:59:42.584Z",
+  "total_count": 2,
   "models": [
     {
       "provider": "x-ai",
@@ -8,6 +8,14 @@
       "modelId": "x-ai/grok-4.3",
       "reason": "PR rejected/closed without merging",
       "failed_at": "2026-05-05T13:55:05.130Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "nvidia",
+      "model": "nemotron-3-nano-omni-30b-a3b-reasoning:free",
+      "modelId": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+      "reason": "PR rejected/closed without merging",
+      "failed_at": "2026-05-05T13:59:42.584Z",
       "attempt_count": 1
     }
   ]
