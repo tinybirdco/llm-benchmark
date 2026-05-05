@@ -46,40 +46,38 @@ jobs:
         id: find-new-models
         working-directory: src
         run: |
-          # Run the check-new-models script
-          npm run check-new-models || {
-            # Script exits with code 1 when new models are found
-            if [ $? -eq 1 ]; then
-              # Read the new models JSON file
-              if [ -f "new-models.json" ]; then
-                NEW_MODELS=$(node -e "
-                  const fs = require('fs');
-                  const data = JSON.parse(fs.readFileSync('new-models.json', 'utf8'));
-                  console.log(data.models.map(m => m.provider + '/' + m.model).join(' '));
-                ")
-                
-                NEW_COUNT=$(node -e "
-                  const fs = require('fs');
-                  const data = JSON.parse(fs.readFileSync('new-models.json', 'utf8'));
-                  console.log(data.total_count);
-                ")
-                
-                echo "new_models=$NEW_MODELS" >> $GITHUB_OUTPUT
-                echo "new_count=$NEW_COUNT" >> $GITHUB_OUTPUT
-                echo "Found $NEW_COUNT new models: $NEW_MODELS"
-              else
-                echo "new_models=" >> $GITHUB_OUTPUT
-                echo "new_count=0" >> $GITHUB_OUTPUT
-              fi
+          EXIT_CODE=0
+          npm run check-new-models || EXIT_CODE=$?
+
+          if [ $EXIT_CODE -eq 0 ]; then
+            echo "new_models=" >> $GITHUB_OUTPUT
+            echo "new_count=0" >> $GITHUB_OUTPUT
+          elif [ $EXIT_CODE -eq 10 ]; then
+            if [ -f "new-models.json" ]; then
+              NEW_MODELS=$(node -e "
+                const fs = require('fs');
+                const data = JSON.parse(fs.readFileSync('new-models.json', 'utf8'));
+                console.log(data.models.map(m => m.provider + '/' + m.model).join(' '));
+              ")
+              NEW_COUNT=$(node -e "
+                const fs = require('fs');
+                const data = JSON.parse(fs.readFileSync('new-models.json', 'utf8'));
+                console.log(data.total_count);
+              ")
+              echo "new_models=$NEW_MODELS" >> $GITHUB_OUTPUT
+              echo "new_count=$NEW_COUNT" >> $GITHUB_OUTPUT
+              echo "Found $NEW_COUNT new models: $NEW_MODELS"
             else
-              echo "Error running check-new-models script"
-              echo "new_models=" >> $GITHUB_OUTPUT
-              echo "new_count=0" >> $GITHUB_OUTPUT
+              echo "::error::check-new-models exited 10 but new-models.json is missing"
+              exit 1
             fi
-          }
+          else
+            echo "::error::check-new-models failed with exit code $EXIT_CODE"
+            exit 1
+          fi
 
       - name: Commit updated untested models list
-        if: steps.find-new-models.outputs.new_count > 0
+        if: steps.find-new-models.outputs.new_count != '' && steps.find-new-models.outputs.new_count != '0'
         working-directory: src
         run: |
           git config --local user.email "action@github.com"
@@ -96,7 +94,7 @@ jobs:
           fi
 
       - name: Check for existing PRs and run benchmarks
-        if: steps.find-new-models.outputs.new_count > 0 && github.event.inputs.dry_run != 'true'
+        if: steps.find-new-models.outputs.new_count != '' && steps.find-new-models.outputs.new_count != '0' && github.event.inputs.dry_run != 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -148,7 +146,8 @@ jobs:
           echo "  - Skipped (existing PRs): $SKIPPED_COUNT"
 
       - name: Log discovery results
-        if: steps.find-new-models.outputs.new_count > 0 || github.event.inputs.force_run == 'true'
+        if: steps.find-new-models.outputs.new_count != '' && steps.find-new-models.outputs.new_count != '0' || github.event.inputs.force_run == 'true'
+        working-directory: src
         run: |
           NEW_COUNT="${{ steps.find-new-models.outputs.new_count }}"
           NEW_MODELS="${{ steps.find-new-models.outputs.new_models }}"
@@ -175,9 +174,36 @@ jobs:
           fi
 
       - name: No new models found
-        if: steps.find-new-models.outputs.new_count == 0
+        if: steps.find-new-models.outputs.new_count == '' || steps.find-new-models.outputs.new_count == '0'
+        working-directory: src
         run: |
           echo "No new models found. All OpenRouter models are either tested or in the untested list."
           echo "Current status:"
           echo "- Tested models: $(node -e "const fs = require('fs'); const config = JSON.parse(fs.readFileSync('benchmark-config.json', 'utf8')); let count = 0; for (const data of Object.values(config.providers)) { count += data.models.length; } console.log(count);")"
           echo "- Untested models: $(node -e "const fs = require('fs'); const data = JSON.parse(fs.readFileSync('untested-models.json', 'utf8')); console.log(data.total_count);")"
+
+      - name: Job summary
+        if: always()
+        working-directory: src
+        run: |
+          NEW_COUNT="${{ steps.find-new-models.outputs.new_count }}"
+          NEW_MODELS="${{ steps.find-new-models.outputs.new_models }}"
+
+          TESTED=$(node -e "const fs = require('fs'); try { const c = JSON.parse(fs.readFileSync('benchmark-config.json','utf8')); let n=0; for (const d of Object.values(c.providers)) n+=d.models.length; console.log(n); } catch(e) { console.log('?'); }")
+          UNTESTED=$(node -e "const fs = require('fs'); try { const d = JSON.parse(fs.readFileSync('untested-models.json','utf8')); console.log(d.total_count); } catch(e) { console.log('?'); }")
+
+          echo "## Auto-Discovery Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Count |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Tested models | $TESTED |" >> $GITHUB_STEP_SUMMARY
+          echo "| Untested models | $UNTESTED |" >> $GITHUB_STEP_SUMMARY
+          echo "| New models found | ${NEW_COUNT:-0} |" >> $GITHUB_STEP_SUMMARY
+
+          if [ -n "$NEW_MODELS" ] && [ "$NEW_MODELS" != "" ]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### New models" >> $GITHUB_STEP_SUMMARY
+            for model in $NEW_MODELS; do
+              echo "- \`$model\`" >> $GITHUB_STEP_SUMMARY
+            done
+          fi

@@ -68,34 +68,27 @@ function findNewModels(
   // Create sets for faster lookup
   const testedModels = new Set<string>();
   const untestedModels = new Set<string>();
-  const failedModels = new Set<string>();
-  
+
   // Add tested models to set
   for (const [provider, data] of Object.entries(config.providers)) {
     for (const model of data.models) {
       testedModels.add(`${provider}/${model}`);
     }
   }
-  
+
   // Add existing untested models to set
   for (const model of existingUntestedModels) {
     untestedModels.add(`${model.provider}/${model.model}`);
   }
-  
-  // Add failed models to set
-  const failedModelsList = loadFailedModels();
-  for (const model of failedModelsList) {
-    failedModels.add(`${model.provider}/${model.model}`);
-  }
-  
+
   // Check each OpenRouter model
   for (const model of openrouterModels) {
     const provider = extractProviderFromModelId(model.id);
     const modelName = model.id.includes("/") ? model.id.split("/")[1] : model.id;
     const modelKey = `${provider}/${modelName}`;
 
-    // If not tested, not in untested list, and not failed, it's new
-    if (!testedModels.has(modelKey) && !untestedModels.has(modelKey) && !failedModels.has(modelKey)) {
+    // If not tested and not in untested list, it's new
+    if (!testedModels.has(modelKey) && !untestedModels.has(modelKey)) {
       newModels.push({
         provider,
         model: modelName,
@@ -196,56 +189,8 @@ async function main() {
     writeFileSync("untested-models.json", JSON.stringify(untestedJson, null, 2));
     console.log(`📄 Refreshed untested models list: ${allUntested.length} models`);
     
-    // Generate a script to run benchmarks for new models
-    const benchmarkScript = `#!/bin/bash
-
-# Benchmark script for new OpenRouter models
-# Generated on ${new Date().toISOString()}
-
-echo "Starting benchmarks for ${newModels.length} new models..."
-
-# Array of new models to test
-models=(
-${newModels.map(m => `  "${m.provider}/${m.model}"`).join('\n')}
-)
-
-# Function to run benchmark for a single model
-run_benchmark() {
-  local model=\$1
-  echo "\\n=== Benchmarking \$model ==="
-  
-  # Run the benchmark
-  npm run benchmark -- --model="\$model" --debug
-  
-  # Check if benchmark was successful
-  if [ \$? -eq 0 ]; then
-    echo "✅ Benchmark completed successfully for \$model"
-  else
-    echo "❌ Benchmark failed for \$model"
-  fi
-  
-  # Add a small delay between benchmarks
-  sleep 2
-}
-
-# Run benchmarks for all new models
-for model in "\${models[@]}"; do
-  run_benchmark "\$model"
-done
-
-echo "\\n=== Benchmark completed ==="
-echo "Total new models tested: ${newModels.length}"
-`;
-
-    writeFileSync("benchmark-new-models.sh", benchmarkScript);
-    console.log("📝 Generated benchmark script: benchmark-new-models.sh");
-    
-    console.log("\n🚀 To run benchmarks for new models:");
-    console.log("   chmod +x benchmark-new-models.sh");
-    console.log("   ./benchmark-new-models.sh");
-    
-    // Exit with code 1 to indicate new models were found (useful for CI)
-    process.exit(1);
+    // Exit with code 10 to indicate new models were found (distinct from error code 1)
+    process.exit(10);
     
   } catch (error) {
     console.error("❌ Error:", error);
