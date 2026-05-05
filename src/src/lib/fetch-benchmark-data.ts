@@ -1,6 +1,5 @@
 import { queryTinybird } from "./tinybird";
-import { calculateRanks, ModelMetrics } from "./eval";
-import humanResults from "../../benchmark/results-human.json";
+import { calculateRanks, ModelMetrics, ValidationMetrics, ValidationResult } from "./eval";
 
 type TinybirdModelMetrics = {
   model: string;
@@ -84,67 +83,36 @@ function toModelMetrics(m: TinybirdModelMetrics): ModelMetrics {
   };
 }
 
-function computeHumanMetrics(): ModelMetrics[] {
-  const group = humanResults as any[];
-  const successes = group.filter((r: any) => r.sqlResult?.success);
-
-  const mean = <T,>(arr: T[], f: (x: T) => number | undefined): number => {
-    if (!arr.length) return 0;
-    return arr.reduce((s: number, x: T) => s + (f(x) ?? 0), 0) / arr.length;
-  };
-
-  return [
-    {
-      model: "human",
-      provider: "human",
-      name: "human",
-      totalQueries: group.length,
-      successfulQueries: successes.length,
-      firstAttemptSuccess: group.length,
-      avgExecutionTime: mean(successes, (r: any) => r.sqlResult?.executionTime),
-      avgTimeToFirstToken: 0,
-      avgTotalDuration: 0,
-      totalBytesRead: successes.reduce(
-        (s: number, r: any) => s + (r.sqlResult?.statistics?.bytes_read ?? 0),
-        0
-      ),
-      totalRowsRead: successes.reduce(
-        (s: number, r: any) => s + (r.sqlResult?.statistics?.rows_read ?? 0),
-        0
-      ),
-      avgRowsRead: mean(
-        successes,
-        (r: any) => r.sqlResult?.statistics?.rows_read
-      ),
-      avgBytesRead: mean(
-        successes,
-        (r: any) => r.sqlResult?.statistics?.bytes_read
-      ),
-      avgQueryLength: mean(group, (r: any) => r.sql?.length),
-      avgTokens: 0,
-      avgAttempts: 1,
-      successRate: (successes.length / group.length) * 100,
-      firstAttemptRate: 100,
-      efficiencyScore: 0,
-      rawEfficiencyScore: 0,
-      exactnessScore: 0,
-      score: 0,
-      rank: 0,
-    },
-  ];
-}
+export type QuestionInfo = { name: string; question: string };
 
 export async function fetchLeaderboardData(): Promise<{
   modelMetrics: ModelMetrics[];
-  humanMetrics: ModelMetrics[];
+  questions: QuestionInfo[];
 }> {
-  const tbMetrics =
-    await queryTinybird<TinybirdModelMetrics>("api_model_metrics");
+  const [tbMetrics, tbValidation, questions] = await Promise.all([
+    queryTinybird<TinybirdModelMetrics>("api_model_metrics"),
+    queryTinybird<ValidationMetrics>("api_validation_metrics"),
+    queryTinybird<QuestionInfo>("api_questions"),
+  ]);
 
-  const modelMetrics = calculateRanks(tbMetrics.map(toModelMetrics));
-  const humanMetrics = computeHumanMetrics();
+  const validationMap = new Map(
+    tbValidation.map((v) => [
+      `${v.provider}/${v.model}`,
+      {
+        avgExactDistance: v.avg_exact_distance,
+        avgNumericDistance: v.avg_numeric_distance,
+        avgFScore: v.avg_fscore,
+      },
+    ])
+  );
 
-  return { modelMetrics, humanMetrics };
+  const activeModels = tbMetrics
+    .filter((m) => (m.successful_queries ?? 0) > 0)
+    .map(toModelMetrics);
+
+  const modelMetrics = calculateRanks(activeModels, validationMap);
+
+  return { modelMetrics, questions };
 }
 
 export type TinybirdResult = {
@@ -181,4 +149,21 @@ export async function fetchResultsForQuestion(
   return queryTinybird<TinybirdResult>("api_results", {
     question_name: questionName,
   });
+}
+
+export async function fetchValidationForModel(
+  model: string,
+  provider: string
+): Promise<ValidationResult[]> {
+  return queryTinybird<ValidationResult>("api_validation_results", { model, provider });
+}
+
+export async function fetchValidationForQuestion(
+  questionName: string
+): Promise<ValidationResult[]> {
+  return queryTinybird<ValidationResult>("api_validation_results", { question_name: questionName });
+}
+
+export async function fetchQuestionList(): Promise<{ name: string; question: string }[]> {
+  return queryTinybird<{ name: string; question: string }>("api_results", { model: "human" });
 }

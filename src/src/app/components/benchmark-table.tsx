@@ -21,7 +21,6 @@ const ModelCell = ({ model }: { model: string }) => {
 
 type BenchmarkTableProps = {
   modelMetrics: ModelMetrics[];
-  humanMetrics: ModelMetrics[];
   showRelative?: boolean;
   selectedModels?: string[];
   selectedProviders?: string[];
@@ -32,7 +31,6 @@ type BenchmarkTableProps = {
 
 export const BenchmarkTable = ({
   modelMetrics,
-  humanMetrics,
   showRelative = false,
   selectedModels = [],
   selectedProviders = [],
@@ -40,13 +38,13 @@ export const BenchmarkTable = ({
   onProviderChange,
   onShowRelativeChange,
 }: BenchmarkTableProps) => {
-  const allData = useMemo(
-    () => [...humanMetrics, ...modelMetrics],
-    [humanMetrics, modelMetrics]
+  const humanBaseline = useMemo(
+    () => modelMetrics.find((m) => m.provider === "human"),
+    [modelMetrics]
   );
 
   const filteredData = useMemo(() => {
-    return allData.filter((item) => {
+    return modelMetrics.filter((item) => {
       const modelMatch =
         selectedModels.length === 0 || selectedModels.includes(item.model);
       const providerMatch =
@@ -54,7 +52,7 @@ export const BenchmarkTable = ({
         selectedProviders.includes(item.provider);
       return modelMatch && providerMatch;
     });
-  }, [allData, selectedModels, selectedProviders]);
+  }, [modelMetrics, selectedModels, selectedProviders]);
 
   const columns = [
     {
@@ -194,13 +192,12 @@ export const BenchmarkTable = ({
       sortable: true,
       description: "Average time taken to execute the query in milliseconds",
       cell: (row: ModelMetrics) => {
-        const humanBaseline = humanMetrics.find((h) => h.provider === "human");
         const showPercentage =
           showRelative && row.provider !== "human" && humanBaseline;
         if (showPercentage) {
           const percentage =
             ((row.avgExecutionTime * 1000) /
-              (humanBaseline.avgExecutionTime * 1000)) *
+              (humanBaseline!.avgExecutionTime * 1000)) *
             100;
           return (
             <div className="space-x-2">
@@ -228,13 +225,12 @@ export const BenchmarkTable = ({
       sortable: true,
       description: "Average number of rows read per query (lower is better)",
       cell: (row: ModelMetrics) => {
-        const humanBaseline = humanMetrics.find((h) => h.provider === "human");
         const showPercentage =
           showRelative && row.provider !== "human" && humanBaseline;
 
         if (showPercentage) {
           const percentage =
-            (row.avgRowsRead / humanBaseline.avgRowsRead) * 100;
+            (row.avgRowsRead / humanBaseline!.avgRowsRead) * 100;
           return (
             <div className="space-x-2">
               <span className="font-mono">
@@ -260,13 +256,12 @@ export const BenchmarkTable = ({
       sortable: true,
       description: "Average amount of data read per query in MB",
       cell: (row: ModelMetrics) => {
-        const humanBaseline = humanMetrics.find((h) => h.provider === "human");
         const showPercentage =
           showRelative && row.provider !== "human" && humanBaseline;
 
         if (showPercentage) {
           const percentage =
-            (row.avgBytesRead / humanBaseline.avgBytesRead) * 100;
+            (row.avgBytesRead / humanBaseline!.avgBytesRead) * 100;
           return (
             <div className="space-x-2">
               <span className="font-mono">

@@ -6,7 +6,7 @@ import { Table } from "../../components/table";
 import { Badge } from "../../components/badge";
 import { ArrowLeftIcon } from "@/app/components/icons";
 import { PreviewModal } from "@/app/components/code-preview";
-import { getExactnessScore } from "@/lib/eval";
+import { getExactnessScoreFromValidation, ValidationResult } from "@/lib/eval";
 import { TinybirdResult } from "@/lib/fetch-benchmark-data";
 
 type QuestionMetric = {
@@ -27,8 +27,8 @@ type QuestionMetric = {
   tokens: number;
 };
 
-function toQuestionMetric(r: TinybirdResult): QuestionMetric {
-  const exactnessScore = getExactnessScore(r.provider, r.model, r.name);
+function toQuestionMetric(r: TinybirdResult, validationResults: ValidationResult[]): QuestionMetric {
+  const exactnessScore = getExactnessScoreFromValidation(validationResults, r.provider, r.model, r.name);
 
   return {
     name: r.name,
@@ -65,13 +65,15 @@ const QuestionCell = ({ metric }: { metric: QuestionMetric }) => {
 export function ModelDetailClient({
   modelName,
   results,
+  validationResults,
 }: {
   modelName: string;
   results: TinybirdResult[];
+  validationResults: ValidationResult[];
 }) {
   const questionMetrics = useMemo(
-    () => results.map(toQuestionMetric),
-    [results]
+    () => results.map((r) => toQuestionMetric(r, validationResults)),
+    [results, validationResults]
   );
 
   const columns = [

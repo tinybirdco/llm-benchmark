@@ -284,6 +284,11 @@ export const Table = <T extends Record<string, any>>({
     if (!sortConfig) return data;
 
     return [...data].sort((a, b) => {
+      const aHuman = a["provider"] === "human";
+      const bHuman = b["provider"] === "human";
+      if (aHuman && !bHuman) return -1;
+      if (!aHuman && bHuman) return 1;
+
       const aValue = a[sortConfig.key];
       const bValue = b[sortConfig.key];
 

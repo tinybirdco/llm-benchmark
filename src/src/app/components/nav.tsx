@@ -1,4 +1,5 @@
-import humanResults from "../../../benchmark/results-human.json";
+"use client";
+
 import { useMemo } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { useParams, useRouter } from "next/navigation";
@@ -12,8 +13,11 @@ import { ModelMetrics } from "@/lib/eval";
 import { CustomCheckbox } from "./custom-checkbox";
 import { EmbedModal } from "./embed-modal";
 
+export type QuestionOption = { name: string; question: string };
+
 type HeaderProps = {
   data: ModelMetrics[];
+  questions?: QuestionOption[];
   selectedModels: string[];
   selectedProviders: string[];
   onModelChange: (models: string[]) => void;
@@ -22,32 +26,25 @@ type HeaderProps = {
   onShowRelativeChange: (checked: boolean) => void;
 };
 
-export const QuestionSelect = () => {
+export const QuestionSelect = ({ questions }: { questions?: QuestionOption[] }) => {
   const router = useRouter();
   const { pipename } = useParams();
 
-  // Build question options from humanResults
   const questionOptions = useMemo(() => {
-    const seen = new Set();
-    const opts = humanResults
-      .map((r) => {
-        if (!r.name || !r.question?.content) return null;
-        if (seen.has(r.name)) return null;
-        seen.add(r.name);
-        return { value: r.name, label: r.question.content.split("\n")[0] };
-      })
-      .filter((opt): opt is { value: string; label: string } => Boolean(opt));
+    const opts = (questions ?? []).map((q) => ({
+      value: q.name,
+      label: q.question.split("\n")[0],
+    }));
     return [{ value: "", label: "All Questions" }, ...opts];
-  }, []);
+  }, [questions]);
 
   const selectedQuestionLabel = useMemo(() => {
     return (
       questionOptions.find((opt) => opt.value === pipename)?.label ||
-      "All Questions"
+      (pipename ? String(pipename) : "All Questions")
     );
   }, [pipename, questionOptions]);
 
-  // Handle select change: redirect if not All
   const handleQuestionChange = (value: string) => {
     if (value) {
       router.push(`/questions/${encodeURIComponent(value)}`);
@@ -103,6 +100,7 @@ export const QuestionSelect = () => {
 
 export const Header = ({
   data,
+  questions,
   selectedModels,
   selectedProviders,
   onModelChange,
@@ -184,7 +182,7 @@ export const Header = ({
       </div>
 
       <div className="mb-6 flex flex-col lg:flex-row items-stretch lg:items-center gap-4 max-w-[1400px]">
-        <QuestionSelect />
+        <QuestionSelect questions={questions} />
         <Filters
           data={data}
           selectedProviders={selectedProviders}

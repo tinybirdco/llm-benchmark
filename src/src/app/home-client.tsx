@@ -4,13 +4,14 @@ import { useState } from "react";
 import { Header } from "./components/nav";
 import { BenchmarkTable } from "./components/benchmark-table";
 import { ModelMetrics } from "@/lib/eval";
+import { QuestionInfo } from "@/lib/fetch-benchmark-data";
 
 export function HomeClient({
   modelMetrics,
-  humanMetrics,
+  questions,
 }: {
   modelMetrics: ModelMetrics[];
-  humanMetrics: ModelMetrics[];
+  questions: QuestionInfo[];
 }) {
   const [showRelative, setShowRelative] = useState(false);
   const [selectedModels, setSelectedModels] = useState<string[]>([]);
@@ -20,6 +21,7 @@ export function HomeClient({
     <div className="min-h-screen py-8 px-4 lg:px-8 font-sans">
       <Header
         data={modelMetrics}
+        questions={questions}
         selectedModels={selectedModels}
         selectedProviders={selectedProviders}
         onModelChange={setSelectedModels}
@@ -30,7 +32,6 @@ export function HomeClient({
 
       <BenchmarkTable
         modelMetrics={modelMetrics}
-        humanMetrics={humanMetrics}
         showRelative={showRelative}
         selectedModels={selectedModels}
         selectedProviders={selectedProviders}

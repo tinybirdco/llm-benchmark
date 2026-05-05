@@ -7,7 +7,7 @@ import { Badge } from "../../components/badge";
 import { ArrowLeftIcon, ChevronDownIcon } from "@/app/components/icons";
 import { Header } from "@/app/components/nav";
 import { PreviewModal } from "@/app/components/code-preview";
-import { getExactnessScore, ModelMetrics } from "@/lib/eval";
+import { getExactnessScoreFromValidation, ModelMetrics, ValidationResult } from "@/lib/eval";
 import { cn } from "@/lib/utils";
 import { TinybirdResult } from "@/lib/fetch-benchmark-data";
 
@@ -17,7 +17,7 @@ type ExtendedModelMetrics = ModelMetrics & {
   sqlError?: string;
 };
 
-function toModelMetrics(r: TinybirdResult): ExtendedModelMetrics {
+function toModelMetrics(r: TinybirdResult, validationResults: ValidationResult[]): ExtendedModelMetrics {
   return {
     model: r.model,
     provider: r.provider,
@@ -39,7 +39,7 @@ function toModelMetrics(r: TinybirdResult): ExtendedModelMetrics {
     firstAttemptRate: r.first_attempt_success ? 100 : 0,
     efficiencyScore: 0,
     rawEfficiencyScore: 0,
-    exactnessScore: getExactnessScore(r.provider, r.model, r.name),
+    exactnessScore: getExactnessScoreFromValidation(validationResults, r.provider, r.model, r.name),
     score: 0,
     rank: 0,
     sql: r.sql,
@@ -67,17 +67,19 @@ const ModelCell = ({ metric }: { metric: ModelMetrics }) => {
 export function QuestionDetailClient({
   pipeName,
   results,
+  validationResults,
 }: {
   pipeName: string;
   results: TinybirdResult[];
+  validationResults: ValidationResult[];
 }) {
   const [selectedModels, setSelectedModels] = useState<string[]>([]);
   const [selectedProviders, setSelectedProviders] = useState<string[]>([]);
   const [showRelative, setShowRelative] = useState(false);
 
   const modelResults = useMemo(
-    () => results.map(toModelMetrics),
-    [results]
+    () => results.map((r) => toModelMetrics(r, validationResults)),
+    [results, validationResults]
   );
 
   const filteredData = useMemo(() => {
