@@ -183,6 +183,5 @@ next-env.d.ts
 .env*.local
 
 # Benchmark data (stored in Tinybird, local copies for debugging only)
-src/benchmark/results.json
 src/benchmark/results-human.json
 src/benchmark/validation-results.json

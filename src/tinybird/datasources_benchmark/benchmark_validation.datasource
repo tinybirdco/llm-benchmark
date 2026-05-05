@@ -13,8 +13,25 @@ SCHEMA >
     `distance_fscore` Float32 `json:$.distance_fscore`,
     `human_row_count` UInt32 `json:$.human_row_count`,
     `llm_row_count` UInt32 `json:$.llm_row_count`,
+    `validated` UInt8 `json:$.validated` DEFAULT 0,
     `ingested_at` DateTime `json:$.ingested_at` DEFAULT now()
 
 ENGINE "ReplacingMergeTree"
 ENGINE_VER ingested_at
 ENGINE_SORTING_KEY "model, provider, name"
+
+FORWARD_QUERY >
+    SELECT
+        model,
+        provider,
+        name,
+        matches,
+        exact_matches,
+        numeric_matches,
+        distance_exact,
+        distance_numeric,
+        distance_fscore,
+        human_row_count,
+        llm_row_count,
+        1 AS validated,
+        ingested_at

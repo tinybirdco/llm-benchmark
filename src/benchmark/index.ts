@@ -1,4 +1,4 @@
-import { writeFileSync, readFileSync, existsSync } from "fs";
+import { writeFileSync, readFileSync } from "fs";
 import { getClient } from "./client";
 import { getConfig } from "./config";
 import { getEndpointQuestions } from "./resources";
@@ -6,8 +6,6 @@ import { ChatResponse, SqlResult } from "./types";
 import { compareResults } from "./result-validator";
 
 const MAX_RETRIES = 2;
-const RESULTS_FILE = "benchmark/results.json";
-const HUMAN_RESULTS_FILE = "benchmark/results-human.json";
 
 // Debug logging function that only logs when LLM_DEBUG=1
 function debugLog(message: string, data?: Record<string, unknown>): void {
@@ -34,29 +32,35 @@ Usage:
 
 Options:
   --model=<provider/model>   Run benchmark for a specific model (e.g., --model=x-ai/grok-3-beta)
+  --validate                 Validate (mark as reviewed) existing results for the specified model in Tinybird
+  --revalidate               Re-run exactness validation for a model using existing LLM results from Tinybird
   --skip-validation          Skip validating results against human baseline
   --debug                    Enable debug mode to log LLM requests and responses
   --help                     Display this help message
 
 Examples:
-  npm run benchmark
   npm run benchmark -- --model=x-ai/grok-3-beta
   npm run benchmark -- --model=x-ai/grok-3-beta --debug
+  npm run benchmark -- --model=x-ai/grok-3-beta --validate
   npm run benchmark -- --skip-validation
   `);
 }
 
 // Parse command line arguments
-function parseArgs(): { model?: string; skipValidation?: boolean; debug?: boolean; help?: boolean } {
-  const args: { model?: string; skipValidation?: boolean; debug?: boolean; help?: boolean } = {};
-  
+function parseArgs(): { model?: string; validate?: boolean; revalidate?: boolean; skipValidation?: boolean; debug?: boolean; help?: boolean } {
+  const args: { model?: string; validate?: boolean; revalidate?: boolean; skipValidation?: boolean; debug?: boolean; help?: boolean } = {};
+
   for (let i = 2; i < process.argv.length; i++) {
     const arg = process.argv[i];
     if (arg.startsWith('--model=')) {
       args.model = arg.substring('--model='.length);
     } else if (arg === '--model' && i + 1 < process.argv.length) {
       args.model = process.argv[i + 1];
-      i++; // Skip the next argument as we've already processed it
+      i++;
+    } else if (arg === '--validate') {
+      args.validate = true;
+    } else if (arg === '--revalidate') {
+      args.revalidate = true;
     } else if (arg === '--skip-validation') {
       args.skipValidation = true;
     } else if (arg === '--debug') {
@@ -65,37 +69,37 @@ function parseArgs(): { model?: string; skipValidation?: boolean; debug?: boolea
       args.help = true;
     }
   }
-  
+
   return args;
 }
 
-function readHumanResults(): ChatResponse[] {
-  if (!existsSync(HUMAN_RESULTS_FILE)) {
-    console.error("Human results file not found");
-    return [];
-  }
-  try {
-    return JSON.parse(readFileSync(HUMAN_RESULTS_FILE, "utf-8"));
-  } catch (error) {
-    console.error("Error reading human results file:", error);
-    return [];
-  }
-}
+async function fetchHumanResults(): Promise<ChatResponse[]> {
+  const client = getClient();
+  const endpoints = getEndpointQuestions();
+  const results: ChatResponse[] = [];
 
-function readExistingResults(): ChatResponse[] {
-  if (!existsSync(RESULTS_FILE)) {
-    return [];
-  }
-  try {
-    return JSON.parse(readFileSync(RESULTS_FILE, "utf-8"));
-  } catch (error) {
-    console.error("Error reading results file:", error);
-    return [];
-  }
-}
+  console.log("Executing human SQL queries for validation baseline...");
+  for (const endpoint of endpoints) {
+    const sql = endpoint.content
+      .split("SQL >")[1]
+      .split("TYPE endpoint")[0]
+      .trim();
 
-function writeResults(results: ChatResponse[]) {
-  writeFileSync(RESULTS_FILE, JSON.stringify(results, null, 2));
+    const result = await client.executeSqlQuery(sql);
+    results.push({
+      name: endpoint.name,
+      question: { name: endpoint.name, content: endpoint.question } as any,
+      sql,
+      sqlResult: result,
+      model: "human",
+      provider: "human",
+      error: null,
+      attempts: [],
+    } as any);
+  }
+
+  console.log(`Fetched ${results.length} human baseline results`);
+  return results;
 }
 
 function extractDescription(content: string | undefined): string {
@@ -139,6 +143,7 @@ async function pushToTinybird(results: ChatResponse[]) {
       llm_error: r.error ?? "",
       num_attempts: numAttempts,
       first_attempt_success: firstAttemptSuccess,
+      validated: 0,
     });
   }).join("\n");
 
@@ -185,6 +190,7 @@ async function pushValidationToTinybird(validation: Record<string, ValidationRes
         distance_fscore: modelResult.distance?.fScore ?? 0,
         human_row_count: (modelResult as any).humanRowCount ?? 0,
         llm_row_count: (modelResult as any).llmRowCount ?? 0,
+        validated: 0,
       }));
     }
   }
@@ -243,8 +249,7 @@ interface ValidationSummary {
   >;
 }
 
-async function validateResults(results: ChatResponse[]): Promise<Record<string, ValidationResult | ValidationSummary>> {
-  const humanResults = readHumanResults();
+async function validateResults(results: ChatResponse[], humanResults: ChatResponse[]): Promise<Record<string, ValidationResult | ValidationSummary>> {
   if (humanResults.length === 0) {
     console.error("No human results available for validation");
     return {};
@@ -259,6 +264,10 @@ async function validateResults(results: ChatResponse[]): Promise<Record<string, 
 
   for (const result of results) {
     if (!result.question || !result.sqlResult || result.error) {
+      continue;
+    }
+
+    if (result.model === "human" && result.provider === "human") {
       continue;
     }
 
@@ -371,16 +380,167 @@ function calculateValidationSummary(validation: Record<string, ValidationResult 
   return summary;
 }
 
-function getCompletedQuestionsForModel(
-  existingResults: ChatResponse[],
-  provider: string,
-  model: string
-): Set<string> {
-  return new Set(
-    existingResults
-      .filter((r) => r.provider === provider && r.model === model)
-      .map((r) => r.question.name)
+async function validateModel(modelString: string) {
+  const [providerName, ...modelParts] = modelString.split('/');
+  const modelName = modelParts.join('/');
+
+  if (!providerName || !modelName) {
+    console.error("Invalid model format. Please use format: --model=provider/model");
+    process.exit(1);
+  }
+
+  const { tinybird } = getConfig();
+  if (!tinybird.workspaceToken) {
+    console.error("TINYBIRD_WORKSPACE_TOKEN is required for validation");
+    process.exit(1);
+  }
+
+  console.log(`Validating results for ${providerName}/${modelName}...`);
+
+  const escapedProvider = providerName.replace(/'/g, "\\'");
+  const escapedModel = modelName.replace(/'/g, "\\'");
+
+  const resultsQuery = `SELECT * FROM benchmark_results FINAL WHERE model = '${escapedModel}' AND provider = '${escapedProvider}' FORMAT JSON`;
+  const resultsRes = await fetch(
+    `${tinybird.apiHost}/v0/sql?q=${encodeURIComponent(resultsQuery)}`,
+    { headers: { Authorization: `Bearer ${tinybird.workspaceToken}` } }
   );
+
+  if (!resultsRes.ok) {
+    const text = await resultsRes.text();
+    console.error(`Failed to query benchmark_results (${resultsRes.status}): ${text}`);
+    process.exit(1);
+  }
+
+  const resultsData = await resultsRes.json();
+  const resultRows = resultsData.data ?? [];
+
+  if (resultRows.length === 0) {
+    console.log("No results found for this model.");
+    return;
+  }
+
+  const resultsNdjson = resultRows.map((row: Record<string, unknown>) =>
+    JSON.stringify({ ...row, validated: 1, ingested_at: new Date().toISOString().replace('T', ' ').substring(0, 19) })
+  ).join("\n");
+
+  const pushResultsRes = await fetch(`${tinybird.apiHost}/v0/events?name=benchmark_results`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${tinybird.workspaceToken}` },
+    body: resultsNdjson,
+  });
+
+  if (!pushResultsRes.ok) {
+    const text = await pushResultsRes.text();
+    console.error(`Failed to push validated results (${pushResultsRes.status}): ${text}`);
+    process.exit(1);
+  }
+
+  const pushResultsJson = await pushResultsRes.json();
+  console.log(`Validated ${pushResultsJson.successful_rows} benchmark results`);
+
+  const validationQuery = `SELECT * FROM benchmark_validation FINAL WHERE model = '${escapedModel}' AND provider = '${escapedProvider}' FORMAT JSON`;
+  const validationRes = await fetch(
+    `${tinybird.apiHost}/v0/sql?q=${encodeURIComponent(validationQuery)}`,
+    { headers: { Authorization: `Bearer ${tinybird.workspaceToken}` } }
+  );
+
+  if (!validationRes.ok) {
+    const text = await validationRes.text();
+    console.error(`Failed to query benchmark_validation (${validationRes.status}): ${text}`);
+    process.exit(1);
+  }
+
+  const validationData = await validationRes.json();
+  const validationRows = validationData.data ?? [];
+
+  if (validationRows.length > 0) {
+    const validationNdjson = validationRows.map((row: Record<string, unknown>) =>
+      JSON.stringify({ ...row, validated: 1, ingested_at: new Date().toISOString().replace('T', ' ').substring(0, 19) })
+    ).join("\n");
+
+    const pushValidationRes = await fetch(`${tinybird.apiHost}/v0/events?name=benchmark_validation`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${tinybird.workspaceToken}` },
+      body: validationNdjson,
+    });
+
+    if (!pushValidationRes.ok) {
+      const text = await pushValidationRes.text();
+      console.error(`Failed to push validated validation results (${pushValidationRes.status}): ${text}`);
+      process.exit(1);
+    }
+
+    const pushValidationJson = await pushValidationRes.json();
+    console.log(`Validated ${pushValidationJson.successful_rows} validation results`);
+  }
+
+  console.log(`Model ${providerName}/${modelName} has been validated.`);
+}
+
+async function revalidateModel(modelString: string) {
+  const [providerName, ...modelParts] = modelString.split('/');
+  const modelName = modelParts.join('/');
+
+  if (!providerName || !modelName) {
+    console.error("Invalid model format. Please use format: --model=provider/model");
+    process.exit(1);
+  }
+
+  const { tinybird } = getConfig();
+  if (!tinybird.workspaceToken) {
+    console.error("TINYBIRD_WORKSPACE_TOKEN is required");
+    process.exit(1);
+  }
+
+  console.log(`Re-validating results for ${providerName}/${modelName}...`);
+
+  const llmRes = await fetch(
+    `${tinybird.apiHost}/v0/pipes/api_results.json?model=${encodeURIComponent(modelName)}&include_unvalidated=1`,
+    { headers: { Authorization: `Bearer ${tinybird.workspaceToken}` } }
+  );
+
+  if (!llmRes.ok) {
+    console.error(`Failed to fetch LLM results: ${await llmRes.text()}`);
+    process.exit(1);
+  }
+
+  const llmData = await llmRes.json();
+  const llmResults = (llmData.data ?? []).filter((r: any) => r.provider === providerName);
+
+  if (llmResults.length === 0) {
+    console.log("No results found for this model.");
+    return;
+  }
+
+  console.log(`Found ${llmResults.length} LLM results in Tinybird`);
+
+  const client = getClient();
+  const endpoints = getEndpointQuestions();
+  const humanResults = await fetchHumanResults();
+  const humanByQuestion = new Map(humanResults.map((r: any) => [r.name, r]));
+
+  const chatResults: ChatResponse[] = [];
+  for (const llmEntry of llmResults) {
+    if (!llmEntry.sql_result_success || !llmEntry.sql) continue;
+
+    const sqlResult = await client.executeSqlQuery(llmEntry.sql);
+    chatResults.push({
+      name: llmEntry.name,
+      question: { name: llmEntry.name } as any,
+      sql: llmEntry.sql,
+      sqlResult,
+      model: modelName,
+      provider: providerName,
+      error: null,
+      attempts: [],
+    } as any);
+  }
+
+  console.log(`Re-executed ${chatResults.length} LLM queries`);
+
+  await validateResults(chatResults, humanResults);
+  console.log("Re-validation complete. Fresh validation data pushed to Tinybird.");
 }
 
 async function main() {
@@ -398,77 +558,51 @@ async function main() {
     console.log('Debug mode enabled. LLM requests and responses will be logged.');
   }
   
-  if (args.model) {
-    console.log(`Running benchmark for specific model: ${args.model}`);
-    await runBenchmarkForModel(args.model);
-  } else {
-    //await runHumanQueries();
-    await runBenchmark();
+  if (args.validate) {
+    if (!args.model) {
+      console.error("--validate requires --model=provider/model");
+      process.exit(1);
+    }
+    await validateModel(args.model);
+    return;
   }
 
-  if (!args.skipValidation) {
-    const results = readExistingResults();
-    console.log("Validating results against human baseline...");
-
-    await validateResults(results);
-    console.log("Validation complete. Results pushed to Tinybird.");
-  } else {
-    console.log("Skipping validation as requested");
+  if (args.revalidate) {
+    if (!args.model) {
+      console.error("--revalidate requires --model=provider/model");
+      process.exit(1);
+    }
+    await revalidateModel(args.model);
+    return;
   }
+
+  if (!args.model) {
+    console.error("--model=provider/model is required");
+    printUsage();
+    process.exit(1);
+  }
+
+  console.log(`Running benchmark for model: ${args.model}`);
+  await runBenchmarkForModel(args.model);
 }
 
-// Export the function to avoid 'defined but never used' error
 export async function runHumanQueries() {
-  const client = getClient();
-  const endpoints = getEndpointQuestions();
-
-  const results = [];
-
-  for (const endpoint of endpoints) {
-    console.log(`Running ${endpoint.name}`);
-
-    const sql = endpoint.content
-      .split("SQL >")[1]
-      .split("TYPE endpoint")[0]
-      .trim();
-
-    client.executeSqlQuery(sql);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    const result = await client.executeSqlQuery(sql);
-
-    results.push({
-      name: endpoint.name,
-      question: {
-        name: endpoint.name,
-        content: endpoint.question,
-      },
-      sql,
-      sqlResult: result,
-      model: "human",
-      provider: "human",
-      error: null,
-      attempts: [],
-    });
-  }
-
-  writeFileSync(
-    "benchmark/results-human.json",
-    JSON.stringify(results, null, 2)
-  );
+  const results = await fetchHumanResults();
+  await pushToTinybird(results as any);
+  console.log("Human results pushed to Tinybird.");
 }
 
 async function runBenchmarkForModel(modelString: string) {
-  const [providerName, modelName] = modelString.split('/');
-  
+  const [providerName, ...modelParts] = modelString.split('/');
+  const modelName = modelParts.join('/');
+
   if (!providerName || !modelName) {
     console.error("Invalid model format. Please use format: --model=provider/model");
     process.exit(1);
   }
-  
+
   console.log(`Benchmarking ${providerName}/${modelName}`);
-  
-  // Read the current config file
+
   const configPath = "benchmark-config.json";
   let config;
   try {
@@ -477,13 +611,10 @@ async function runBenchmarkForModel(modelString: string) {
     console.error("Error reading benchmark-config.json:", error);
     process.exit(1);
   }
-  
-  // Check if the provider exists in the config, create it if it doesn't
+
   if (!config.providers[providerName]) {
     console.log(`Provider '${providerName}' not found in benchmark-config.json, creating new entry`);
     config.providers[providerName] = { models: [] };
-    
-    // Write the updated config back to disk
     try {
       writeFileSync(configPath, JSON.stringify(config, null, 2));
       console.log(`Added provider '${providerName}' to benchmark-config.json`);
@@ -492,16 +623,10 @@ async function runBenchmarkForModel(modelString: string) {
       process.exit(1);
     }
   }
-  
-  // Check if the model already exists for the provider
+
   const providerModels = config.providers[providerName].models;
-  if (providerModels.includes(modelName)) {
-    console.log(`Model '${modelName}' already exists for provider '${providerName}'`);
-  } else {
-    // Add the model to the provider's model list
+  if (!providerModels.includes(modelName)) {
     config.providers[providerName].models.push(modelName);
-    
-    // Write the updated config back to disk
     try {
       writeFileSync(configPath, JSON.stringify(config, null, 2));
       console.log(`Added model '${modelName}' to provider '${providerName}' in benchmark-config.json`);
@@ -510,70 +635,22 @@ async function runBenchmarkForModel(modelString: string) {
       process.exit(1);
     }
   }
-  
-  const existingResults = readExistingResults();
-  const completedQuestions = getCompletedQuestionsForModel(
-    existingResults,
-    providerName,
-    modelName
-  );
-  
-  const results = await runModelBenchmark(
-    providerName,
-    modelName,
-    completedQuestions
-  );
-  
-  // Remove existing results for this model and upsert with new results
-  const filteredResults = existingResults.filter(
-    r => !(r.provider === providerName && r.model === modelName)
-  );
 
-  const updatedResults = [...filteredResults, ...results];
-  writeResults(updatedResults);
+  const results = await runModelBenchmark(providerName, modelName);
   await pushToTinybird(results);
-}
 
-async function runBenchmark() {
-  const { providers } = getConfig();
-  let existingResults = readExistingResults();
-
-  for (const provider in providers) {
-    const models = providers[provider as keyof typeof providers].models;
-
-    let index = 0;
-    for (const model of models) {
-      console.log(
-        `Benchmarking ${provider}/${model} (${index + 1}/${models.length})`
-      );
-
-      const completedQuestions = getCompletedQuestionsForModel(
-        existingResults,
-        provider,
-        model
-      );
-      const results = await runModelBenchmark(
-        provider,
-        model,
-        completedQuestions
-      );
-
-      existingResults = existingResults.filter(
-        (r) => !(r.provider === provider && r.model === model)
-      );
-      existingResults.push(...results);
-      writeResults(existingResults);
-      await pushToTinybird(results);
-
-      index++;
-    }
+  const args = parseArgs();
+  if (!args.skipValidation) {
+    console.log("Validating results against human baseline...");
+    const humanResults = await fetchHumanResults();
+    await validateResults(results, humanResults);
+    console.log("Validation complete. Results pushed to Tinybird.");
   }
 }
 
 async function runModelBenchmark(
   provider: string,
   model: string,
-  completedQuestions: Set<string>
 ) {
   const client = getClient();
   const questions = getEndpointQuestions();
@@ -642,14 +719,8 @@ async function runModelBenchmark(
     };
   }
 
-  // Filter out completed questions and take first 10
-  const pendingQuestions = questions.filter(
-    (q) => !completedQuestions.has(q.name)
-  );
-
-  // Process questions in batches of 5
-  for (let i = 0; i < pendingQuestions.length; i += 5) {
-    const batch = pendingQuestions.slice(i, i + 5);
+  for (let i = 0; i < questions.length; i += 5) {
+    const batch = questions.slice(i, i + 5);
     console.log(
       `Processing batch ${Math.floor(i / 5) + 1} with ${batch.length} questions`
     );

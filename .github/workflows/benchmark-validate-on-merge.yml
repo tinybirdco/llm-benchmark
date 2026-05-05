@@ -1,0 +1,59 @@
+name: Validate benchmark results on merge
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+jobs:
+  validate:
+    if: >
+      github.event.pull_request.merged == true &&
+      (startsWith(github.event.pull_request.title, 'Add benchmark results for') ||
+       startsWith(github.event.pull_request.title, 'Batch benchmark results for'))
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: src/package-lock.json
+
+      - name: Install dependencies
+        working-directory: src
+        run: npm ci
+
+      - name: Extract models from PR
+        id: models
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          if echo "$PR_TITLE" | grep -q "^Add benchmark results for "; then
+            # Single model PR — extract from title
+            MODEL=$(echo "$PR_TITLE" | sed 's/Add benchmark results for //')
+            echo "models=$MODEL" >> $GITHUB_OUTPUT
+          elif echo "$PR_TITLE" | grep -q "^Batch benchmark results for "; then
+            # Batch PR — extract models list from PR body
+            # The body contains "**Models benchmarked:**\n<space-separated models>"
+            MODELS=$(echo "$PR_BODY" | grep -A1 "Models benchmarked" | tail -1 | xargs)
+            echo "models=$MODELS" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Validate results in Tinybird
+        if: steps.models.outputs.models != ''
+        working-directory: src
+        env:
+          TINYBIRD_API_HOST: ${{ vars.TINYBIRD_API_HOST }}
+          TINYBIRD_WORKSPACE_TOKEN: ${{ secrets.WORKSPACE_TOKEN }}
+          WORKSPACE_TOKEN: ${{ secrets.WORKSPACE_TOKEN }}
+        run: |
+          MODELS="${{ steps.models.outputs.models }}"
+          for model in $MODELS; do
+            echo "Validating $model..."
+            npm run benchmark -- --model="$model" --validate
+          done

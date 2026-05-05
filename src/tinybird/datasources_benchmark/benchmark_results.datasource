@@ -21,8 +21,33 @@ SCHEMA >
     `llm_error` String `json:$.llm_error` DEFAULT '',
     `num_attempts` UInt8 `json:$.num_attempts`,
     `first_attempt_success` UInt8 `json:$.first_attempt_success`,
+    `validated` UInt8 `json:$.validated` DEFAULT 0,
     `ingested_at` DateTime `json:$.ingested_at` DEFAULT now()
 
 ENGINE "ReplacingMergeTree"
 ENGINE_VER ingested_at
 ENGINE_SORTING_KEY "model, provider, name"
+
+FORWARD_QUERY >
+    SELECT
+        sql,
+        sql_result_success,
+        sql_result_execution_time,
+        sql_result_error,
+        sql_result_query_latency,
+        sql_result_rows_read,
+        sql_result_bytes_read,
+        name,
+        question,
+        model,
+        provider,
+        llm_time_to_first_token,
+        llm_total_duration,
+        llm_prompt_tokens,
+        llm_completion_tokens,
+        llm_total_tokens,
+        llm_error,
+        num_attempts,
+        first_attempt_success,
+        1 AS validated,
+        ingested_at

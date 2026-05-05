@@ -1,6 +1,8 @@
 import { queryTinybird } from "./tinybird";
 import { calculateRanks, ModelMetrics, ValidationMetrics, ValidationResult } from "./eval";
 
+const devParams: Record<string, string> = process.env.VERCEL_ENV !== 'production' ? { include_unvalidated: '1' } : {};
+
 type TinybirdModelMetrics = {
   model: string;
   provider: string;
@@ -90,9 +92,9 @@ export async function fetchLeaderboardData(): Promise<{
   questions: QuestionInfo[];
 }> {
   const [tbMetrics, tbValidation, questions] = await Promise.all([
-    queryTinybird<TinybirdModelMetrics>("api_model_metrics"),
-    queryTinybird<ValidationMetrics>("api_validation_metrics"),
-    queryTinybird<QuestionInfo>("api_questions"),
+    queryTinybird<TinybirdModelMetrics>("api_model_metrics", devParams),
+    queryTinybird<ValidationMetrics>("api_validation_metrics", devParams),
+    queryTinybird<QuestionInfo>("api_questions", devParams),
   ]);
 
   const validationMap = new Map(
@@ -140,7 +142,7 @@ export type TinybirdResult = {
 export async function fetchResultsForModel(
   model: string
 ): Promise<TinybirdResult[]> {
-  return queryTinybird<TinybirdResult>("api_results", { model });
+  return queryTinybird<TinybirdResult>("api_results", { model, ...devParams });
 }
 
 export async function fetchResultsForQuestion(
@@ -148,6 +150,7 @@ export async function fetchResultsForQuestion(
 ): Promise<TinybirdResult[]> {
   return queryTinybird<TinybirdResult>("api_results", {
     question_name: questionName,
+    ...devParams,
   });
 }
 
@@ -155,15 +158,15 @@ export async function fetchValidationForModel(
   model: string,
   provider: string
 ): Promise<ValidationResult[]> {
-  return queryTinybird<ValidationResult>("api_validation_results", { model, provider });
+  return queryTinybird<ValidationResult>("api_validation_results", { model, provider, ...devParams });
 }
 
 export async function fetchValidationForQuestion(
   questionName: string
 ): Promise<ValidationResult[]> {
-  return queryTinybird<ValidationResult>("api_validation_results", { question_name: questionName });
+  return queryTinybird<ValidationResult>("api_validation_results", { question_name: questionName, ...devParams });
 }
 
 export async function fetchQuestionList(): Promise<{ name: string; question: string }[]> {
-  return queryTinybird<{ name: string; question: string }>("api_results", { model: "human" });
+  return queryTinybird<{ name: string; question: string }>("api_results", { model: "human", ...devParams });
 }

@@ -3,11 +3,13 @@ DESCRIPTION >
 
 NODE endpoint
 SQL >
+    %
     SELECT DISTINCT
         name,
         question
     FROM benchmark_results FINAL
     WHERE model = 'human' AND provider = 'human'
+    AND (validated = 1 OR {{ UInt8(include_unvalidated, 0) }} = 1)
     ORDER BY name
 
 TYPE endpoint
