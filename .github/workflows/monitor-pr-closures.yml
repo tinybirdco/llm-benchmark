@@ -35,19 +35,18 @@ jobs:
           echo "model=$MODEL" >> $GITHUB_OUTPUT
           echo "Extracted model: $MODEL"
 
-      - name: Add rejected model to untested list
+      - name: Add rejected model to failed list
         working-directory: src
         run: |
           MODEL="${{ steps.extract-model.outputs.model }}"
           PROVIDER=$(echo "$MODEL" | cut -d'/' -f1)
           MODEL_NAME=$(echo "$MODEL" | cut -d'/' -f2)
-          
-          echo "Adding rejected model to untested list: $MODEL"
-          
-          # Add to untested models to prevent re-processing
+
+          echo "Adding rejected model to failed list: $MODEL"
+
           npm run manage-failed-models add "$PROVIDER" "$MODEL_NAME" "$MODEL" "PR rejected/closed without merging"
-          
-          echo "Model $MODEL has been added to the untested list"
+
+          echo "Model $MODEL has been added to the failed list"
 
       - name: Commit changes to repository
         run: |
@@ -58,8 +57,8 @@ jobs:
           if git diff --quiet; then
             echo "No changes to commit"
           else
-            git add src/untested-models.json src/failed-models.json
-            git commit -m "Add rejected model ${{ steps.extract-model.outputs.model }} to untested list
+            git add src/failed-models.json
+            git commit -m "Add rejected model ${{ steps.extract-model.outputs.model }} to failed list
 
           - Model: ${{ steps.extract-model.outputs.model }}
           - Reason: PR rejected/closed without merging
@@ -83,19 +82,18 @@ jobs:
               issue_number: context.issue.number,
               body: `## Model Rejected
               
-              The model **${model}** has been added to the untested models list to prevent automatic re-processing.
-              
+              The model **${model}** has been added to the failed models list.
+
               **What this means:**
-              - This model will not be automatically benchmarked again
-              - It's now in the "untested" category (not failed, just not wanted)
-              - You can manually remove it from the untested list if you change your mind
-              
+              - This model is tracked as a rejected benchmark
+              - Discovery will still find it, but it won't be re-benchmarked automatically while in the failed list
+
               **To manage this model:**
               \`\`\`bash
-              # Remove from untested list (if you want to try again later)
+              # Remove from failed list (to allow re-benchmarking)
               npm run manage-failed-models remove ${model.split('/')[0]} ${model.split('/')[1]}
-              
-              # List all untested models
+
+              # List all failed models
               npm run manage-failed-models list
               \`\`\`
               

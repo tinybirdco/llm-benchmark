@@ -1,19 +1,5 @@
 import { readFileSync, writeFileSync, existsSync } from "fs";
 
-interface UntestedModel {
-  provider: string;
-  model: string;
-  modelId: string;
-  reason?: string;
-  failed_at?: string;
-}
-
-interface UntestedModelsData {
-  generated_at: string;
-  total_count: number;
-  models: UntestedModel[];
-}
-
 interface FailedModel {
   provider: string;
   model: string;
@@ -27,27 +13,6 @@ interface FailedModelsData {
   generated_at: string;
   total_count: number;
   models: FailedModel[];
-}
-
-function loadUntestedModels(): UntestedModelsData {
-  try {
-    const untestedPath = "untested-models.json";
-    if (!existsSync(untestedPath)) {
-      return {
-        generated_at: new Date().toISOString(),
-        total_count: 0,
-        models: []
-      };
-    }
-    return JSON.parse(readFileSync(untestedPath, "utf-8"));
-  } catch (error) {
-    console.error("Error reading untested-models.json:", error);
-    return {
-      generated_at: new Date().toISOString(),
-      total_count: 0,
-      models: []
-    };
-  }
 }
 
 function loadFailedModels(): FailedModelsData {
@@ -73,22 +38,18 @@ function loadFailedModels(): FailedModelsData {
 
 function addFailedModel(provider: string, model: string, modelId: string, reason: string): void {
   console.log(`Adding failed model: ${provider}/${model} (${reason})`);
-  
-  // Load current failed models
+
   const failedData = loadFailedModels();
-  
-  // Check if model already exists in failed list
+
   const existingIndex = failedData.models.findIndex(
     m => m.provider === provider && m.model === model
   );
-  
+
   if (existingIndex >= 0) {
-    // Update existing entry
     failedData.models[existingIndex].attempt_count += 1;
     failedData.models[existingIndex].failed_at = new Date().toISOString();
     failedData.models[existingIndex].reason = reason;
   } else {
-    // Add new failed model
     failedData.models.push({
       provider,
       model,
@@ -98,59 +59,26 @@ function addFailedModel(provider: string, model: string, modelId: string, reason
       attempt_count: 1
     });
   }
-  
-  // Update metadata
+
   failedData.total_count = failedData.models.length;
   failedData.generated_at = new Date().toISOString();
-  
-  // Save failed models
+
   writeFileSync("failed-models.json", JSON.stringify(failedData, null, 2));
   console.log(`Added to failed-models.json: ${provider}/${model}`);
-  
-  // Also add to untested models to prevent re-processing
-  addToUntestedModels(provider, model, modelId, `Failed: ${reason}`);
-}
-
-function addToUntestedModels(provider: string, model: string, modelId: string, reason?: string): void {
-  const untestedData = loadUntestedModels();
-  
-  // Check if model already exists in untested list
-  const existingIndex = untestedData.models.findIndex(
-    m => m.provider === provider && m.model === model
-  );
-  
-  if (existingIndex < 0) {
-    // Add to untested models
-    untestedData.models.push({
-      provider,
-      model,
-      modelId,
-      reason,
-      failed_at: new Date().toISOString()
-    });
-    
-    // Update metadata
-    untestedData.total_count = untestedData.models.length;
-    untestedData.generated_at = new Date().toISOString();
-    
-    // Save untested models
-    writeFileSync("untested-models.json", JSON.stringify(untestedData, null, 2));
-    console.log(`Added to untested-models.json: ${provider}/${model}`);
-  }
 }
 
 function removeFromFailedModels(provider: string, model: string): void {
   const failedData = loadFailedModels();
-  
+
   const filteredModels = failedData.models.filter(
     m => !(m.provider === provider && m.model === model)
   );
-  
+
   if (filteredModels.length !== failedData.models.length) {
     failedData.models = filteredModels;
     failedData.total_count = filteredModels.length;
     failedData.generated_at = new Date().toISOString();
-    
+
     writeFileSync("failed-models.json", JSON.stringify(failedData, null, 2));
     console.log(`Removed from failed-models.json: ${provider}/${model}`);
   }
@@ -158,16 +86,15 @@ function removeFromFailedModels(provider: string, model: string): void {
 
 function listFailedModels(): void {
   const failedData = loadFailedModels();
-  
+
   console.log(`\n📊 Failed Models Summary:`);
   console.log(`Total failed models: ${failedData.total_count}`);
-  
+
   if (failedData.models.length === 0) {
     console.log("No failed models found.");
     return;
   }
-  
-  // Group by provider
+
   const groupedByProvider = failedData.models.reduce((acc, model) => {
     if (!acc[model.provider]) {
       acc[model.provider] = [];
@@ -175,7 +102,7 @@ function listFailedModels(): void {
     acc[model.provider].push(model);
     return acc;
   }, {} as Record<string, FailedModel[]>);
-  
+
   for (const [provider, models] of Object.entries(groupedByProvider)) {
     console.log(`\n📁 ${provider} (${models.length} failed models):`);
     for (const model of models) {
@@ -190,7 +117,7 @@ function clearFailedModels(): void {
     total_count: 0,
     models: []
   };
-  
+
   writeFileSync("failed-models.json", JSON.stringify(emptyData, null, 2));
   console.log("Cleared all failed models from failed-models.json");
 }
@@ -198,7 +125,7 @@ function clearFailedModels(): void {
 function main() {
   const args = process.argv.slice(2);
   const command = args[0];
-  
+
   switch (command) {
     case "add":
       if (args.length < 5) {
@@ -207,7 +134,7 @@ function main() {
       }
       addFailedModel(args[1], args[2], args[3], args[4]);
       break;
-      
+
     case "remove":
       if (args.length < 3) {
         console.error("Usage: npm run manage-failed-models remove <provider> <model>");
@@ -215,15 +142,15 @@ function main() {
       }
       removeFromFailedModels(args[1], args[2]);
       break;
-      
+
     case "list":
       listFailedModels();
       break;
-      
+
     case "clear":
       clearFailedModels();
       break;
-      
+
     default:
       console.log(`
 Failed Models Management Tool
@@ -246,7 +173,6 @@ Examples:
   }
 }
 
-// Run the script
 if (require.main === module) {
   main();
 }
