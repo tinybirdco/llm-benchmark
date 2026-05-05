@@ -26,13 +26,6 @@ function collectAllKnownModels(): string[] {
     }
   }
 
-  if (existsSync("untested-models.json")) {
-    const untested = JSON.parse(readFileSync("untested-models.json", "utf-8"));
-    for (const m of untested.models || []) {
-      models.push(`${m.provider}/${m.model}`);
-    }
-  }
-
   if (existsSync("failed-models.json")) {
     const failed = JSON.parse(readFileSync("failed-models.json", "utf-8"));
     for (const m of failed.models || []) {

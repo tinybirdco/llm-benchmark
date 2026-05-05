@@ -76,23 +76,6 @@ jobs:
             exit 1
           fi
 
-      - name: Commit updated untested models list
-        if: steps.find-new-models.outputs.new_count != '' && steps.find-new-models.outputs.new_count != '0'
-        working-directory: src
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-
-          if ! git diff --quiet untested-models.json 2>/dev/null; then
-            git add untested-models.json
-            git commit -m "Update untested models list (auto-discover)"
-            git pull --rebase origin main
-            git push origin main
-            echo "Updated untested-models.json committed"
-          else
-            echo "No changes to untested-models.json"
-          fi
-
       - name: Check for existing PRs and run benchmarks
         if: steps.find-new-models.outputs.new_count != '' && steps.find-new-models.outputs.new_count != '0' && github.event.inputs.dry_run != 'true'
         env:
@@ -168,7 +151,7 @@ jobs:
             fi
           elif [ "$FORCE_RUN" = "true" ]; then
             echo "🤖 Auto-discovery: Manual run completed (no new models found)"
-            echo "All OpenRouter models are either tested or in the untested list"
+            echo "All OpenRouter models have been benchmarked"
             echo "Mode: $([ "$DRY_RUN" = "true" ] && echo "Dry run" || echo "Live run")"
             echo "Max models: $([ "$MAX_MODELS" = "0" ] && echo "No limit" || echo "$MAX_MODELS")"
           fi
@@ -177,10 +160,9 @@ jobs:
         if: steps.find-new-models.outputs.new_count == '' || steps.find-new-models.outputs.new_count == '0'
         working-directory: src
         run: |
-          echo "No new models found. All OpenRouter models are either tested or in the untested list."
+          echo "No new models found. All OpenRouter models have been benchmarked."
           echo "Current status:"
           echo "- Tested models: $(node -e "const fs = require('fs'); const config = JSON.parse(fs.readFileSync('benchmark-config.json', 'utf8')); let count = 0; for (const data of Object.values(config.providers)) { count += data.models.length; } console.log(count);")"
-          echo "- Untested models: $(node -e "const fs = require('fs'); const data = JSON.parse(fs.readFileSync('untested-models.json', 'utf8')); console.log(data.total_count);")"
 
       - name: Job summary
         if: always()
@@ -190,15 +172,13 @@ jobs:
           NEW_MODELS="${{ steps.find-new-models.outputs.new_models }}"
 
           TESTED=$(node -e "const fs = require('fs'); try { const c = JSON.parse(fs.readFileSync('benchmark-config.json','utf8')); let n=0; for (const d of Object.values(c.providers)) n+=d.models.length; console.log(n); } catch(e) { console.log('?'); }")
-          UNTESTED=$(node -e "const fs = require('fs'); try { const d = JSON.parse(fs.readFileSync('untested-models.json','utf8')); console.log(d.total_count); } catch(e) { console.log('?'); }")
 
           echo "## Auto-Discovery Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Metric | Count |" >> $GITHUB_STEP_SUMMARY
           echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
           echo "| Tested models | $TESTED |" >> $GITHUB_STEP_SUMMARY
-          echo "| Untested models | $UNTESTED |" >> $GITHUB_STEP_SUMMARY
-          echo "| New models found | ${NEW_COUNT:-0} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Untested models found | ${NEW_COUNT:-0} |" >> $GITHUB_STEP_SUMMARY
 
           if [ -n "$NEW_MODELS" ] && [ "$NEW_MODELS" != "" ]; then
             echo "" >> $GITHUB_STEP_SUMMARY
