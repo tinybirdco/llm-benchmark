@@ -7,10 +7,8 @@ import { ModelMetrics } from "@/lib/eval";
 
 function EmbedContent({
   modelMetrics,
-  humanMetrics,
 }: {
   modelMetrics: ModelMetrics[];
-  humanMetrics: ModelMetrics[];
 }) {
   const searchParams = useSearchParams();
   const hideBranding = searchParams.get("hide_branding") === "true";
@@ -30,10 +28,7 @@ function EmbedContent({
         </div>
       )}
       <div className={hideBranding ? "" : "pt-12"}>
-        <BenchmarkTable
-          modelMetrics={modelMetrics}
-          humanMetrics={humanMetrics}
-        />
+        <BenchmarkTable modelMetrics={modelMetrics} />
       </div>
     </div>
   );
@@ -41,10 +36,8 @@ function EmbedContent({
 
 export function EmbedClient({
   modelMetrics,
-  humanMetrics,
 }: {
   modelMetrics: ModelMetrics[];
-  humanMetrics: ModelMetrics[];
 }) {
   return (
     <Suspense
@@ -54,10 +47,7 @@ export function EmbedClient({
         </div>
       }
     >
-      <EmbedContent
-        modelMetrics={modelMetrics}
-        humanMetrics={humanMetrics}
-      />
+      <EmbedContent modelMetrics={modelMetrics} />
     </Suspense>
   );
 }

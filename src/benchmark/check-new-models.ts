@@ -1,5 +1,5 @@
 import { readFileSync, writeFileSync, existsSync } from "fs";
-import { fetchOpenRouterModels, extractProviderFromModelId } from "./fetch-openrouter-models";
+import { fetchOpenRouterModels, extractProviderFromModelId, isTextOutputModel } from "./fetch-openrouter-models";
 
 interface BenchmarkConfig {
   providers: {

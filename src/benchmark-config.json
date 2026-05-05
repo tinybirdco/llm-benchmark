@@ -6,13 +6,7 @@
         "grok-3-mini-beta",
         "grok-4",
         "grok-code-fast-1",
-        "grok-4-fast",
-        "grok-4.3",
-        "grok-4.1-fast",
-        "grok-4.20-multi-agent",
-        "grok-4.20-beta",
-        "grok-4.20-multi-agent-beta",
-        "grok-4.1-fast:free"
+        "grok-4-fast"
       ]
     },
     "anthropic": {
@@ -24,10 +18,6 @@
         "claude-3.5-haiku",
         "claude-opus-4.1",
         "claude-4.5-sonnet",
-        "claude-sonnet-4.6",
-        "claude-opus-4.7",
-        "claude-opus-4.6",
-        "claude-opus-4.5",
         "claude-haiku-4.5"
       ]
     },
@@ -47,14 +37,6 @@
         "gemini-2.5-flash",
         "gemini-2.5-pro",
         "gemini-3-pro-preview",
-        "gemma-4-31b-it",
-        "gemini-3.1-flash-lite-preview",
-        "gemma-4-26b-a4b-it",
-        "gemini-3.1-pro-preview",
-        "gemini-3.1-flash-image-preview",
-        "gemini-3.1-pro-preview-customtools",
-        "gemini-3-flash-preview",
-        "gemini-3-pro-image-preview",
         "gemini-2.5-flash-image"
       ]
     },
@@ -76,12 +58,6 @@
         "codestral-2508",
         "mistral-medium-3.1",
         "devstral-2512",
-        "ministral-3b-2512",
-        "ministral-8b-2512",
-        "mistral-small-2603",
-        "mistral-small-creative",
-        "ministral-14b-2512",
-        "mistral-large-2512",
         "voxtral-small-24b-2507"
       ]
     },
@@ -101,22 +77,9 @@
         "gpt-5-nano",
         "gpt-5-mini",
         "gpt-5-codex",
-        "gpt-5.3-codex",
-        "gpt-5.5",
         "gpt-5.1-codex",
         "gpt-oss-safeguard-20b",
-        "gpt-5.1-codex-max",
-        "gpt-5.4-image-2",
-        "gpt-5.4",
-        "gpt-5.4-mini",
-        "gpt-5.4-nano",
-        "gpt-5.4-pro",
-        "gpt-5.3-chat",
-        "gpt-5.2-codex",
-        "gpt-5.2",
         "gpt-5.1",
-        "gpt-5.2-pro",
-        "gpt-5.2-chat",
         "gpt-5.1-chat",
         "gpt-5-pro",
         "gpt-oss-120b:exacto",
@@ -137,25 +100,10 @@
         "qwen3-next-80b-a3b-thinking",
         "qwen3-coder-plus",
         "qwen3-coder-flash",
-        "qwen3.6-27b",
-        "qwen3.5-27b",
-        "qwen3-max-thinking",
-        "qwen3-coder-next",
-        "qwen3.6-flash",
         "qwen3-vl-8b-thinking",
-        "qwen3.5-35b-a3b",
-        "qwen3.5-plus-20260420",
-        "qwen3.6-35b-a3b",
-        "qwen3.5-397b-a17b",
         "qwen3-vl-32b-instruct",
-        "qwen3.6-max-preview",
         "qwen3-vl-30b-a3b-thinking",
-        "qwen3.5-flash-02-23",
         "qwen3-vl-30b-a3b-instruct",
-        "qwen3.5-9b",
-        "qwen3.6-plus-preview:free",
-        "qwen3-4b",
-        "qwen3.5-122b-a10b",
         "qwen3-coder:exacto",
         "qwen2.5-coder-7b-instruct"
       ]
@@ -164,36 +112,19 @@
       "models": [
         "kimi-k2",
         "kimi-k2-thinking",
-        "kimi-k2.5",
-        "kimi-k2.6",
         "kimi-k2-0905:exacto",
         "kimi-linear-48b-a3b-instruct"
       ]
     },
-    "cognitivecomputations": {
-      "models": []
-    },
     "z-ai": {
       "models": [
-        "glm-4.7",
-        "glm-4.6v",
-        "glm-5v-turbo",
-        "glm-4.7-flash",
-        "glm-5.1",
-        "glm-5-turbo",
-        "glm-5",
         "glm-4.6:exacto"
       ]
     },
     "nvidia": {
       "models": [
         "nemotron-nano-9b-v2",
-        "nemotron-nano-12b-v2-vl",
-        "nemotron-3-nano-omni-30b-a3b-reasoning:free",
         "llama-3.3-nemotron-super-49b-v1.5",
-        "nemotron-3-super-120b-a12b:free",
-        "nemotron-3-nano-30b-a3b",
-        "nemotron-3-nano-30b-a3b:free",
         "nemotron-nano-12b-v2-vl:free"
       ]
     },
@@ -201,17 +132,8 @@
       "models": [
         "horizon-alpha",
         "horizon-beta",
-        "free",
-        "bodybuilder",
-        "owl-alpha",
-        "pareto-code",
-        "elephant-alpha",
-        "hunter-alpha",
-        "healer-alpha",
-        "aurora-alpha",
         "polaris-alpha",
         "andromeda-alpha",
-        "bert-nebulon-alpha",
         "sherlock-dash-alpha"
       ]
     },
@@ -225,145 +147,35 @@
         "cydonia-24b-v4.1"
       ]
     },
-    "minimax": {
-      "models": [
-        "minimax-m2",
-        "minimax-m2.7",
-        "minimax-m2.1",
-        "minimax-m2.5",
-        "minimax-m2-her",
-        "minimax-m2:free"
-      ]
-    },
-    "writer": {
-      "models": [
-        "palmyra-x5"
-      ]
-    },
-    "relace": {
-      "models": [
-        "relace-search"
-      ]
-    },
-    "tencent": {
-      "models": [
-        "hy3-preview:free"
-      ]
-    },
-    "arcee-ai": {
-      "models": [
-        "trinity-mini",
-        "trinity-large-thinking",
-        "trinity-large-preview:free",
-        "trinity-mini:free"
-      ]
-    },
     "amazon": {
       "models": [
-        "nova-premier-v1",
-        "nova-2-lite-v1"
-      ]
-    },
-    "xiaomi": {
-      "models": [
-        "mimo-v2.5",
-        "mimo-v2.5-pro",
-        "mimo-v2-pro",
-        "mimo-v2-omni",
-        "mimo-v2-flash:free"
+        "nova-premier-v1"
       ]
     },
     "inclusionai": {
       "models": [
-        "ling-2.6-flash",
         "ring-1t"
-      ]
-    },
-    "aion-labs": {
-      "models": [
-        "aion-2.0"
       ]
     },
     "deepcogito": {
       "models": [
-        "cogito-v2.1-671b",
         "cogito-v2-preview-llama-70b"
       ]
     },
     "liquid": {
       "models": [
-        "lfm-2-24b-a2b",
         "lfm2-8b-a1b",
-        "lfm-2.5-1.2b-instruct:free",
         "lfm-2.2-6b"
       ]
     },
     "ibm-granite": {
       "models": [
-        "granite-4.1-8b",
         "granite-4.0-h-micro"
-      ]
-    },
-    "rekaai": {
-      "models": [
-        "reka-edge",
-        "reka-flash-3"
-      ]
-    },
-    "bytedance-seed": {
-      "models": [
-        "seed-2.0-mini",
-        "seed-2.0-lite",
-        "seed-1.6-flash",
-        "seed-1.6"
       ]
     },
     "sao10k": {
       "models": [
         "l3.1-70b-hanami-x1"
-      ]
-    },
-    "allenai": {
-      "models": [
-        "olmo-3.1-32b-instruct",
-        "olmo-3-7b-think",
-        "olmo-3-7b-instruct",
-        "olmo-3.1-32b-think:free"
-      ]
-    },
-    "reka": {
-      "models": [
-        "reka-edge"
-      ]
-    },
-    "nex-agi": {
-      "models": [
-        "deepseek-v3.1-nex-n1"
-      ]
-    },
-    "inception": {
-      "models": [
-        "mercury-2"
-      ]
-    },
-    "kwaipilot": {
-      "models": [
-        "kat-coder-pro-v2"
-      ]
-    },
-    "upstage": {
-      "models": [
-        "solar-pro-3:free"
-      ]
-    },
-    "stepfun": {
-      "models": [
-        "step-3.5-flash:free"
-      ]
-    },
-    "prime-intellect": {
-      "models": [
-        "intellect-3"
       ]
     },
     "perplexity": {

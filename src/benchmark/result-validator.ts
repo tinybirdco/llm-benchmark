@@ -27,9 +27,9 @@ export function compareResults(humanResult: any, llmResult: any): any {
       matches: false,
       reason: "Missing data in results",
       distance: {
-        exact: 0,
-        numeric: 0,
-        fScore: 1
+        exact: 1,
+        numeric: 1,
+        fScore: 0
       }
     };
   }

@@ -162,6 +162,55 @@ async function pushToTinybird(results: ChatResponse[]) {
   }
 }
 
+async function pushValidationToTinybird(validation: Record<string, ValidationResult | ValidationSummary>) {
+  const { tinybird } = getConfig();
+  if (!tinybird.workspaceToken) return;
+
+  const rows: string[] = [];
+  for (const [questionName, questionData] of Object.entries(validation)) {
+    if (questionName === '_summary') continue;
+    const vr = questionData as ValidationResult;
+    for (const [modelKey, modelResult] of Object.entries(vr.models)) {
+      const [provider, ...modelParts] = modelKey.split('/');
+      const model = modelParts.join('/');
+      rows.push(JSON.stringify({
+        model,
+        provider,
+        name: questionName,
+        matches: modelResult.matches ? 1 : 0,
+        exact_matches: modelResult.exactMatches ? 1 : 0,
+        numeric_matches: modelResult.numericMatches ? 1 : 0,
+        distance_exact: modelResult.distance?.exact ?? 1,
+        distance_numeric: modelResult.distance?.numeric ?? 1,
+        distance_fscore: modelResult.distance?.fScore ?? 0,
+        human_row_count: (modelResult as any).humanRowCount ?? 0,
+        llm_row_count: (modelResult as any).llmRowCount ?? 0,
+      }));
+    }
+  }
+
+  if (rows.length === 0) return;
+
+  try {
+    const res = await fetch(`${tinybird.apiHost}/v0/events?name=benchmark_validation`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${tinybird.workspaceToken}` },
+      body: rows.join("\n"),
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      console.error(`Failed to push validation to Tinybird (${res.status}): ${text}`);
+      return;
+    }
+
+    const json = await res.json();
+    console.log(`Pushed ${json.successful_rows} validation results to Tinybird`);
+  } catch (err) {
+    console.error("Failed to push validation to Tinybird:", err);
+  }
+}
+
 interface ValidationResult {
   models: Record<string, ModelValidationResult>;
   humanResults: SqlResult;
@@ -194,7 +243,7 @@ interface ValidationSummary {
   >;
 }
 
-function validateResults(results: ChatResponse[]): Record<string, ValidationResult | ValidationSummary> {
+async function validateResults(results: ChatResponse[]): Promise<Record<string, ValidationResult | ValidationSummary>> {
   const humanResults = readHumanResults();
   if (humanResults.length === 0) {
     console.error("No human results available for validation");
@@ -243,10 +292,7 @@ function validateResults(results: ChatResponse[]): Record<string, ValidationResu
   const summary = calculateValidationSummary(validation);
   validation._summary = summary;
 
-  writeFileSync(
-    "benchmark/validation-results.json",
-    JSON.stringify(validation, null, 2)
-  );
+  await pushValidationToTinybird(validation);
 
   return validation;
 }
@@ -311,13 +357,15 @@ function calculateValidationSummary(validation: Record<string, ValidationResult 
 
   for (const modelKey of Object.keys(summary.modelStats)) {
     const stats = summary.modelStats[modelKey];
-    const count = summary.totalQuestions;
-
-    if (count > 0) {
-      stats.avgExactDistance = stats.avgExactDistance / count;
-      stats.avgNumericDistance = stats.avgNumericDistance / count;
-      stats.avgFScore = stats.avgFScore / count;
+    let questionsWithData = 0;
+    for (const q of questions) {
+      const qData = validation[q] as ValidationResult;
+      if (qData.models[modelKey]) questionsWithData++;
     }
+    const count = questionsWithData || 1;
+    stats.avgExactDistance = stats.avgExactDistance / count;
+    stats.avgNumericDistance = stats.avgNumericDistance / count;
+    stats.avgFScore = stats.avgFScore / count;
   }
 
   return summary;
@@ -361,11 +409,9 @@ async function main() {
   if (!args.skipValidation) {
     const results = readExistingResults();
     console.log("Validating results against human baseline...");
-    
-    validateResults(results);
-    console.log(
-      "Validation complete. Results saved to benchmark/validation-results.json"
-    );
+
+    await validateResults(results);
+    console.log("Validation complete. Results pushed to Tinybird.");
   } else {
     console.log("Skipping validation as requested");
   }

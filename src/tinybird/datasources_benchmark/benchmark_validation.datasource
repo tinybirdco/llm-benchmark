@@ -1,0 +1,20 @@
+DESCRIPTION >
+    Per-question per-model validation results comparing LLM SQL output against human baseline.
+
+SCHEMA >
+    `model` String `json:$.model`,
+    `provider` String `json:$.provider`,
+    `name` String `json:$.name`,
+    `matches` UInt8 `json:$.matches`,
+    `exact_matches` UInt8 `json:$.exact_matches`,
+    `numeric_matches` UInt8 `json:$.numeric_matches`,
+    `distance_exact` Float32 `json:$.distance_exact`,
+    `distance_numeric` Float32 `json:$.distance_numeric`,
+    `distance_fscore` Float32 `json:$.distance_fscore`,
+    `human_row_count` UInt32 `json:$.human_row_count`,
+    `llm_row_count` UInt32 `json:$.llm_row_count`,
+    `ingested_at` DateTime `json:$.ingested_at` DEFAULT now()
+
+ENGINE "ReplacingMergeTree"
+ENGINE_VER ingested_at
+ENGINE_SORTING_KEY "model, provider, name"
