@@ -25,7 +25,7 @@ SQL >
         num_attempts,
         first_attempt_success
     FROM benchmark_results FINAL
-    WHERE 1 = 1
+    WHERE (validated = 1 OR {{ UInt8(include_unvalidated, 0) }} = 1)
     {% if defined(model) %} AND model = {{ String(model) }} {% end %}
     {% if defined(provider) %} AND provider = {{ String(provider) }} {% end %}
     {% if defined(question_name) %} AND name = {{ String(question_name) }} {% end %}

@@ -4,6 +4,7 @@ DESCRIPTION >
 
 NODE endpoint
 SQL >
+    %
     SELECT
         v.model,
         v.provider,
@@ -23,12 +24,13 @@ SQL >
             sum(distance_numeric) as sum_numeric,
             sum(distance_fscore) as sum_fscore
         FROM benchmark_validation FINAL
+        WHERE validated = 1 OR {{ UInt8(include_unvalidated, 0) }} = 1
         GROUP BY model, provider
     ) v
     CROSS JOIN
     (
         SELECT count() as total
-        FROM (SELECT DISTINCT name FROM benchmark_validation FINAL)
+        FROM (SELECT DISTINCT name FROM benchmark_validation FINAL WHERE validated = 1 OR {{ UInt8(include_unvalidated, 0) }} = 1)
     ) q
 
 TYPE endpoint

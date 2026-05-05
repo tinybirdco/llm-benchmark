@@ -3,6 +3,7 @@ DESCRIPTION >
 
 NODE endpoint
 SQL >
+    %
     SELECT
         model,
         provider,
@@ -20,6 +21,7 @@ SQL >
         100.0 * countIf(sql_result_success = 1) / count() as success_rate,
         100.0 * countIf(first_attempt_success = 1) / count() as first_attempt_rate
     FROM benchmark_results FINAL
+    WHERE validated = 1 OR {{ UInt8(include_unvalidated, 0) }} = 1
     GROUP BY model, provider
 
 TYPE endpoint

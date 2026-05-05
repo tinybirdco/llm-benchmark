@@ -1,0 +1,1 @@
+{"model":"test-model","provider":"test-provider","name":"test_q","matches":1,"exact_matches":1,"numeric_matches":1,"distance_exact":0,"distance_numeric":0,"distance_fscore":1,"human_row_count":10,"llm_row_count":10,"validated":1}
