@@ -380,6 +380,11 @@
       "models": [
         "hermes-3-llama-3.1-405b:free"
       ]
+    },
+    "poolside": {
+      "models": [
+        "laguna-m.1:free"
+      ]
     }
   }
 }
