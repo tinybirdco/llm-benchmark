@@ -1,12 +1,36 @@
 {
-  "generated_at": "2026-05-05T09:02:33.185Z",
-  "total_count": 198,
+  "generated_at": "2026-05-05T13:39:46.680Z",
+  "total_count": 282,
   "models": [
+    {
+      "provider": "x-ai",
+      "model": "grok-4.3",
+      "modelId": "x-ai/grok-4.3",
+      "created": 1777591821
+    },
+    {
+      "provider": "ibm-granite",
+      "model": "granite-4.1-8b",
+      "modelId": "ibm-granite/granite-4.1-8b",
+      "created": 1777577071
+    },
     {
       "provider": "mistralai",
       "model": "mistral-medium-3-5",
       "modelId": "mistralai/mistral-medium-3-5",
       "created": 1777570439
+    },
+    {
+      "provider": "openrouter",
+      "model": "owl-alpha",
+      "modelId": "openrouter/owl-alpha",
+      "created": 1777398589
+    },
+    {
+      "provider": "nvidia",
+      "model": "nemotron-3-nano-omni-30b-a3b-reasoning:free",
+      "modelId": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+      "created": 1777393095
     },
     {
       "provider": "poolside",
@@ -63,10 +87,46 @@
       "created": 1777318334
     },
     {
+      "provider": "qwen",
+      "model": "qwen3.5-plus-20260420",
+      "modelId": "qwen/qwen3.5-plus-20260420",
+      "created": 1777261368
+    },
+    {
+      "provider": "qwen",
+      "model": "qwen3.6-flash",
+      "modelId": "qwen/qwen3.6-flash",
+      "created": 1777261362
+    },
+    {
+      "provider": "qwen",
+      "model": "qwen3.6-35b-a3b",
+      "modelId": "qwen/qwen3.6-35b-a3b",
+      "created": 1777260255
+    },
+    {
+      "provider": "qwen",
+      "model": "qwen3.6-max-preview",
+      "modelId": "qwen/qwen3.6-max-preview",
+      "created": 1777260242
+    },
+    {
+      "provider": "qwen",
+      "model": "qwen3.6-27b",
+      "modelId": "qwen/qwen3.6-27b",
+      "created": 1777255064
+    },
+    {
       "provider": "openai",
       "model": "gpt-5.5-pro",
       "modelId": "openai/gpt-5.5-pro",
       "created": 1777051896
+    },
+    {
+      "provider": "openai",
+      "model": "gpt-5.5",
+      "modelId": "openai/gpt-5.5",
+      "created": 1777051893
     },
     {
       "provider": "deepseek",
@@ -81,10 +141,40 @@
       "created": 1776948238
     },
     {
+      "provider": "tencent",
+      "model": "hy3-preview:free",
+      "modelId": "tencent/hy3-preview:free",
+      "created": 1776878150
+    },
+    {
+      "provider": "xiaomi",
+      "model": "mimo-v2.5-pro",
+      "modelId": "xiaomi/mimo-v2.5-pro",
+      "created": 1776874273
+    },
+    {
+      "provider": "xiaomi",
+      "model": "mimo-v2.5",
+      "modelId": "xiaomi/mimo-v2.5",
+      "created": 1776874269
+    },
+    {
+      "provider": "inclusionai",
+      "model": "ling-2.6-flash",
+      "modelId": "inclusionai/ling-2.6-flash",
+      "created": 1776795886
+    },
+    {
       "provider": "~anthropic",
       "model": "claude-opus-latest",
       "modelId": "~anthropic/claude-opus-latest",
       "created": 1776795361
+    },
+    {
+      "provider": "openrouter",
+      "model": "pareto-code",
+      "modelId": "openrouter/pareto-code",
+      "created": 1776747900
     },
     {
       "provider": "baidu",
@@ -93,10 +183,28 @@
       "created": 1776707472
     },
     {
+      "provider": "moonshotai",
+      "model": "kimi-k2.6",
+      "modelId": "moonshotai/kimi-k2.6",
+      "created": 1776699402
+    },
+    {
+      "provider": "anthropic",
+      "model": "claude-opus-4.7",
+      "modelId": "anthropic/claude-opus-4.7",
+      "created": 1776351100
+    },
+    {
       "provider": "anthropic",
       "model": "claude-opus-4.6-fast",
       "modelId": "anthropic/claude-opus-4.6-fast",
       "created": 1775592472
+    },
+    {
+      "provider": "z-ai",
+      "model": "glm-5.1",
+      "modelId": "z-ai/glm-5.1",
+      "created": 1775578025
     },
     {
       "provider": "google",
@@ -106,8 +214,20 @@
     },
     {
       "provider": "google",
+      "model": "gemma-4-26b-a4b-it",
+      "modelId": "google/gemma-4-26b-a4b-it",
+      "created": 1775227989
+    },
+    {
+      "provider": "google",
       "model": "gemma-4-31b-it:free",
       "modelId": "google/gemma-4-31b-it:free",
+      "created": 1775148486
+    },
+    {
+      "provider": "google",
+      "model": "gemma-4-31b-it",
+      "modelId": "google/gemma-4-31b-it",
       "created": 1775148486
     },
     {
@@ -117,22 +237,88 @@
       "created": 1775133557
     },
     {
+      "provider": "z-ai",
+      "model": "glm-5v-turbo",
+      "modelId": "z-ai/glm-5v-turbo",
+      "created": 1775061458
+    },
+    {
+      "provider": "arcee-ai",
+      "model": "trinity-large-thinking",
+      "modelId": "arcee-ai/trinity-large-thinking",
+      "created": 1775058318
+    },
+    {
+      "provider": "x-ai",
+      "model": "grok-4.20-multi-agent",
+      "modelId": "x-ai/grok-4.20-multi-agent",
+      "created": 1774979158
+    },
+    {
       "provider": "x-ai",
       "model": "grok-4.20",
       "modelId": "x-ai/grok-4.20",
       "created": 1774979019
     },
     {
-      "provider": "google",
-      "model": "lyria-3-pro-preview",
-      "modelId": "google/lyria-3-pro-preview",
-      "created": 1774907286
+      "provider": "kwaipilot",
+      "model": "kat-coder-pro-v2",
+      "modelId": "kwaipilot/kat-coder-pro-v2",
+      "created": 1774649310
     },
     {
-      "provider": "google",
-      "model": "lyria-3-clip-preview",
-      "modelId": "google/lyria-3-clip-preview",
-      "created": 1774907255
+      "provider": "rekaai",
+      "model": "reka-edge",
+      "modelId": "rekaai/reka-edge",
+      "created": 1774026965
+    },
+    {
+      "provider": "xiaomi",
+      "model": "mimo-v2-omni",
+      "modelId": "xiaomi/mimo-v2-omni",
+      "created": 1773863703
+    },
+    {
+      "provider": "xiaomi",
+      "model": "mimo-v2-pro",
+      "modelId": "xiaomi/mimo-v2-pro",
+      "created": 1773863643
+    },
+    {
+      "provider": "minimax",
+      "model": "minimax-m2.7",
+      "modelId": "minimax/minimax-m2.7",
+      "created": 1773836697
+    },
+    {
+      "provider": "openai",
+      "model": "gpt-5.4-nano",
+      "modelId": "openai/gpt-5.4-nano",
+      "created": 1773748187
+    },
+    {
+      "provider": "openai",
+      "model": "gpt-5.4-mini",
+      "modelId": "openai/gpt-5.4-mini",
+      "created": 1773748178
+    },
+    {
+      "provider": "mistralai",
+      "model": "mistral-small-2603",
+      "modelId": "mistralai/mistral-small-2603",
+      "created": 1773695685
+    },
+    {
+      "provider": "z-ai",
+      "model": "glm-5-turbo",
+      "modelId": "z-ai/glm-5-turbo",
+      "created": 1773583573
+    },
+    {
+      "provider": "nvidia",
+      "model": "nemotron-3-super-120b-a12b:free",
+      "modelId": "nvidia/nemotron-3-super-120b-a12b:free",
+      "created": 1773245239
     },
     {
       "provider": "nvidia",
@@ -141,16 +327,160 @@
       "created": 1773245239
     },
     {
+      "provider": "bytedance-seed",
+      "model": "seed-2.0-lite",
+      "modelId": "bytedance-seed/seed-2.0-lite",
+      "created": 1773157231
+    },
+    {
+      "provider": "qwen",
+      "model": "qwen3.5-9b",
+      "modelId": "qwen/qwen3.5-9b",
+      "created": 1773152396
+    },
+    {
+      "provider": "openai",
+      "model": "gpt-5.4-pro",
+      "modelId": "openai/gpt-5.4-pro",
+      "created": 1772734366
+    },
+    {
+      "provider": "openai",
+      "model": "gpt-5.4",
+      "modelId": "openai/gpt-5.4",
+      "created": 1772734352
+    },
+    {
+      "provider": "inception",
+      "model": "mercury-2",
+      "modelId": "inception/mercury-2",
+      "created": 1772636275
+    },
+    {
+      "provider": "openai",
+      "model": "gpt-5.3-chat",
+      "modelId": "openai/gpt-5.3-chat",
+      "created": 1772564061
+    },
+    {
+      "provider": "google",
+      "model": "gemini-3.1-flash-lite-preview",
+      "modelId": "google/gemini-3.1-flash-lite-preview",
+      "created": 1772512673
+    },
+    {
+      "provider": "bytedance-seed",
+      "model": "seed-2.0-mini",
+      "modelId": "bytedance-seed/seed-2.0-mini",
+      "created": 1772131107
+    },
+    {
+      "provider": "qwen",
+      "model": "qwen3.5-35b-a3b",
+      "modelId": "qwen/qwen3.5-35b-a3b",
+      "created": 1772053822
+    },
+    {
+      "provider": "qwen",
+      "model": "qwen3.5-27b",
+      "modelId": "qwen/qwen3.5-27b",
+      "created": 1772053810
+    },
+    {
+      "provider": "qwen",
+      "model": "qwen3.5-122b-a10b",
+      "modelId": "qwen/qwen3.5-122b-a10b",
+      "created": 1772053789
+    },
+    {
+      "provider": "qwen",
+      "model": "qwen3.5-flash-02-23",
+      "modelId": "qwen/qwen3.5-flash-02-23",
+      "created": 1772053776
+    },
+    {
+      "provider": "liquid",
+      "model": "lfm-2-24b-a2b",
+      "modelId": "liquid/lfm-2-24b-a2b",
+      "created": 1772048711
+    },
+    {
+      "provider": "google",
+      "model": "gemini-3.1-pro-preview-customtools",
+      "modelId": "google/gemini-3.1-pro-preview-customtools",
+      "created": 1772045923
+    },
+    {
+      "provider": "openai",
+      "model": "gpt-5.3-codex",
+      "modelId": "openai/gpt-5.3-codex",
+      "created": 1771959164
+    },
+    {
+      "provider": "aion-labs",
+      "model": "aion-2.0",
+      "modelId": "aion-labs/aion-2.0",
+      "created": 1771881306
+    },
+    {
+      "provider": "anthropic",
+      "model": "claude-sonnet-4.6",
+      "modelId": "anthropic/claude-sonnet-4.6",
+      "created": 1771342990
+    },
+    {
       "provider": "qwen",
       "model": "qwen3.5-plus-02-15",
       "modelId": "qwen/qwen3.5-plus-02-15",
       "created": 1771229416
     },
     {
+      "provider": "qwen",
+      "model": "qwen3.5-397b-a17b",
+      "modelId": "qwen/qwen3.5-397b-a17b",
+      "created": 1771223018
+    },
+    {
       "provider": "minimax",
       "model": "minimax-m2.5:free",
       "modelId": "minimax/minimax-m2.5:free",
       "created": 1770908502
+    },
+    {
+      "provider": "minimax",
+      "model": "minimax-m2.5",
+      "modelId": "minimax/minimax-m2.5",
+      "created": 1770908502
+    },
+    {
+      "provider": "z-ai",
+      "model": "glm-5",
+      "modelId": "z-ai/glm-5",
+      "created": 1770829182
+    },
+    {
+      "provider": "qwen",
+      "model": "qwen3-max-thinking",
+      "modelId": "qwen/qwen3-max-thinking",
+      "created": 1770671901
+    },
+    {
+      "provider": "anthropic",
+      "model": "claude-opus-4.6",
+      "modelId": "anthropic/claude-opus-4.6",
+      "created": 1770219050
+    },
+    {
+      "provider": "qwen",
+      "model": "qwen3-coder-next",
+      "modelId": "qwen/qwen3-coder-next",
+      "created": 1770164101
+    },
+    {
+      "provider": "openrouter",
+      "model": "free",
+      "modelId": "openrouter/free",
+      "created": 1769917427
     },
     {
       "provider": "stepfun",
@@ -165,10 +495,28 @@
       "created": 1769552670
     },
     {
+      "provider": "moonshotai",
+      "model": "kimi-k2.5",
+      "modelId": "moonshotai/kimi-k2.5",
+      "created": 1769487076
+    },
+    {
       "provider": "upstage",
       "model": "solar-pro-3",
       "modelId": "upstage/solar-pro-3",
       "created": 1769481200
+    },
+    {
+      "provider": "minimax",
+      "model": "minimax-m2-her",
+      "modelId": "minimax/minimax-m2-her",
+      "created": 1769177239
+    },
+    {
+      "provider": "writer",
+      "model": "palmyra-x5",
+      "modelId": "writer/palmyra-x5",
+      "created": 1769003823
     },
     {
       "provider": "liquid",
@@ -177,16 +525,58 @@
       "created": 1768927527
     },
     {
-      "provider": "openai",
-      "model": "gpt-audio",
-      "modelId": "openai/gpt-audio",
-      "created": 1768862569
+      "provider": "liquid",
+      "model": "lfm-2.5-1.2b-instruct:free",
+      "modelId": "liquid/lfm-2.5-1.2b-instruct:free",
+      "created": 1768927521
+    },
+    {
+      "provider": "z-ai",
+      "model": "glm-4.7-flash",
+      "modelId": "z-ai/glm-4.7-flash",
+      "created": 1768833913
     },
     {
       "provider": "openai",
-      "model": "gpt-audio-mini",
-      "modelId": "openai/gpt-audio-mini",
-      "created": 1768859419
+      "model": "gpt-5.2-codex",
+      "modelId": "openai/gpt-5.2-codex",
+      "created": 1768409315
+    },
+    {
+      "provider": "allenai",
+      "model": "olmo-3.1-32b-instruct",
+      "modelId": "allenai/olmo-3.1-32b-instruct",
+      "created": 1767728554
+    },
+    {
+      "provider": "bytedance-seed",
+      "model": "seed-1.6-flash",
+      "modelId": "bytedance-seed/seed-1.6-flash",
+      "created": 1766505011
+    },
+    {
+      "provider": "bytedance-seed",
+      "model": "seed-1.6",
+      "modelId": "bytedance-seed/seed-1.6",
+      "created": 1766504997
+    },
+    {
+      "provider": "minimax",
+      "model": "minimax-m2.1",
+      "modelId": "minimax/minimax-m2.1",
+      "created": 1766454997
+    },
+    {
+      "provider": "z-ai",
+      "model": "glm-4.7",
+      "modelId": "z-ai/glm-4.7",
+      "created": 1766378014
+    },
+    {
+      "provider": "google",
+      "model": "gemini-3-flash-preview",
+      "modelId": "google/gemini-3-flash-preview",
+      "created": 1765987078
     },
     {
       "provider": "xiaomi",
@@ -195,10 +585,106 @@
       "created": 1765731308
     },
     {
+      "provider": "nvidia",
+      "model": "nemotron-3-nano-30b-a3b:free",
+      "modelId": "nvidia/nemotron-3-nano-30b-a3b:free",
+      "created": 1765731275
+    },
+    {
+      "provider": "nvidia",
+      "model": "nemotron-3-nano-30b-a3b",
+      "modelId": "nvidia/nemotron-3-nano-30b-a3b",
+      "created": 1765731275
+    },
+    {
+      "provider": "openai",
+      "model": "gpt-5.2-chat",
+      "modelId": "openai/gpt-5.2-chat",
+      "created": 1765389783
+    },
+    {
+      "provider": "openai",
+      "model": "gpt-5.2-pro",
+      "modelId": "openai/gpt-5.2-pro",
+      "created": 1765389780
+    },
+    {
+      "provider": "openai",
+      "model": "gpt-5.2",
+      "modelId": "openai/gpt-5.2",
+      "created": 1765389775
+    },
+    {
+      "provider": "relace",
+      "model": "relace-search",
+      "modelId": "relace/relace-search",
+      "created": 1765213560
+    },
+    {
+      "provider": "z-ai",
+      "model": "glm-4.6v",
+      "modelId": "z-ai/glm-4.6v",
+      "created": 1765207462
+    },
+    {
+      "provider": "nex-agi",
+      "model": "deepseek-v3.1-nex-n1",
+      "modelId": "nex-agi/deepseek-v3.1-nex-n1",
+      "created": 1765204393
+    },
+    {
       "provider": "essentialai",
       "model": "rnj-1-instruct",
       "modelId": "essentialai/rnj-1-instruct",
       "created": 1765094847
+    },
+    {
+      "provider": "openrouter",
+      "model": "bodybuilder",
+      "modelId": "openrouter/bodybuilder",
+      "created": 1764903653
+    },
+    {
+      "provider": "openai",
+      "model": "gpt-5.1-codex-max",
+      "modelId": "openai/gpt-5.1-codex-max",
+      "created": 1764878934
+    },
+    {
+      "provider": "amazon",
+      "model": "nova-2-lite-v1",
+      "modelId": "amazon/nova-2-lite-v1",
+      "created": 1764696672
+    },
+    {
+      "provider": "mistralai",
+      "model": "ministral-14b-2512",
+      "modelId": "mistralai/ministral-14b-2512",
+      "created": 1764681735
+    },
+    {
+      "provider": "mistralai",
+      "model": "ministral-8b-2512",
+      "modelId": "mistralai/ministral-8b-2512",
+      "created": 1764681654
+    },
+    {
+      "provider": "mistralai",
+      "model": "ministral-3b-2512",
+      "modelId": "mistralai/ministral-3b-2512",
+      "created": 1764681560
+    },
+    {
+      "provider": "mistralai",
+      "model": "mistral-large-2512",
+      "modelId": "mistralai/mistral-large-2512",
+      "created": 1764624472
+    },
+    {
+      "provider": "arcee-ai",
+      "model": "trinity-mini",
+      "modelId": "arcee-ai/trinity-mini",
+      "created": 1764601720
     },
     {
       "provider": "deepseek",
@@ -207,28 +693,52 @@
       "created": 1764594837
     },
     {
+      "provider": "prime-intellect",
+      "model": "intellect-3",
+      "modelId": "prime-intellect/intellect-3",
+      "created": 1764212534
+    },
+    {
+      "provider": "anthropic",
+      "model": "claude-opus-4.5",
+      "modelId": "anthropic/claude-opus-4.5",
+      "created": 1764010580
+    },
+    {
       "provider": "allenai",
       "model": "olmo-3-32b-think",
       "modelId": "allenai/olmo-3-32b-think",
       "created": 1763758276
     },
     {
-      "provider": "openai",
-      "model": "gpt-5-image-mini",
-      "modelId": "openai/gpt-5-image-mini",
-      "created": 1760624583
+      "provider": "x-ai",
+      "model": "grok-4.1-fast",
+      "modelId": "x-ai/grok-4.1-fast",
+      "created": 1763587502
+    },
+    {
+      "provider": "deepcogito",
+      "model": "cogito-v2.1-671b",
+      "modelId": "deepcogito/cogito-v2.1-671b",
+      "created": 1763071233
+    },
+    {
+      "provider": "nvidia",
+      "model": "nemotron-nano-12b-v2-vl",
+      "modelId": "nvidia/nemotron-nano-12b-v2-vl",
+      "created": 1761675565
+    },
+    {
+      "provider": "minimax",
+      "model": "minimax-m2",
+      "modelId": "minimax/minimax-m2",
+      "created": 1761252093
     },
     {
       "provider": "qwen",
       "model": "qwen3-vl-8b-instruct",
       "modelId": "qwen/qwen3-vl-8b-instruct",
       "created": 1760463308
-    },
-    {
-      "provider": "openai",
-      "model": "gpt-5-image",
-      "modelId": "openai/gpt-5-image",
-      "created": 1760447986
     },
     {
       "provider": "openai",
@@ -331,12 +841,6 @@
       "model": "hermes-4-405b",
       "modelId": "nousresearch/hermes-4-405b",
       "created": 1756235463
-    },
-    {
-      "provider": "openai",
-      "model": "gpt-4o-audio-preview",
-      "modelId": "openai/gpt-4o-audio-preview",
-      "created": 1755233061
     },
     {
       "provider": "baidu",
@@ -661,6 +1165,12 @@
       "model": "gpt-4o-search-preview",
       "modelId": "openai/gpt-4o-search-preview",
       "created": 1741817949
+    },
+    {
+      "provider": "rekaai",
+      "model": "reka-flash-3",
+      "modelId": "rekaai/reka-flash-3",
+      "created": 1741812813
     },
     {
       "provider": "google",
@@ -1123,12 +1633,6 @@
       "model": "goliath-120b",
       "modelId": "alpindale/goliath-120b",
       "created": 1699574400
-    },
-    {
-      "provider": "openrouter",
-      "model": "auto",
-      "modelId": "openrouter/auto",
-      "created": 1699401600
     },
     {
       "provider": "openai",
