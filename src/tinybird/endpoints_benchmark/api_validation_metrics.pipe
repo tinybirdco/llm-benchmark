@@ -1,0 +1,34 @@
+DESCRIPTION >
+    Returns per-model aggregated validation metrics for the leaderboard.
+    Missing questions count as worst-case (exact=1, numeric=1, fscore=0).
+
+NODE endpoint
+SQL >
+    SELECT
+        v.model,
+        v.provider,
+        v.answered_questions,
+        v.total_matches,
+        (v.sum_exact + (q.total - v.answered_questions)) / q.total as avg_exact_distance,
+        (v.sum_numeric + (q.total - v.answered_questions)) / q.total as avg_numeric_distance,
+        v.sum_fscore / q.total as avg_fscore
+    FROM
+    (
+        SELECT
+            model,
+            provider,
+            count() as answered_questions,
+            countIf(matches = 1) as total_matches,
+            sum(distance_exact) as sum_exact,
+            sum(distance_numeric) as sum_numeric,
+            sum(distance_fscore) as sum_fscore
+        FROM benchmark_validation FINAL
+        GROUP BY model, provider
+    ) v
+    CROSS JOIN
+    (
+        SELECT count() as total
+        FROM (SELECT DISTINCT name FROM benchmark_validation FINAL)
+    ) q
+
+TYPE endpoint

@@ -1,0 +1,3 @@
+{"model":"gpt-4o","provider":"openai","name":"pipe_01.pipe","matches":1,"exact_matches":1,"numeric_matches":1,"distance_exact":0.0,"distance_numeric":0.0,"distance_fscore":1.0,"human_row_count":10,"llm_row_count":10}
+{"model":"gpt-4o","provider":"openai","name":"pipe_02.pipe","matches":1,"exact_matches":0,"numeric_matches":1,"distance_exact":0.15,"distance_numeric":0.02,"distance_fscore":0.85,"human_row_count":5,"llm_row_count":5}
+{"model":"claude-sonnet-4-20250514","provider":"anthropic","name":"pipe_01.pipe","matches":1,"exact_matches":1,"numeric_matches":1,"distance_exact":0.0,"distance_numeric":0.0,"distance_fscore":1.0,"human_row_count":10,"llm_row_count":10}

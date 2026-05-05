@@ -1,0 +1,13 @@
+DESCRIPTION >
+    Returns the list of distinct benchmark questions with their descriptions.
+
+NODE endpoint
+SQL >
+    SELECT DISTINCT
+        name,
+        question
+    FROM benchmark_results FINAL
+    WHERE model = 'human' AND provider = 'human'
+    ORDER BY name
+
+TYPE endpoint

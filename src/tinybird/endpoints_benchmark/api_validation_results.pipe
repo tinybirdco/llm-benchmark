@@ -1,0 +1,18 @@
+DESCRIPTION >
+    Returns per-question validation results, filterable by model and/or question name.
+
+NODE endpoint
+SQL >
+    %
+    SELECT
+        model, provider, name,
+        matches, exact_matches, numeric_matches,
+        distance_exact, distance_numeric, distance_fscore,
+        human_row_count, llm_row_count
+    FROM benchmark_validation FINAL
+    WHERE 1 = 1
+    {% if defined(model) %} AND model = {{ String(model) }} {% end %}
+    {% if defined(provider) %} AND provider = {{ String(provider) }} {% end %}
+    {% if defined(question_name) %} AND name = {{ String(question_name) }} {% end %}
+
+TYPE endpoint
