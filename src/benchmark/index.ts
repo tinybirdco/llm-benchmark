@@ -543,21 +543,45 @@ async function revalidateModel(modelString: string) {
   console.log("Re-validation complete. Fresh validation data pushed to Tinybird.");
 }
 
+async function verifyTinybirdCredentials() {
+  const { tinybird } = getConfig();
+  if (!tinybird.apiHost || !tinybird.workspaceToken) {
+    console.error("TINYBIRD_API_HOST and TINYBIRD_WORKSPACE_TOKEN are required");
+    process.exit(1);
+  }
+
+  try {
+    const res = await fetch(`${tinybird.apiHost}/v0/sql?q=${encodeURIComponent("SELECT 1 FORMAT JSON")}`, {
+      headers: { Authorization: `Bearer ${tinybird.workspaceToken}` },
+    });
+    if (!res.ok) {
+      console.error(`Tinybird credentials check failed (HTTP ${res.status}): ${await res.text()}`);
+      process.exit(1);
+    }
+    console.log("Tinybird credentials verified");
+  } catch (err) {
+    console.error("Cannot connect to Tinybird:", err);
+    process.exit(1);
+  }
+}
+
 async function main() {
   const args = parseArgs();
-  
+
   // Show help if requested
   if (args.help) {
     printUsage();
     return;
   }
-  
+
   // Set debug mode if flag is provided
   if (args.debug) {
     process.env.LLM_DEBUG = '1';
     console.log('Debug mode enabled. LLM requests and responses will be logged.');
   }
-  
+
+  await verifyTinybirdCredentials();
+
   if (args.validate) {
     if (!args.model) {
       console.error("--validate requires --model=provider/model");
