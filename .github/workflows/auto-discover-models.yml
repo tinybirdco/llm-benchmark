@@ -14,7 +14,7 @@ on:
       max_models:
         description: "Maximum number of new models to benchmark (0 = no limit)"
         required: false
-        default: "5"
+        default: "15"
         type: string
       force_run:
         description: "Force run even if no new models found (for testing)"
@@ -82,47 +82,47 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           NEW_MODELS="${{ steps.find-new-models.outputs.new_models }}"
-          MAX_MODELS="${{ github.event.inputs.max_models || '5' }}"
+          MAX_MODELS="${{ github.event.inputs.max_models || '15' }}"
 
           echo "Checking for existing PRs and running benchmarks for new models: $NEW_MODELS"
           echo "Max models limit: $MAX_MODELS"
-          
-          # Convert to array and apply limit if specified
+
+          # Models are already sorted by provider priority (check-new-models.ts)
+          # Priority providers come first: anthropic, google, openai, mistralai, perplexity, x-ai, deepseek, meta-llama, moonshotai
           MODELS_ARRAY=($NEW_MODELS)
           if [ "$MAX_MODELS" != "0" ] && [ "$MAX_MODELS" -gt 0 ]; then
             MODELS_ARRAY=("${MODELS_ARRAY[@]:0:$MAX_MODELS}")
             echo "Limited to first $MAX_MODELS models: ${MODELS_ARRAY[*]}"
           fi
-          
+
           SKIPPED_COUNT=0
           TRIGGERED_COUNT=0
-          
+
           for model in "${MODELS_ARRAY[@]}"; do
             echo "=== Checking $model ==="
-            
+
             # Check if there's already an open PR for this model
             EXISTING_PR=$(gh pr list --state open --search "Add benchmark results for $model" --json number --jq '.[0].number' || echo "")
-            
+
             if [ -n "$EXISTING_PR" ] && [ "$EXISTING_PR" != "null" ]; then
               echo "⚠️  Open PR #$EXISTING_PR already exists for $model - skipping"
               SKIPPED_COUNT=$((SKIPPED_COUNT + 1))
               continue
             fi
-            
+
             echo "✅ No existing PR found for $model - triggering benchmark"
-            
-            # Trigger the benchmark-append workflow for this model
+
             gh workflow run benchmark-append.yml \
               --ref main \
               -f model="$model" \
               || echo "Failed to trigger workflow for $model"
-            
+
             TRIGGERED_COUNT=$((TRIGGERED_COUNT + 1))
-            
-            # Delay between triggers to avoid rate limits
-            sleep 60
+
+            # Short delay between triggers to avoid rate limits
+            sleep 10
           done
-          
+
           echo "📊 Summary:"
           echo "  - Models checked: ${#MODELS_ARRAY[@]}"
           echo "  - Benchmarks triggered: $TRIGGERED_COUNT"
@@ -135,7 +135,7 @@ jobs:
           NEW_COUNT="${{ steps.find-new-models.outputs.new_count }}"
           NEW_MODELS="${{ steps.find-new-models.outputs.new_models }}"
           DRY_RUN="${{ github.event.inputs.dry_run }}"
-          MAX_MODELS="${{ github.event.inputs.max_models || '5' }}"
+          MAX_MODELS="${{ github.event.inputs.max_models || '15' }}"
           FORCE_RUN="${{ github.event.inputs.force_run }}"
           
           if [ "$NEW_COUNT" -gt 0 ]; then
