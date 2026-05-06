@@ -16,6 +16,38 @@ interface NewModel {
   created?: number;
 }
 
+const PRIORITY_PROVIDERS = [
+  "anthropic",
+  "google",
+  "openai",
+  "mistralai",
+  "perplexity",
+  "x-ai",
+  "deepseek",
+  "meta-llama",
+  "moonshotai",
+];
+
+function sortByProviderPriority(models: NewModel[]): NewModel[] {
+  const prioritySet = new Set(PRIORITY_PROVIDERS);
+  const priority: NewModel[] = [];
+  const rest: NewModel[] = [];
+
+  for (const m of models) {
+    if (prioritySet.has(m.provider)) {
+      priority.push(m);
+    } else {
+      rest.push(m);
+    }
+  }
+
+  priority.sort((a, b) => {
+    return PRIORITY_PROVIDERS.indexOf(a.provider) - PRIORITY_PROVIDERS.indexOf(b.provider);
+  });
+
+  return [...priority, ...rest];
+}
+
 async function loadBenchmarkConfig(): Promise<BenchmarkConfig> {
   try {
     const configPath = "benchmark-config.json";
@@ -67,7 +99,7 @@ async function main() {
     const config = await loadBenchmarkConfig();
     const testedCount = Object.values(config.providers).reduce((sum, data) => sum + data.models.length, 0);
 
-    const newModels = findNewModels(openrouterModels, config);
+    const newModels = sortByProviderPriority(findNewModels(openrouterModels, config));
 
     console.log(`📊 Found ${newModels.length} untested models:\n`);
 
@@ -79,18 +111,36 @@ async function main() {
       return;
     }
 
-    const groupedByProvider = newModels.reduce((acc, model) => {
-      if (!acc[model.provider]) {
-        acc[model.provider] = [];
-      }
-      acc[model.provider].push(model);
-      return acc;
-    }, {} as Record<string, NewModel[]>);
+    const prioritySet = new Set(PRIORITY_PROVIDERS);
+    const priorityModels = newModels.filter(m => prioritySet.has(m.provider));
+    const otherModels = newModels.filter(m => !prioritySet.has(m.provider));
 
-    for (const [provider, models] of Object.entries(groupedByProvider)) {
-      console.log(`📁 ${provider} (${models.length} models):`);
-      for (const model of models) {
-        console.log(`  - ${model.model} (${model.modelId})`);
+    if (priorityModels.length > 0) {
+      console.log(`⭐ Priority providers (${priorityModels.length} models):`);
+      const grouped = priorityModels.reduce((acc, m) => {
+        (acc[m.provider] ??= []).push(m);
+        return acc;
+      }, {} as Record<string, NewModel[]>);
+      for (const [provider, models] of Object.entries(grouped)) {
+        console.log(`  📁 ${provider} (${models.length}):`);
+        for (const model of models) {
+          console.log(`    - ${model.model}`);
+        }
+      }
+      console.log();
+    }
+
+    if (otherModels.length > 0) {
+      console.log(`📁 Other providers (${otherModels.length} models):`);
+      const grouped = otherModels.reduce((acc, m) => {
+        (acc[m.provider] ??= []).push(m);
+        return acc;
+      }, {} as Record<string, NewModel[]>);
+      for (const [provider, models] of Object.entries(grouped)) {
+        console.log(`  📁 ${provider} (${models.length}):`);
+        for (const model of models) {
+          console.log(`    - ${model.model}`);
+        }
       }
       console.log();
     }
