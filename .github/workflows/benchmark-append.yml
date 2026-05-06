@@ -68,7 +68,7 @@ jobs:
             const data = JSON.parse(require('fs').readFileSync('/dev/stdin','utf8'));
             const rows = data.data || [];
             const m = rows.find(r => r.model === '${MODEL_NAME}' && r.provider === '${PROVIDER}');
-            console.log(m ? (m.success_rate * 100).toFixed(1) : '0');
+            console.log(m ? (m.success_rate || 0).toFixed(1) : '0');
           ")
 
           echo "Success rate for $MODEL: ${SUCCESS_RATE}%"
@@ -187,8 +187,8 @@ jobs:
                 successful: m.successful_queries,
                 errors: m.total_queries - m.successful_queries,
                 avgLatency: (m.avg_total_duration || 0).toFixed(2),
-                successRate: ((m.success_rate || 0) * 100).toFixed(1),
-                firstAttemptRate: ((m.first_attempt_rate || 0) * 100).toFixed(1),
+                successRate: (m.success_rate || 0).toFixed(1),
+                firstAttemptRate: (m.first_attempt_rate || 0).toFixed(1),
                 avgExecutionTime: (m.avg_execution_time || 0).toFixed(4)
               }));
             } else {
