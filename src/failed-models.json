@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-05-05T14:34:44.815Z",
-  "total_count": 1,
+  "generated_at": "2026-05-06T08:23:25.784Z",
+  "total_count": 2,
   "models": [
     {
       "provider": "x-ai",
@@ -8,6 +8,14 @@
       "modelId": "x-ai/grok-4.3",
       "reason": "PR rejected/closed without merging",
       "failed_at": "2026-05-05T14:34:44.815Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "google",
+      "model": "gemma-4-26b-a4b-it:free",
+      "modelId": "google/gemma-4-26b-a4b-it:free",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-05-06T08:23:25.784Z",
       "attempt_count": 1
     }
   ]
