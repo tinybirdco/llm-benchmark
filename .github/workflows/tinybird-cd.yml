@@ -9,10 +9,6 @@ on:
 
 concurrency: ${{ github.workflow }}-${{ github.event.ref }}
 
-env:
-  TINYBIRD_HOST: ${{ secrets.TINYBIRD_HOST }}
-  TINYBIRD_TOKEN: ${{ secrets.TINYBIRD_TOKEN }}
-
 jobs:
   cd:
     runs-on: ubuntu-latest
@@ -24,4 +20,4 @@ jobs:
       - name: Install Tinybird CLI
         run: curl https://tinybird.co | sh
       - name: Deploy project
-        run: tb --cloud --host ${{ env.TINYBIRD_HOST }} --token ${{ env.TINYBIRD_TOKEN }} deploy
+        run: tb --cloud --host ${{ vars.TINYBIRD_API_HOST }} --token ${{ secrets.TINYBIRD_WORKSPACE_TOKEN }} deploy

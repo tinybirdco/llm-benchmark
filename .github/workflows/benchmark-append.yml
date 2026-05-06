@@ -28,14 +28,27 @@ jobs:
         working-directory: src
         run: npm ci
 
+      - name: Verify Tinybird credentials
+        env:
+          TINYBIRD_API_HOST: ${{ vars.TINYBIRD_API_HOST }}
+          TINYBIRD_WORKSPACE_TOKEN: ${{ secrets.TINYBIRD_WORKSPACE_TOKEN }}
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            "${TINYBIRD_API_HOST}/v0/sql?q=SELECT+1+FORMAT+JSON" \
+            -H "Authorization: Bearer ${TINYBIRD_WORKSPACE_TOKEN}")
+          if [ "$STATUS" != "200" ]; then
+            echo "::error::Tinybird credentials check failed (HTTP $STATUS). Check TINYBIRD_API_HOST and TINYBIRD_WORKSPACE_TOKEN."
+            exit 1
+          fi
+          echo "Tinybird credentials verified"
+
       - name: Run benchmark
         id: run-benchmark
         working-directory: src
         run: npm run benchmark -- --model="${{ github.event.inputs.model }}" --debug
         env:
           TINYBIRD_API_HOST: ${{ vars.TINYBIRD_API_HOST }}
-          TINYBIRD_WORKSPACE_TOKEN: ${{ secrets.WORKSPACE_TOKEN }}
-          WORKSPACE_TOKEN: ${{ secrets.WORKSPACE_TOKEN }}
+          TINYBIRD_WORKSPACE_TOKEN: ${{ secrets.TINYBIRD_WORKSPACE_TOKEN }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
 
       - name: Verify benchmark quality
@@ -44,14 +57,14 @@ jobs:
         working-directory: src
         env:
           TINYBIRD_API_HOST: ${{ vars.TINYBIRD_API_HOST }}
-          WORKSPACE_TOKEN: ${{ secrets.WORKSPACE_TOKEN }}
+          TINYBIRD_WORKSPACE_TOKEN: ${{ secrets.TINYBIRD_WORKSPACE_TOKEN }}
         run: |
           MODEL="${{ github.event.inputs.model }}"
           PROVIDER=$(echo "$MODEL" | cut -d'/' -f1)
           MODEL_NAME=$(echo "$MODEL" | cut -d'/' -f2-)
 
           SUCCESS_RATE=$(curl -s "${TINYBIRD_API_HOST}/v0/pipes/api_model_metrics.json?include_unvalidated=1" \
-            -H "Authorization: Bearer ${WORKSPACE_TOKEN}" | node -e "
+            -H "Authorization: Bearer ${TINYBIRD_WORKSPACE_TOKEN}" | node -e "
             const data = JSON.parse(require('fs').readFileSync('/dev/stdin','utf8'));
             const rows = data.data || [];
             const m = rows.find(r => r.model === '${MODEL_NAME}' && r.provider === '${PROVIDER}');
@@ -149,8 +162,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           TINYBIRD_API_HOST: ${{ vars.TINYBIRD_API_HOST }}
-          TINYBIRD_WORKSPACE_TOKEN: ${{ secrets.WORKSPACE_TOKEN }}
-          WORKSPACE_TOKEN: ${{ secrets.WORKSPACE_TOKEN }}
+          TINYBIRD_WORKSPACE_TOKEN: ${{ secrets.TINYBIRD_WORKSPACE_TOKEN }}
         run: |
           PR_NUMBER="${{ steps.create-pr.outputs.pull-request-number }}"
           MODEL="${{ github.event.inputs.model }}"
@@ -165,7 +177,7 @@ jobs:
 
           # Query Tinybird for benchmark metrics (include unvalidated results)
           METRICS=$(curl -s "${TINYBIRD_API_HOST}/v0/pipes/api_model_metrics.json?include_unvalidated=1" \
-            -H "Authorization: Bearer ${WORKSPACE_TOKEN}" | node -e "
+            -H "Authorization: Bearer ${TINYBIRD_WORKSPACE_TOKEN}" | node -e "
             const data = JSON.parse(require('fs').readFileSync('/dev/stdin','utf8'));
             const rows = data.data || [];
             const m = rows.find(r => r.model === '${MODEL_NAME}' && r.provider === '${PROVIDER}');

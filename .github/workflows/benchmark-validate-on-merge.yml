@@ -49,8 +49,7 @@ jobs:
         working-directory: src
         env:
           TINYBIRD_API_HOST: ${{ vars.TINYBIRD_API_HOST }}
-          TINYBIRD_WORKSPACE_TOKEN: ${{ secrets.WORKSPACE_TOKEN }}
-          WORKSPACE_TOKEN: ${{ secrets.WORKSPACE_TOKEN }}
+          TINYBIRD_WORKSPACE_TOKEN: ${{ secrets.TINYBIRD_WORKSPACE_TOKEN }}
         run: |
           MODELS="${{ steps.models.outputs.models }}"
           for model in $MODELS; do
