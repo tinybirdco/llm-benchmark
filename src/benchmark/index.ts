@@ -1,4 +1,3 @@
-import { writeFileSync, readFileSync } from "fs";
 import { getClient } from "./client";
 import { getConfig } from "./config";
 import { getEndpointQuestions } from "./resources";
@@ -626,39 +625,6 @@ async function runBenchmarkForModel(modelString: string) {
   }
 
   console.log(`Benchmarking ${providerName}/${modelName}`);
-
-  const configPath = "benchmark-config.json";
-  let config;
-  try {
-    config = JSON.parse(readFileSync(configPath, "utf-8"));
-  } catch (error) {
-    console.error("Error reading benchmark-config.json:", error);
-    process.exit(1);
-  }
-
-  if (!config.providers[providerName]) {
-    console.log(`Provider '${providerName}' not found in benchmark-config.json, creating new entry`);
-    config.providers[providerName] = { models: [] };
-    try {
-      writeFileSync(configPath, JSON.stringify(config, null, 2));
-      console.log(`Added provider '${providerName}' to benchmark-config.json`);
-    } catch (error) {
-      console.error("Error writing updated benchmark-config.json:", error);
-      process.exit(1);
-    }
-  }
-
-  const providerModels = config.providers[providerName].models;
-  if (!providerModels.includes(modelName)) {
-    config.providers[providerName].models.push(modelName);
-    try {
-      writeFileSync(configPath, JSON.stringify(config, null, 2));
-      console.log(`Added model '${modelName}' to provider '${providerName}' in benchmark-config.json`);
-    } catch (error) {
-      console.error("Error writing updated benchmark-config.json:", error);
-      process.exit(1);
-    }
-  }
 
   const results = await runModelBenchmark(providerName, modelName);
   await pushToTinybird(results);

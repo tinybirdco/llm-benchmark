@@ -56,3 +56,43 @@ jobs:
             echo "Validating $model..."
             npm run benchmark -- --model="$model" --validate
           done
+
+      - name: Update benchmark config and clean up
+        if: steps.models.outputs.models != ''
+        run: |
+          MODELS="${{ steps.models.outputs.models }}"
+          cd src
+
+          for model in $MODELS; do
+            node -e "
+              const fs = require('fs');
+              const config = JSON.parse(fs.readFileSync('benchmark-config.json','utf8'));
+              const parts = process.argv[1].split('/');
+              const provider = parts[0];
+              const modelName = parts.slice(1).join('/');
+              if (!config.providers[provider]) config.providers[provider] = { models: [] };
+              if (!config.providers[provider].models.includes(modelName)) {
+                config.providers[provider].models.push(modelName);
+                fs.writeFileSync('benchmark-config.json', JSON.stringify(config, null, 2));
+                console.log('Added ' + modelName + ' to ' + provider);
+              } else {
+                console.log(modelName + ' already in ' + provider);
+              }
+            " "$model"
+          done
+
+          cd ..
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+          # Clean up benchmark run files
+          git rm src/benchmark-runs/*.json 2>/dev/null || true
+
+          git add src/benchmark-config.json
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: update benchmark config for $MODELS"
+            git pull --rebase origin main
+            git push origin main
+          else
+            echo "No config changes needed"
+          fi
