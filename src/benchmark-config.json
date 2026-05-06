@@ -18,7 +18,14 @@
         "claude-3.5-haiku",
         "claude-opus-4.1",
         "claude-4.5-sonnet",
-        "claude-haiku-4.5"
+        "claude-haiku-4.5",
+        "claude-sonnet-4.5",
+        "claude-3-haiku",
+        "claude-sonnet-4.6",
+        "claude-opus-4.5",
+        "claude-opus-4.6",
+        "claude-opus-4.7",
+        "claude-opus-4.6-fast"
       ]
     },
     "deepseek": {
@@ -39,7 +46,11 @@
         "gemini-3-pro-preview",
         "gemini-2.5-flash-image",
         "gemini-3.1-pro-preview",
-        "gemini-3.1-pro-preview-customtools"
+        "gemini-3.1-pro-preview-customtools",
+        "gemini-3-flash-preview",
+        "gemini-3.1-flash-lite-preview",
+        "gemma-4-26b-a4b-it",
+        "gemma-4-31b-it"
       ]
     },
     "meta-llama": {
