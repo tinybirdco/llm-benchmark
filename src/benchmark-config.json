@@ -99,7 +99,8 @@
         "gpt-5-pro",
         "gpt-oss-120b:exacto",
         "gpt-5.1-codex-mini",
-        "gpt-chat-latest"
+        "gpt-chat-latest",
+        "gpt-5.4-nano"
       ]
     },
     "qwen": {
