@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-05-09T08:55:52.153Z",
-  "total_count": 2,
+  "generated_at": "2026-05-10T09:01:39.140Z",
+  "total_count": 3,
   "models": [
     {
       "provider": "x-ai",
@@ -17,6 +17,14 @@
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-05-09T08:55:52.153Z",
       "attempt_count": 5
+    },
+    {
+      "provider": "google",
+      "model": "gemma-4-31b-it:free",
+      "modelId": "google/gemma-4-31b-it:free",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-05-10T09:01:39.140Z",
+      "attempt_count": 1
     }
   ]
 }
