@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-15T09:24:27.854Z",
+  "generated_at": "2026-05-16T09:00:25.153Z",
   "total_count": 4,
   "models": [
     {
@@ -15,8 +15,8 @@
       "model": "gemma-4-26b-a4b-it:free",
       "modelId": "google/gemma-4-26b-a4b-it:free",
       "reason": "Benchmark quality too low (success rate below 20%)",
-      "failed_at": "2026-05-11T09:34:04.204Z",
-      "attempt_count": 6
+      "failed_at": "2026-05-16T09:00:25.153Z",
+      "attempt_count": 7
     },
     {
       "provider": "google",
