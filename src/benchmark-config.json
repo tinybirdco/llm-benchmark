@@ -53,7 +53,8 @@
         "gemma-4-26b-a4b-it",
         "gemma-4-31b-it",
         "gemini-2.5-flash-lite",
-        "gemma-3-27b-it"
+        "gemma-3-27b-it",
+        "gemini-2.5-pro-preview-05-06"
       ]
     },
     "meta-llama": {
