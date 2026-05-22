@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-21T09:30:25.493Z",
+  "generated_at": "2026-05-22T09:33:07.499Z",
   "total_count": 4,
   "models": [
     {
@@ -23,8 +23,8 @@
       "model": "gemma-4-31b-it:free",
       "modelId": "google/gemma-4-31b-it:free",
       "reason": "Benchmark quality too low (success rate below 20%)",
-      "failed_at": "2026-05-12T09:21:21.346Z",
-      "attempt_count": 2
+      "failed_at": "2026-05-22T09:33:07.499Z",
+      "attempt_count": 3
     },
     {
       "provider": "anthropic",
