@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from "fs";
+import { readFileSync, writeFileSync, existsSync } from "fs";
 import { fetchOpenRouterModels, extractProviderFromModelId, isTextOutputModel } from "./fetch-openrouter-models";
 
 interface BenchmarkConfig {
@@ -59,9 +59,26 @@ async function loadBenchmarkConfig(): Promise<BenchmarkConfig> {
   }
 }
 
+function loadFailedModelKeys(): Set<string> {
+  const keys = new Set<string>();
+  try {
+    if (!existsSync("failed-models.json")) {
+      return keys;
+    }
+    const data = JSON.parse(readFileSync("failed-models.json", "utf-8"));
+    for (const m of data.models ?? []) {
+      keys.add(`${m.provider}/${m.model}`);
+    }
+  } catch (error) {
+    console.warn("Warning: could not read failed-models.json:", error);
+  }
+  return keys;
+}
+
 function findNewModels(
   openrouterModels: any[],
-  config: BenchmarkConfig
+  config: BenchmarkConfig,
+  failedKeys: Set<string> = new Set()
 ): NewModel[] {
   const newModels: NewModel[] = [];
 
@@ -78,14 +95,15 @@ function findNewModels(
     const modelName = model.id.includes("/") ? model.id.split("/")[1] : model.id;
     const modelKey = `${provider}/${modelName}`;
 
-    if (!testedModels.has(modelKey)) {
-      newModels.push({
-        provider,
-        model: modelName,
-        modelId: model.id,
-        created: model.created
-      });
-    }
+    if (testedModels.has(modelKey)) continue;
+    if (failedKeys.has(modelKey)) continue;
+
+    newModels.push({
+      provider,
+      model: modelName,
+      modelId: model.id,
+      created: model.created
+    });
   }
 
   return newModels;
@@ -97,11 +115,12 @@ async function main() {
 
     const openrouterModels = await fetchOpenRouterModels();
     const config = await loadBenchmarkConfig();
+    const failedKeys = loadFailedModelKeys();
     const testedCount = Object.values(config.providers).reduce((sum, data) => sum + data.models.length, 0);
 
-    const newModels = sortByProviderPriority(findNewModels(openrouterModels, config));
+    const newModels = sortByProviderPriority(findNewModels(openrouterModels, config, failedKeys));
 
-    console.log(`📊 Found ${newModels.length} untested models:\n`);
+    console.log(`📊 Found ${newModels.length} untested models (excluded ${failedKeys.size} previously failed):\n`);
 
     if (newModels.length === 0) {
       console.log("✅ All OpenRouter models have been benchmarked.");
