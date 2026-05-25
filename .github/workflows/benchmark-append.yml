@@ -275,3 +275,88 @@ jobs:
             echo "Skipping auto-merge. Review response or AUTO_MERGE setting requires manual review."
             gh pr edit "$PR_NUMBER" --add-label "needs-review" 2>/dev/null || echo "Could not add label"
           fi
+
+      - name: Update benchmark config after merge
+        # When the PR is auto-merged with GITHUB_TOKEN, GitHub does not fire
+        # downstream workflows (recursion prevention), so benchmark-validate-on-merge.yml
+        # never runs. We perform the config update and run-file cleanup inline here.
+        if: success() && steps.create-pr.outputs.pull-request-number
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_NUMBER="${{ steps.create-pr.outputs.pull-request-number }}"
+          MODEL="${{ github.event.inputs.model }}"
+          PROVIDER=$(echo "$MODEL" | cut -d'/' -f1)
+          MODEL_NAME=$(echo "$MODEL" | cut -d'/' -f2-)
+
+          # Poll for merge completion. Auto-merge usually settles in seconds
+          # but may take longer if branch protection requires status checks.
+          echo "Waiting for PR #$PR_NUMBER to merge..."
+          MERGED_AT=""
+          for i in $(seq 1 30); do
+            INFO=$(gh pr view "$PR_NUMBER" --json state,mergedAt --jq '.state + "|" + (.mergedAt // "")')
+            PR_STATE=$(echo "$INFO" | cut -d'|' -f1)
+            MERGED_AT=$(echo "$INFO" | cut -d'|' -f2)
+            if [ -n "$MERGED_AT" ]; then
+              echo "PR merged at $MERGED_AT"
+              break
+            fi
+            if [ "$PR_STATE" = "CLOSED" ]; then
+              echo "::warning::PR closed without merging. Skipping config update."
+              exit 0
+            fi
+            echo "  Not merged yet (attempt $i/30). Waiting 10s..."
+            sleep 10
+          done
+
+          if [ -z "$MERGED_AT" ]; then
+            echo "::warning::PR not merged after 5 minutes. Config update skipped."
+            exit 0
+          fi
+
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git fetch origin main
+          git checkout -B main origin/main
+
+          node -e "
+            const fs = require('fs');
+            const path = 'src/benchmark-config.json';
+            const config = JSON.parse(fs.readFileSync(path, 'utf8'));
+            const provider = process.argv[1];
+            const modelName = process.argv[2];
+            if (!config.providers[provider]) config.providers[provider] = { models: [] };
+            if (!config.providers[provider].models.includes(modelName)) {
+              config.providers[provider].models.push(modelName);
+              fs.writeFileSync(path, JSON.stringify(config, null, 2));
+              console.log('Added ' + modelName + ' to ' + provider);
+            } else {
+              console.log(modelName + ' already in ' + provider);
+            }
+          " "$PROVIDER" "$MODEL_NAME"
+
+          RUN_FILE="src/benchmark-runs/$(echo "$MODEL" | sed 's/\//__/g').json"
+          if [ -f "$RUN_FILE" ]; then
+            git rm "$RUN_FILE"
+            echo "Removed $RUN_FILE"
+          fi
+
+          git add src/benchmark-config.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          git commit -m "chore: update benchmark config for $MODEL"
+
+          # Retry on push race when multiple append workflows finish near the same time
+          for attempt in 1 2 3; do
+            if git push origin main; then
+              echo "Pushed config update on attempt $attempt"
+              exit 0
+            fi
+            echo "Push failed on attempt $attempt. Rebasing..."
+            git pull --rebase origin main
+          done
+          echo "::error::Could not push config update after 3 attempts"
+          exit 1
