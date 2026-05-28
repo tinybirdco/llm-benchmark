@@ -115,7 +115,8 @@
         "gpt-5.2-chat",
         "gpt-5-chat",
         "gpt-oss-120b:free",
-        "gpt-4.1-mini"
+        "gpt-4.1-mini",
+        "gpt-4o-mini-search-preview"
       ]
     },
     "qwen": {
