@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-05-27T09:31:40.190Z",
-  "total_count": 6,
+  "generated_at": "2026-05-28T09:36:56.796Z",
+  "total_count": 7,
   "models": [
     {
       "provider": "x-ai",
@@ -48,6 +48,14 @@
       "modelId": "openai/o3-deep-research",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-05-27T09:31:40.190Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "openai",
+      "model": "o4-mini-deep-research",
+      "modelId": "openai/o4-mini-deep-research",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-05-28T09:36:56.796Z",
       "attempt_count": 1
     }
   ]
