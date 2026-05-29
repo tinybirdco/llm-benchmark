@@ -119,7 +119,8 @@
         "gpt-4.1-mini",
         "gpt-4o-mini-search-preview",
         "gpt-oss-20b:free",
-        "gpt-4o-search-preview"
+        "gpt-4o-search-preview",
+        "o3-mini-high"
       ]
     },
     "qwen": {
