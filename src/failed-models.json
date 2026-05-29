@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-05-28T09:36:56.796Z",
-  "total_count": 7,
+  "generated_at": "2026-05-29T09:31:22.101Z",
+  "total_count": 8,
   "models": [
     {
       "provider": "x-ai",
@@ -56,6 +56,14 @@
       "modelId": "openai/o4-mini-deep-research",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-05-28T09:36:56.796Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "anthropic",
+      "model": "claude-opus-4.8-fast",
+      "modelId": "anthropic/claude-opus-4.8-fast",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-05-29T09:31:22.101Z",
       "attempt_count": 1
     }
   ]
