@@ -122,7 +122,8 @@
         "gpt-4o-search-preview",
         "o3-mini-high",
         "gpt-4o-2024-11-20",
-        "gpt-4o-mini-2024-07-18"
+        "gpt-4o-mini-2024-07-18",
+        "o1"
       ]
     },
     "qwen": {
