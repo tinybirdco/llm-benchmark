@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-05-29T09:31:22.101Z",
-  "total_count": 8,
+  "generated_at": "2026-05-30T09:06:10.367Z",
+  "total_count": 9,
   "models": [
     {
       "provider": "x-ai",
@@ -64,6 +64,14 @@
       "modelId": "anthropic/claude-opus-4.8-fast",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-05-29T09:31:22.101Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "openai",
+      "model": "o1-pro",
+      "modelId": "openai/o1-pro",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-05-30T09:06:10.367Z",
       "attempt_count": 1
     }
   ]
