@@ -79,7 +79,8 @@
         "codestral-2508",
         "mistral-medium-3.1",
         "devstral-2512",
-        "voxtral-small-24b-2507"
+        "voxtral-small-24b-2507",
+        "mistral-medium-3-5"
       ]
     },
     "openai": {
