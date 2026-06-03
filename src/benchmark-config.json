@@ -80,7 +80,8 @@
         "mistral-medium-3.1",
         "devstral-2512",
         "voxtral-small-24b-2507",
-        "mistral-medium-3-5"
+        "mistral-medium-3-5",
+        "mistral-small-2603"
       ]
     },
     "openai": {
