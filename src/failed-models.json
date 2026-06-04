@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-03T09:58:28.206Z",
-  "total_count": 12,
+  "generated_at": "2026-06-04T09:40:04.416Z",
+  "total_count": 13,
   "models": [
     {
       "provider": "x-ai",
@@ -96,6 +96,14 @@
       "modelId": "openai/gpt-4-0314",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-06-03T09:58:28.206Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "openai",
+      "model": "gpt-4-1106-preview",
+      "modelId": "openai/gpt-4-1106-preview",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-06-04T09:40:04.416Z",
       "attempt_count": 1
     }
   ]
