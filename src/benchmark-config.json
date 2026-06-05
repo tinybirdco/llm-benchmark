@@ -91,7 +91,8 @@
         "mixtral-8x22b-instruct",
         "mistral-large",
         "mistral-small-24b-instruct-2501",
-        "mistral-large-2407"
+        "mistral-large-2407",
+        "mistral-saba"
       ]
     },
     "openai": {
