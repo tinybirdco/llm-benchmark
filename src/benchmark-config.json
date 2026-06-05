@@ -88,7 +88,8 @@
         "mistral-medium-3",
         "ministral-3b-2512",
         "mistral-small-3.2-24b-instruct",
-        "mixtral-8x22b-instruct"
+        "mixtral-8x22b-instruct",
+        "mistral-large"
       ]
     },
     "openai": {
