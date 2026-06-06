@@ -244,7 +244,8 @@
         "sonar-pro-search",
         "sonar-pro",
         "sonar",
-        "sonar-reasoning-pro"
+        "sonar-reasoning-pro",
+        "sonar-deep-research"
       ]
     },
     "baidu": {
