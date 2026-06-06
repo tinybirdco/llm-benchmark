@@ -240,7 +240,8 @@
     },
     "perplexity": {
       "models": [
-        "sonar-pro-search"
+        "sonar-pro-search",
+        "sonar-pro"
       ]
     },
     "baidu": {
