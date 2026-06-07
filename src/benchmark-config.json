@@ -39,7 +39,8 @@
         "deepseek-chat-v3.1",
         "deepseek-v4-pro",
         "deepseek-v3.2",
-        "deepseek-v3.1-terminus:exacto"
+        "deepseek-v3.1-terminus:exacto",
+        "deepseek-v3.1-terminus"
       ]
     },
     "google": {
