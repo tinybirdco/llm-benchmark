@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-04T09:40:04.416Z",
-  "total_count": 13,
+  "generated_at": "2026-06-08T11:35:15.289Z",
+  "total_count": 14,
   "models": [
     {
       "provider": "x-ai",
@@ -104,6 +104,14 @@
       "modelId": "openai/gpt-4-1106-preview",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-06-04T09:40:04.416Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "deepseek",
+      "model": "deepseek-r1-distill-qwen-32b",
+      "modelId": "deepseek/deepseek-r1-distill-qwen-32b",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-06-08T11:35:15.289Z",
       "attempt_count": 1
     }
   ]
