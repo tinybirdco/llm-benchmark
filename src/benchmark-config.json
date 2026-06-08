@@ -44,7 +44,8 @@
         "deepseek-v3.1-terminus",
         "deepseek-v4-flash",
         "deepseek-v3.2-exp",
-        "deepseek-chat"
+        "deepseek-chat",
+        "deepseek-r1-0528"
       ]
     },
     "google": {
