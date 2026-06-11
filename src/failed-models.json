@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-10T09:35:39.204Z",
-  "total_count": 16,
+  "generated_at": "2026-06-11T09:50:29.166Z",
+  "total_count": 17,
   "models": [
     {
       "provider": "x-ai",
@@ -128,6 +128,14 @@
       "modelId": "meta-llama/llama-guard-4-12b",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-06-10T09:35:39.204Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "meta-llama",
+      "model": "llama-3.3-70b-instruct:free",
+      "modelId": "meta-llama/llama-3.3-70b-instruct:free",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-06-11T09:50:29.166Z",
       "attempt_count": 1
     }
   ]
