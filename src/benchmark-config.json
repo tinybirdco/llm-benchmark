@@ -169,7 +169,8 @@
         "gpt-3.5-turbo",
         "gpt-5.4",
         "gpt-4",
-        "gpt-5.5"
+        "gpt-5.5",
+        "gpt-5.4-pro"
       ]
     },
     "qwen": {
