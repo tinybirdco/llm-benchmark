@@ -80,7 +80,8 @@
         "llama-4-scout",
         "llama-3.3-70b-instruct",
         "llama-3.2-3b-instruct",
-        "llama-3.2-1b-instruct"
+        "llama-3.2-1b-instruct",
+        "llama-3.1-70b-instruct"
       ]
     },
     "mistralai": {
