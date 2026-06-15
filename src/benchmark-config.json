@@ -71,7 +71,8 @@
         "gemini-3.1-flash-lite",
         "gemini-2.5-flash-lite-preview-09-2025",
         "gemma-2-27b-it",
-        "gemini-2.0-flash-lite-001"
+        "gemini-2.0-flash-lite-001",
+        "gemma-3-12b-it"
       ]
     },
     "meta-llama": {
