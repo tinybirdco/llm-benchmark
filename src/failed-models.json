@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-12T09:48:00.593Z",
-  "total_count": 18,
+  "generated_at": "2026-06-16T10:02:47.415Z",
+  "total_count": 19,
   "models": [
     {
       "provider": "x-ai",
@@ -144,6 +144,14 @@
       "modelId": "meta-llama/llama-3.2-3b-instruct:free",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-06-12T09:48:00.593Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "~anthropic",
+      "model": "claude-fable-latest",
+      "modelId": "~anthropic/claude-fable-latest",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-06-16T10:02:47.415Z",
       "attempt_count": 1
     }
   ]
