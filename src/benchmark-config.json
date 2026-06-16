@@ -195,7 +195,8 @@
         "qwen3-vl-30b-a3b-instruct",
         "qwen3-coder:exacto",
         "qwen2.5-coder-7b-instruct",
-        "qwen3.7-max"
+        "qwen3.7-max",
+        "qwen3.7-plus"
       ]
     },
     "moonshotai": {
