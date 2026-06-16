@@ -310,6 +310,11 @@
       "models": [
         "step-3.7-flash"
       ]
+    },
+    "nex-agi": {
+      "models": [
+        "nex-n2-pro:free"
+      ]
     }
   }
 }
