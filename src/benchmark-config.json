@@ -288,6 +288,11 @@
       "models": [
         "hermes-3-llama-3.1-405b:free"
       ]
+    },
+    "perceptron": {
+      "models": [
+        "perceptron-mk1"
+      ]
     }
   }
 }
