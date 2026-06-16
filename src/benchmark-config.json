@@ -297,6 +297,11 @@
       "models": [
         "perceptron-mk1"
       ]
+    },
+    "minimax": {
+      "models": [
+        "minimax-m3"
+      ]
     }
   }
 }
