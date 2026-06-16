@@ -221,7 +221,8 @@
         "nemotron-nano-9b-v2",
         "llama-3.3-nemotron-super-49b-v1.5",
         "nemotron-nano-12b-v2-vl:free",
-        "nemotron-3-ultra-550b-a55b"
+        "nemotron-3-ultra-550b-a55b",
+        "nemotron-3-ultra-550b-a55b:free"
       ]
     },
     "openrouter": {
