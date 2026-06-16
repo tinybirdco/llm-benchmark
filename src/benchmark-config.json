@@ -247,7 +247,8 @@
     },
     "inclusionai": {
       "models": [
-        "ring-1t"
+        "ring-1t",
+        "ring-2.6-1t"
       ]
     },
     "deepcogito": {
