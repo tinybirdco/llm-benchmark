@@ -364,6 +364,7 @@ export const getSystemPrompt = (
 - You will be asked to generate a SQL query to answer a question about the data in the database.
 - If you don't know the answer, do your best effort to provide some code that can be used to generate the SQL query.
 - You should ONLY return the plain SQL query, nothing else. IMPORTANT: DO NOT NEVER UNDER ANY CIRCUMSTANCES RETURN A MARKDOWN-LIKE CODE BLOCK, CONTEXT OR INSTRUCTIONS, ONLY WRITE SQL AND NOTHING ELSE.
+- The query will be executed through the Tinybird SQL API, not saved as a Tinybird pipe. Do not use Tinybird templating, dynamic parameters, or a leading % marker.
 - The dataset is huge, so ADD LIMITS TO THE QUERY FOR PAGINATION. If not told otherwise, add LIMIT 10 to the query.
 - Only write one single SQL query, do not return multiple queries.
 - You will be given a list of datasources (tables) available to you.
@@ -379,55 +380,10 @@ export const getSystemPrompt = (
   </datasources>
 
   <sql_instructions>
-    - The SQL query must be a valid ClickHouse SQL query that mixes ClickHouse syntax and Tinybird templating syntax (Tornado templating language under the hood).
+    - The SQL query must be a valid ClickHouse SQL query for the Tinybird SQL API.
+    - Do NOT use Tinybird templating syntax, dynamic parameters, or the % marker used by pipe nodes.
     - DO NOT use CTEs, subqueries or common table expressions, WITH clauses, etc.
-    - Create multiple nodes to reuse the same query logic instead of using CTEs. Example:
-    <example_cte_query_not_do_this> # This is wrong. Create a node instead of the cte first and then reuse it
-    WITH my_cte AS (
-      SELECT * FROM events WHERE session_id={{{{String(my_param, "default_value")}}}}
-    )
-    SELECT * FROM my_cte
-    </example_cte_query_not_do_this>
-    - Reusing a node means to query that node as a table in the query. Example:
-    <example_not_cte_query_do_this> # This is correct. Create a node instead of the cte first and then reuse it
-    SELECT * FROM my_node_1
-    </example_not_cte_query_do_this>
-    - Use only dynamic parameters when the actual query needs them and the user asks for it.
-    - In case the user asks for dynamic parameters, the query must start with "%" character and a newline on top of every query to be able to use the parameters.
-    - If the query does not need dynamic parameters, omit the "%" character at the beginning of the query.
-    <invalid_query_with_parameters_no_%_on_top>
-    SELECT * FROM events WHERE session_id={{{{String(my_param, "default_value")}}}}
-    </invalid_query_with_parameters_no_%_on_top>
-    <valid_query_with_parameters_with_%_on_top>
-    %
-    SELECT * FROM events WHERE session_id={{{{String(my_param, "default_value")}}}}
-    </valid_query_with_parameters_with_%_on_top>
-    - The Parameter functions like this one {{{{String(my_param_name,default_value)}}}} can be one of the following: String, DateTime, Date, Float32, Float64, Int, Integer, UInt8, UInt16, UInt32, UInt64, UInt128, UInt256, Int8, Int16, Int32, Int64, Int128, Int256
-    - Parameter names must be different from column names. Pass always the param name and a default value to the function.
-    - Use ALWAYS hardcoded values for default values for parameters.
-    - Code inside the template {{{{template_expression}}}} follows the rules of Tornado templating language so no module is allowed to be imported. So for example you can't use now() as default value for a DateTime parameter. You need an if else block like this:
-    <invalid_condition_with_now>
-    AND timestamp BETWEEN {{DateTime(start_date, now() - interval 30 day)}} AND {{DateTime(end_date, now())}}
-    </invalid_condition_with_now>
-    <valid_condition_without_now>
-    {{%if not defined(start_date)%}}
-    timestamp BETWEEN now() - interval 30 day
-    {{%else%}}
-    timestamp BETWEEN {{{{DateTime(start_date)}}}}
-    {{%end%}}
-    {{%if not defined(end_date)%}}
-    AND now()
-    {{%else%}}
-    AND {{{{DateTime(end_date)}}}} 
-    {{%end%}}
-    </valid_condition_without_now>
-    - Parameters must not be quoted.
-    - When you use defined function with a paremeter inside, do NOT add quotes around the parameter:
-    <invalid_defined_function_with_parameter>{{% if defined('my_param') %}}</invalid_defined_function_with_parameter>
-    <valid_defined_function_without_parameter>{{% if defined(my_param) %}}</valid_defined_function_without_parameter>
-    - Use datasource, service datasource, materialized view or node names as table names when doing SELECT statements.
-    - Use node names as table names only when nodes are present in the same exploration.
-    - Do not reference the current node name in the SQL.
+    - Use datasource, service datasource, or materialized view names as table names when doing SELECT statements.
     - SQL queries only accept SELECT statements with conditions, aggregations, joins, etc.
     - Do NOT use CREATE TABLE, INSERT INTO, CREATE DATABASE, etc.
     - Use ONLY SELECT statements in the SQL section.

@@ -24,6 +24,34 @@ function debugLog(message: string, data?: Record<string, unknown>): void {
   }
 }
 
+function extractSqlQuery(output: string | null | undefined): string | null {
+  if (!output) return null;
+
+  let sql = output
+    .replaceAll("Ċ", "\n")
+    .replaceAll("Ġ", " ")
+    .trim();
+
+  const fencedSql = sql.match(/```(?:sql)?\s*([\s\S]*?)```/i);
+  if (fencedSql?.[1]) {
+    sql = fencedSql[1].trim();
+  } else {
+    const firstQuery = sql.match(/(?:^|\n)\s*(%?\s*(?:SELECT|WITH)\b[\s\S]*)/i);
+    if (firstQuery?.[1]) {
+      sql = firstQuery[1].trim();
+    }
+  }
+
+  sql = sql
+    .replace(/^\s*%\s*\n+/, "")
+    .replace(/\n\s*(?:However|This query|To fix this|Explanation:|Here is|Note:)\b[\s\S]*$/i, "")
+    .replace(/;\s*$/, "")
+    .trim();
+
+  if (!/^(SELECT|WITH)\b/i.test(sql)) return null;
+  return sql;
+}
+
 export function getClient() {
   const { tinybird } = getConfig();
 
@@ -254,11 +282,7 @@ export function getClient() {
       };
     }
 
-    const sql =
-      (response.sql || "")
-        .replaceAll("```sql", "")
-        .replaceAll("```", "")
-        .replaceAll(";", "") || null;
+    const sql = extractSqlQuery(response.sql);
 
     debugLog("Formatted SQL", {
       original: response.sql?.substring(0, 100) + (response.sql && response.sql.length > 100 ? '...' : ''),
@@ -269,7 +293,7 @@ export function getClient() {
     const metrics = response.metrics || null;
 
     let sqlResult: SqlResult | null = null;
-    let error: string | null = null;
+    let error: string | null = sql ? null : "Model did not return a SQL SELECT query";
 
     if (sql && shouldExecuteSql) {
       try {

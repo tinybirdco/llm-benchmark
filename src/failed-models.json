@@ -1,15 +1,7 @@
 {
   "generated_at": "2026-06-17T10:07:29.445Z",
-  "total_count": 20,
+  "total_count": 19,
   "models": [
-    {
-      "provider": "x-ai",
-      "model": "grok-4.3",
-      "modelId": "x-ai/grok-4.3",
-      "reason": "PR rejected/closed without merging",
-      "failed_at": "2026-05-05T14:34:44.815Z",
-      "attempt_count": 1
-    },
     {
       "provider": "google",
       "model": "gemma-4-26b-a4b-it:free",

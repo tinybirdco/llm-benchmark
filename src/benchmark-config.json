@@ -16,8 +16,6 @@
       "models": [
         "claude-3.5-sonnet",
         "claude-3.7-sonnet",
-        "claude-opus-4",
-        "claude-sonnet-4",
         "claude-3.5-haiku",
         "claude-opus-4.1",
         "claude-4.5-sonnet",
@@ -39,8 +37,6 @@
         "deepseek-chat-v3-0324",
         "deepseek-chat-v3-0324:free",
         "deepseek-chat-v3.1",
-        "deepseek-v4-pro",
-        "deepseek-v3.2",
         "deepseek-v3.1-terminus:exacto",
         "deepseek-v3.1-terminus",
         "deepseek-v4-flash",
@@ -108,14 +104,11 @@
         "mistral-small-2603",
         "ministral-14b-2512",
         "ministral-8b-2512",
-        "mistral-large-2512",
         "mistral-medium-3",
         "ministral-3b-2512",
         "mistral-small-3.2-24b-instruct",
         "mixtral-8x22b-instruct",
-        "mistral-large",
         "mistral-small-24b-instruct-2501",
-        "mistral-large-2407",
         "mistral-saba"
       ]
     },
@@ -138,8 +131,6 @@
         "gpt-5.1-codex",
         "gpt-oss-safeguard-20b",
         "gpt-5.1",
-        "gpt-5.1-chat",
-        "gpt-5-pro",
         "gpt-oss-120b:exacto",
         "gpt-5.1-codex-mini",
         "gpt-chat-latest",
@@ -170,9 +161,7 @@
         "gpt-3.5-turbo",
         "gpt-5.4",
         "gpt-4",
-        "gpt-5.5",
-        "gpt-5.4-pro",
-        "gpt-5.5-pro"
+        "gpt-5.5"
       ]
     },
     "qwen": {
