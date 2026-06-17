@@ -310,6 +310,11 @@
       "models": [
         "nex-n2-pro:free"
       ]
+    },
+    "poolside": {
+      "models": [
+        "laguna-m.1:free"
+      ]
     }
   }
 }
