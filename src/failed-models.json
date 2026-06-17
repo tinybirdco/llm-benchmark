@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-16T10:02:47.415Z",
-  "total_count": 19,
+  "generated_at": "2026-06-17T10:07:29.445Z",
+  "total_count": 20,
   "models": [
     {
       "provider": "x-ai",
@@ -152,6 +152,14 @@
       "modelId": "~anthropic/claude-fable-latest",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-06-16T10:02:47.415Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "nvidia",
+      "model": "nemotron-3.5-content-safety:free",
+      "modelId": "nvidia/nemotron-3.5-content-safety:free",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-06-17T10:07:29.445Z",
       "attempt_count": 1
     }
   ]
