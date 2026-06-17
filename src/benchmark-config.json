@@ -197,7 +197,8 @@
         "qwen2.5-coder-7b-instruct",
         "qwen3.7-max",
         "qwen3.7-plus",
-        "qwen3.6-flash"
+        "qwen3.6-flash",
+        "qwen3.5-plus-20260420"
       ]
     },
     "moonshotai": {
