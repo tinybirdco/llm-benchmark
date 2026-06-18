@@ -5,6 +5,10 @@ on:
     types: [closed]
     branches: [main]
 
+concurrency:
+  group: benchmark-validation-main
+  cancel-in-progress: false
+
 jobs:
   validate:
     if: >
