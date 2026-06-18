@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-17T10:07:29.445Z",
-  "total_count": 19,
+  "generated_at": "2026-06-18T09:57:09.347Z",
+  "total_count": 20,
   "models": [
     {
       "provider": "google",
@@ -152,6 +152,14 @@
       "modelId": "nvidia/nemotron-3.5-content-safety:free",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-06-17T10:07:29.445Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "openai",
+      "model": "gpt-5.4-pro",
+      "modelId": "openai/gpt-5.4-pro",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-06-18T09:57:09.347Z",
       "attempt_count": 1
     }
   ]
