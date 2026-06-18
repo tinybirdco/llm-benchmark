@@ -31,7 +31,8 @@
         "claude-opus-4.6-fast",
         "claude-fable-5",
         "claude-opus-4.8",
-        "claude-sonnet-4"
+        "claude-sonnet-4",
+        "claude-opus-4"
       ]
     },
     "deepseek": {
@@ -115,7 +116,8 @@
         "mistral-small-24b-instruct-2501",
         "mistral-saba",
         "mistral-large",
-        "mistral-large-2407"
+        "mistral-large-2407",
+        "mistral-large-2512"
       ]
     },
     "openai": {
@@ -167,7 +169,8 @@
         "gpt-3.5-turbo",
         "gpt-5.4",
         "gpt-4",
-        "gpt-5.5"
+        "gpt-5.5",
+        "gpt-5.1-chat"
       ]
     },
     "qwen": {
