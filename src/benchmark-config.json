@@ -325,7 +325,8 @@
     "poolside": {
       "models": [
         "laguna-m.1:free",
-        "laguna-xs.2:free"
+        "laguna-xs.2:free",
+        "laguna-m.1"
       ]
     }
   }
