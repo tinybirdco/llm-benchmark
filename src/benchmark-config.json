@@ -332,6 +332,11 @@
         "laguna-m.1",
         "laguna-xs.2"
       ]
+    },
+    "tencent": {
+      "models": [
+        "hy3-preview"
+      ]
     }
   }
 }
