@@ -261,7 +261,8 @@
       "models": [
         "ring-1t",
         "ring-2.6-1t",
-        "ling-2.6-1t"
+        "ling-2.6-1t",
+        "ling-2.6-flash"
       ]
     },
     "deepcogito": {
