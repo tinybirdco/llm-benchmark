@@ -338,6 +338,11 @@
       "models": [
         "hy3-preview"
       ]
+    },
+    "xiaomi": {
+      "models": [
+        "mimo-v2.5-pro"
+      ]
     }
   }
 }
