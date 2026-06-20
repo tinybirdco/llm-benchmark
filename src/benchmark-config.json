@@ -218,7 +218,8 @@
     "z-ai": {
       "models": [
         "glm-4.6:exacto",
-        "glm-5.2"
+        "glm-5.2",
+        "glm-5.1"
       ]
     },
     "nvidia": {
