@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-18T10:32:57.855Z",
-  "total_count": 21,
+  "generated_at": "2026-06-21T09:41:45.127Z",
+  "total_count": 22,
   "models": [
     {
       "provider": "google",
@@ -168,6 +168,14 @@
       "modelId": "openai/gpt-5.5-pro",
       "reason": "PR rejected/closed without merging",
       "failed_at": "2026-06-18T10:32:57.855Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "rekaai",
+      "model": "reka-edge",
+      "modelId": "rekaai/reka-edge",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-06-21T09:41:45.127Z",
       "attempt_count": 1
     }
   ]
