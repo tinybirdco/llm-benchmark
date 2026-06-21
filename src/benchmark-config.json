@@ -316,7 +316,8 @@
     },
     "minimax": {
       "models": [
-        "minimax-m3"
+        "minimax-m3",
+        "minimax-m2.7"
       ]
     },
     "stepfun": {
