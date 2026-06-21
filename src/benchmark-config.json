@@ -355,6 +355,11 @@
       "models": [
         "kat-coder-pro-v2"
       ]
+    },
+    "arcee-ai": {
+      "models": [
+        "trinity-large-thinking"
+      ]
     }
   }
 }
