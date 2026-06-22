@@ -360,6 +360,11 @@
       "models": [
         "trinity-large-thinking"
       ]
+    },
+    "inception": {
+      "models": [
+        "mercury-2"
+      ]
     }
   }
 }
