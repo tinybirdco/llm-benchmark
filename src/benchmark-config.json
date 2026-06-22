@@ -365,6 +365,11 @@
       "models": [
         "mercury-2"
       ]
+    },
+    "bytedance-seed": {
+      "models": [
+        "seed-2.0-lite"
+      ]
     }
   }
 }
