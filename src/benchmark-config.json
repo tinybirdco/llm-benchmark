@@ -330,7 +330,8 @@
     },
     "nex-agi": {
       "models": [
-        "nex-n2-pro:free"
+        "nex-n2-pro:free",
+        "nex-n2-pro"
       ]
     },
     "poolside": {
