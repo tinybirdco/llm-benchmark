@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-21T09:41:45.127Z",
-  "total_count": 22,
+  "generated_at": "2026-06-23T09:35:25.075Z",
+  "total_count": 23,
   "models": [
     {
       "provider": "google",
@@ -176,6 +176,14 @@
       "modelId": "rekaai/reka-edge",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-06-21T09:41:45.127Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "liquid",
+      "model": "lfm-2-24b-a2b",
+      "modelId": "liquid/lfm-2-24b-a2b",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-06-23T09:35:25.075Z",
       "attempt_count": 1
     }
   ]
