@@ -388,6 +388,11 @@
       "models": [
         "fugu-ultra"
       ]
+    },
+    "aion-labs": {
+      "models": [
+        "aion-2.0"
+      ]
     }
   }
 }
