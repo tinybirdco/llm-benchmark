@@ -209,7 +209,8 @@
         "qwen3.5-35b-a3b",
         "qwen3.5-plus-02-15",
         "qwen3.5-397b-a17b",
-        "qwen3-max-thinking"
+        "qwen3-max-thinking",
+        "qwen3-coder-next"
       ]
     },
     "moonshotai": {
