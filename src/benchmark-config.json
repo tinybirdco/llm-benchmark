@@ -396,6 +396,11 @@
       "models": [
         "aion-2.0"
       ]
+    },
+    "writer": {
+      "models": [
+        "palmyra-x5"
+      ]
     }
   }
 }
