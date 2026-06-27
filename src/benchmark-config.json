@@ -384,7 +384,8 @@
     "bytedance-seed": {
       "models": [
         "seed-2.0-lite",
-        "seed-2.0-mini"
+        "seed-2.0-mini",
+        "seed-1.6-flash"
       ]
     },
     "sakana": {
