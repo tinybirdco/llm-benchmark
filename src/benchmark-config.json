@@ -408,6 +408,11 @@
       "models": [
         "palmyra-x5"
       ]
+    },
+    "upstage": {
+      "models": [
+        "solar-pro-3"
+      ]
     }
   }
 }
