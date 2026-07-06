@@ -414,6 +414,11 @@
       "models": [
         "solar-pro-3"
       ]
+    },
+    "relace": {
+      "models": [
+        "relace-search"
+      ]
     }
   }
 }
