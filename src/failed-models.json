@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-26T09:40:21.315Z",
-  "total_count": 24,
+  "generated_at": "2026-07-06T12:11:05.976Z",
+  "total_count": 25,
   "models": [
     {
       "provider": "google",
@@ -192,6 +192,14 @@
       "modelId": "liquid/lfm-2.5-1.2b-thinking:free",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-06-26T09:40:21.315Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "stepfun",
+      "model": "step-3.5-flash",
+      "modelId": "stepfun/step-3.5-flash",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-07-06T12:11:05.976Z",
       "attempt_count": 1
     }
   ]
