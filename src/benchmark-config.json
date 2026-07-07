@@ -370,7 +370,8 @@
     "tencent": {
       "models": [
         "hy3-preview",
-        "hy3"
+        "hy3",
+        "hy3:free"
       ]
     },
     "xiaomi": {
