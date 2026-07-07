@@ -277,7 +277,8 @@
     },
     "amazon": {
       "models": [
-        "nova-premier-v1"
+        "nova-premier-v1",
+        "nova-2-lite-v1"
       ]
     },
     "inclusionai": {
