@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-06T12:11:05.976Z",
-  "total_count": 25,
+  "generated_at": "2026-07-07T09:39:53.241Z",
+  "total_count": 26,
   "models": [
     {
       "provider": "google",
@@ -200,6 +200,14 @@
       "modelId": "stepfun/step-3.5-flash",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-07-06T12:11:05.976Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "openrouter",
+      "model": "bodybuilder",
+      "modelId": "openrouter/bodybuilder",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-07-07T09:39:53.241Z",
       "attempt_count": 1
     }
   ]
