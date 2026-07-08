@@ -390,7 +390,8 @@
     },
     "arcee-ai": {
       "models": [
-        "trinity-large-thinking"
+        "trinity-large-thinking",
+        "trinity-mini"
       ]
     },
     "inception": {
