@@ -292,7 +292,8 @@
     },
     "deepcogito": {
       "models": [
-        "cogito-v2-preview-llama-70b"
+        "cogito-v2-preview-llama-70b",
+        "cogito-v2.1-671b"
       ]
     },
     "liquid": {
