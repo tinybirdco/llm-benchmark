@@ -413,7 +413,8 @@
     },
     "aion-labs": {
       "models": [
-        "aion-2.0"
+        "aion-2.0",
+        "aion-3.0-mini"
       ]
     },
     "writer": {
