@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-07T09:39:53.241Z",
-  "total_count": 26,
+  "generated_at": "2026-07-08T09:15:03.412Z",
+  "total_count": 27,
   "models": [
     {
       "provider": "google",
@@ -208,6 +208,14 @@
       "modelId": "openrouter/bodybuilder",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-07-07T09:39:53.241Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "allenai",
+      "model": "olmo-3-32b-think",
+      "modelId": "allenai/olmo-3-32b-think",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-07-08T09:15:03.412Z",
       "attempt_count": 1
     }
   ]
