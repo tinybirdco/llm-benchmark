@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-08T09:15:03.412Z",
-  "total_count": 27,
+  "generated_at": "2026-07-09T09:41:38.837Z",
+  "total_count": 28,
   "models": [
     {
       "provider": "google",
@@ -216,6 +216,14 @@
       "modelId": "allenai/olmo-3-32b-think",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-07-08T09:15:03.412Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "relace",
+      "model": "relace-apply-3",
+      "modelId": "relace/relace-apply-3",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-07-09T09:41:38.837Z",
       "attempt_count": 1
     }
   ]
