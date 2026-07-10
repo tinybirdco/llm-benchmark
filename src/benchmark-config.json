@@ -176,7 +176,8 @@
         "gpt-5-pro",
         "gpt-5.6-terra",
         "gpt-5.6-luna-pro",
-        "gpt-5.6-sol"
+        "gpt-5.6-sol",
+        "gpt-5.6-sol-pro"
       ]
     },
     "qwen": {
