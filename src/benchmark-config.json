@@ -173,7 +173,8 @@
         "gpt-4",
         "gpt-5.5",
         "gpt-5.1-chat",
-        "gpt-5-pro"
+        "gpt-5-pro",
+        "gpt-5.6-terra"
       ]
     },
     "qwen": {
