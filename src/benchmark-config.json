@@ -222,7 +222,8 @@
         "qwen3-vl-8b-instruct",
         "qwen3-vl-235b-a22b-thinking",
         "qwen-plus-2025-07-28",
-        "qwen3-vl-235b-a22b-instruct"
+        "qwen3-vl-235b-a22b-instruct",
+        "qwen-plus-2025-07-28:thinking"
       ]
     },
     "moonshotai": {
