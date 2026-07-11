@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-09T09:41:38.837Z",
-  "total_count": 28,
+  "generated_at": "2026-07-11T09:05:04.199Z",
+  "total_count": 29,
   "models": [
     {
       "provider": "google",
@@ -224,6 +224,14 @@
       "modelId": "relace/relace-apply-3",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-07-09T09:41:38.837Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "qwen",
+      "model": "qwen3-next-80b-a3b-instruct:free",
+      "modelId": "qwen/qwen3-next-80b-a3b-instruct:free",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-07-11T09:05:04.199Z",
       "attempt_count": 1
     }
   ]
