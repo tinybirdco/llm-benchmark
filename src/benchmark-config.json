@@ -263,7 +263,8 @@
         "nemotron-3-super-120b-a12b:free",
         "nemotron-3-super-120b-a12b",
         "nemotron-3-nano-30b-a3b:free",
-        "nemotron-3-nano-30b-a3b"
+        "nemotron-3-nano-30b-a3b",
+        "nemotron-nano-9b-v2:free"
       ]
     },
     "openrouter": {
