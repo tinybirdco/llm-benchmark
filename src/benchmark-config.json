@@ -447,6 +447,11 @@
       "models": [
         "relace-search"
       ]
+    },
+    "ai21": {
+      "models": [
+        "jamba-large-1.7"
+      ]
     }
   }
 }
