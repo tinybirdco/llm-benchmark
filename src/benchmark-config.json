@@ -346,7 +346,8 @@
     "nousresearch": {
       "models": [
         "hermes-3-llama-3.1-405b:free",
-        "hermes-4-70b"
+        "hermes-4-70b",
+        "hermes-4-405b"
       ]
     },
     "perceptron": {
