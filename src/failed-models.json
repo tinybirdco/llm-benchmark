@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-11T09:05:04.199Z",
-  "total_count": 29,
+  "generated_at": "2026-07-13T09:35:24.841Z",
+  "total_count": 30,
   "models": [
     {
       "provider": "google",
@@ -232,6 +232,14 @@
       "modelId": "qwen/qwen3-next-80b-a3b-instruct:free",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-07-11T09:05:04.199Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "qwen",
+      "model": "qwen3-coder:free",
+      "modelId": "qwen/qwen3-coder:free",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-07-13T09:35:24.841Z",
       "attempt_count": 1
     }
   ]
