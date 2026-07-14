@@ -408,7 +408,8 @@
     "kwaipilot": {
       "models": [
         "kat-coder-pro-v2",
-        "kat-coder-pro-v2.5"
+        "kat-coder-pro-v2.5",
+        "kat-coder-air-v2.5"
       ]
     },
     "arcee-ai": {
