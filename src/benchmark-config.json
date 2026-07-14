@@ -467,6 +467,11 @@
       "models": [
         "ui-tars-1.5-7b"
       ]
+    },
+    "cognitivecomputations": {
+      "models": [
+        "dolphin-mistral-24b-venice-edition"
+      ]
     }
   }
 }
