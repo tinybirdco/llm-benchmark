@@ -460,6 +460,11 @@
       "models": [
         "jamba-large-1.7"
       ]
+    },
+    "bytedance": {
+      "models": [
+        "ui-tars-1.5-7b"
+      ]
     }
   }
 }
