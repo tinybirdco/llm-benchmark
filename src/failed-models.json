@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-13T09:35:24.841Z",
-  "total_count": 30,
+  "generated_at": "2026-07-15T09:08:26.693Z",
+  "total_count": 31,
   "models": [
     {
       "provider": "google",
@@ -240,6 +240,14 @@
       "modelId": "qwen/qwen3-coder:free",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-07-13T09:35:24.841Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "morph",
+      "model": "morph-v3-large",
+      "modelId": "morph/morph-v3-large",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-07-15T09:08:26.693Z",
       "attempt_count": 1
     }
   ]
