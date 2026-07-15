@@ -345,7 +345,8 @@
     },
     "baidu": {
       "models": [
-        "ernie-4.5-21b-a3b-thinking"
+        "ernie-4.5-21b-a3b-thinking",
+        "ernie-4.5-vl-424b-a47b"
       ]
     },
     "nousresearch": {
