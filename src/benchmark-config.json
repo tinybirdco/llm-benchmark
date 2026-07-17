@@ -475,6 +475,11 @@
       "models": [
         "dolphin-mistral-24b-venice-edition"
       ]
+    },
+    "meta": {
+      "models": [
+        "muse-spark-1.1"
+      ]
     }
   }
 }
