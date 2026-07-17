@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-16T09:08:30.564Z",
-  "total_count": 32,
+  "generated_at": "2026-07-17T09:06:03.900Z",
+  "total_count": 33,
   "models": [
     {
       "provider": "google",
@@ -256,6 +256,14 @@
       "modelId": "morph/morph-v3-fast",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-07-16T09:08:30.564Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "arcee-ai",
+      "model": "virtuoso-large",
+      "modelId": "arcee-ai/virtuoso-large",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-07-17T09:06:03.900Z",
       "attempt_count": 1
     }
   ]
