@@ -481,6 +481,11 @@
       "models": [
         "muse-spark-1.1"
       ]
+    },
+    "thinkingmachines": {
+      "models": [
+        "inkling"
+      ]
     }
   }
 }
