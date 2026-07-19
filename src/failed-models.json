@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-18T09:01:16.109Z",
-  "total_count": 34,
+  "generated_at": "2026-07-19T09:08:08.955Z",
+  "total_count": 35,
   "models": [
     {
       "provider": "google",
@@ -272,6 +272,14 @@
       "modelId": "cognitivecomputations/dolphin-mistral-24b-venice-edition:free",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-07-18T09:01:16.109Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "minimax",
+      "model": "minimax-m1",
+      "modelId": "minimax/minimax-m1",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-07-19T09:08:08.955Z",
       "attempt_count": 1
     }
   ]
