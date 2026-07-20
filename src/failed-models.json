@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-19T09:08:08.955Z",
-  "total_count": 35,
+  "generated_at": "2026-07-20T09:31:16.319Z",
+  "total_count": 36,
   "models": [
     {
       "provider": "google",
@@ -280,6 +280,14 @@
       "modelId": "minimax/minimax-m1",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-07-19T09:08:08.955Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "minimax",
+      "model": "minimax-01",
+      "modelId": "minimax/minimax-01",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-07-20T09:31:16.319Z",
       "attempt_count": 1
     }
   ]
