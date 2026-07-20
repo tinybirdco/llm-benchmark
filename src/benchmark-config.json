@@ -449,7 +449,8 @@
       "models": [
         "aion-2.0",
         "aion-3.0-mini",
-        "aion-3.0"
+        "aion-3.0",
+        "aion-rp-llama-3.1-8b"
       ]
     },
     "writer": {
