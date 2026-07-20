@@ -488,6 +488,11 @@
       "models": [
         "inkling"
       ]
+    },
+    "cohere": {
+      "models": [
+        "command-a"
+      ]
     }
   }
 }
