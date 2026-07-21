@@ -338,7 +338,8 @@
     },
     "sao10k": {
       "models": [
-        "l3.1-70b-hanami-x1"
+        "l3.1-70b-hanami-x1",
+        "l3.3-euryale-70b"
       ]
     },
     "perplexity": {
