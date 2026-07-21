@@ -499,6 +499,11 @@
         "command-a",
         "command-r7b-12-2024"
       ]
+    },
+    "meituan": {
+      "models": [
+        "longcat-2.0"
+      ]
     }
   }
 }
