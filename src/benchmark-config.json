@@ -495,7 +495,8 @@
     },
     "cohere": {
       "models": [
-        "command-a"
+        "command-a",
+        "command-r7b-12-2024"
       ]
     }
   }
