@@ -504,6 +504,11 @@
       "models": [
         "longcat-2.0"
       ]
+    },
+    "microsoft": {
+      "models": [
+        "phi-4"
+      ]
     }
   }
 }
