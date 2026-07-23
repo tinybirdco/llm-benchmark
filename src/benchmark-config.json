@@ -309,7 +309,8 @@
       "models": [
         "nova-premier-v1",
         "nova-2-lite-v1",
-        "nova-lite-v1"
+        "nova-lite-v1",
+        "nova-micro-v1"
       ]
     },
     "inclusionai": {
