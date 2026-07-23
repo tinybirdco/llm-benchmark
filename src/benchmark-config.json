@@ -518,6 +518,11 @@
       "models": [
         "phi-4"
       ]
+    },
+    "anthracite-org": {
+      "models": [
+        "magnum-v4-72b"
+      ]
     }
   }
 }
