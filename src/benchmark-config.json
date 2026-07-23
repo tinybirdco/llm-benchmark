@@ -302,7 +302,8 @@
     "thedrummer": {
       "models": [
         "cydonia-24b-v4.1",
-        "skyfall-36b-v2"
+        "skyfall-36b-v2",
+        "unslopnemo-12b"
       ]
     },
     "amazon": {
