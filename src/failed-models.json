@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-21T11:56:06.415Z",
-  "total_count": 37,
+  "generated_at": "2026-07-24T09:13:45.109Z",
+  "total_count": 38,
   "models": [
     {
       "provider": "google",
@@ -296,6 +296,14 @@
       "modelId": "rekaai/reka-flash-3",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-07-21T11:56:06.415Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "inflection",
+      "model": "inflection-3-pi",
+      "modelId": "inflection/inflection-3-pi",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-07-24T09:13:45.109Z",
       "attempt_count": 1
     }
   ]
