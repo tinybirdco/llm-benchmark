@@ -510,7 +510,8 @@
     "cohere": {
       "models": [
         "command-a",
-        "command-r7b-12-2024"
+        "command-r7b-12-2024",
+        "command-r-08-2024"
       ]
     },
     "meituan": {
