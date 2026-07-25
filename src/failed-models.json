@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-24T09:13:45.109Z",
-  "total_count": 38,
+  "generated_at": "2026-07-25T09:05:08.968Z",
+  "total_count": 39,
   "models": [
     {
       "provider": "google",
@@ -304,6 +304,14 @@
       "modelId": "inflection/inflection-3-pi",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-07-24T09:13:45.109Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "inflection",
+      "model": "inflection-3-productivity",
+      "modelId": "inflection/inflection-3-productivity",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-07-25T09:05:08.968Z",
       "attempt_count": 1
     }
   ]
