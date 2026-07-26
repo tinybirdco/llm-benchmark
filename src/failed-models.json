@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-25T09:05:08.968Z",
-  "total_count": 39,
+  "generated_at": "2026-07-26T09:13:46.182Z",
+  "total_count": 40,
   "models": [
     {
       "provider": "google",
@@ -312,6 +312,14 @@
       "modelId": "inflection/inflection-3-productivity",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-07-25T09:05:08.968Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "~anthropic",
+      "model": "claude-sonnet-latest",
+      "modelId": "~anthropic/claude-sonnet-latest",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-07-26T09:13:46.182Z",
       "attempt_count": 1
     }
   ]
