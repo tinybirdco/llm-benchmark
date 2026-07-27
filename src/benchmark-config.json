@@ -525,7 +525,8 @@
     },
     "microsoft": {
       "models": [
-        "phi-4"
+        "phi-4",
+        "wizardlm-2-8x22b"
       ]
     },
     "anthracite-org": {
