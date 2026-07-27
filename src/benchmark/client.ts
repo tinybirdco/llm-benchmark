@@ -55,11 +55,21 @@ function extractSqlQuery(output: string | null | undefined): string | null {
 export function getClient() {
   const { tinybird } = getConfig();
 
+  // Per-query resource caps so a model's unoptimized SQL can't saturate the
+  // shared ClickHouse instance. Exceeding a cap fails the query, which is the
+  // correct benchmark outcome for an unrunnable query.
+  const QUERY_CAPS =
+    "max_execution_time=30, max_threads=2, max_memory_usage=8000000000";
+
   async function executeSqlQuery(sql: string): Promise<SqlResult> {
     const startTime = Date.now();
 
+    const cappedSql = /\bSETTINGS\b/i.test(sql)
+      ? sql
+      : `${sql} SETTINGS ${QUERY_CAPS}`;
+
     const url = `${tinybird.apiHost}/v0/sql?q=${encodeURIComponent(
-      sql
+      cappedSql
     )} FORMAT JSON`;
 
     const response = await fetch(url, {
