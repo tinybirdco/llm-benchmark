@@ -352,7 +352,8 @@
       "models": [
         "l3.1-70b-hanami-x1",
         "l3.3-euryale-70b",
-        "l3-lunaris-8b"
+        "l3-lunaris-8b",
+        "l3.1-euryale-70b"
       ]
     },
     "perplexity": {
