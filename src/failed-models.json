@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-26T09:13:46.182Z",
-  "total_count": 40,
+  "generated_at": "2026-07-28T09:29:05.567Z",
+  "total_count": 41,
   "models": [
     {
       "provider": "google",
@@ -320,6 +320,14 @@
       "modelId": "~anthropic/claude-sonnet-latest",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-07-26T09:13:46.182Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "gryphe",
+      "model": "mythomax-l2-13b",
+      "modelId": "gryphe/mythomax-l2-13b",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-07-28T09:29:05.567Z",
       "attempt_count": 1
     }
   ]
