@@ -237,7 +237,8 @@
         "qwen-plus",
         "qwen2.5-vl-72b-instruct",
         "qwen-2.5-7b-instruct",
-        "qwen-2.5-72b-instruct"
+        "qwen-2.5-72b-instruct",
+        "qwen3.7-flash"
       ]
     },
     "moonshotai": {
