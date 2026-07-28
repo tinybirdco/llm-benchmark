@@ -536,6 +536,11 @@
       "models": [
         "magnum-v4-72b"
       ]
+    },
+    "undi95": {
+      "models": [
+        "remm-slerp-l2-13b"
+      ]
     }
   }
 }
