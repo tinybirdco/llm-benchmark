@@ -376,7 +376,8 @@
         "hermes-3-llama-3.1-405b:free",
         "hermes-4-70b",
         "hermes-4-405b",
-        "hermes-3-llama-3.1-405b"
+        "hermes-3-llama-3.1-405b",
+        "hermes-3-llama-3.1-70b"
       ]
     },
     "perceptron": {
