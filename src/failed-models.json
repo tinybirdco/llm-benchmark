@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-31T09:21:59.535Z",
-  "total_count": 44,
+  "generated_at": "2026-08-03T09:33:36.548Z",
+  "total_count": 45,
   "models": [
     {
       "provider": "google",
@@ -352,6 +352,14 @@
       "modelId": "anthropic/claude-opus-4.7:batch",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-07-31T09:21:59.535Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "~openai",
+      "model": "gpt-latest",
+      "modelId": "~openai/gpt-latest",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-08-03T09:33:36.548Z",
       "attempt_count": 1
     }
   ]
