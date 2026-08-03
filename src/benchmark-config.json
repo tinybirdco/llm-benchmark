@@ -543,6 +543,11 @@
       "models": [
         "remm-slerp-l2-13b"
       ]
+    },
+    "mancer": {
+      "models": [
+        "weaver"
+      ]
     }
   }
 }
