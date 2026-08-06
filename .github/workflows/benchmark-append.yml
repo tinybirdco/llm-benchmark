@@ -126,8 +126,10 @@ jobs:
         id: branch-name
         run: |
           MODEL_NAME="${{ github.event.inputs.model }}"
-          NORMALIZED_MODEL=$(echo "$MODEL_NAME" | sed 's/[\/\s_\.:]/-/g')
-          echo "branch_name=benchmark/$NORMALIZED_MODEL-${{ github.run_id }}" >> $GITHUB_OUTPUT
+          NORMALIZED_MODEL=$(printf '%s' "$MODEL_NAME" | sed -E 's/[^[:alnum:]]+/-/g; s/^-+//; s/-+$//')
+          BRANCH_NAME="benchmark/$NORMALIZED_MODEL-${{ github.run_id }}"
+          git check-ref-format --branch "$BRANCH_NAME"
+          echo "branch_name=$BRANCH_NAME" >> "$GITHUB_OUTPUT"
 
       - name: Create benchmark branch
         if: success() && steps.verify-quality.outcome == 'success'
