@@ -549,6 +549,38 @@
       "models": [
         "weaver"
       ]
+    },
+    "~deepseek": {
+      "models": [
+        "deepseek-v4-flash-latest"
+      ]
+    },
+    "~x-ai": {
+      "models": [
+        "grok-latest"
+      ]
+    },
+    "~anthropic": {
+      "models": [
+        "claude-haiku-latest",
+        "claude-opus-latest"
+      ]
+    },
+    "~openai": {
+      "models": [
+        "gpt-mini-latest"
+      ]
+    },
+    "~google": {
+      "models": [
+        "gemini-pro-latest",
+        "gemini-flash-latest"
+      ]
+    },
+    "~moonshotai": {
+      "models": [
+        "kimi-latest"
+      ]
     }
   }
 }
