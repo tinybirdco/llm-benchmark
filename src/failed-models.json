@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-09T08:31:59.789Z",
-  "total_count": 48,
+  "generated_at": "2026-08-10T08:53:24.181Z",
+  "total_count": 49,
   "models": [
     {
       "provider": "google",
@@ -384,6 +384,14 @@
       "modelId": "anthropic/claude-sonnet-4.6:batch",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-08-09T08:31:59.789Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "anthropic",
+      "model": "claude-opus-4.6:batch",
+      "modelId": "anthropic/claude-opus-4.6:batch",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-08-10T08:53:24.181Z",
       "attempt_count": 1
     }
   ]
