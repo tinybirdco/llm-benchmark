@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-12T08:47:52.292Z",
-  "total_count": 51,
+  "generated_at": "2026-08-13T08:50:12.153Z",
+  "total_count": 52,
   "models": [
     {
       "provider": "google",
@@ -408,6 +408,14 @@
       "modelId": "anthropic/claude-opus-4.5:batch",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-08-12T08:47:52.292Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "anthropic",
+      "model": "claude-haiku-4.5:batch",
+      "modelId": "anthropic/claude-haiku-4.5:batch",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-08-13T08:50:12.153Z",
       "attempt_count": 1
     }
   ]
