@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-21T08:31:33.533Z",
-  "total_count": 60,
+  "generated_at": "2026-08-22T08:29:31.964Z",
+  "total_count": 61,
   "models": [
     {
       "provider": "google",
@@ -480,6 +480,14 @@
       "modelId": "google/gemini-3-flash-preview:batch",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-08-21T08:31:33.533Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "google",
+      "model": "gemini-2.5-flash-lite:batch",
+      "modelId": "google/gemini-2.5-flash-lite:batch",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-08-22T08:29:31.964Z",
       "attempt_count": 1
     }
   ]
