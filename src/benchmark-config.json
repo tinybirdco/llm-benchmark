@@ -332,7 +332,8 @@
         "ling-2.6-1t",
         "ling-2.6-flash",
         "ling-3.0-flash:free",
-        "ling-3.0-flash"
+        "ling-3.0-flash",
+        "ling-3.0-flash-fin:free"
       ]
     },
     "deepcogito": {
