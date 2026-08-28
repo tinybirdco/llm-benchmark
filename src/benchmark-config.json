@@ -55,7 +55,8 @@
         "deepseek-r1-distill-llama-70b",
         "deepseek-v3.2",
         "deepseek-v4-pro",
-        "deepseek-v4-flash-0731"
+        "deepseek-v4-flash-0731",
+        "deepseek-v4-pro-0813"
       ]
     },
     "google": {
