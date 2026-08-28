@@ -243,7 +243,8 @@
         "qwen-2.5-7b-instruct",
         "qwen-2.5-72b-instruct",
         "qwen3.7-flash",
-        "qwen3.8-max"
+        "qwen3.8-max",
+        "qwen3.8-flash"
       ]
     },
     "moonshotai": {
