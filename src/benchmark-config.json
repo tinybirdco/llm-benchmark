@@ -435,7 +435,8 @@
         "hy3",
         "hy3:free",
         "hunyuan-a13b-instruct",
-        "hy4-preview"
+        "hy4-preview",
+        "hy-mt2-1.8b"
       ]
     },
     "xiaomi": {
