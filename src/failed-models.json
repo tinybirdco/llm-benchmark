@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-28T12:11:41.151Z",
-  "total_count": 69,
+  "generated_at": "2026-08-29T08:32:10.913Z",
+  "total_count": 70,
   "models": [
     {
       "provider": "google",
@@ -552,6 +552,14 @@
       "modelId": "mistralai/mistral-small-2603:batch",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-08-28T12:11:41.151Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "google",
+      "model": "gemma-4-31b-it:batch",
+      "modelId": "google/gemma-4-31b-it:batch",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-08-29T08:32:10.913Z",
       "attempt_count": 1
     }
   ]
