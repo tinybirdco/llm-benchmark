@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-29T08:32:10.913Z",
-  "total_count": 70,
+  "generated_at": "2026-08-30T08:32:42.976Z",
+  "total_count": 71,
   "models": [
     {
       "provider": "google",
@@ -560,6 +560,14 @@
       "modelId": "google/gemma-4-31b-it:batch",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-08-29T08:32:10.913Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "openai",
+      "model": "gpt-oss-120b:batch",
+      "modelId": "openai/gpt-oss-120b:batch",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-08-30T08:32:42.976Z",
       "attempt_count": 1
     }
   ]
