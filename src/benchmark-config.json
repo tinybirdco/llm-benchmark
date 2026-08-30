@@ -592,6 +592,11 @@
       "models": [
         "kimi-latest"
       ]
+    },
+    "~z-ai": {
+      "models": [
+        "glm-latest"
+      ]
     }
   }
 }
