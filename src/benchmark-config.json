@@ -437,7 +437,8 @@
         "hunyuan-a13b-instruct",
         "hy4-preview",
         "hy-mt2-1.8b",
-        "hy-mt2-30b-a3b"
+        "hy-mt2-30b-a3b",
+        "hy-mt2-7b"
       ]
     },
     "xiaomi": {
