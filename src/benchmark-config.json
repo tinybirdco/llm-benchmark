@@ -600,6 +600,11 @@
       "models": [
         "glm-latest"
       ]
+    },
+    "dots-studio": {
+      "models": [
+        "dots-3-note-preview:free"
+      ]
     }
   }
 }
