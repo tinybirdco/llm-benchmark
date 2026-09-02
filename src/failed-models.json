@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-09-01T08:38:47.028Z",
-  "total_count": 73,
+  "generated_at": "2026-09-02T08:38:04.491Z",
+  "total_count": 74,
   "models": [
     {
       "provider": "google",
@@ -584,6 +584,14 @@
       "modelId": "openai/gpt-5.6-terra-pro:batch",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-09-01T08:38:47.028Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "anthropic",
+      "model": "claude-fable-5.1:batch",
+      "modelId": "anthropic/claude-fable-5.1:batch",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-09-02T08:38:04.491Z",
       "attempt_count": 1
     }
   ]
