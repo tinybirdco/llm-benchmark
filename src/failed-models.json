@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-09-02T08:38:04.491Z",
-  "total_count": 74,
+  "generated_at": "2026-09-03T08:38:42.076Z",
+  "total_count": 75,
   "models": [
     {
       "provider": "google",
@@ -592,6 +592,14 @@
       "modelId": "anthropic/claude-fable-5.1:batch",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-09-02T08:38:04.491Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "google",
+      "model": "gemini-3.8-flash:batch",
+      "modelId": "google/gemini-3.8-flash:batch",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-09-03T08:38:42.076Z",
       "attempt_count": 1
     }
   ]
