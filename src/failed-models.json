@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-09-03T08:38:42.076Z",
-  "total_count": 75,
+  "generated_at": "2026-09-04T08:39:06.218Z",
+  "total_count": 76,
   "models": [
     {
       "provider": "google",
@@ -600,6 +600,14 @@
       "modelId": "google/gemini-3.8-flash:batch",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-09-03T08:38:42.076Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "openai",
+      "model": "gpt-5.4-mini:batch",
+      "modelId": "openai/gpt-5.4-mini:batch",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-09-04T08:39:06.218Z",
       "attempt_count": 1
     }
   ]
