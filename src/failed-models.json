@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-09-05T08:33:24.882Z",
-  "total_count": 77,
+  "generated_at": "2026-09-06T08:33:25.937Z",
+  "total_count": 78,
   "models": [
     {
       "provider": "google",
@@ -616,6 +616,14 @@
       "modelId": "openai/gpt-6-astra:batch",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-09-05T08:33:24.882Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "openai",
+      "model": "gpt-6-astra-pro:batch",
+      "modelId": "openai/gpt-6-astra-pro:batch",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-09-06T08:33:25.937Z",
       "attempt_count": 1
     }
   ]
