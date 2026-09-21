@@ -57,7 +57,8 @@
         "deepseek-v3.2",
         "deepseek-v4-pro",
         "deepseek-v4-flash-0731",
-        "deepseek-v4-pro-0813"
+        "deepseek-v4-pro-0813",
+        "deepseek-v4.1-flash"
       ]
     },
     "google": {
