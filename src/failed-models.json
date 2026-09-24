@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-09-23T08:39:21.775Z",
-  "total_count": 97,
+  "generated_at": "2026-09-24T08:39:49.705Z",
+  "total_count": 98,
   "models": [
     {
       "provider": "google",
@@ -776,6 +776,14 @@
       "modelId": "anthropic/claude-opus-5.5:batch",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-09-23T08:39:21.775Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "openai",
+      "model": "gpt-6-luna-pro:batch",
+      "modelId": "openai/gpt-6-luna-pro:batch",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-09-24T08:39:49.705Z",
       "attempt_count": 1
     }
   ]
