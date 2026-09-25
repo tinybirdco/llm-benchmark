@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-09-24T08:39:49.705Z",
-  "total_count": 98,
+  "generated_at": "2026-09-25T08:39:24.081Z",
+  "total_count": 99,
   "models": [
     {
       "provider": "google",
@@ -784,6 +784,14 @@
       "modelId": "openai/gpt-6-luna-pro:batch",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-09-24T08:39:49.705Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "openai",
+      "model": "gpt-6-luna:batch",
+      "modelId": "openai/gpt-6-luna:batch",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-09-25T08:39:24.081Z",
       "attempt_count": 1
     }
   ]
