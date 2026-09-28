@@ -615,6 +615,11 @@
       "models": [
         "dots-3-note-preview:free"
       ]
+    },
+    "typesafe": {
+      "models": [
+        "jev-router"
+      ]
     }
   }
 }
