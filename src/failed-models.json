@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-09-27T08:36:25.618Z",
-  "total_count": 101,
+  "generated_at": "2026-09-28T08:49:06.920Z",
+  "total_count": 102,
   "models": [
     {
       "provider": "google",
@@ -808,6 +808,14 @@
       "modelId": "openai/gpt-6-sol:batch",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-09-27T08:36:25.618Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "openai",
+      "model": "gpt-4.1-nano:batch",
+      "modelId": "openai/gpt-4.1-nano:batch",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-09-28T08:49:06.920Z",
       "attempt_count": 1
     }
   ]
