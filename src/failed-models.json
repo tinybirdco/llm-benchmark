@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-09-28T08:49:06.920Z",
-  "total_count": 102,
+  "generated_at": "2026-09-29T08:41:14.950Z",
+  "total_count": 103,
   "models": [
     {
       "provider": "google",
@@ -816,6 +816,14 @@
       "modelId": "openai/gpt-4.1-nano:batch",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-09-28T08:49:06.920Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "anthropic",
+      "model": "claude-sonnet-5.5:batch",
+      "modelId": "anthropic/claude-sonnet-5.5:batch",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-09-29T08:41:14.950Z",
       "attempt_count": 1
     }
   ]
