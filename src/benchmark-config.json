@@ -623,6 +623,11 @@
       "models": [
         "jev-router"
       ]
+    },
+    "fireworks": {
+      "models": [
+        "ember-1"
+      ]
     }
   }
 }
