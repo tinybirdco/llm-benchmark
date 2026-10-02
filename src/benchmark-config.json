@@ -629,6 +629,11 @@
       "models": [
         "ember-1"
       ]
+    },
+    "unbiased": {
+      "models": [
+        "pareto-26.10-preview"
+      ]
     }
   }
 }
