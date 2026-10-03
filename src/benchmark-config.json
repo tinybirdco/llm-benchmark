@@ -642,6 +642,11 @@
       "models": [
         "apodex-1.1-mini:free"
       ]
+    },
+    "stealth": {
+      "models": [
+        "space-bunny-alpha"
+      ]
     }
   }
 }
