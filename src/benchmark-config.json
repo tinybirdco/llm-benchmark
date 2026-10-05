@@ -466,7 +466,8 @@
         "mimo-v2.5-pro",
         "mimo-v2.5",
         "mimo-v2.6-pro-ultraspeed",
-        "mimo-v2.6-pro"
+        "mimo-v2.6-pro",
+        "mimo-v2.6-flash"
       ]
     },
     "kwaipilot": {
