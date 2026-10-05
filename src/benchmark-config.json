@@ -507,7 +507,8 @@
         "aion-3.0-mini",
         "aion-3.0",
         "aion-rp-llama-3.1-8b",
-        "aion-3.5-mini"
+        "aion-3.5-mini",
+        "aion-3.5"
       ]
     },
     "writer": {
