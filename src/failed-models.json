@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-05T08:53:19.693Z",
-  "total_count": 109,
+  "generated_at": "2026-10-06T08:42:30.060Z",
+  "total_count": 110,
   "models": [
     {
       "provider": "google",
@@ -872,6 +872,14 @@
       "modelId": "openai/gpt-3.5-turbo:batch",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-10-05T08:53:19.693Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "mistralai",
+      "model": "mistral-medium-3-5:batch",
+      "modelId": "mistralai/mistral-medium-3-5:batch",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-10-06T08:42:30.060Z",
       "attempt_count": 1
     }
   ]
