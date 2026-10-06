@@ -594,7 +594,8 @@
     "~deepseek": {
       "models": [
         "deepseek-v4-flash-latest",
-        "deepseek-pro-latest"
+        "deepseek-pro-latest",
+        "deepseek-flash-latest"
       ]
     },
     "~x-ai": {
