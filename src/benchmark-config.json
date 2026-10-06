@@ -593,7 +593,8 @@
     },
     "~deepseek": {
       "models": [
-        "deepseek-v4-flash-latest"
+        "deepseek-v4-flash-latest",
+        "deepseek-pro-latest"
       ]
     },
     "~x-ai": {
