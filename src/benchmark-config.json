@@ -608,7 +608,8 @@
     },
     "~openai": {
       "models": [
-        "gpt-mini-latest"
+        "gpt-mini-latest",
+        "gpt-astra-latest"
       ]
     },
     "~google": {
