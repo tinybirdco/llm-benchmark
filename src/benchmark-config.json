@@ -293,7 +293,8 @@
         "glm-4.5",
         "glm-5.3-flash",
         "glm-5.3",
-        "glm-5.3-prime"
+        "glm-5.3-prime",
+        "glm-5.3-flashx"
       ]
     },
     "nvidia": {
