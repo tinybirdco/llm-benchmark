@@ -666,6 +666,11 @@
       "models": [
         "ternary-bonsai-2-27b"
       ]
+    },
+    "inference-net": {
+      "models": [
+        "schematron-v2-turbo"
+      ]
     }
   }
 }
