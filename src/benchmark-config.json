@@ -614,7 +614,8 @@
         "gpt-mini-latest",
         "gpt-astra-latest",
         "gpt-terra-latest",
-        "gpt-sol-latest"
+        "gpt-sol-latest",
+        "gpt-luna-latest"
       ]
     },
     "~google": {
