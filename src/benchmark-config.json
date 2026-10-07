@@ -500,7 +500,8 @@
     },
     "sakana": {
       "models": [
-        "fugu-ultra"
+        "fugu-ultra",
+        "fugu-ultra-v2"
       ]
     },
     "aion-labs": {
