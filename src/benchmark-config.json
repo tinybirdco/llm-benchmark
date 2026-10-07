@@ -502,7 +502,8 @@
     "sakana": {
       "models": [
         "fugu-ultra",
-        "fugu-ultra-v2"
+        "fugu-ultra-v2",
+        "fugu-max"
       ]
     },
     "aion-labs": {
