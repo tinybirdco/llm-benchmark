@@ -491,7 +491,8 @@
     },
     "inception": {
       "models": [
-        "mercury-2"
+        "mercury-2",
+        "mercury-2.5"
       ]
     },
     "bytedance-seed": {
