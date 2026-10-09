@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-08T08:45:00.619Z",
-  "total_count": 112,
+  "generated_at": "2026-10-09T08:44:34.057Z",
+  "total_count": 113,
   "models": [
     {
       "provider": "google",
@@ -896,6 +896,14 @@
       "modelId": "anthropic/claude-haiku-5.5:batch",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-10-08T08:45:00.619Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "mistralai",
+      "model": "ministral-8b-2512:batch",
+      "modelId": "mistralai/ministral-8b-2512:batch",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-10-09T08:44:34.057Z",
       "attempt_count": 1
     }
   ]
