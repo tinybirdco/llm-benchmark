@@ -437,7 +437,8 @@
     },
     "stepfun": {
       "models": [
-        "step-3.7-flash"
+        "step-3.7-flash",
+        "step-5-preview"
       ]
     },
     "nex-agi": {
