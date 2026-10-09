@@ -363,7 +363,8 @@
         "ling-3.1-flash",
         "ling-3.0-flash-vl",
         "ling-3.0-flash-sante:free",
-        "ling-3.0-flash-sante"
+        "ling-3.0-flash-sante",
+        "ling-3.0-flash-fin"
       ]
     },
     "deepcogito": {
