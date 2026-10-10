@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-09T08:44:34.057Z",
-  "total_count": 113,
+  "generated_at": "2026-10-10T08:38:56.401Z",
+  "total_count": 114,
   "models": [
     {
       "provider": "google",
@@ -904,6 +904,14 @@
       "modelId": "mistralai/ministral-8b-2512:batch",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-10-09T08:44:34.057Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "openai",
+      "model": "gpt-6.1-sol:batch",
+      "modelId": "openai/gpt-6.1-sol:batch",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-10-10T08:38:56.401Z",
       "attempt_count": 1
     }
   ]
