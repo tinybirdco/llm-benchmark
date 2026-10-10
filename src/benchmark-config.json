@@ -646,7 +646,8 @@
     },
     "~z-ai": {
       "models": [
-        "glm-latest"
+        "glm-latest",
+        "glm-flash-latest"
       ]
     },
     "dots-studio": {
