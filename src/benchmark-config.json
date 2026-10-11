@@ -314,7 +314,8 @@
         "nemotron-3-nano-30b-a3b:free",
         "nemotron-3-nano-30b-a3b",
         "nemotron-nano-9b-v2:free",
-        "switchyard"
+        "switchyard",
+        "nemotron-3.5-lightning"
       ]
     },
     "openrouter": {
