@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-11T08:40:21.903Z",
-  "total_count": 115,
+  "generated_at": "2026-10-12T08:58:17.149Z",
+  "total_count": 116,
   "models": [
     {
       "provider": "google",
@@ -920,6 +920,14 @@
       "modelId": "mistralai/mistral-medium-3.1:batch",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-10-11T08:40:21.903Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "mistralai",
+      "model": "codestral-2508:batch",
+      "modelId": "mistralai/codestral-2508:batch",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-10-12T08:58:17.149Z",
       "attempt_count": 1
     }
   ]
