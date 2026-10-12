@@ -540,7 +540,8 @@
     "upstage": {
       "models": [
         "solar-pro-3",
-        "solar-mini4"
+        "solar-mini4",
+        "solar-pro4"
       ]
     },
     "relace": {
