@@ -380,7 +380,8 @@
       "models": [
         "lfm2-8b-a1b",
         "lfm-2.2-6b",
-        "lfm-2.5-1.2b-instruct:free"
+        "lfm-2.5-1.2b-instruct:free",
+        "lfm-2.5-2.6b:free"
       ]
     },
     "ibm-granite": {
