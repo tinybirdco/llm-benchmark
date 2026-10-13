@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-12T08:58:17.149Z",
-  "total_count": 116,
+  "generated_at": "2026-10-13T08:49:27.780Z",
+  "total_count": 117,
   "models": [
     {
       "provider": "google",
@@ -928,6 +928,14 @@
       "modelId": "mistralai/codestral-2508:batch",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-10-12T08:58:17.149Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "x-ai",
+      "model": "grok-4.3:batch",
+      "modelId": "x-ai/grok-4.3:batch",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-10-13T08:49:27.780Z",
       "attempt_count": 1
     }
   ]
