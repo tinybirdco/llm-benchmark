@@ -700,6 +700,11 @@
       "models": [
         "schematron-v2-turbo"
       ]
+    },
+    "scaledown": {
+      "models": [
+        "summarize"
+      ]
     }
   }
 }
