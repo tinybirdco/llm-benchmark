@@ -706,6 +706,11 @@
       "models": [
         "summarize"
       ]
+    },
+    "~unbiased": {
+      "models": [
+        "pareto-latest"
+      ]
     }
   }
 }
