@@ -678,7 +678,8 @@
     "unbiased": {
       "models": [
         "pareto-26.10-preview",
-        "pareto"
+        "pareto",
+        "pareto-26.9"
       ]
     },
     "apodex": {
