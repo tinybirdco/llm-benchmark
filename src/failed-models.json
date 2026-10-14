@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-13T08:49:27.780Z",
-  "total_count": 117,
+  "generated_at": "2026-10-14T08:41:03.744Z",
+  "total_count": 118,
   "models": [
     {
       "provider": "google",
@@ -936,6 +936,14 @@
       "modelId": "x-ai/grok-4.3:batch",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-10-13T08:49:27.780Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "google",
+      "model": "gemini-4-argon:batch",
+      "modelId": "google/gemini-4-argon:batch",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-10-14T08:41:03.744Z",
       "attempt_count": 1
     }
   ]
