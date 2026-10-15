@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-14T08:41:03.744Z",
-  "total_count": 118,
+  "generated_at": "2026-10-15T08:40:41.114Z",
+  "total_count": 119,
   "models": [
     {
       "provider": "google",
@@ -944,6 +944,14 @@
       "modelId": "google/gemini-4-argon:batch",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-10-14T08:41:03.744Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "deepseek",
+      "model": "deepseek-v4.1-flash:batch",
+      "modelId": "deepseek/deepseek-v4.1-flash:batch",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-10-15T08:40:41.114Z",
       "attempt_count": 1
     }
   ]
