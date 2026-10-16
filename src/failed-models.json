@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-15T08:40:41.114Z",
-  "total_count": 119,
+  "generated_at": "2026-10-16T08:39:16.619Z",
+  "total_count": 120,
   "models": [
     {
       "provider": "google",
@@ -952,6 +952,14 @@
       "modelId": "deepseek/deepseek-v4.1-flash:batch",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-10-15T08:40:41.114Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "moonshotai",
+      "model": "kimi-k3:batch",
+      "modelId": "moonshotai/kimi-k3:batch",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-10-16T08:39:16.619Z",
       "attempt_count": 1
     }
   ]
