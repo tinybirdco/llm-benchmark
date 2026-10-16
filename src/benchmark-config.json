@@ -318,7 +318,8 @@
         "switchyard",
         "nemotron-3.5-lightning",
         "nemotron-3.5-lightning:free",
-        "nemotron-3.5-super-vl"
+        "nemotron-3.5-super-vl",
+        "nemotron-3.5-super-vl:free"
       ]
     },
     "openrouter": {
