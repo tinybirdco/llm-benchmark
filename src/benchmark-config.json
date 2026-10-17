@@ -715,6 +715,11 @@
       "models": [
         "pareto-latest"
       ]
+    },
+    "reflection": {
+      "models": [
+        "beam-1.0-501b-a23b"
+      ]
     }
   }
 }
