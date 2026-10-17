@@ -720,6 +720,11 @@
       "models": [
         "beam-1.0-501b-a23b"
       ]
+    },
+    "elorian": {
+      "models": [
+        "glimpse"
+      ]
     }
   }
 }
