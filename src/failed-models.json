@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-17T08:35:00.495Z",
-  "total_count": 121,
+  "generated_at": "2026-10-18T08:36:19.929Z",
+  "total_count": 122,
   "models": [
     {
       "provider": "google",
@@ -968,6 +968,14 @@
       "modelId": "deepseek/deepseek-v4.1-flash-1017",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-10-17T08:35:00.495Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "scaledown",
+      "model": "extract",
+      "modelId": "scaledown/extract",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-10-18T08:36:19.929Z",
       "attempt_count": 1
     }
   ]
