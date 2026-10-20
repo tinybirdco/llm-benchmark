@@ -507,7 +507,8 @@
     "inception": {
       "models": [
         "mercury-2",
-        "mercury-2.5"
+        "mercury-2.5",
+        "mercury-3"
       ]
     },
     "bytedance-seed": {
