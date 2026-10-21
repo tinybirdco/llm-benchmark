@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-20T08:43:21.008Z",
-  "total_count": 124,
+  "generated_at": "2026-10-21T08:40:38.675Z",
+  "total_count": 125,
   "models": [
     {
       "provider": "google",
@@ -992,6 +992,14 @@
       "modelId": "z-ai/glm-5.3-flash:batch",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-10-20T08:43:21.008Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "meta",
+      "model": "muse-spark-1.2-contributor",
+      "modelId": "meta/muse-spark-1.2-contributor",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-10-21T08:40:38.675Z",
       "attempt_count": 1
     }
   ]
