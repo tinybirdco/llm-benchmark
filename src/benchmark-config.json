@@ -728,6 +728,11 @@
       "models": [
         "glimpse"
       ]
+    },
+    "recursive": {
+      "models": [
+        "flint-v1.0:free"
+      ]
     }
   }
 }
