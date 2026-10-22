@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-21T08:40:38.675Z",
-  "total_count": 125,
+  "generated_at": "2026-10-22T08:42:27.056Z",
+  "total_count": 126,
   "models": [
     {
       "provider": "google",
@@ -1000,6 +1000,14 @@
       "modelId": "meta/muse-spark-1.2-contributor",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-10-21T08:40:38.675Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "sakana",
+      "model": "sakana-namazu",
+      "modelId": "sakana/sakana-namazu",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-10-22T08:42:27.056Z",
       "attempt_count": 1
     }
   ]
