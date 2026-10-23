@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-22T08:42:27.056Z",
-  "total_count": 126,
+  "generated_at": "2026-10-23T08:41:21.650Z",
+  "total_count": 127,
   "models": [
     {
       "provider": "google",
@@ -1008,6 +1008,14 @@
       "modelId": "sakana/sakana-namazu",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-10-22T08:42:27.056Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "z-ai",
+      "model": "glm-5.3:batch",
+      "modelId": "z-ai/glm-5.3:batch",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-10-23T08:41:21.650Z",
       "attempt_count": 1
     }
   ]
