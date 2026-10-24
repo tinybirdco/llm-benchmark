@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-23T08:41:21.650Z",
-  "total_count": 127,
+  "generated_at": "2026-10-24T08:35:14.428Z",
+  "total_count": 128,
   "models": [
     {
       "provider": "google",
@@ -1016,6 +1016,14 @@
       "modelId": "z-ai/glm-5.3:batch",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-10-23T08:41:21.650Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "thinkingmachines",
+      "model": "inkling:free",
+      "modelId": "thinkingmachines/inkling:free",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-10-24T08:35:14.428Z",
       "attempt_count": 1
     }
   ]
