@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-24T08:35:14.428Z",
-  "total_count": 128,
+  "generated_at": "2026-10-25T08:35:08.227Z",
+  "total_count": 129,
   "models": [
     {
       "provider": "google",
@@ -1024,6 +1024,14 @@
       "modelId": "thinkingmachines/inkling:free",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-10-24T08:35:14.428Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "liquid",
+      "model": "lfm-2.5-2.6b",
+      "modelId": "liquid/lfm-2.5-2.6b",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-10-25T08:35:08.227Z",
       "attempt_count": 1
     }
   ]
