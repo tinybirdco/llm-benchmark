@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-27T08:39:59.884Z",
-  "total_count": 131,
+  "generated_at": "2026-10-28T08:29:27.240Z",
+  "total_count": 132,
   "models": [
     {
       "provider": "google",
@@ -1048,6 +1048,14 @@
       "modelId": "openai/gpt-6.1-terra-pro:batch",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-10-27T08:39:59.884Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "openai",
+      "model": "gpt-6.1-terra:batch",
+      "modelId": "openai/gpt-6.1-terra:batch",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-10-28T08:29:27.240Z",
       "attempt_count": 1
     }
   ]
