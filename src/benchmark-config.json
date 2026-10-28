@@ -705,7 +705,8 @@
     },
     "prism-ml": {
       "models": [
-        "ternary-bonsai-2-27b"
+        "ternary-bonsai-2-27b",
+        "ternary-bonsai-2-9b"
       ]
     },
     "inference-net": {
