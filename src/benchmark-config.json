@@ -738,6 +738,11 @@
       "models": [
         "flint-v1.0:free"
       ]
+    },
+    "particle-ai": {
+      "models": [
+        "particle-1"
+      ]
     }
   }
 }
