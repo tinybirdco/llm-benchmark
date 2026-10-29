@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-28T08:29:27.240Z",
-  "total_count": 132,
+  "generated_at": "2026-10-29T08:31:47.018Z",
+  "total_count": 133,
   "models": [
     {
       "provider": "google",
@@ -1056,6 +1056,14 @@
       "modelId": "openai/gpt-6.1-terra:batch",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-10-28T08:29:27.240Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "qwen",
+      "model": "qwen3.7-plus:batch",
+      "modelId": "qwen/qwen3.7-plus:batch",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-10-29T08:31:47.018Z",
       "attempt_count": 1
     }
   ]
