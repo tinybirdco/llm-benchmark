@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-29T08:31:47.018Z",
-  "total_count": 133,
+  "generated_at": "2026-10-30T08:31:53.744Z",
+  "total_count": 134,
   "models": [
     {
       "provider": "google",
@@ -1064,6 +1064,14 @@
       "modelId": "qwen/qwen3.7-plus:batch",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-10-29T08:31:47.018Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "inference-net",
+      "model": "schematron-v2-small",
+      "modelId": "inference-net/schematron-v2-small",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-10-30T08:31:53.744Z",
       "attempt_count": 1
     }
   ]
