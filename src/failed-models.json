@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-30T08:31:53.744Z",
-  "total_count": 134,
+  "generated_at": "2026-10-31T08:33:07.734Z",
+  "total_count": 135,
   "models": [
     {
       "provider": "google",
@@ -1072,6 +1072,14 @@
       "modelId": "inference-net/schematron-v2-small",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-10-30T08:31:53.744Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "moondream",
+      "model": "moondream3-preview",
+      "modelId": "moondream/moondream3-preview",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-10-31T08:33:07.734Z",
       "attempt_count": 1
     }
   ]
