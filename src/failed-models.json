@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-10-31T08:33:07.734Z",
-  "total_count": 135,
+  "generated_at": "2026-11-01T08:33:40.267Z",
+  "total_count": 136,
   "models": [
     {
       "provider": "google",
@@ -1080,6 +1080,14 @@
       "modelId": "moondream/moondream3-preview",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-10-31T08:33:07.734Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "moondream",
+      "model": "moondream3.1-9b-a2b",
+      "modelId": "moondream/moondream3.1-9b-a2b",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-11-01T08:33:40.267Z",
       "attempt_count": 1
     }
   ]
