@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-01T08:33:40.267Z",
-  "total_count": 136,
+  "generated_at": "2026-11-02T08:41:23.009Z",
+  "total_count": 137,
   "models": [
     {
       "provider": "google",
@@ -1088,6 +1088,14 @@
       "modelId": "moondream/moondream3.1-9b-a2b",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-11-01T08:33:40.267Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "nvidia",
+      "model": "nemotron-3.5-content-safety",
+      "modelId": "nvidia/nemotron-3.5-content-safety",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-11-02T08:41:23.009Z",
       "attempt_count": 1
     }
   ]
