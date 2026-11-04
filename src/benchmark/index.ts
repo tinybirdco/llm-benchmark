@@ -396,12 +396,11 @@ async function validateModel(modelString: string) {
 
   console.log(`Validating results for ${providerName}/${modelName}...`);
 
-  const escapedProvider = providerName.replace(/'/g, "\\'");
-  const escapedModel = modelName.replace(/'/g, "\\'");
-
-  const resultsQuery = `SELECT * FROM benchmark_results FINAL WHERE model = '${escapedModel}' AND provider = '${escapedProvider}' FORMAT JSON`;
+  // Pass model and provider as typed template parameters, not string-built SQL.
+  const resultsQuery = `%\nSELECT * FROM benchmark_results FINAL WHERE model = {{String(model)}} AND provider = {{String(provider)}} FORMAT JSON`;
+  const resultsParams = new URLSearchParams({ q: resultsQuery, model: modelName, provider: providerName });
   const resultsRes = await fetch(
-    `${tinybird.apiHost}/v0/sql?q=${encodeURIComponent(resultsQuery)}`,
+    `${tinybird.apiHost}/v0/sql?${resultsParams}`,
     { headers: { Authorization: `Bearer ${tinybird.workspaceToken}` } }
   );
 
@@ -438,9 +437,10 @@ async function validateModel(modelString: string) {
   const pushResultsJson = await pushResultsRes.json();
   console.log(`Validated ${pushResultsJson.successful_rows} benchmark results`);
 
-  const validationQuery = `SELECT * FROM benchmark_validation FINAL WHERE model = '${escapedModel}' AND provider = '${escapedProvider}' FORMAT JSON`;
+  const validationQuery = `%\nSELECT * FROM benchmark_validation FINAL WHERE model = {{String(model)}} AND provider = {{String(provider)}} FORMAT JSON`;
+  const validationParams = new URLSearchParams({ q: validationQuery, model: modelName, provider: providerName });
   const validationRes = await fetch(
-    `${tinybird.apiHost}/v0/sql?q=${encodeURIComponent(validationQuery)}`,
+    `${tinybird.apiHost}/v0/sql?${validationParams}`,
     { headers: { Authorization: `Bearer ${tinybird.workspaceToken}` } }
   );
 

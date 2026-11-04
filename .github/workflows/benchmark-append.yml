@@ -11,7 +11,18 @@ on:
 jobs:
   benchmark:
     runs-on: ubuntu-latest
+    env:
+      # Untrusted input: only ever read as "$MODEL" / process.env.MODEL.
+      MODEL: ${{ github.event.inputs.model }}
     steps:
+      - name: Validate model ID
+        run: |
+          MODEL_ID_RE='^~?[a-z0-9][a-z0-9._:-]*/[a-z0-9._:/-]+$'
+          if ! [[ "$MODEL" =~ $MODEL_ID_RE ]]; then
+            echo "::error::Invalid model ID. Expected provider/model matching $MODEL_ID_RE"
+            exit 1
+          fi
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
@@ -45,7 +56,7 @@ jobs:
       - name: Run benchmark
         id: run-benchmark
         working-directory: src
-        run: npm run benchmark -- --model="${{ github.event.inputs.model }}" --debug
+        run: npm run benchmark -- --model="$MODEL" --debug
         env:
           TINYBIRD_API_HOST: ${{ vars.TINYBIRD_API_HOST }}
           TINYBIRD_WORKSPACE_TOKEN: ${{ secrets.TINYBIRD_WORKSPACE_TOKEN }}
@@ -59,15 +70,14 @@ jobs:
           TINYBIRD_API_HOST: ${{ vars.TINYBIRD_API_HOST }}
           TINYBIRD_WORKSPACE_TOKEN: ${{ secrets.TINYBIRD_WORKSPACE_TOKEN }}
         run: |
-          MODEL="${{ github.event.inputs.model }}"
-          PROVIDER=$(echo "$MODEL" | cut -d'/' -f1)
-          MODEL_NAME=$(echo "$MODEL" | cut -d'/' -f2-)
+          export PROVIDER=$(echo "$MODEL" | cut -d'/' -f1)
+          export MODEL_NAME=$(echo "$MODEL" | cut -d'/' -f2-)
 
           SUCCESS_RATE=$(curl -s "${TINYBIRD_API_HOST}/v0/pipes/api_model_metrics.json?include_unvalidated=1" \
             -H "Authorization: Bearer ${TINYBIRD_WORKSPACE_TOKEN}" | node -e "
             const data = JSON.parse(require('fs').readFileSync('/dev/stdin','utf8'));
             const rows = data.data || [];
-            const m = rows.find(r => r.model === '${MODEL_NAME}' && r.provider === '${PROVIDER}');
+            const m = rows.find(r => r.model === process.env.MODEL_NAME && r.provider === process.env.PROVIDER);
             console.log(m ? (m.success_rate || 0).toFixed(1) : '0');
           ")
 
@@ -81,7 +91,6 @@ jobs:
         if: failure() && (steps.run-benchmark.outcome == 'failure' || steps.verify-quality.outcome == 'failure')
         working-directory: src
         run: |
-          MODEL="${{ github.event.inputs.model }}"
           PROVIDER=$(echo "$MODEL" | cut -d'/' -f1)
           MODEL_NAME=$(echo "$MODEL" | cut -d'/' -f2)
 
@@ -108,9 +117,9 @@ jobs:
             echo "No changes to commit"
           else
             git add src/failed-models.json
-            git commit -m "Add failed model ${{ github.event.inputs.model }} to failed list
+            git commit -m "Add failed model $MODEL to failed list
 
-          - Model: ${{ github.event.inputs.model }}
+          - Model: $MODEL
           - Reason: Benchmark workflow failed
           - Run ID: ${{ github.run_id }}
 
@@ -125,17 +134,16 @@ jobs:
         if: success() && steps.verify-quality.outcome == 'success'
         id: branch-name
         run: |
-          MODEL_NAME="${{ github.event.inputs.model }}"
-          NORMALIZED_MODEL=$(printf '%s' "$MODEL_NAME" | sed -E 's/[^[:alnum:]]+/-/g; s/^-+//; s/-+$//')
+          NORMALIZED_MODEL=$(printf '%s' "$MODEL" | sed -E 's/[^[:alnum:]]+/-/g; s/^-+//; s/-+$//')
           BRANCH_NAME="benchmark/$NORMALIZED_MODEL-${{ github.run_id }}"
           git check-ref-format --branch "$BRANCH_NAME"
           echo "branch_name=$BRANCH_NAME" >> "$GITHUB_OUTPUT"
 
       - name: Create benchmark branch
         if: success() && steps.verify-quality.outcome == 'success'
+        env:
+          BRANCH: ${{ steps.branch-name.outputs.branch_name }}
         run: |
-          MODEL="${{ github.event.inputs.model }}"
-          BRANCH="${{ steps.branch-name.outputs.branch_name }}"
 
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
@@ -154,16 +162,15 @@ jobs:
         id: create-pr
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: ${{ steps.branch-name.outputs.branch_name }}
         run: |
-          MODEL="${{ github.event.inputs.model }}"
-          BRANCH="${{ steps.branch-name.outputs.branch_name }}"
           ASSIGNEES="${{ vars.PR_ASSIGNEES || '' }}"
 
           PR_URL=$(gh pr create \
             --title "Add benchmark results for $MODEL" \
-            --body "$(cat <<'BODY'
-          This PR adds benchmark results for the **${{ github.event.inputs.model }}** model.
+            --body "This PR adds benchmark results for the **$MODEL** model.
 
+          $(cat <<'BODY'
           Results have been pushed to Tinybird with `validated=0` (pending review).
           Merging this PR will validate the results, making them visible on the production dashboard.
 
@@ -189,24 +196,23 @@ jobs:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           TINYBIRD_API_HOST: ${{ vars.TINYBIRD_API_HOST }}
           TINYBIRD_WORKSPACE_TOKEN: ${{ secrets.TINYBIRD_WORKSPACE_TOKEN }}
+          REVIEW_MODEL: ${{ vars.REVIEW_MODEL || 'openai/gpt-5.4-nano' }}
         run: |
           PR_NUMBER="${{ steps.create-pr.outputs.pull-request-number }}"
-          MODEL="${{ github.event.inputs.model }}"
-          REVIEW_MODEL="${{ vars.REVIEW_MODEL || 'openai/gpt-5.4-nano' }}"
           AUTO_MERGE="${{ vars.AUTO_MERGE || 'true' }}"
 
           echo "Generating LLM review for PR #$PR_NUMBER (model: $MODEL)"
           echo "Using review model: $REVIEW_MODEL"
 
-          PROVIDER=$(echo "$MODEL" | cut -d'/' -f1)
-          MODEL_NAME=$(echo "$MODEL" | cut -d'/' -f2-)
+          export PROVIDER=$(echo "$MODEL" | cut -d'/' -f1)
+          export MODEL_NAME=$(echo "$MODEL" | cut -d'/' -f2-)
 
           # Query Tinybird for benchmark metrics (include unvalidated results)
           METRICS=$(curl -s "${TINYBIRD_API_HOST}/v0/pipes/api_model_metrics.json?include_unvalidated=1" \
             -H "Authorization: Bearer ${TINYBIRD_WORKSPACE_TOKEN}" | node -e "
             const data = JSON.parse(require('fs').readFileSync('/dev/stdin','utf8'));
             const rows = data.data || [];
-            const m = rows.find(r => r.model === '${MODEL_NAME}' && r.provider === '${PROVIDER}');
+            const m = rows.find(r => r.model === process.env.MODEL_NAME && r.provider === process.env.PROVIDER);
             if (m) {
               console.log(JSON.stringify({
                 total: m.total_queries,
@@ -225,7 +231,7 @@ jobs:
           SUCCESS_RATE=$(echo "$METRICS" | node -e "const d=JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')); console.log(d.successRate)")
 
           # Call OpenRouter for LLM review
-          REVIEW_PROMPT="You are reviewing benchmark results for the LLM model '$MODEL'.
+          export REVIEW_PROMPT="You are reviewing benchmark results for the LLM model '$MODEL'.
 
           Metrics:
           $METRICS
@@ -241,8 +247,8 @@ jobs:
             -H "Authorization: Bearer $OPENROUTER_API_KEY" \
             -H "Content-Type: application/json" \
             -d "$(node -e "console.log(JSON.stringify({
-              model: '$REVIEW_MODEL',
-              messages: [{ role: 'user', content: $(echo "$REVIEW_PROMPT" | node -e "process.stdout.write(JSON.stringify(require('fs').readFileSync('/dev/stdin','utf8')))") }],
+              model: process.env.REVIEW_MODEL,
+              messages: [{ role: 'user', content: process.env.REVIEW_PROMPT }],
               max_tokens: 500
             }))")" | node -e "
               const data = JSON.parse(require('fs').readFileSync('/dev/stdin','utf8'));
@@ -287,7 +293,6 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           PR_NUMBER="${{ steps.create-pr.outputs.pull-request-number }}"
-          MODEL="${{ github.event.inputs.model }}"
           PROVIDER=$(echo "$MODEL" | cut -d'/' -f1)
           MODEL_NAME=$(echo "$MODEL" | cut -d'/' -f2-)
 

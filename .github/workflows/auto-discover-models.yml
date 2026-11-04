@@ -54,10 +54,15 @@ jobs:
             echo "new_count=0" >> $GITHUB_OUTPUT
           elif [ $EXIT_CODE -eq 10 ]; then
             if [ -f "new-models.json" ]; then
+              # Model IDs come from the OpenRouter API: drop anything that isn't a plain ID.
               NEW_MODELS=$(node -e "
                 const fs = require('fs');
                 const data = JSON.parse(fs.readFileSync('new-models.json', 'utf8'));
-                console.log(data.models.map(m => m.provider + '/' + m.model).join(' '));
+                const re = /^~?[a-z0-9][a-z0-9._:-]*\/[a-z0-9._:\/-]+$/;
+                const ids = data.models.map(m => m.provider + '/' + m.model);
+                const valid = ids.filter(id => re.test(id));
+                if (valid.length !== ids.length) console.error('Skipped ' + (ids.length - valid.length) + ' model IDs with unexpected characters');
+                console.log(valid.join(' '));
               ")
               NEW_COUNT=$(node -e "
                 const fs = require('fs');
@@ -80,16 +85,21 @@ jobs:
         if: steps.find-new-models.outputs.new_count != '' && steps.find-new-models.outputs.new_count != '0' && github.event.inputs.dry_run != 'true'
         env:
           GH_TOKEN: ${{ github.token }}
+          NEW_MODELS: ${{ steps.find-new-models.outputs.new_models }}
+          MAX_MODELS: ${{ github.event.inputs.max_models || '15' }}
         run: |
-          NEW_MODELS="${{ steps.find-new-models.outputs.new_models }}"
-          MAX_MODELS="${{ github.event.inputs.max_models || '15' }}"
+          MODEL_ID_RE='^~?[a-z0-9][a-z0-9._:-]*/[a-z0-9._:/-]+$'
+          if ! [[ "$MAX_MODELS" =~ ^[0-9]+$ ]]; then
+            echo "::error::max_models must be a non-negative integer"
+            exit 1
+          fi
 
           echo "Checking for existing PRs and running benchmarks for new models: $NEW_MODELS"
           echo "Max models limit: $MAX_MODELS"
 
           # Models are already sorted by provider priority (check-new-models.ts)
           # Priority providers come first: anthropic, google, openai, mistralai, perplexity, x-ai, deepseek, meta-llama, moonshotai
-          MODELS_ARRAY=($NEW_MODELS)
+          read -ra MODELS_ARRAY <<< "$NEW_MODELS"
           if [ "$MAX_MODELS" != "0" ] && [ "$MAX_MODELS" -gt 0 ]; then
             MODELS_ARRAY=("${MODELS_ARRAY[@]:0:$MAX_MODELS}")
             echo "Limited to first $MAX_MODELS models: ${MODELS_ARRAY[*]}"
@@ -99,6 +109,10 @@ jobs:
           TRIGGERED_COUNT=0
 
           for model in "${MODELS_ARRAY[@]}"; do
+            if ! [[ "$model" =~ $MODEL_ID_RE ]]; then
+              echo "::warning::Skipping invalid model ID"
+              continue
+            fi
             echo "=== Checking $model ==="
 
             # Check if there's already an open PR for this model
@@ -131,12 +145,13 @@ jobs:
       - name: Log discovery results
         if: steps.find-new-models.outputs.new_count != '' && steps.find-new-models.outputs.new_count != '0' || github.event.inputs.force_run == 'true'
         working-directory: src
+        env:
+          NEW_COUNT: ${{ steps.find-new-models.outputs.new_count }}
+          NEW_MODELS: ${{ steps.find-new-models.outputs.new_models }}
+          DRY_RUN: ${{ github.event.inputs.dry_run }}
+          MAX_MODELS: ${{ github.event.inputs.max_models || '15' }}
+          FORCE_RUN: ${{ github.event.inputs.force_run }}
         run: |
-          NEW_COUNT="${{ steps.find-new-models.outputs.new_count }}"
-          NEW_MODELS="${{ steps.find-new-models.outputs.new_models }}"
-          DRY_RUN="${{ github.event.inputs.dry_run }}"
-          MAX_MODELS="${{ github.event.inputs.max_models || '15' }}"
-          FORCE_RUN="${{ github.event.inputs.force_run }}"
           
           if [ "$NEW_COUNT" -gt 0 ]; then
             echo "🤖 Auto-discovery: Found $NEW_COUNT new OpenRouter models"
@@ -167,10 +182,10 @@ jobs:
       - name: Job summary
         if: always()
         working-directory: src
+        env:
+          NEW_COUNT: ${{ steps.find-new-models.outputs.new_count }}
+          NEW_MODELS: ${{ steps.find-new-models.outputs.new_models }}
         run: |
-          NEW_COUNT="${{ steps.find-new-models.outputs.new_count }}"
-          NEW_MODELS="${{ steps.find-new-models.outputs.new_models }}"
-
           TESTED=$(node -e "const fs = require('fs'); try { const c = JSON.parse(fs.readFileSync('benchmark-config.json','utf8')); let n=0; for (const d of Object.values(c.providers)) n+=d.models.length; console.log(n); } catch(e) { console.log('?'); }")
 
           echo "## Auto-Discovery Results" >> $GITHUB_STEP_SUMMARY

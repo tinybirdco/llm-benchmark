@@ -64,13 +64,32 @@ export function getClient() {
   async function executeSqlQuery(sql: string): Promise<SqlResult> {
     const startTime = Date.now();
 
-    const cappedSql = /\bSETTINGS\b/i.test(sql)
-      ? sql
-      : `${sql} SETTINGS ${QUERY_CAPS}`;
+    // Only run a single SELECT/WITH statement, and never let the query carry
+    // its own SETTINGS clause, so the caps below always apply.
+    const trimmedSql = sql.trim().replace(/;\s*$/, "");
+    const rejection = !/^(SELECT|WITH)\b/i.test(trimmedSql)
+      ? "Only a single SELECT or WITH query is allowed"
+      : trimmedSql.includes(";")
+        ? "Multiple statements are not allowed"
+        : /\bSETTINGS\s+[`"]?[a-z_][a-z0-9_]*[`"]?\s*=/i.test(trimmedSql)
+          ? "SETTINGS clauses are not allowed"
+          : null;
+    if (rejection) {
+      return {
+        success: false,
+        data: [],
+        executionTime: 0,
+        requestId: "rejected",
+        error: rejection,
+      };
+    }
+
+    // Caps go on a new line so a trailing `--` or `#` comment can't swallow them.
+    const cappedSql = `${trimmedSql}\nSETTINGS ${QUERY_CAPS}`;
 
     const url = `${tinybird.apiHost}/v0/sql?q=${encodeURIComponent(
-      cappedSql
-    )} FORMAT JSON`;
+      `${cappedSql}\nFORMAT JSON`
+    )}`;
 
     const response = await fetch(url, {
       method: "GET",

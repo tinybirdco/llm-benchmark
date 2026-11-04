@@ -37,16 +37,28 @@ jobs:
           PR_TITLE: ${{ github.event.pull_request.title }}
           PR_BODY: ${{ github.event.pull_request.body }}
         run: |
+          MODELS=""
           if echo "$PR_TITLE" | grep -q "^Add benchmark results for "; then
             # Single model PR — extract from title
-            MODEL=$(echo "$PR_TITLE" | sed 's/Add benchmark results for //')
-            echo "models=$MODEL" >> $GITHUB_OUTPUT
+            MODELS=$(echo "$PR_TITLE" | sed 's/Add benchmark results for //')
           elif echo "$PR_TITLE" | grep -q "^Batch benchmark results for "; then
             # Batch PR — extract models list from PR body
             # The body contains "**Models benchmarked:**\n<space-separated models>"
-            MODELS=$(echo "$PR_BODY" | grep -A1 "Models benchmarked" | tail -1 | xargs)
-            echo "models=$MODELS" >> $GITHUB_OUTPUT
+            MODELS=$(echo "$PR_BODY" | grep -A1 "Models benchmarked" | tail -1 | tr -d '\r')
           fi
+
+          # Only pass through well-formed model IDs; PR title/body are untrusted.
+          MODEL_ID_RE='^~?[a-z0-9][a-z0-9._:-]*/[a-z0-9._:/-]+$'
+          VALID_MODELS=""
+          read -ra CANDIDATES <<< "$MODELS"
+          for model in "${CANDIDATES[@]}"; do
+            if [[ "$model" =~ $MODEL_ID_RE ]]; then
+              VALID_MODELS="${VALID_MODELS:+$VALID_MODELS }$model"
+            else
+              echo "::warning::Skipping invalid model ID"
+            fi
+          done
+          echo "models=$VALID_MODELS" >> "$GITHUB_OUTPUT"
 
       - name: Validate results in Tinybird
         if: steps.models.outputs.models != ''
@@ -54,8 +66,8 @@ jobs:
         env:
           TINYBIRD_API_HOST: ${{ vars.TINYBIRD_API_HOST }}
           TINYBIRD_WORKSPACE_TOKEN: ${{ secrets.TINYBIRD_WORKSPACE_TOKEN }}
+          MODELS: ${{ steps.models.outputs.models }}
         run: |
-          MODELS="${{ steps.models.outputs.models }}"
           for model in $MODELS; do
             echo "Validating $model..."
             npm run benchmark -- --model="$model" --validate
@@ -63,8 +75,9 @@ jobs:
 
       - name: Update benchmark config and clean up
         if: steps.models.outputs.models != ''
+        env:
+          MODELS: ${{ steps.models.outputs.models }}
         run: |
-          MODELS="${{ steps.models.outputs.models }}"
           cd src
 
           for model in $MODELS; do
