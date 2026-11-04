@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-02T08:41:23.009Z",
-  "total_count": 137,
+  "generated_at": "2026-11-04T08:26:12.834Z",
+  "total_count": 138,
   "models": [
     {
       "provider": "google",
@@ -1096,6 +1096,14 @@
       "modelId": "nvidia/nemotron-3.5-content-safety",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-11-02T08:41:23.009Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "x-ai",
+      "model": "grok-4.7:batch",
+      "modelId": "x-ai/grok-4.7:batch",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-11-04T08:26:12.834Z",
       "attempt_count": 1
     }
   ]
