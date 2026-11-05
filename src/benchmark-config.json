@@ -745,6 +745,11 @@
       "models": [
         "particle-1"
       ]
+    },
+    "ricursiveai": {
+      "models": [
+        "ripple-65b-preview"
+      ]
     }
   }
 }
