@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-05T08:27:16.322Z",
-  "total_count": 139,
+  "generated_at": "2026-11-06T08:26:40.783Z",
+  "total_count": 140,
   "models": [
     {
       "provider": "google",
@@ -1112,6 +1112,14 @@
       "modelId": "x-ai/grok-4.6:batch",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-11-05T08:27:16.322Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "stealth",
+      "model": "crouton-alpha",
+      "modelId": "stealth/crouton-alpha",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-11-06T08:26:40.783Z",
       "attempt_count": 1
     }
   ]
