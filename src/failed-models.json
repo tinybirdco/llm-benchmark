@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-06T08:26:40.783Z",
-  "total_count": 140,
+  "generated_at": "2026-11-07T08:24:34.376Z",
+  "total_count": 141,
   "models": [
     {
       "provider": "google",
@@ -1120,6 +1120,14 @@
       "modelId": "stealth/crouton-alpha",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-11-06T08:26:40.783Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "deepseek",
+      "model": "deepseek-v4-flash-0731:batch",
+      "modelId": "deepseek/deepseek-v4-flash-0731:batch",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-11-07T08:24:34.376Z",
       "attempt_count": 1
     }
   ]
