@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-08T08:25:04.998Z",
-  "total_count": 142,
+  "generated_at": "2026-11-09T08:31:11.776Z",
+  "total_count": 143,
   "models": [
     {
       "provider": "google",
@@ -1136,6 +1136,14 @@
       "modelId": "deepseek/deepseek-v4.1-flash-1017:batch",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-11-08T08:25:04.998Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "qwen",
+      "model": "qwen3.8-27b:batch",
+      "modelId": "qwen/qwen3.8-27b:batch",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-11-09T08:31:11.776Z",
       "attempt_count": 1
     }
   ]
