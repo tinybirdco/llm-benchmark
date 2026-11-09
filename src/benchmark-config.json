@@ -391,7 +391,8 @@
         "lfm-2.5-1.2b-instruct:free",
         "lfm-2.5-2.6b:free",
         "lfm-2.5-24b-a2b",
-        "lfm-3-1.7b"
+        "lfm-3-1.7b",
+        "lfm-3-1.7b:free"
       ]
     },
     "ibm-granite": {
