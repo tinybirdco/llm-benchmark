@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-09T08:31:11.776Z",
-  "total_count": 143,
+  "generated_at": "2026-11-10T08:26:34.649Z",
+  "total_count": 144,
   "models": [
     {
       "provider": "google",
@@ -1144,6 +1144,14 @@
       "modelId": "qwen/qwen3.8-27b:batch",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-11-09T08:31:11.776Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "anthropic",
+      "model": "claude-fable-5.2:batch",
+      "modelId": "anthropic/claude-fable-5.2:batch",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-11-10T08:26:34.649Z",
       "attempt_count": 1
     }
   ]
