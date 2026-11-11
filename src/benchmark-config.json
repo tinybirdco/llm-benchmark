@@ -763,6 +763,11 @@
       "models": [
         "midm-k-3.0-pro"
       ]
+    },
+    "motif-technologies": {
+      "models": [
+        "motif-3"
+      ]
     }
   }
 }
