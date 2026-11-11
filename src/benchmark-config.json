@@ -425,7 +425,8 @@
       "models": [
         "ernie-4.5-21b-a3b-thinking",
         "ernie-4.5-vl-424b-a47b",
-        "ernie-5.5-flash-preview:free"
+        "ernie-5.5-flash-preview:free",
+        "ernie-light-dt-1.0-intl"
       ]
     },
     "nousresearch": {
