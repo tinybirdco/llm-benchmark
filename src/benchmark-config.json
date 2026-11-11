@@ -756,6 +756,11 @@
       "models": [
         "ripple-65b-preview"
       ]
+    },
+    "kt": {
+      "models": [
+        "midm-k-3.0-pro"
+      ]
     }
   }
 }
