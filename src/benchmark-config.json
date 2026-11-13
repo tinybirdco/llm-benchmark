@@ -753,7 +753,8 @@
     },
     "particle-ai": {
       "models": [
-        "particle-1"
+        "particle-1",
+        "particle-1:free"
       ]
     },
     "ricursiveai": {
