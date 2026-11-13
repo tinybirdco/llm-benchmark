@@ -599,7 +599,8 @@
     "thinkingmachines": {
       "models": [
         "inkling",
-        "inkling-small"
+        "inkling-small",
+        "inkling-2-small"
       ]
     },
     "cohere": {
