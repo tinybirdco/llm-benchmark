@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-12T08:26:34.964Z",
-  "total_count": 146,
+  "generated_at": "2026-11-13T08:26:29.736Z",
+  "total_count": 147,
   "models": [
     {
       "provider": "google",
@@ -1168,6 +1168,14 @@
       "modelId": "moonshotai/kimi-k3.1-pro:batch",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-11-12T08:26:34.964Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "google",
+      "model": "gemini-4-hydrogen:batch",
+      "modelId": "google/gemini-4-hydrogen:batch",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-11-13T08:26:29.736Z",
       "attempt_count": 1
     }
   ]
