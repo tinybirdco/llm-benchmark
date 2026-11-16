@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-15T08:24:44.996Z",
-  "total_count": 149,
+  "generated_at": "2026-11-16T08:42:45.671Z",
+  "total_count": 150,
   "models": [
     {
       "provider": "google",
@@ -1192,6 +1192,14 @@
       "modelId": "thinkingmachines/inkling-small:batch",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-11-15T08:24:44.996Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "qwen",
+      "model": "qwen3.8-max-0902:batch",
+      "modelId": "qwen/qwen3.8-max-0902:batch",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-11-16T08:42:45.671Z",
       "attempt_count": 1
     }
   ]
