@@ -209,7 +209,8 @@
         "gpt-6.1-sol-pro",
         "gpt-6.1-terra",
         "gpt-6.1-terra-pro",
-        "gpt-6.2-astra"
+        "gpt-6.2-astra",
+        "gpt-6.2-sol"
       ]
     },
     "qwen": {
