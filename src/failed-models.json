@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-17T08:26:47.922Z",
-  "total_count": 151,
+  "generated_at": "2026-11-18T08:27:19.607Z",
+  "total_count": 152,
   "models": [
     {
       "provider": "google",
@@ -1208,6 +1208,14 @@
       "modelId": "meta/muse-glimmer-30b:batch",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-11-17T08:26:47.922Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "openai",
+      "model": "gpt-6.2-astra-pro:batch",
+      "modelId": "openai/gpt-6.2-astra-pro:batch",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-11-18T08:27:19.607Z",
       "attempt_count": 1
     }
   ]
