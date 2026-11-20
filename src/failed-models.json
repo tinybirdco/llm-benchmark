@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-19T08:27:22.016Z",
-  "total_count": 153,
+  "generated_at": "2026-11-20T08:26:55.218Z",
+  "total_count": 154,
   "models": [
     {
       "provider": "google",
@@ -1224,6 +1224,14 @@
       "modelId": "google/gemini-4-neon:batch",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-11-19T08:27:22.016Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "openai",
+      "model": "gpt-6.2-astra:batch",
+      "modelId": "openai/gpt-6.2-astra:batch",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-11-20T08:26:55.218Z",
       "attempt_count": 1
     }
   ]
