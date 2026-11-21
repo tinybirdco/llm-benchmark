@@ -608,7 +608,8 @@
       "models": [
         "inkling",
         "inkling-small",
-        "inkling-2-small"
+        "inkling-2-small",
+        "inkling-2-mini"
       ]
     },
     "cohere": {
