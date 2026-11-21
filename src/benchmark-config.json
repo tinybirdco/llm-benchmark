@@ -779,6 +779,11 @@
       "models": [
         "motif-3"
       ]
+    },
+    "radixark": {
+      "models": [
+        "daisyrose-27b"
+      ]
     }
   }
 }
