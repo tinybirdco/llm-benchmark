@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-23T08:29:55.318Z",
-  "total_count": 157,
+  "generated_at": "2026-11-24T08:27:21.246Z",
+  "total_count": 158,
   "models": [
     {
       "provider": "google",
@@ -1256,6 +1256,14 @@
       "modelId": "z-ai/glm-5.2:batch",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-11-23T08:29:55.318Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "minimax",
+      "model": "minimax-m3:batch",
+      "modelId": "minimax/minimax-m3:batch",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-11-24T08:27:21.246Z",
       "attempt_count": 1
     }
   ]
