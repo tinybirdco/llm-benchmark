@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-24T08:27:21.246Z",
-  "total_count": 158,
+  "generated_at": "2026-11-25T08:29:38.219Z",
+  "total_count": 159,
   "models": [
     {
       "provider": "google",
@@ -1264,6 +1264,14 @@
       "modelId": "minimax/minimax-m3:batch",
       "reason": "Benchmark quality too low (success rate below 20%)",
       "failed_at": "2026-11-24T08:27:21.246Z",
+      "attempt_count": 1
+    },
+    {
+      "provider": "morph",
+      "model": "morph-v3-large:batch",
+      "modelId": "morph/morph-v3-large:batch",
+      "reason": "Benchmark quality too low (success rate below 20%)",
+      "failed_at": "2026-11-25T08:29:38.219Z",
       "attempt_count": 1
     }
   ]
